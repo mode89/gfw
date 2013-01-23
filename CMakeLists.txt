@@ -1,0 +1,11 @@
+project(GLOBAL_SOLUTION)
+cmake_minimum_required(VERSION 2.8)
+
+include_directories(${GLOBAL_SOLUTION_SOURCE_DIR})
+
+add_subdirectory(gtest)
+
+add_subdirectory(common)
+add_subdirectory(trace)
+add_subdirectory(profiler)
+add_subdirectory(gfw)
