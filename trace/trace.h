@@ -6,9 +6,9 @@
 
 // By default enable trace for debug configuration
 
-#if !defined(TRACE_ENABLED) && defined(PLATFORM_DEBUG)
-#define TRACE_ENABLED 1
-#endif // !defined(TRACE_ENABLED) && defined(PLATFORM_DEBUG)
+#if !defined(TRACE_ASSERT_ENABLED) && defined(PLATFORM_DEBUG)
+#define TRACE_ASSERT_ENABLED 1
+#endif // !defined(TRACE_ASSERT_ENABLED) && defined(PLATFORM_DEBUG)
 
 // Software breakpoint
 
@@ -21,8 +21,21 @@
 // Immediately fail with output a message
 
 #define TRACE_FAIL_MSG(msg) \
-    Trace::Message("Failed at %s : line %d : %s\n", __FILE__, __LINE__, msg); \
-    TRACE_DEBUG_BREAK()
+    Trace::Message("Failed in %s : line %d : %s\n", __FILE__, __LINE__, msg); \
+    TRACE_DEBUG_BREAK() \
+
+#if TRACE_ASSERT_ENABLED
+
+#define TRACE_ASSERT(expr) \
+    if (!expr) \
+    { \
+        Trace::Message("Assertion failed in %s : line %d : Expression %s\n", __FILE__, __LINE__, #expr); \
+        TRACE_DEBUG_BREAK(); \
+    } \
+
+#else
+#define TRACE_ASSERT(expr)
+#endif // TRACE_ASSERT_ENABLED
 
 namespace Trace {
 
