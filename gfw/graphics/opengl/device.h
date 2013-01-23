@@ -8,7 +8,7 @@ namespace GFW { namespace OpenGL {
     class Device: public IDevice
     {
     public:
-        virtual IContextRef     CreateContext(GFW::Platform::IWindowIn);
+        virtual IContextRef     CreateContext(Platform::IWindowIn);
         virtual void            Release();
 
     public:

@@ -4,12 +4,12 @@
 
 namespace GFW { namespace OpenGL {
 
-    Context::Context( Platform::IWindowIn )
+    Context::Context(Platform::IWindowIn)
     {
         TRACE_FAIL_MSG("Not yet implemented");
     }
 
-    void Context::Clear( ClearParams & )
+    void Context::Clear(ClearParams &)
     {
         TRACE_FAIL_MSG("Not yet implemented");
     }

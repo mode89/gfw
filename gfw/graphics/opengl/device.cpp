@@ -12,7 +12,7 @@ namespace GFW { namespace OpenGL {
 
     }
 
-    GFW::IContextRef Device::CreateContext( GFW::Platform::IWindowIn window )
+    IContextRef Device::CreateContext(Platform::IWindowIn window)
     {
         return GFW_NEW(Context) (window);
     }
