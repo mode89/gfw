@@ -5,6 +5,8 @@
 
 namespace GFW { namespace Platform {
 
+    using namespace Common;
+
     Window::Window(const WindowDesc &)
     {
         TRACE_FAIL_MSG("Not yet implemented");
@@ -20,9 +22,9 @@ namespace GFW { namespace Platform {
         TRACE_FAIL_MSG("Not yet implemented");
     }
 
-    IWindowRef Window::CreateInstance(const WindowDesc & desc)
+    IWindowRef Window::CreateInstance(const WindowDesc & desc, IAllocator * a)
     {
-        return GFW_NEW(Window) (desc);
+        return GFW_NEW(a, Window) (desc);
     }
 
 }} // namespace GFW::Platform

@@ -1,5 +1,5 @@
-#ifndef __GFW_BASE_DEVICE_H__
-#define __GFW_BASE_DEVICE_H__
+#ifndef __GFW_GRAPHICS_BASE_DEVICE_H__
+#define __GFW_GRAPHICS_BASE_DEVICE_H__
 
 #include "common\autoref.h"
 #include "gfw\platform\base\window.h"
@@ -26,4 +26,4 @@ namespace GFW {
 
 } // namespace GFW
 
-#endif // __GFW_BASE_DEVICE_H__
+#endif // __GFW_GRAPHICS_BASE_DEVICE_H__

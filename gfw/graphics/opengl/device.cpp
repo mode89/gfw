@@ -7,14 +7,17 @@
 
 namespace GFW { namespace OpenGL {
 
-    Device::Device()
+    using namespace Common;
+
+    Device::Device(IAllocator * a)
+        : ADevice(a)
     {
 
     }
 
     IContextRef Device::CreateContext(Platform::IWindowIn window)
     {
-        return GFW_NEW(Context) (window);
+        return GFW_NEW(mAllocator, Context) (window);
     }
 
     void Device::Release()
@@ -22,14 +25,14 @@ namespace GFW { namespace OpenGL {
         TRACE_FAIL_MSG("Not yet implemented");
     }
 
-    IDeviceRef Device::CreateInstance()
+    IDeviceRef Device::CreateInstance(IAllocator * a)
     {
         uint32_t funcsLoaded = LoadFunctions();
         TRACE_ASSERT(funcsLoaded);
 
         if (funcsLoaded)
         {
-            return GFW_NEW(Device);
+            return GFW_NEW(a, Device) (a);
         }
 
         return NULL;

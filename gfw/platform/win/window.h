@@ -2,6 +2,7 @@
 #define __GFW_PLATFORM_WIN_WINDOW_H__
 
 #include "gfw\platform\base\window.h"
+#include "common\allocator.h"
 
 namespace GFW { namespace Platform {
 
@@ -12,7 +13,7 @@ namespace GFW { namespace Platform {
         virtual void        Release();
 
     public:
-        static IWindowRef   CreateInstance(const WindowDesc &);
+        static IWindowRef   CreateInstance(const WindowDesc &, Common::IAllocator * a);
 
         Window(const WindowDesc &);
     };

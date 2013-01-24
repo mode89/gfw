@@ -31,7 +31,7 @@ namespace GFW { namespace Platform {
 
     IWindowRef CreateEmptyWindow(WindowDesc & desc)
     {
-        return Window::CreateInstance(desc);
+        return Window::CreateInstance(desc, GetDefaultAllocator());
     }
 
 }} // namespace GFW::Platform
