@@ -8,6 +8,9 @@ namespace GFW {
 
     class AContext: public IContext
     {
+    public:
+        AContext(Common::IAllocator *);
+
     protected:
         Common::IAllocator *    mAllocator;
     };

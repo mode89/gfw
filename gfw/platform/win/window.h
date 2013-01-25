@@ -18,6 +18,8 @@ namespace GFW { namespace Platform {
         static IWindowRef           CreateInstance(const WindowDesc &, Common::IAllocator * a);
         uint32_t                    Initialize();
 
+        inline HWND                 GetWindowHandle()   { return mHwnd; }
+
     private:
         static LRESULT CALLBACK     Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
@@ -29,6 +31,7 @@ namespace GFW { namespace Platform {
 
         HWND                        mHwnd;
     };
+    AUTOREF_REFERENCE_DECLARATION(Window);
 
 }} // namespace GFW::Platform
 

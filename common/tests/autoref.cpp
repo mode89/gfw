@@ -38,6 +38,13 @@ private:
     bool8_t     mDestructed;
 };
 
+class ObjectImpl : public Object
+{
+public:
+    uint32_t    GetCounter()        { return mCounter; }
+};
+AUTOREF_REFERENCE_DECLARATION(ObjectImpl);
+
 // A Factory that produces an Object
 // It knows how to create and delete an Object
 
@@ -85,8 +92,9 @@ private:
 
 ObjectRef ReturnReference(ObjectIn ref)
 {
+    ObjectImplRef impl = ref.StaticCast<ObjectImpl>();
     uint32_t cnt = ref->GetCounter();
-    return ref;
+    return impl.StaticCast<Object>();
 }
 
 TEST(AutoRef, Test)
@@ -137,6 +145,9 @@ TEST(AutoRef, Test)
 
             ref5 = ref3 = ref3;
             ASSERT_TRUE(ref1->GetCounter() == 5);
+
+            ObjectImplRef impl = ref5.StaticCast<ObjectImpl>();
+            ASSERT_TRUE(impl->GetCounter() == 6);
         }
 
         // Check that all references from the previous scope are deleted

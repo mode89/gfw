@@ -17,7 +17,7 @@ namespace GFW { namespace OpenGL {
 
     IContextRef Device::CreateContext(Platform::IWindowIn window)
     {
-        return GFW_NEW(mAllocator, Context) (window);
+        return GFW_NEW(mAllocator, Context) (window, mAllocator);
     }
 
     void Device::Release()

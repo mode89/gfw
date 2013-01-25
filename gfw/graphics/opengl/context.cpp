@@ -1,12 +1,16 @@
 #include "gfw\graphics\opengl\context.h"
+#include "gfw\graphics\opengl\platform.h"
 
 #include "trace\trace.h"
 
 namespace GFW { namespace OpenGL {
 
-    Context::Context(Platform::IWindowIn)
+    using namespace Common;
+
+    Context::Context(Platform::IWindowIn window, IAllocator * a)
+        : AContext(a)
     {
-        TRACE_FAIL_MSG("Not yet implemented");
+        InitPlatformContext(window);
     }
 
     void Context::Clear(ClearParams &)

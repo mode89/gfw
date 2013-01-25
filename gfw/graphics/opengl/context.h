@@ -14,7 +14,7 @@ namespace GFW { namespace OpenGL {
         virtual void    Release();
 
     public:
-        Context(Platform::IWindowIn);
+        Context(Platform::IWindowIn, Common::IAllocator *);
     };
 
 }} // namespace GFW::OpenGL

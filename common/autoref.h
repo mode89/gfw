@@ -69,7 +69,7 @@ namespace Common {
 
         inline ObjectClass * operator-> () const { return mObject; }
 
-        inline AutoRef & operator= (const AutoRef & ref)
+        inline const AutoRef & operator= (const AutoRef & ref)
         {
             if (this != &ref)
             {
@@ -78,6 +78,12 @@ namespace Common {
             }
 
             return *this;
+        }
+
+        template < class CastClass >
+        inline AutoRef<CastClass> StaticCast() const
+        {
+            return static_cast<CastClass*>(mObject);
         }
 
     private:

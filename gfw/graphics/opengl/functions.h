@@ -1,6 +1,8 @@
 #ifndef __GFW_GRAPHICS_OPENGL_FUNCTIONS_H__
 #define __GFW_GRAPHICS_OPENGL_FUNCTIONS_H__
 
+#include "gfw\graphics\opengl\glcorearb.h"
+
 namespace GFW { namespace OpenGL {
 
 
