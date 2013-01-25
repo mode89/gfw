@@ -15,7 +15,7 @@ namespace GFW {
 
         virtual void Free(void * data)
         {
-            delete data;
+            delete static_cast<char*>(data);
         }
 
     } gDefaultAllocator;
