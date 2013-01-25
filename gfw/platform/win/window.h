@@ -26,6 +26,8 @@ namespace GFW { namespace Platform {
 
     private:
         WindowDesc                  mDesc;
+
+        HWND                        mHwnd;
     };
 
 }} // namespace GFW::Platform

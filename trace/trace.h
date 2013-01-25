@@ -10,6 +10,12 @@
 #define TRACE_ASSERT_ENABLED 1
 #endif // !defined(TRACE_ASSERT_ENABLED) && defined(PLATFORM_DEBUG)
 
+// By default enable trace messages
+
+#if !defined(TRACE_MESSAGE_ENABLED)
+#define TRACE_MESSAGE_ENABLED 1
+#endif // !defined(TRACE_MESSAGE_ENABLED)
+
 // Software breakpoint
 
 #if PLATFORM_COMPILER_MSVC
@@ -26,16 +32,35 @@
 
 #if TRACE_ASSERT_ENABLED
 
-#define TRACE_ASSERT(expr) \
-    if (!expr) \
-    { \
-        Trace::Message("Assertion failed in %s : line %d : Expression %s\n", __FILE__, __LINE__, #expr); \
-        TRACE_DEBUG_BREAK(); \
-    } \
+    #define TRACE_ASSERT(expr) \
+        if (!expr) \
+        { \
+            Trace::Message("Assertion failed in %s : line %d : Expression %s\n", __FILE__, __LINE__, #expr); \
+            TRACE_DEBUG_BREAK(); \
+        } \
 
 #else
-#define TRACE_ASSERT(expr)
+
+    #define TRACE_ASSERT(expr)
+
 #endif // TRACE_ASSERT_ENABLED
+
+#if TRACE_MESSAGE_ENABLED
+
+    #define TRACE_MESSAGE(msg)          Trace::Message(msg)
+
+    #if PLATFORM_DEBUG
+        #define TRACE_MESSAGE_ERROR(msg)    Trace::Message("Error in %s : line %d : %s\n", __FILE__, __LINE__, msg);
+    #elif PLATFORM_NDEBUG
+        #define TRACE_MESSAGE_ERROR(msg)    Trace::Message("Error in %s : line %d : %s\n", __FILE__, __LINE__, msg); TRACE_DEBUG_BREAK()
+    #endif // PLATFORM_DEBUG
+
+#else
+
+    #define TRACE_MESSAGE(msg)
+    #define TRACE_MESSAGE_ERROR(msg)
+
+#endif // TRACE_MESSAGE_ENABLED
 
 namespace Trace {
 

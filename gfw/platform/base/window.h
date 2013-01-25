@@ -9,11 +9,13 @@ namespace GFW { namespace Platform {
     {
         uint32_t width;
         uint32_t height;
+        uint32_t colorBits;
         bool8_t  fullScreen;
 
         WindowDesc()
             : width(0)
             , height(0)
+            , colorBits(32)
             , fullScreen(0)
         {}
     };
