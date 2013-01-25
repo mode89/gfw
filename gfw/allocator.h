@@ -4,7 +4,7 @@
 #include "common\allocator.h"
 
 #define GFW_NEW(a, className)           new(a) className
-#define GFW_DELETE(a, pointerToObject)  delete(a) pointerToObject
+#define GFW_DELETE(a, pointerToObject)  operator delete(pointerToObject, a)
 
 namespace GFW {
 
@@ -13,3 +13,4 @@ namespace GFW {
 } // namespace GFW
 
 #endif // __GFW_ALLOCATOR_H__
+

@@ -7,9 +7,22 @@ namespace GFW { namespace Platform {
 
     using namespace Common;
 
-    Window::Window(const WindowDesc &)
+    Window::Window(const WindowDesc & desc)
+        : mDesc(desc)
+    {
+        
+    }
+
+    uint32_t Window::Initialize()
     {
         TRACE_FAIL_MSG("Not yet implemented");
+        return 0;
+    }
+
+    LRESULT CALLBACK Window::Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+    {
+        // Process all unhandled messages
+        return DefWindowProc(hWnd, uMsg, wParam, lParam);
     }
 
     void Window::Tick()
@@ -24,7 +37,19 @@ namespace GFW { namespace Platform {
 
     IWindowRef Window::CreateInstance(const WindowDesc & desc, IAllocator * a)
     {
-        return GFW_NEW(a, Window) (desc);
+        Window * wnd = GFW_NEW(a, Window) (desc);
+
+        if (wnd != NULL)
+        {
+            if (wnd->Initialize())
+            {
+                return wnd;
+            }
+
+            GFW_DELETE(a, wnd);
+        }
+
+        return NULL;
     }
 
 }} // namespace GFW::Platform
