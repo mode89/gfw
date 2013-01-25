@@ -5,11 +5,28 @@
 #include "common\platform.h"
 #include "gfw\platform\base\window.h"
 
+#if PLATFORM_WIN32
+#include <windows.h>
+#else
+#error Unrecognized platform
+#endif
+
 namespace GFW { namespace OpenGL {
+
+#if PLATFORM_WIN32
+
+    struct ContextDescPlat
+    {
+        HGLRC hRC;
+    };
+
+#else
+#error Urecognized platform
+#endif
 
     uint32_t LoadFunctions();
 
-    uint32_t InitPlatformContext(Platform::IWindowIn);
+    uint32_t InitPlatformContext(Platform::IWindowIn, ContextDescPlat &);
 
 }} // namespace GFW::OpenGL
 

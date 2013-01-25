@@ -2,6 +2,7 @@
 #define __GFW_GRAPHICS_OPENGL_CONTEXT_H__
 
 #include "gfw\graphics\common\context.h"
+#include "gfw\graphics\opengl\platform.h"
 #include "gfw\platform\base\window.h"
 
 namespace GFW { namespace OpenGL {
@@ -9,12 +10,15 @@ namespace GFW { namespace OpenGL {
     class Context: public AContext
     {
     public:
-        virtual void    Clear(ClearParams &);
-        virtual void    Present();
-        virtual void    Release();
+        virtual void        Clear(ClearParams &);
+        virtual void        Present();
+        virtual void        Release();
 
     public:
         Context(Platform::IWindowIn, Common::IAllocator *);
+
+    private:
+        ContextDescPlat     mDescPlat;
     };
 
 }} // namespace GFW::OpenGL

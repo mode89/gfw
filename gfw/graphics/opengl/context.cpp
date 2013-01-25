@@ -1,5 +1,4 @@
 #include "gfw\graphics\opengl\context.h"
-#include "gfw\graphics\opengl\platform.h"
 
 #include "trace\trace.h"
 
@@ -10,7 +9,7 @@ namespace GFW { namespace OpenGL {
     Context::Context(Platform::IWindowIn window, IAllocator * a)
         : AContext(a)
     {
-        InitPlatformContext(window);
+        InitPlatformContext(window, mDescPlat);
     }
 
     void Context::Clear(ClearParams &)

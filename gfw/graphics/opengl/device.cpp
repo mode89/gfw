@@ -1,6 +1,5 @@
 #include "gfw\graphics\opengl\device.h"
 #include "gfw\graphics\opengl\context.h"
-#include "gfw\graphics\opengl\platform.h"
 #include "gfw\allocator.h"
 
 #include "trace\trace.h"
