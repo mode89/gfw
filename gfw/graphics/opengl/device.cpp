@@ -8,15 +8,16 @@ namespace GFW { namespace OpenGL {
 
     using namespace Common;
 
-    Device::Device(IAllocator * a)
+    Device::Device(IPlatformIn p, IAllocator * a)
         : ADevice(a)
+        , mPlatform(p)
     {
 
     }
 
     IContextRef Device::CreateContext(Platform::IWindowIn window)
     {
-        return GFW_NEW(mAllocator, Context) (window, mAllocator);
+        return GFW_NEW(mAllocator, Context) (window, this, mAllocator);
     }
 
     void Device::Release()
@@ -26,12 +27,11 @@ namespace GFW { namespace OpenGL {
 
     IDeviceRef Device::CreateInstance(IAllocator * a)
     {
-        uint32_t funcsLoaded = LoadFunctions();
-        TRACE_ASSERT(funcsLoaded);
+        IPlatformRef platform = CreatePlatform(a);
 
-        if (funcsLoaded)
+        if (platform->Init())
         {
-            return GFW_NEW(a, Device) (a);
+            return GFW_NEW(a, Device) (platform, a);
         }
 
         return NULL;

@@ -126,7 +126,7 @@ TEST(AutoRef, Test)
             ref3 = ref1;
             ASSERT_TRUE(ref2->GetCounter() == 3);
 
-            ObjectRef ref4(0);
+            ObjectRef ref4;
 
             // Try to pass the reference to a function
             // and receive a reference
@@ -139,7 +139,7 @@ TEST(AutoRef, Test)
             ref2 = ref2;
             ASSERT_TRUE(ref4->GetCounter() == 4);
 
-            ObjectRef ref5(0);
+            ObjectRef ref5;
 
             // Try to receive reference as a result of an assignment
 
@@ -148,6 +148,10 @@ TEST(AutoRef, Test)
 
             ObjectImplRef impl = ref5.StaticCast<ObjectImpl>();
             ASSERT_TRUE(impl->GetCounter() == 6);
+
+            ObjectRef ref6;
+            ref5 = ref6;
+            ASSERT_TRUE(ref4->GetCounter() == 5);
         }
 
         // Check that all references from the previous scope are deleted

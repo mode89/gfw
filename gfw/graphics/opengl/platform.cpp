@@ -1,147 +1,127 @@
+#include "gfw\allocator.h"
 #include "gfw\graphics\opengl\platform.h"
 #include "gfw\graphics\opengl\functions.h"
-
-#if PLATFORM_WIN32
-#include "gfw\platform\win\window.h"
-#include "gfw\graphics\opengl\wglext.h"
-#endif // PLATFORM_WIN32
+#include "gfw\graphics\opengl\functions_platform.h"
+#include "gfw\graphics\opengl\window.h"
 
 #include "trace\trace.h"
 
-#include <windows.h>
-
 namespace GFW { namespace OpenGL {
 
+    using namespace Common;
     using namespace Platform;
 
 #if PLATFORM_WIN32
 
-    static HMODULE sLibrary = NULL;
+    PFNWGLGETPROCADDRESS    wglGetProcAddress       = NULL;
+    PFNWGLCREATECONTEXT     wglCreateContext        = NULL;
+    PFNWGLMAKECURRENT       wglMakeCurrent          = NULL;
+    PFNWGLDELETECONTEXT     wglDeleteContext        = NULL;
+    PFNWGLCHOOSEPIXELFORMAT wglChoosePixelFormat    = NULL;
 
-    // Define Windows specific functions
-
-    typedef PROC  (WINAPI *  PFNWGLGETPROCADDRESS)(LPCSTR);
-    typedef HGLRC (WINAPI *  PFNWGLCREATECONTEXT)(HDC);
-    typedef BOOL  (WINAPI *  PFNWGLMAKECURRENT)(HDC, HGLRC);
-    typedef BOOL  (WINAPI *  PFNWGLDELETECONTEXT)(HGLRC);
-    typedef BOOL  (WINAPI *  PFNWGLCHOOSEPIXELFORMAT) (HDC, const int *, const FLOAT *, UINT, int *, UINT *);
-
-    static PFNWGLGETPROCADDRESS     wglGetProcAddress       = NULL;
-    static PFNWGLCREATECONTEXT      wglCreateContext        = NULL;
-    static PFNWGLMAKECURRENT        wglMakeCurrent          = NULL;
-    static PFNWGLDELETECONTEXT      wglDeleteContext        = NULL;
-    static PFNWGLCHOOSEPIXELFORMAT  wglChoosePixelFormat    = NULL;
-
-    uint32_t LoadFunctions()
+    class PlatformWin: public IPlatform
     {
-        if (sLibrary == NULL)
+    public:
+        PlatformWin(IAllocator * a)
+            : mLibrary(NULL)
+            , mAllocator(a)
         {
-            sLibrary = LoadLibrary("opengl32.dll");
-            TRACE_ASSERT(sLibrary != NULL);
-
-            // Load Windows specific functions
-
-            wglGetProcAddress = reinterpret_cast<PFNWGLGETPROCADDRESS>(GetProcAddress(sLibrary, "wglGetProcAddress"));
-            TRACE_ASSERT(wglGetProcAddress != NULL);
-
-            wglCreateContext = reinterpret_cast<PFNWGLCREATECONTEXT>(GetProcAddress(sLibrary, "wglCreateContext"));
-            TRACE_ASSERT(wglCreateContext != NULL);
-
-            wglMakeCurrent = reinterpret_cast<PFNWGLMAKECURRENT>(GetProcAddress(sLibrary, "wglMakeCurrent"));
-            TRACE_ASSERT(wglMakeCurrent != NULL);
-
-            wglDeleteContext = reinterpret_cast<PFNWGLDELETECONTEXT>(GetProcAddress(sLibrary, "wglDeleteContext"));
-            TRACE_ASSERT(wglDeleteContext != NULL);
-
-            // Create empty window
-
-            HWND hWnd = CreateWindow("STATIC", "Window",
-                WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
-                0, 0, 16, 16, NULL, NULL, GetModuleHandle(NULL), NULL);
-            TRACE_ASSERT(hWnd != NULL);
-
-            HDC hDC = GetDC(hWnd);
-            TRACE_ASSERT(hDC != NULL);
-
-            // Create temp rendering context
-
-            PIXELFORMATDESCRIPTOR pfd;
-            ZeroMemory(&pfd, sizeof(pfd));
-
-            int pixelFormat = ChoosePixelFormat(hDC, &pfd);
-            TRACE_ASSERT(pixelFormat != 0);
-
-            int res = SetPixelFormat(hDC, pixelFormat, &pfd);
-            TRACE_ASSERT(res != FALSE);
-
-            HGLRC hRC = wglCreateContext(hDC);
-            TRACE_ASSERT(hRC != NULL);
-
-            res = wglMakeCurrent(hDC, hRC);
-            TRACE_ASSERT(res != FALSE);
-
-            // Load Windows specific extensions
-
-            wglChoosePixelFormat = reinterpret_cast<PFNWGLCHOOSEPIXELFORMAT>(wglGetProcAddress("wglChoosePixelFormatARB"));
-            TRACE_ASSERT(wglChoosePixelFormat != NULL);
-
-            // Release resources
-
-            res = wglMakeCurrent(hDC, 0);
-            TRACE_ASSERT(res != NULL);
-
-            res = wglDeleteContext(hRC);
-            TRACE_ASSERT(res != NULL);
-
-            res = ReleaseDC(hWnd, hDC);
-            TRACE_ASSERT(res != NULL);
-
-            res = DestroyWindow(hWnd);
-            TRACE_ASSERT(res != NULL);
+            
         }
 
-        return sLibrary != NULL;
-    }
-
-    uint32_t InitPlatformContext(IWindowIn window, ContextDescPlat & desc)
-    {
-        WindowRef wndPlat = window.StaticCast<Window>();
-
-        HWND hWnd = wndPlat->GetWindowHandle();
-        TRACE_ASSERT(hWnd != NULL);
-
-        HDC hDC = GetDC(hWnd);
-        TRACE_ASSERT(hDC != NULL);
-
-        const int attribList[] =
+        virtual uint32_t Init()
         {
-            WGL_DRAW_TO_WINDOW_ARB, GL_TRUE,
-            WGL_SUPPORT_OPENGL_ARB, GL_TRUE,
-            WGL_DOUBLE_BUFFER_ARB,  GL_TRUE,
-            WGL_PIXEL_TYPE_ARB,     WGL_TYPE_RGBA_ARB,
-            WGL_COLOR_BITS_ARB,     32,
-            WGL_DEPTH_BITS_ARB,     24,
-            WGL_STENCIL_BITS_ARB,   8,
-            0,
-        };
+            mLibrary = LoadLibrary("opengl32.dll");
+            TRACE_ASSERT(mLibrary != NULL);
 
-        int pixelFormat;
-        UINT numFormats;
+            if (mLibrary != NULL)
+            {
+                // Load Windows specific functions
 
-        int res = wglChoosePixelFormat(hDC, attribList, NULL, 1, &pixelFormat, &numFormats);
-        TRACE_ASSERT(res != FALSE);
+                wglGetProcAddress = reinterpret_cast<PFNWGLGETPROCADDRESS>(GetProcAddress(mLibrary, "wglGetProcAddress"));
+                TRACE_ASSERT(wglGetProcAddress != NULL);
 
-        PIXELFORMATDESCRIPTOR pfd;
-        res = SetPixelFormat(hDC, pixelFormat, &pfd);
-        TRACE_ASSERT(res != NULL);
+                wglCreateContext = reinterpret_cast<PFNWGLCREATECONTEXT>(GetProcAddress(mLibrary, "wglCreateContext"));
+                TRACE_ASSERT(wglCreateContext != NULL);
 
-        desc.hRC = wglCreateContext(hDC);
-        TRACE_ASSERT(desc.hRC != NULL);
+                wglMakeCurrent = reinterpret_cast<PFNWGLMAKECURRENT>(GetProcAddress(mLibrary, "wglMakeCurrent"));
+                TRACE_ASSERT(wglMakeCurrent != NULL);
 
-        res = wglMakeCurrent(hDC, desc.hRC);
-        TRACE_ASSERT(res != NULL);
+                wglDeleteContext = reinterpret_cast<PFNWGLDELETECONTEXT>(GetProcAddress(mLibrary, "wglDeleteContext"));
+                TRACE_ASSERT(wglDeleteContext != NULL);
 
-        return 0;
+                // Create empty window
+
+                HWND hWnd = CreateWindow("STATIC", "Window",
+                    WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
+                    0, 0, 16, 16, NULL, NULL, GetModuleHandle(NULL), NULL);
+                TRACE_ASSERT(hWnd != NULL);
+
+                HDC hDC = GetDC(hWnd);
+                TRACE_ASSERT(hDC != NULL);
+
+                // Create temp rendering context
+
+                PIXELFORMATDESCRIPTOR pfd;
+                ZeroMemory(&pfd, sizeof(pfd));
+
+                int pixelFormat = ChoosePixelFormat(hDC, &pfd);
+                TRACE_ASSERT(pixelFormat != 0);
+
+                int res = SetPixelFormat(hDC, pixelFormat, &pfd);
+                TRACE_ASSERT(res != FALSE);
+
+                HGLRC hRC = wglCreateContext(hDC);
+                TRACE_ASSERT(hRC != NULL);
+
+                res = wglMakeCurrent(hDC, hRC);
+                TRACE_ASSERT(res != FALSE);
+
+                // Load Windows specific extensions
+
+                wglChoosePixelFormat = reinterpret_cast<PFNWGLCHOOSEPIXELFORMAT>(wglGetProcAddress("wglChoosePixelFormatARB"));
+                TRACE_ASSERT(wglChoosePixelFormat != NULL);
+
+                // Release resources
+
+                res = wglMakeCurrent(hDC, 0);
+                TRACE_ASSERT(res != NULL);
+
+                res = wglDeleteContext(hRC);
+                TRACE_ASSERT(res != NULL);
+
+                res = ReleaseDC(hWnd, hDC);
+                TRACE_ASSERT(res != NULL);
+
+                res = DestroyWindow(hWnd);
+                TRACE_ASSERT(res != NULL);
+            }
+
+            return mLibrary != NULL;
+        }
+
+        virtual IWindowRef CreateOpenglWindow(IWindowIn window)
+        {
+            OpenglWindowRef oglWindow = GFW_NEW(mAllocator, OpenglWindow) (window);
+            return (oglWindow->Init() != 0) ? oglWindow.StaticCast<IWindow>() : NULL;
+        }
+
+        virtual void Release()
+        {
+            if (mLibrary != NULL)
+            {
+                FreeLibrary(mLibrary);
+            }
+        }
+
+    private:
+        HMODULE         mLibrary;
+        IAllocator *    mAllocator;
+    };
+
+    IPlatformRef CreatePlatform(IAllocator * a)
+    {
+        return GFW_NEW(a, PlatformWin) (a);
     }
 
 #else

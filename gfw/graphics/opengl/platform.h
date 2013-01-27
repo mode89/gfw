@@ -1,32 +1,24 @@
-#ifndef __GFW_GRAPHICS_OPENGL_PLATFORN_H__
+#ifndef __GFW_GRAPHICS_OPENGL_PLATFORM_H__
 #define __GFW_GRAPHICS_OPENGL_PLATFORM_H__
 
-#include "common\typedefs.h"
-#include "common\platform.h"
+#include "common\autoref.h"
+#include "common\allocator.h"
 #include "gfw\platform\base\window.h"
-
-#if PLATFORM_WIN32
-#include <windows.h>
-#else
-#error Unrecognized platform
-#endif
 
 namespace GFW { namespace OpenGL {
 
-#if PLATFORM_WIN32
-
-    struct ContextDescPlat
+    class IPlatform: public Common::AutoRefObject
     {
-        HGLRC hRC;
+    public:
+        virtual uint32_t                Init() = 0;
+
+        virtual Platform::IWindowRef    CreateOpenglWindow(Platform::IWindowIn) = 0;
+
+        virtual void                    Release() = 0;
     };
+    AUTOREF_REFERENCE_DECLARATION(IPlatform);
 
-#else
-#error Urecognized platform
-#endif
-
-    uint32_t LoadFunctions();
-
-    uint32_t InitPlatformContext(Platform::IWindowIn, ContextDescPlat &);
+    IPlatformRef CreatePlatform(Common::IAllocator *);
 
 }} // namespace GFW::OpenGL
 

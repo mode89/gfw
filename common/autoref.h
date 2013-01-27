@@ -39,6 +39,12 @@ namespace Common {
 
         inline bool IsAttached() { return (mObject == NULL) ? 0 : 1; }
 
+        AutoRef()
+            : mObject(NULL)
+        {
+
+        }
+
         AutoRef(ObjectClass * object)
             : mObject(object)
         {
@@ -67,14 +73,25 @@ namespace Common {
             }
         }
 
+        inline ObjectClass * operator * () const { return mObject; }
+
         inline ObjectClass * operator-> () const { return mObject; }
 
         inline const AutoRef & operator= (const AutoRef & ref)
         {
             if (this != &ref)
             {
+                if (mObject != NULL)
+                {
+                    AtomicDecrement(mObject->mCounter);
+                }
+
                 mObject = ref.mObject;
-                AtomicIncrement(mObject->mCounter);
+
+                if (mObject != NULL)
+                {
+                    AtomicIncrement(mObject->mCounter);
+                }
             }
 
             return *this;

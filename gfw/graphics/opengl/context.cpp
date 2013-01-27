@@ -6,10 +6,11 @@ namespace GFW { namespace OpenGL {
 
     using namespace Common;
 
-    Context::Context(Platform::IWindowIn window, IAllocator * a)
+    Context::Context(Platform::IWindowIn window, DeviceIn d, IAllocator * a)
         : AContext(a)
+        , mDevice(d)
     {
-        InitPlatformContext(window, mDescPlat);
+        mWindow = mDevice->GetPlatform()->CreateOpenglWindow(window);
     }
 
     void Context::Clear(ClearParams &)

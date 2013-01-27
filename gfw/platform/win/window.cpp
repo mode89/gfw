@@ -14,6 +14,13 @@ namespace GFW { namespace Platform {
         
     }
 
+    Window::Window(IWindowIn window)
+    {
+        Window * w = window.StaticCast<Window>().GetPointer();
+        mDesc = w->mDesc;
+        mHwnd = w->mHwnd;
+    }
+
     uint32_t Window::Initialize()
     {
         HINSTANCE hInstance = GetModuleHandle(NULL);

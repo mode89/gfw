@@ -2,6 +2,7 @@
 #define __GFW_GRAPHICS_OPENGL_DEVICE_H__
 
 #include "gfw\graphics\common\device.h"
+#include "gfw\graphics\opengl\platform.h"
 
 namespace GFW { namespace OpenGL {
 
@@ -14,9 +15,16 @@ namespace GFW { namespace OpenGL {
     public:
         static IDeviceRef       CreateInstance(Common::IAllocator *);
 
+        inline
+        IPlatformRef            GetPlatform()   { return mPlatform; }
+
     public:
-        Device(Common::IAllocator *);
+        Device(IPlatformIn, Common::IAllocator *);
+
+    private:
+        IPlatformRef            mPlatform;
     };
+    AUTOREF_REFERENCE_DECLARATION(Device);
 
 }} // namespace GFW::OpenGL
 

@@ -25,10 +25,10 @@ namespace GFW { namespace Platform {
 
     public:
         Window(const WindowDesc &);
+        Window(IWindowIn);
 
-    private:
+    protected:
         WindowDesc                  mDesc;
-
         HWND                        mHwnd;
     };
     AUTOREF_REFERENCE_DECLARATION(Window);
