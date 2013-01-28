@@ -119,7 +119,12 @@ namespace GFW { namespace Platform {
 
     void Window::Tick()
     {
-        TRACE_FAIL_MSG("Not yet implemented");
+        MSG msg;
+        if (PeekMessage(&msg, mHwnd, 0, 0, PM_REMOVE))
+        {
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+        }
     }
 
     void Window::Release()

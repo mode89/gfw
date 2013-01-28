@@ -1,6 +1,6 @@
-#include "gfw\graphics\opengl\context.h"
-
 #include "trace\trace.h"
+#include "gfw\graphics\opengl\context.h"
+#include "gfw\graphics\opengl\functions.h"
 
 namespace GFW { namespace OpenGL {
 
@@ -10,22 +10,30 @@ namespace GFW { namespace OpenGL {
         : AContext(a)
         , mDevice(d)
     {
-        mWindow = mDevice->GetPlatform()->CreateOpenglWindow(window);
-    }
-
-    void Context::Clear(ClearParams &)
-    {
-        TRACE_FAIL_MSG("Not yet implemented");
-    }
-
-    void Context::Present()
-    {
-        TRACE_FAIL_MSG("Not yet implemented");
+        mWindow = mDevice->GetPlatform()->CreateOpenglWindow(window).StaticCast<OpenglWindow>();
     }
 
     void Context::Release()
     {
-        TRACE_FAIL_MSG("Not yet implemented");
+
+    }
+
+    void Context::Clear(ClearParams & cp)
+    {
+        uint32_t mask = 0;
+
+        if (cp.mask | CLEAR_COLOR)
+        {
+            TRACE_ASSERT_GL(glClearColor, cp.color[0], cp.color[1], cp.color[2], cp.color[3]);
+            mask |= GL_COLOR_BUFFER_BIT;
+        }
+
+        TRACE_ASSERT_GL(glClear, mask);
+    }
+
+    void Context::Present()
+    {
+        mWindow->SwapBuffers();
     }
 
 }} // namespace GFW::OpenGL

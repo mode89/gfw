@@ -16,8 +16,8 @@ namespace GFW { namespace OpenGL {
 
     uint32_t OpenglWindow::Init()
     {
-        HDC hDC = GetDC(mHwnd);
-        TRACE_ASSERT(hDC != NULL);
+        mHDC = GetDC(mHwnd);
+        TRACE_ASSERT(mHDC != NULL);
 
         const int attribList[] =
         {
@@ -34,20 +34,42 @@ namespace GFW { namespace OpenGL {
         int pixelFormat;
         UINT numFormats;
 
-        int res = wglChoosePixelFormat(hDC, attribList, NULL, 1, &pixelFormat, &numFormats);
+        int res = wglChoosePixelFormat(mHDC, attribList, NULL, 1, &pixelFormat, &numFormats);
         TRACE_ASSERT(res != FALSE);
 
         PIXELFORMATDESCRIPTOR pfd;
-        res = SetPixelFormat(hDC, pixelFormat, &pfd);
+        res = SetPixelFormat(mHDC, pixelFormat, &pfd);
         TRACE_ASSERT(res != NULL);
 
-        mHRC = wglCreateContext(hDC);
+        mHRC = wglCreateContext(mHDC);
         TRACE_ASSERT(mHRC != NULL);
 
-        res = wglMakeCurrent(hDC, mHRC);
+        res = wglMakeCurrent(mHDC, mHRC);
         TRACE_ASSERT(res != NULL);
 
         return 1;
+    }
+
+    void OpenglWindow::SwapBuffers()
+    {
+        ::SwapBuffers(mHDC);
+    }
+
+    void OpenglWindow::Release()
+    {
+        int res = 0;
+
+        res = wglMakeCurrent(mHDC, NULL);
+        TRACE_ASSERT(res != NULL);
+
+        mHDC = NULL;
+
+        res = wglDeleteContext(mHRC);
+        TRACE_ASSERT(res != NULL);
+
+        mHRC = NULL;
+
+        Window::Release();
     }
 
 }} // namespace GFW::OpenGL

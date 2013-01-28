@@ -11,6 +11,10 @@ namespace GFW { namespace OpenGL {
     using namespace Common;
     using namespace Platform;
 
+#define F(type, func) type func = NULL;
+    OPENGL_FUNCTIONS_CORE
+#undef F
+
 #if PLATFORM_WIN32
 
     PFNWGLGETPROCADDRESS    wglGetProcAddress       = NULL;
@@ -81,6 +85,12 @@ namespace GFW { namespace OpenGL {
 
                 wglChoosePixelFormat = reinterpret_cast<PFNWGLCHOOSEPIXELFORMAT>(wglGetProcAddress("wglChoosePixelFormatARB"));
                 TRACE_ASSERT(wglChoosePixelFormat != NULL);
+
+                // Load core functions
+
+#define F(type, func)   func = reinterpret_cast<type>(GetProcAddress(mLibrary, #func));
+                OPENGL_FUNCTIONS_CORE
+#undef F
 
                 // Release resources
 

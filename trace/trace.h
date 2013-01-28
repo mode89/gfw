@@ -39,6 +39,13 @@
             TRACE_DEBUG_BREAK(); \
         } \
 
+    #define TRACE_ASSERT_MESSAGE_FORMATED(expr, fmt, ...) \
+        if (!expr) \
+        { \
+            Trace::Message("Assertion failed in %s : line %d : " fmt, __FILE__, __LINE__, __VA_ARGS__); \
+            TRACE_DEBUG_BREAK(); \
+        } \
+
 #else
 
     #define TRACE_ASSERT(expr)

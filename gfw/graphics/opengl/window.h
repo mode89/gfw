@@ -8,13 +8,19 @@ namespace GFW { namespace OpenGL {
     class OpenglWindow: public Platform::Window
     {
     public:
-        uint32_t Init();
+        virtual void    Release();
+
+    public:
+        uint32_t        Init();
+
+        void            SwapBuffers();
 
     public:
         OpenglWindow(Platform::IWindowIn);
 
     private:
         Platform::WindowRef     mWindowPlat;
+        HDC                     mHDC;
         HGLRC                   mHRC;
     };
     AUTOREF_REFERENCE_DECLARATION(OpenglWindow);

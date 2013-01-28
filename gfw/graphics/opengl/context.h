@@ -3,7 +3,7 @@
 
 #include "gfw\graphics\common\context.h"
 #include "gfw\graphics\opengl\device.h"
-#include "gfw\platform\base\window.h"
+#include "gfw\graphics\opengl\window.h"
 
 namespace GFW { namespace OpenGL {
 
@@ -21,7 +21,7 @@ namespace GFW { namespace OpenGL {
 
     private:
         DeviceRef               mDevice;
-        Platform::IWindowRef    mWindow;
+        OpenglWindowRef         mWindow;
     };
 
 }} // namespace GFW::OpenGL

@@ -10,7 +10,9 @@ namespace GFW {
     {
     public:
         virtual void    Clear(ClearParams &) = 0;
+
         virtual void    Present() = 0;
+
         virtual void    Release() = 0;
 
     public:
