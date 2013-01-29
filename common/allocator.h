@@ -9,7 +9,31 @@ namespace Common {
     {
     public:
         virtual void *  Alloc(uint32_t size) = 0;
+
         virtual void    Free(void *) = 0;
+
+        virtual void    FreeAsync(void *) = 0;
+
+        virtual void    GarbageCollect() = 0;
+
+        virtual         ~IAllocator() { }
+    };
+
+    template < class BaseClass >
+    class ADeallocatable: public BaseClass
+    {
+    public:
+        ADeallocatable(IAllocator * a)
+            : mAllocator(a)
+        {}
+
+        inline ~ADeallocatable()
+        {
+            mAllocator->FreeAsync(this);
+        }
+
+    protected:
+        IAllocator *    mAllocator;
     };
 
 } // namespace Common

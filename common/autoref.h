@@ -39,6 +39,12 @@ namespace Common {
 
         inline bool IsAttached() { return (mObject == NULL) ? 0 : 1; }
 
+        AutoRef()
+            : mObject(NULL)
+        {
+
+        }
+
         AutoRef(ObjectClass * object)
             : mObject(object)
         {
@@ -61,23 +67,44 @@ namespace Common {
                 AtomicDecrement(mObject->mCounter);
                 if (mObject->mCounter == 0)
                 {
-					mObject->Release();
+					mObject->~ObjectClass();
                     mObject = NULL;
                 }
             }
         }
 
+        inline ObjectClass * operator * () const { return mObject; }
+
         inline ObjectClass * operator-> () const { return mObject; }
 
-        inline AutoRef & operator= (const AutoRef & ref)
+        inline const AutoRef & operator= (const AutoRef & ref)
         {
             if (this != &ref)
             {
+                if (mObject != NULL)
+                {
+                    AtomicDecrement(mObject->mCounter);
+                    if (mObject->mCounter == 0)
+                    {
+                        mObject->~ObjectClass();
+                    }
+                }
+
                 mObject = ref.mObject;
-                AtomicIncrement(mObject->mCounter);
+
+                if (mObject != NULL)
+                {
+                    AtomicIncrement(mObject->mCounter);
+                }
             }
 
             return *this;
+        }
+
+        template < class CastClass >
+        inline AutoRef<CastClass> StaticCast() const
+        {
+            return static_cast<CastClass*>(mObject);
         }
 
     private:

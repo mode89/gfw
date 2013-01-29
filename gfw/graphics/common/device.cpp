@@ -5,7 +5,7 @@ namespace GFW {
     using namespace Common;
 
     ADevice::ADevice(Common::IAllocator * a)
-        : mAllocator(a)
+        : ADeallocatable(a)
     {
 
     }

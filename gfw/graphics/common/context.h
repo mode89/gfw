@@ -6,10 +6,10 @@
 
 namespace GFW {
 
-    class AContext: public IContext
+    class AContext: public Common::ADeallocatable<IContext>
     {
-    protected:
-        Common::IAllocator *    mAllocator;
+    public:
+        AContext(Common::IAllocator *);
     };
 
 } // namespace GFW

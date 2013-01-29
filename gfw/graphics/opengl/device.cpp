@@ -1,6 +1,5 @@
 #include "gfw\graphics\opengl\device.h"
 #include "gfw\graphics\opengl\context.h"
-#include "gfw\graphics\opengl\platform.h"
 #include "gfw\allocator.h"
 
 #include "trace\trace.h"
@@ -9,30 +8,25 @@ namespace GFW { namespace OpenGL {
 
     using namespace Common;
 
-    Device::Device(IAllocator * a)
+    Device::Device(IPlatformIn p, IAllocator * a)
         : ADevice(a)
+        , mPlatform(p)
     {
 
     }
 
     IContextRef Device::CreateContext(Platform::IWindowIn window)
     {
-        return GFW_NEW(mAllocator, Context) (window);
-    }
-
-    void Device::Release()
-    {
-        TRACE_FAIL_MSG("Not yet implemented");
+        return GFW_NEW(mAllocator, Context) (window, this, mAllocator);
     }
 
     IDeviceRef Device::CreateInstance(IAllocator * a)
     {
-        uint32_t funcsLoaded = LoadFunctions();
-        TRACE_ASSERT(funcsLoaded);
+        IPlatformRef platform = CreatePlatform(a);
 
-        if (funcsLoaded)
+        if (platform->Init())
         {
-            return GFW_NEW(a, Device) (a);
+            return GFW_NEW(a, Device) (platform, a);
         }
 
         return NULL;

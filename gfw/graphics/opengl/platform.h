@@ -1,12 +1,25 @@
-#ifndef __GFW_GRAPHICS_OPENGL_PLATFORN_H__
+#ifndef __GFW_GRAPHICS_OPENGL_PLATFORM_H__
 #define __GFW_GRAPHICS_OPENGL_PLATFORM_H__
 
-#include "common\typedefs.h"
-#include "common\platform.h"
+#include "common\autoref.h"
+#include "common\allocator.h"
+#include "gfw\platform\base\window.h"
 
 namespace GFW { namespace OpenGL {
 
-    uint32_t LoadFunctions();
+    class IPlatform: public Common::AutoRefObject
+    {
+    public:
+        virtual uint32_t                Init() = 0;
+
+        virtual Platform::IWindowRef    CreateOpenglWindow(Platform::IWindowIn) = 0;
+
+    public:
+        virtual ~IPlatform() { }
+    };
+    AUTOREF_REFERENCE_DECLARATION(IPlatform);
+
+    IPlatformRef CreatePlatform(Common::IAllocator *);
 
 }} // namespace GFW::OpenGL
 
