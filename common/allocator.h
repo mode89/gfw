@@ -12,6 +12,23 @@ namespace Common {
         virtual void    Free(void *) = 0;
     };
 
+    template < class BaseClass >
+    class ADeallocatable: public BaseClass
+    {
+    public:
+        ADeallocatable(IAllocator * a)
+            : mAllocator(a)
+        {}
+
+        virtual ~ADeallocatable()
+        {
+            mAllocator->Free(this);
+        }
+
+    protected:
+        IAllocator *    mAllocator;
+    };
+
 } // namespace Common
 
 void * operator new(uint32_t size, Common::IAllocator *);

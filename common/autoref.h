@@ -84,6 +84,10 @@ namespace Common {
                 if (mObject != NULL)
                 {
                     AtomicDecrement(mObject->mCounter);
+                    if (mObject->mCounter == 0)
+                    {
+                        mObject->~ObjectClass();
+                    }
                 }
 
                 mObject = ref.mObject;
