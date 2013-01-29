@@ -10,4 +10,9 @@ namespace GFW {
 
     }
 
+    AContext::~AContext()
+    {
+
+    }
+
 } // namespace GFW

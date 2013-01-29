@@ -11,8 +11,6 @@ namespace GFW { namespace OpenGL {
     public:
         virtual IContextRef     CreateContext(Platform::IWindowIn);
 
-        virtual void            Release();
-
     public:
         static IDeviceRef       CreateInstance(Common::IAllocator *);
 

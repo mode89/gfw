@@ -67,7 +67,7 @@ namespace Common {
                 AtomicDecrement(mObject->mCounter);
                 if (mObject->mCounter == 0)
                 {
-					mObject->Release();
+					mObject->~ObjectClass();
                     mObject = NULL;
                 }
             }

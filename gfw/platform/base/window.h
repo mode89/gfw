@@ -24,7 +24,6 @@ namespace GFW { namespace Platform {
     {
     public:
         virtual void    Tick() = 0;
-        virtual void    Release() = 0;
 
     public:
         virtual ~IWindow() { }

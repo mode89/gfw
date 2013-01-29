@@ -13,7 +13,7 @@ namespace GFW { namespace OpenGL {
         mWindow = mDevice->GetPlatform()->CreateOpenglWindow(window).StaticCast<OpenglWindow>();
     }
 
-    void Context::Release()
+    Context::~Context()
     {
 
     }

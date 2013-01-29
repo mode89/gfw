@@ -12,10 +12,10 @@ namespace GFW { namespace Platform {
     {
     public:
         virtual void                Tick();
-        virtual void                Release();
 
     public:
         static IWindowRef           CreateInstance(const WindowDesc &, Common::IAllocator * a);
+
         uint32_t                    Initialize();
 
         inline HWND                 GetWindowHandle()   { return mHwnd; }
@@ -26,6 +26,7 @@ namespace GFW { namespace Platform {
     public:
         Window(const WindowDesc &);
         Window(IWindowIn);
+        ~Window();
 
     protected:
         WindowDesc                  mDesc;

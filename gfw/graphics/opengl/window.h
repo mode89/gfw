@@ -5,10 +5,10 @@
 
 namespace GFW { namespace OpenGL {
 
-    class OpenglWindow: public Platform::Window
+    class OpenglWindow: public Platform::IWindow
     {
     public:
-        virtual void    Release();
+        virtual void    Tick();
 
     public:
         uint32_t        Init();
@@ -17,9 +17,11 @@ namespace GFW { namespace OpenGL {
 
     public:
         OpenglWindow(Platform::IWindowIn);
+        ~OpenglWindow();
 
     private:
         Platform::WindowRef     mWindowPlat;
+        HWND                    mHWND;
         HDC                     mHDC;
         HGLRC                   mHRC;
     };

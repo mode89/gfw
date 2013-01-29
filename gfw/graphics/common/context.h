@@ -10,6 +10,7 @@ namespace GFW {
     {
     public:
         AContext(Common::IAllocator *);
+        ~AContext();
 
     protected:
         Common::IAllocator *    mAllocator;

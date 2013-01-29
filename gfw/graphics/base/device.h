@@ -18,8 +18,6 @@ namespace GFW {
     public:
         virtual IContextRef     CreateContext(GFW::Platform::IWindowIn) = 0;
 
-        virtual void            Release() = 0;
-
     public:
         virtual             ~IDevice() { }
     };

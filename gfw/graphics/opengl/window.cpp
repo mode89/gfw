@@ -8,17 +8,37 @@ namespace GFW { namespace OpenGL {
     using namespace Platform;
 
     OpenglWindow::OpenglWindow(IWindowIn window)
-        : Window(window)
-        , mWindowPlat(window.StaticCast<Window>())
+        : mWindowPlat(window.StaticCast<Window>())
+    {
+        mHWND = mWindowPlat->GetWindowHandle();
+        TRACE_ASSERT(mHWND != NULL);
+
+        mHDC  = GetDC(mHWND);
+        TRACE_ASSERT(mHDC != NULL);
+    }
+
+    OpenglWindow::~OpenglWindow()
+    {
+        int res = 0;
+
+        res = wglMakeCurrent(mHDC, NULL);
+        TRACE_ASSERT(res != NULL);
+
+        mHDC = NULL;
+
+        res = wglDeleteContext(mHRC);
+        TRACE_ASSERT(res != NULL);
+
+        mHRC = NULL;
+    }
+
+    void OpenglWindow::Tick()
     {
 
     }
 
     uint32_t OpenglWindow::Init()
     {
-        mHDC = GetDC(mHwnd);
-        TRACE_ASSERT(mHDC != NULL);
-
         const int attribList[] =
         {
             WGL_DRAW_TO_WINDOW_ARB, GL_TRUE,
@@ -53,23 +73,6 @@ namespace GFW { namespace OpenGL {
     void OpenglWindow::SwapBuffers()
     {
         ::SwapBuffers(mHDC);
-    }
-
-    void OpenglWindow::Release()
-    {
-        int res = 0;
-
-        res = wglMakeCurrent(mHDC, NULL);
-        TRACE_ASSERT(res != NULL);
-
-        mHDC = NULL;
-
-        res = wglDeleteContext(mHRC);
-        TRACE_ASSERT(res != NULL);
-
-        mHRC = NULL;
-
-        Window::Release();
     }
 
 }} // namespace GFW::OpenGL

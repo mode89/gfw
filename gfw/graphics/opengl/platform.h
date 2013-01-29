@@ -14,7 +14,8 @@ namespace GFW { namespace OpenGL {
 
         virtual Platform::IWindowRef    CreateOpenglWindow(Platform::IWindowIn) = 0;
 
-        virtual void                    Release() = 0;
+    public:
+        virtual ~IPlatform() { }
     };
     AUTOREF_REFERENCE_DECLARATION(IPlatform);
 

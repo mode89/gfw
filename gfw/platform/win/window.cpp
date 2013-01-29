@@ -21,6 +21,14 @@ namespace GFW { namespace Platform {
         mHwnd = w->mHwnd;
     }
 
+    Window::~Window()
+    {
+        int res = 0;
+
+        res = DestroyWindow(mHwnd);
+        TRACE_ASSERT(res != NULL);
+    }
+
     uint32_t Window::Initialize()
     {
         HINSTANCE hInstance = GetModuleHandle(NULL);
@@ -125,11 +133,6 @@ namespace GFW { namespace Platform {
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
-    }
-
-    void Window::Release()
-    {
-        TRACE_FAIL_MSG("Not yet implemented");
     }
 
     IWindowRef Window::CreateInstance(const WindowDesc & desc, IAllocator * a)

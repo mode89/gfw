@@ -33,6 +33,14 @@ namespace GFW { namespace OpenGL {
             
         }
 
+        ~PlatformWin()
+        {
+            if (mLibrary != NULL)
+            {
+                FreeLibrary(mLibrary);
+            }
+        }
+
         virtual uint32_t Init()
         {
             mLibrary = LoadLibrary("opengl32.dll");
@@ -114,14 +122,6 @@ namespace GFW { namespace OpenGL {
         {
             OpenglWindowRef oglWindow = GFW_NEW(mAllocator, OpenglWindow) (window);
             return (oglWindow->Init() != 0) ? oglWindow.StaticCast<IWindow>() : NULL;
-        }
-
-        virtual void Release()
-        {
-            if (mLibrary != NULL)
-            {
-                FreeLibrary(mLibrary);
-            }
         }
 
     private:

@@ -13,8 +13,6 @@ namespace GFW {
 
         virtual void    Present() = 0;
 
-        virtual void    Release() = 0;
-
     public:
         virtual         ~IContext() { }
     };

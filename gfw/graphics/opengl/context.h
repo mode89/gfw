@@ -14,10 +14,9 @@ namespace GFW { namespace OpenGL {
 
         virtual void            Present();
 
-        virtual void            Release();
-
     public:
         Context(Platform::IWindowIn, DeviceIn, Common::IAllocator *);
+        ~Context();
 
     private:
         DeviceRef               mDevice;

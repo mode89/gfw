@@ -15,11 +15,6 @@ namespace GFW { namespace OpenGL {
 
     }
 
-    void Device::Release()
-    {
-        TRACE_FAIL_MSG("Not yet implemented");
-    }
-
     IContextRef Device::CreateContext(Platform::IWindowIn window)
     {
         return GFW_NEW(mAllocator, Context) (window, this, mAllocator);
