@@ -5,12 +5,7 @@ namespace GFW {
     using namespace Common;
 
     AContext::AContext(Common::IAllocator * a)
-        : mAllocator(a)
-    {
-
-    }
-
-    AContext::~AContext()
+        : ADeallocatable(a)
     {
 
     }

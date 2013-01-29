@@ -10,18 +10,40 @@ namespace AllocatorTests {
     class Allocator: public IAllocator
     {
     public:
-        void * Alloc(uint32_t size)
+
+        virtual void * Alloc(uint32_t size)
         {
-            return new char [size];
+            return new char8_t [size];
         }
 
-        void Free(void * data)
+        virtual void Free(void * data)
         {
-            delete static_cast<char8_t*>(data);
-            mFreedData.push_back(data);
+            delete data;
         }
 
-        std::vector<void*> mFreedData;
+        virtual void FreeAsync(void * data)
+        {
+            mGarbage.push_back(data);
+        }
+
+        virtual void GarbageCollect()
+        {
+            if (mGarbage.size() > 0)
+            {
+                for (uint32_t i = 0; i < mGarbage.size(); ++ i)
+                {
+                    delete mGarbage[i];
+                }
+                mGarbage.clear();
+            }
+        }
+
+        ~Allocator()
+        {
+            GarbageCollect();
+        }
+
+        std::vector<void*> mGarbage;
     };
 
     class Object: public ADeallocatable<AutoRefObject>
@@ -43,7 +65,9 @@ namespace AllocatorTests {
     TEST(Allocator, Deallocatable)
     {
         Allocator * allocator = new Allocator;
-        ASSERT_TRUE(allocator->mFreedData.size() == 0);
+        ASSERT_TRUE(allocator->mGarbage.size() == 0);
+
+        // Create an object and check if it was deleted
 
         void * objAddr = NULL;
         {
@@ -51,8 +75,8 @@ namespace AllocatorTests {
             objAddr = obj.GetPointer();
             ASSERT_TRUE(objAddr != NULL);
         }
-        ASSERT_TRUE(allocator->mFreedData.size() == 1);
-        ASSERT_TRUE(allocator->mFreedData[0] == objAddr);
+        ASSERT_TRUE(allocator->mGarbage.size() == 1);
+        ASSERT_TRUE(allocator->mGarbage[0] == objAddr);
 
         delete allocator;
     }

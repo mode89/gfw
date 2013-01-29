@@ -23,12 +23,12 @@ namespace GFW { namespace OpenGL {
     PFNWGLDELETECONTEXT     wglDeleteContext        = NULL;
     PFNWGLCHOOSEPIXELFORMAT wglChoosePixelFormat    = NULL;
 
-    class PlatformWin: public IPlatform
+    class PlatformWin: public ADeallocatable<IPlatform>
     {
     public:
         PlatformWin(IAllocator * a)
-            : mLibrary(NULL)
-            , mAllocator(a)
+            : ADeallocatable(a)
+            , mLibrary(NULL)
         {
             
         }
@@ -120,13 +120,12 @@ namespace GFW { namespace OpenGL {
 
         virtual IWindowRef CreateOpenglWindow(IWindowIn window)
         {
-            OpenglWindowRef oglWindow = GFW_NEW(mAllocator, OpenglWindow) (window);
+            OpenglWindowRef oglWindow = GFW_NEW(mAllocator, OpenglWindow) (window, mAllocator);
             return (oglWindow->Init() != 0) ? oglWindow.StaticCast<IWindow>() : NULL;
         }
 
     private:
         HMODULE         mLibrary;
-        IAllocator *    mAllocator;
     };
 
     IPlatformRef CreatePlatform(IAllocator * a)

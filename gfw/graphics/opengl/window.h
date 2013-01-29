@@ -5,7 +5,7 @@
 
 namespace GFW { namespace OpenGL {
 
-    class OpenglWindow: public Platform::IWindow
+    class OpenglWindow: public Common::ADeallocatable<Platform::IWindow>
     {
     public:
         virtual void    Tick();
@@ -16,7 +16,7 @@ namespace GFW { namespace OpenGL {
         void            SwapBuffers();
 
     public:
-        OpenglWindow(Platform::IWindowIn);
+        OpenglWindow(Platform::IWindowIn, Common::IAllocator *);
         ~OpenglWindow();
 
     private:

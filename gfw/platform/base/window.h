@@ -2,6 +2,7 @@
 #define __GFW_BASE_WINDOW_H__
 
 #include "common\autoref.h"
+#include "common\allocator.h"
 
 namespace GFW { namespace Platform {
 

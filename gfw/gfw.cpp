@@ -9,10 +9,12 @@ namespace GFW {
 
     IDeviceRef CreateDevice(DeviceType deviceType)
     {
+        IAllocator * defaultAllocator = GetDefaultAllocator();
+
         switch (deviceType)
         {
         case DEVICE_OPENGL:
-            return OpenGL::Device::CreateInstance(GetDefaultAllocator());
+            return OpenGL::Device::CreateInstance(defaultAllocator);
 
         default:
             TRACE_FAIL_MSG("Unknown device type");

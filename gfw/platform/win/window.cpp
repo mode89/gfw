@@ -7,18 +7,12 @@ namespace GFW { namespace Platform {
 
     using namespace Common;
 
-    Window::Window(const WindowDesc & desc)
-        : mDesc(desc)
+    Window::Window(const WindowDesc & desc, IAllocator * a)
+        : ADeallocatable(a)
+        , mDesc(desc)
         , mHwnd(NULL)
     {
-        
-    }
-
-    Window::Window(IWindowIn window)
-    {
-        Window * w = window.StaticCast<Window>().GetPointer();
-        mDesc = w->mDesc;
-        mHwnd = w->mHwnd;
+        mAllocator = a;
     }
 
     Window::~Window()
@@ -137,7 +131,7 @@ namespace GFW { namespace Platform {
 
     IWindowRef Window::CreateInstance(const WindowDesc & desc, IAllocator * a)
     {
-        Window * wnd = GFW_NEW(a, Window) (desc);
+        Window * wnd = GFW_NEW(a, Window) (desc, a);
 
         if (wnd != NULL)
         {

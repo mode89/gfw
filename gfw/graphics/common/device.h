@@ -6,13 +6,10 @@
 
 namespace GFW {
 
-    class ADevice: public IDevice
+    class ADevice: public Common::ADeallocatable<IDevice>
     {
     protected:
         ADevice(Common::IAllocator *);
-
-    protected:
-        Common::IAllocator *    mAllocator;
     };
 
 } // namespace GFW

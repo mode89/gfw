@@ -8,7 +8,7 @@
 
 namespace GFW { namespace Platform {
 
-    class Window: public IWindow
+    class Window: public Common::ADeallocatable<IWindow>
     {
     public:
         virtual void                Tick();
@@ -24,8 +24,7 @@ namespace GFW { namespace Platform {
         static LRESULT CALLBACK     Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
     public:
-        Window(const WindowDesc &);
-        Window(IWindowIn);
+        Window(const WindowDesc &, Common::IAllocator * a);
         ~Window();
 
     protected:

@@ -1,4 +1,5 @@
 #include "gfw\allocator.h"
+#include <vector>
 
 namespace GFW {
 
@@ -17,6 +18,31 @@ namespace GFW {
         {
             delete data;
         }
+
+        virtual void FreeAsync(void * data)
+        {
+            mGarbage.push_back(data);
+        }
+
+        virtual void GarbageCollect()
+        {
+            if (mGarbage.size() > 0)
+            {
+                for (uint32_t i = 0; i < mGarbage.size(); ++ i)
+                {
+                    delete static_cast<char8_t*>(mGarbage[i]);
+                }
+                mGarbage.clear();
+            }
+        }
+
+        ~Allocator()
+        {
+            GarbageCollect();
+        }
+
+    private:
+        std::vector<void*> mGarbage;
 
     } gDefaultAllocator;
 
