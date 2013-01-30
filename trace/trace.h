@@ -57,9 +57,9 @@
     #define TRACE_MESSAGE(msg)          Trace::Message(msg)
 
     #if PLATFORM_DEBUG
-        #define TRACE_MESSAGE_ERROR(msg)    Trace::Message("Error in %s : line %d : %s\n", __FILE__, __LINE__, msg);
-    #elif PLATFORM_NDEBUG
         #define TRACE_MESSAGE_ERROR(msg)    Trace::Message("Error in %s : line %d : %s\n", __FILE__, __LINE__, msg); TRACE_DEBUG_BREAK()
+    #elif PLATFORM_NDEBUG
+        #define TRACE_MESSAGE_ERROR(msg)    Trace::Message("Error in %s : line %d : %s\n", __FILE__, __LINE__, msg);
     #endif // PLATFORM_DEBUG
 
 #else

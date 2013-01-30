@@ -10,6 +10,8 @@ namespace GFW { namespace Platform {
 
     class Window: public Common::ADeallocatable<IWindow>
     {
+        friend class WindowClassRegisterer;
+
     public:
         virtual void                Tick();
 

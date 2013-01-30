@@ -7,6 +7,45 @@ namespace GFW { namespace Platform {
 
     using namespace Common;
 
+    class WindowClassRegisterer
+    {
+    public:
+        WindowClassRegisterer()
+            : m_hInstance(NULL)
+        {
+            m_hInstance = GetModuleHandle(NULL);
+
+            // Register window class
+
+            WNDCLASS wc;
+            ZeroMemory(&wc, sizeof(wc));
+            wc.style            = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
+            wc.lpfnWndProc      = (WNDPROC) Window::Proc;
+            wc.hInstance        = m_hInstance;
+            wc.hIcon            = LoadIcon(NULL, IDI_WINLOGO);
+            wc.hCursor          = LoadCursor(NULL, IDC_ARROW);
+            wc.lpszClassName    = "GFW";
+
+            if (RegisterClass(&wc) == 0)
+            {
+                TRACE_MESSAGE_ERROR("Cannot register window class");
+                return;
+            }
+        }
+
+        ~WindowClassRegisterer()
+        {
+            if (UnregisterClass("GFW", m_hInstance) == 0)
+            {
+                TRACE_MESSAGE_ERROR("Cannot unregister window class");
+            }
+        }
+
+    private:
+        HINSTANCE m_hInstance;
+
+    } g_WindowClassRegisterer;
+
     Window::Window(const WindowDesc & desc, IAllocator * a)
         : ADeallocatable(a)
         , mDesc(desc)
@@ -26,23 +65,6 @@ namespace GFW { namespace Platform {
     uint32_t Window::Initialize()
     {
         HINSTANCE hInstance = GetModuleHandle(NULL);
-
-        // Register window class
-
-        WNDCLASS wc;
-        ZeroMemory(&wc, sizeof(wc));
-        wc.style            = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
-        wc.lpfnWndProc      = (WNDPROC) Window::Proc;
-        wc.hInstance        = hInstance;
-        wc.hIcon            = LoadIcon(NULL, IDI_WINLOGO);
-        wc.hCursor          = LoadCursor(NULL, IDC_ARROW);
-        wc.lpszClassName    = "GFW";
-
-        if (!RegisterClass(&wc))
-        {
-            TRACE_MESSAGE_ERROR("Cannot register window class");
-            return 0;
-        }
 
         // Try to enter full screen mode
 
