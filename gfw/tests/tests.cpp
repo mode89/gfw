@@ -48,8 +48,10 @@ TEST(GFW, ClearDarkBlue)
     }
 }
 
-TEST(GFW, DrawInline)
+TEST(GFW, Draw)
 {
+    IAllocator * allocator = NULL;
+
     // Create a graphical device
 
     IDeviceRef device = CreateDevice();
@@ -79,19 +81,37 @@ TEST(GFW, DrawInline)
     cp.color[2] = 0.3f;
     cp.color[3] = 1.0f;
 
-    // Define draw params
+    // Create shaders
 
-    float geomData[] = {
-        -1.0f, -1.0f, 0.1f, 0.0f, 0.0f, 1.0f,
-        -1.0f,  1.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-         1.0f,  1.0f, 0.0f, 0.0f, 1.0f, 1.0f
+    MemoryBufferRef vertexShaderSource = LoadFile("draw.vs", allocator);
+    IShaderRef vertexShader = device->CreateShader(vertexShaderSource->GetData(), SHADER_VERTEX);
+
+    MemoryBufferRef pixelShaderSource = LoadFile("draw.ps", allocator);
+    IShaderRef pixelShader  = device->CreateShader(pixelShaderSource->GetData(), SHADER_PIXEL);
+
+    // Create geometry
+
+    float vertices[] = {
+        -1.0f, -1.0f, 0.1f, 0.0f, 0.0f,
+        -1.0f,  1.0f, 0.0f, 1.0f, 0.0f,
+         1.0f,  1.0f, 0.0f, 0.0f, 1.0f
     };
 
-    DrawInlineParams drawParams;
-    drawParams.primTop      = PRIM_TOP_TRIANGLE_LIST;
-    drawParams.vertexCount  = 3;
-    drawParams.vertexStride = sizeof(geomData) / drawParams.vertexCount;
-    drawParams.vertexData   = geomData;
+    IBufferRef vertexBuffer = device->CreateBuffer(60, vertices);
+
+    // Define vertex attributes
+
+    VertexAttribute vertexAttribs[] = {
+        { "pos",   2, TYPE_FLOAT, 20, 0, 0 },
+        { "color", 3, TYPE_FLOAT, 20, 8, 0 }
+    };
+
+    // Define draw params
+
+    DrawParams drawParams;
+    drawParams.primTop     = PRIM_TRIANGLES;
+    drawParams.vertexStart = 0;
+    drawParams.vertexCount = 3;
 
     // Main loop
 
@@ -102,7 +122,11 @@ TEST(GFW, DrawInline)
 
         context->Clear(cp);
 
-        context->SetFixedPipeline(2, 3, 0);
+        context->SetShader(SHADER_VERTEX, vertexShader);
+        context->SetShader(SHADER_PIXEL, pixelShader);
+
+        context->SetVertexAttributes(vertexAttribs);
+        context->SetVertexBuffer(0, vertexBuffer);
 
         context->Draw(drawParams);
 
