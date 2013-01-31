@@ -9,13 +9,12 @@ if not exist build ( mkdir build )
 rem Generate solution
 
 cd build
-if not exist GLOBAL_SOLUTION.sln (
-    cmake ..
-    @if not errorlevel=="" (
-        echo Cannot generate soltion
-        pause
-        goto end
-    )
+
+cmake ..
+if not errorlevel=="" (
+    echo Cannot generate soltion
+    pause
+    goto end
 )
 
 start GLOBAL_SOLUTION.sln
