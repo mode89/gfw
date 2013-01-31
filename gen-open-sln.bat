@@ -11,7 +11,7 @@ rem Generate solution
 cd build
 
 cmake ..
-if not errorlevel=="" (
+if %errorlevel% neq 0 (
     echo Cannot generate soltion
     pause
     goto end
