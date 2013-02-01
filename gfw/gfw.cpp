@@ -1,5 +1,5 @@
 #include "gfw\gfw.h"
-#include "trace\trace.h"
+#include "common\trace.h"
 #include "gfw\graphics\opengl\device.h"
 #include "gfw\allocator.h"
 

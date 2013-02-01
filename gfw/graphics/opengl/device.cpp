@@ -2,7 +2,7 @@
 #include "gfw\graphics\opengl\context.h"
 #include "gfw\allocator.h"
 
-#include "trace\trace.h"
+#include "common\trace.h"
 
 namespace GFW { namespace OpenGL {
 
