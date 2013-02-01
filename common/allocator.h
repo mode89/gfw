@@ -1,6 +1,8 @@
 #ifndef __COMMON_ALLOCATOR_H__
 #define __COMMON_ALLOCATOR_H__
 
+#include "common\typedefs.h"
+
 namespace Common {
 
     class IAllocator

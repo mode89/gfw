@@ -7,7 +7,7 @@
 namespace Common {
 
     AUTOREF_FORWARD_DECLARATION(File);
-    class File: public ADeallocatable, public AutoRefObject
+    class File: public ARefCounted
     {
     public:
         static FileRef          Create();
@@ -22,7 +22,6 @@ namespace Common {
 
     public:
         File(IAllocator * a);
-        ~File();
 
     protected:
         inline

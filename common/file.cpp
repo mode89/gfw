@@ -17,21 +17,15 @@ namespace Common {
     }
 
     File::File(IAllocator * a)
-        : ADeallocatable(a)
-        , mData(NULL)
+        : mData(NULL)
         , mSize(0)
     {
-        
-    }
-
-    File::~File()
-    {
-        mAllocator->Free(mData);
+        mAllocator = a;
     }
 
     uint32_t File::Read( const char * filePath )
     {
-        HANDLE hFile = CreateFile(filePath, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, NULL, NULL);
+        HANDLE hFile = CreateFile(filePath, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
         TRACE_ASSERT(hFile != INVALID_HANDLE_VALUE);
 
         if (hFile != INVALID_HANDLE_VALUE)
@@ -53,7 +47,7 @@ namespace Common {
                     TRACE_ASSERT(res != NULL);
                     TRACE_ASSERT(rb == size);
 
-                    if (res != NULL && rb == size)
+                    if (res != 0 && rb == size)
                     {
                         mSize = size;
                         mData = data;
