@@ -23,10 +23,6 @@ namespace Common {
     public:
         File(IAllocator * a);
 
-    protected:
-        inline
-        virtual void *          GetImplThis()       { return this; }
-
     private:
         void *          mData;
         uint64_t        mSize;

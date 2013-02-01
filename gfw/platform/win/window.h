@@ -30,9 +30,6 @@ namespace GFW { namespace Platform {
         ~Window();
 
     protected:
-        virtual void *              GetImplThis()       { return this; }
-
-    protected:
         WindowDesc                  mDesc;
         HWND                        mHwnd;
     };

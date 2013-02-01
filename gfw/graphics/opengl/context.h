@@ -20,9 +20,6 @@ namespace GFW { namespace OpenGL {
     private:
         DeviceRef               mDevice;
         OpenglWindowRef         mWindow;
-
-    protected:
-        virtual void *          GetImplThis()   { return this; }
     };
 
 }} // namespace GFW::OpenGL

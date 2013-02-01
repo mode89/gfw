@@ -124,10 +124,7 @@ namespace GFW { namespace OpenGL {
         }
 
     private:
-        HMODULE         mLibrary;
-
-    protected:
-        virtual void * GetImplThis() { return this; }
+        HMODULE mLibrary;
     };
 
     IPlatformRef CreatePlatform(IAllocator * a)

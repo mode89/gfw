@@ -46,6 +46,23 @@ namespace GFW { namespace Platform {
 
     } g_WindowClassRegisterer;
 
+    IWindowRef Window::CreateInstance(const WindowDesc & desc, IAllocator * a)
+    {
+        Window * wnd = GFW_NEW(a, Window) (desc, a);
+
+        if (wnd != NULL)
+        {
+            if (wnd->Initialize())
+            {
+                return wnd;
+            }
+
+            GFW_DELETE(a, wnd);
+        }
+
+        return NULL;
+    }
+
     Window::Window(const WindowDesc & desc, IAllocator * a)
         : mDesc(desc)
         , mHwnd(NULL)
@@ -134,12 +151,6 @@ namespace GFW { namespace Platform {
         return 1;
     }
 
-    LRESULT CALLBACK Window::Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-    {
-        // Process all unhandled messages
-        return DefWindowProc(hWnd, uMsg, wParam, lParam);
-    }
-
     void Window::Tick()
     {
         MSG msg;
@@ -150,21 +161,10 @@ namespace GFW { namespace Platform {
         }
     }
 
-    IWindowRef Window::CreateInstance(const WindowDesc & desc, IAllocator * a)
+    LRESULT CALLBACK Window::Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
-        Window * wnd = GFW_NEW(a, Window) (desc, a);
-
-        if (wnd != NULL)
-        {
-            if (wnd->Initialize())
-            {
-                return wnd;
-            }
-
-            GFW_DELETE(a, wnd);
-        }
-
-        return NULL;
+        // Process all unhandled messages
+        return DefWindowProc(hWnd, uMsg, wParam, lParam);
     }
 
 }} // namespace GFW::Platform

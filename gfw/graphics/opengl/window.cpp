@@ -37,7 +37,7 @@ namespace GFW { namespace OpenGL {
 
     void OpenglWindow::Tick()
     {
-
+        mWindowPlat->Tick();
     }
 
     uint32_t OpenglWindow::Init()

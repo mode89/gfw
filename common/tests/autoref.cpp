@@ -1,6 +1,5 @@
 #include "gtest\gtest.h"
 #include "common\autoref.h"
-#include <vector>
 
 namespace AutoRefTests {
 
