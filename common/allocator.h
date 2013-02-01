@@ -10,10 +10,6 @@ namespace Common {
 
         virtual void    Free(void *) = 0;
 
-        virtual void    FreeAsync(void *) = 0;
-
-        virtual void    GarbageCollect() = 0;
-
         virtual         ~IAllocator() { }
     };
 

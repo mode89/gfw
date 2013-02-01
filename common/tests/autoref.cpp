@@ -6,93 +6,57 @@ namespace AutoRefTests {
 
     using namespace Common;
 
-    AUTOREF_FORWARD_DECLARATION(IFactory);
-
-    class IFactory: public AutoRefObject
-    {
-    public:
-	    virtual void DeleteChild(void * child) = 0;
-    };
+    AUTOREF_FORWARD_DECLARATION(Factory);
+    AUTOREF_FORWARD_DECLARATION(Object);
+    AUTOREF_FORWARD_DECLARATION(ObjectImpl);
 
     // An Object that is produced by a Factory
 
-    AUTOREF_FORWARD_DECLARATION(Object);
-
-    class Object : public AutoRefObject
+    class Object : public ARefCounted
     {
     public:
-        uint32_t    GetCounter()		{ return mCounter; }
-        bool8_t     IsDestructed()		{ return mDestructed; }
+        uint32_t GetCounter() { return mRefCounter; }
 
     public:
-        Object(IFactory * factory)
+        Object(FactoryIn factory, IAllocator * a)
 		    : mFactory(factory)
-		    , mDestructed(false)
-        {}
-
-        ~Object()
-	    {
-		    mFactory->DeleteChild(this);
-	    }
+        {
+            mAllocator = a;
+        }
 
     private:
-	    IFactory *	mFactory;
-        bool8_t     mDestructed;
+	    FactoryRef mFactory;
     };
 
     class ObjectImpl : public Object
     {
     public:
-        uint32_t    GetCounter()        { return mCounter; }
+        uint32_t GetCounter() { return mRefCounter; }
     };
-    AUTOREF_REFERENCE_DECLARATION(ObjectImpl);
 
     // A Factory that produces an Object
     // It knows how to create and delete an Object
 
-    AUTOREF_FORWARD_DECLARATION(Factory);
-
-    class Factory: public IFactory
+    class Factory: public ARefCounted
     {
     public:
 	    static FactoryRef CreateInstance()
 	    {
-		    return new Factory;
-	    }
+            IAllocator * a = GetDefaultAllocator();
+            return new(a) Factory(a);
+        }
+
+        Factory(IAllocator * a)
+        {
+            mAllocator = a;
+        }
 
         ObjectRef CreateObject()
         {
-            Object * obj = new Object(this);
-            return ObjectRef(obj);
+            return new(mAllocator) Object(this, mAllocator);
         }
 
-        void DeleteChild(void * child)
-        {
-            mDestroyedChilds.push_back(child);
-        }
-
-        void CollectGarbage()
-        {
-            for (uint32_t i = 0; i < mDestroyedChilds.size(); ++ i)
-            {
-                delete mDestroyedChilds[i];
-            }
-            mDestroyedChilds.clear();
-        }
-
-        int GetGarbageCapacity()
-        {
-            return mDestroyedChilds.size();
-        }
-
-	    void Release()
-	    {
-		    CollectGarbage();
-		    delete this;
-	    }
-
-    private:
-        std::vector<void*>  mDestroyedChilds;
+        uint32_t GetCounter() { return mRefCounter; }
     };
 
     // Try to receive and return a reference
@@ -107,14 +71,12 @@ namespace AutoRefTests {
     TEST(AutoRef, Test)
     {
 	    FactoryRef factory = Factory::CreateInstance();
-        ASSERT_TRUE(factory->GetGarbageCapacity() == 0);
 
         // Create and process an Object
         {
             // Try create an unused Object
 
             factory->CreateObject();
-            ASSERT_TRUE(factory->GetGarbageCapacity() == 1);
 
             // Create an Object for processing
 
@@ -172,7 +134,6 @@ namespace AutoRefTests {
                 ASSERT_TRUE(ref5->GetCounter() == 1);
 
                 ref5 = ref4;
-                ASSERT_TRUE(factory->GetGarbageCapacity() == 2);
                 ASSERT_TRUE(ref5->GetCounter() == 6);
             }
 
@@ -181,7 +142,7 @@ namespace AutoRefTests {
             ASSERT_TRUE(ref1->GetCounter() == 1);
         }
 
-        ASSERT_TRUE(factory->GetGarbageCapacity() == 3);
+        ASSERT_TRUE(factory->GetCounter() == 1);
     }
 
 } // namespace AutoRefTests

@@ -3,6 +3,7 @@
 
 #include "common\typedefs.h"
 #include "common\atomic.h"
+#include "common\allocator.h"
 
 #define AUTOREF_REFERENCE_DECLARATION(typeName) \
     typedef       Common::AutoRef <       typeName >            typeName ## Ref; \
@@ -17,16 +18,16 @@
 namespace Common {
 
     // ObjectClass has to inherit this class
-    class AutoRefObject
+    class ARefCounted
     {
     public:
-        AutoRefObject()
-            : mCounter(0)
-            , mAllocator(0)
+        ARefCounted()
+            : mRefCounter(0)
+            , mAllocator(NULL)
         {}
 
     protected:
-        int             mCounter;
+        int             mRefCounter;
         IAllocator *    mAllocator;
 
         template < class ObjectClass > friend class AutoRef;
@@ -41,6 +42,19 @@ namespace Common {
 
         inline bool IsAttached() { return (mObject == NULL) ? 0 : 1; }
 
+        inline void Detach()
+        {
+            if (mObject != NULL)
+            {
+                AtomicDecrement(mObject->mRefCounter);
+                if (mObject->mRefCounter == 0)
+                {
+                    delete(mObject, mObject->mAllocator);
+                    mObject = NULL;
+                }
+            }
+        }
+
         AutoRef()
             : mObject(NULL)
         {
@@ -52,24 +66,28 @@ namespace Common {
         {
             if (mObject != NULL)
             {
-                AtomicIncrement(mObject->mCounter);
+                AtomicIncrement(mObject->mRefCounter);
             }
         }
 
         inline AutoRef(const AutoRef & ref)
             : mObject(ref.mObject)
         {
-            AtomicIncrement(mObject->mCounter);
+            if (mObject != NULL)
+            {
+                AtomicIncrement(mObject->mRefCounter);
+            }
         }
 
         ~AutoRef()
         {
             if (mObject != NULL)
             {
-                AtomicDecrement(mObject->mCounter);
-                if (mObject->mCounter == 0)
+                AtomicDecrement(mObject->mRefCounter);
+                if (mObject->mRefCounter == 0)
                 {
-					mObject->~ObjectClass();
+                    mObject->~ObjectClass();
+                    operator delete(mObject, mObject->mAllocator);
                     mObject = NULL;
                 }
             }
@@ -85,10 +103,11 @@ namespace Common {
             {
                 if (mObject != NULL)
                 {
-                    AtomicDecrement(mObject->mCounter);
-                    if (mObject->mCounter == 0)
+                    AtomicDecrement(mObject->mRefCounter);
+                    if (mObject->mRefCounter == 0)
                     {
                         mObject->~ObjectClass();
+                        operator delete(mObject, mObject->mAllocator);
                     }
                 }
 
@@ -96,7 +115,7 @@ namespace Common {
 
                 if (mObject != NULL)
                 {
-                    AtomicIncrement(mObject->mCounter);
+                    AtomicIncrement(mObject->mRefCounter);
                 }
             }
 

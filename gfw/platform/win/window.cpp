@@ -47,8 +47,7 @@ namespace GFW { namespace Platform {
     } g_WindowClassRegisterer;
 
     Window::Window(const WindowDesc & desc, IAllocator * a)
-        : ADeallocatable(a)
-        , mDesc(desc)
+        : mDesc(desc)
         , mHwnd(NULL)
     {
         mAllocator = a;

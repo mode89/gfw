@@ -7,7 +7,7 @@
 
 namespace GFW { namespace OpenGL {
 
-    class IPlatform: public Common::AutoRefObject
+    class IPlatform: public Common::ARefCounted
     {
     public:
         virtual uint32_t                Init() = 0;

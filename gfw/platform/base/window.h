@@ -21,7 +21,7 @@ namespace GFW { namespace Platform {
         {}
     };
 
-    class IWindow: public Common::AutoRefObject
+    class IWindow: public Common::ARefCounted
     {
     public:
         virtual void    Tick() = 0;

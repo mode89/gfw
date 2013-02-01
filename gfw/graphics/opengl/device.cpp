@@ -9,10 +9,9 @@ namespace GFW { namespace OpenGL {
     using namespace Common;
 
     Device::Device(IPlatformIn p, IAllocator * a)
-        : ADevice(a)
-        , mPlatform(p)
+        : mPlatform(p)
     {
-
+        mAllocator = a;
     }
 
     IContextRef Device::CreateContext(Platform::IWindowIn window)

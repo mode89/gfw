@@ -23,14 +23,13 @@ namespace GFW { namespace OpenGL {
     PFNWGLDELETECONTEXT     wglDeleteContext        = NULL;
     PFNWGLCHOOSEPIXELFORMAT wglChoosePixelFormat    = NULL;
 
-    class PlatformWin: public ADeallocatable<IPlatform>
+    class PlatformWin: public IPlatform
     {
     public:
         PlatformWin(IAllocator * a)
-            : ADeallocatable(a)
-            , mLibrary(NULL)
+            : mLibrary(NULL)
         {
-            
+            mAllocator = a;
         }
 
         ~PlatformWin()

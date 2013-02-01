@@ -6,7 +6,7 @@
 
 namespace GFW {
 
-    class IContext: public Common::AutoRefObject
+    class IContext: public Common::ARefCounted
     {
     public:
         virtual void    Clear(ClearParams &) = 0;

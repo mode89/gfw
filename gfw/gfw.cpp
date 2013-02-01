@@ -1,8 +1,7 @@
 #include "gfw\gfw.h"
+#include "common\trace.h"
 #include "gfw\graphics\opengl\device.h"
 #include "gfw\allocator.h"
-
-#include "common\trace.h"
 
 namespace GFW {
 
