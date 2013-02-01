@@ -10,6 +10,6 @@ file(GLOB SOURCE_FILES graphics/common/*.cpp)
 list(APPEND GFW_SOURCE_FILES ${SOURCE_FILES})
 
 add_library(gfw ${GFW_SOURCE_FILES})
-target_link_libraries(gfw gfw_platform gfw_opengl common trace)
+target_link_libraries(gfw gfw_platform gfw_opengl common)
 
 add_subdirectory(tests)

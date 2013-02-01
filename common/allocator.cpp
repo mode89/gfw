@@ -1,11 +1,29 @@
 #include "common\allocator.h"
+#include "common\autoref.h"
 
-void * operator new(uint32_t size, Common::IAllocator * a)
-{
-    return a->Alloc(size);
-}
+#include <stdlib.h>
 
-void operator delete(void * data, Common::IAllocator * a)
-{
-    a->Free(data);
-}
+namespace Common {
+
+    class DefaultAllocator: public IAllocator
+    {
+    public:
+
+        virtual void * Alloc(uint32_t size)
+        {
+            return malloc(size);
+        }
+
+        virtual void Free(void * data)
+        {
+            free(data);
+        }
+
+    } gDefaultAllocator;
+
+    IAllocator * GetDefaultAllocator()
+    {
+        return &gDefaultAllocator;
+    }
+
+} // namespace Common

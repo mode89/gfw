@@ -1,4 +1,4 @@
-#include "trace\trace.h"
+#include "common\trace.h"
 
 #include <stdio.h>
 #include <stdarg.h>

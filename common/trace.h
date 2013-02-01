@@ -33,14 +33,14 @@
 #if TRACE_ASSERT_ENABLED
 
     #define TRACE_ASSERT(expr) \
-        if (!expr) \
+        if (!(expr)) \
         { \
             Trace::Message("Assertion failed in %s : line %d : Expression %s\n", __FILE__, __LINE__, #expr); \
             TRACE_DEBUG_BREAK(); \
         } \
 
     #define TRACE_ASSERT_MESSAGE_FORMATED(expr, fmt, ...) \
-        if (!expr) \
+        if (!(expr)) \
         { \
             Trace::Message("Assertion failed in %s : line %d : " fmt, __FILE__, __LINE__, __VA_ARGS__); \
             TRACE_DEBUG_BREAK(); \

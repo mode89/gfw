@@ -13,7 +13,7 @@ namespace GFW {
         DEVICE_OPENGL
     };
 
-    class IDevice: public Common::AutoRefObject
+    class IDevice: public Common::ARefCounted
     {
     public:
         virtual IContextRef     CreateContext(GFW::Platform::IWindowIn) = 0;

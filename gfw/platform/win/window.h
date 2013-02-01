@@ -8,7 +8,7 @@
 
 namespace GFW { namespace Platform {
 
-    class Window: public Common::ADeallocatable<IWindow>
+    class Window: public IWindow
     {
         friend class WindowClassRegisterer;
 

@@ -1,7 +1,7 @@
 #include "gfw\graphics\opengl\window.h"
 #include "gfw\graphics\opengl\functions_platform.h"
 
-#include "trace\trace.h"
+#include "common\trace.h"
 
 namespace GFW { namespace OpenGL {
 
@@ -9,9 +9,10 @@ namespace GFW { namespace OpenGL {
     using namespace Platform;
 
     OpenglWindow::OpenglWindow(IWindowIn window, IAllocator * a)
-        : ADeallocatable(a)
-        , mWindowPlat(window.StaticCast<Window>())
+        : mWindowPlat(window.StaticCast<Window>())
     {
+        mAllocator = a;
+
         mHWND = mWindowPlat->GetWindowHandle();
         TRACE_ASSERT(mHWND != NULL);
 
@@ -36,7 +37,7 @@ namespace GFW { namespace OpenGL {
 
     void OpenglWindow::Tick()
     {
-
+        mWindowPlat->Tick();
     }
 
     uint32_t OpenglWindow::Init()

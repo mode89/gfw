@@ -2,17 +2,16 @@
 #include "gfw\graphics\opengl\context.h"
 #include "gfw\allocator.h"
 
-#include "trace\trace.h"
+#include "common\trace.h"
 
 namespace GFW { namespace OpenGL {
 
     using namespace Common;
 
     Device::Device(IPlatformIn p, IAllocator * a)
-        : ADevice(a)
-        , mPlatform(p)
+        : mPlatform(p)
     {
-
+        mAllocator = a;
     }
 
     IContextRef Device::CreateContext(Platform::IWindowIn window)

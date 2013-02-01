@@ -4,7 +4,7 @@
 #include "gfw\graphics\opengl\functions_platform.h"
 #include "gfw\graphics\opengl\window.h"
 
-#include "trace\trace.h"
+#include "common\trace.h"
 
 namespace GFW { namespace OpenGL {
 
@@ -23,14 +23,13 @@ namespace GFW { namespace OpenGL {
     PFNWGLDELETECONTEXT     wglDeleteContext        = NULL;
     PFNWGLCHOOSEPIXELFORMAT wglChoosePixelFormat    = NULL;
 
-    class PlatformWin: public ADeallocatable<IPlatform>
+    class PlatformWin: public IPlatform
     {
     public:
         PlatformWin(IAllocator * a)
-            : ADeallocatable(a)
-            , mLibrary(NULL)
+            : mLibrary(NULL)
         {
-            
+            mAllocator = a;
         }
 
         ~PlatformWin()
@@ -125,7 +124,7 @@ namespace GFW { namespace OpenGL {
         }
 
     private:
-        HMODULE         mLibrary;
+        HMODULE mLibrary;
     };
 
     IPlatformRef CreatePlatform(IAllocator * a)
