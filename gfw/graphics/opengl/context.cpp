@@ -7,9 +7,10 @@ namespace GFW { namespace OpenGL {
     using namespace Common;
 
     Context::Context(Platform::IWindowIn window, DeviceIn d, IAllocator * a)
-        : AContext(a)
-        , mDevice(d)
+        : mDevice(d)
     {
+        mAllocator = a;
+
         mWindow = mDevice->GetPlatform()->CreateOpenglWindow(window).StaticCast<OpenglWindow>();
     }
 

@@ -1,12 +1,12 @@
 #ifndef __GFW_GRAPHICS_OPENGL_DEVICE_H__
 #define __GFW_GRAPHICS_OPENGL_DEVICE_H__
 
-#include "gfw\graphics\common\device.h"
+#include "gfw\graphics\base\device.h"
 #include "gfw\graphics\opengl\platform.h"
 
 namespace GFW { namespace OpenGL {
 
-    class Device: public ADevice
+    class Device: public IDevice
     {
     public:
         virtual IContextRef     CreateContext(Platform::IWindowIn);

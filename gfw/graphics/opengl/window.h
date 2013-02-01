@@ -5,7 +5,7 @@
 
 namespace GFW { namespace OpenGL {
 
-    class OpenglWindow: public Common::ADeallocatable<Platform::IWindow>
+    class OpenglWindow: public Platform::IWindow
     {
     public:
         virtual void    Tick();

@@ -1,13 +1,12 @@
 #ifndef __GFW_GRAPHICS_OPENGL_CONTEXT_H__
 #define __GFW_GRAPHICS_OPENGL_CONTEXT_H__
 
-#include "gfw\graphics\common\context.h"
 #include "gfw\graphics\opengl\device.h"
 #include "gfw\graphics\opengl\window.h"
 
 namespace GFW { namespace OpenGL {
 
-    class Context: public AContext
+    class Context: public IContext
     {
     public:
         virtual void            Clear(ClearParams &);
