@@ -46,7 +46,7 @@ namespace AllocatorTests {
         std::vector<void*> mGarbage;
     };
 
-    class Object: public ADeallocatable<AutoRefObject>
+    class Object: public ADeallocatable, public AutoRefObject
     {
     public:
         Object(IAllocator * a)
@@ -54,6 +54,9 @@ namespace AllocatorTests {
         {
 
         }
+
+    public:
+        virtual void * GetImplThis() { return this; }
     };
     AUTOREF_REFERENCE_DECLARATION(Object);
 

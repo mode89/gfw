@@ -1,8 +1,6 @@
 #ifndef __COMMON_ALLOCATOR_H__
 #define __COMMON_ALLOCATOR_H__
 
-#include "common\typedefs.h"
-
 namespace Common {
 
     class IAllocator
@@ -19,26 +17,18 @@ namespace Common {
         virtual         ~IAllocator() { }
     };
 
-    template < class BaseClass >
-    class ADeallocatable: public BaseClass
-    {
-    public:
-        ADeallocatable(IAllocator * a)
-            : mAllocator(a)
-        {}
-
-        inline ~ADeallocatable()
-        {
-            mAllocator->FreeAsync(this);
-        }
-
-    protected:
-        IAllocator *    mAllocator;
-    };
+    IAllocator * GetDefaultAllocator();
 
 } // namespace Common
 
-void * operator new(uint32_t size, Common::IAllocator *);
-void   operator delete(void *, Common::IAllocator *);
+inline void * operator new(uint32_t size, Common::IAllocator * a)
+{
+    return a->Alloc(size);
+}
+
+inline void operator delete(void * data, Common::IAllocator * a)
+{
+    a->Free(data);
+}
 
 #endif // __COMMON_ALLOCATOR_H__

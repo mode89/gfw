@@ -4,7 +4,7 @@
 #include "gfw\graphics\opengl\functions_platform.h"
 #include "gfw\graphics\opengl\window.h"
 
-#include "trace\trace.h"
+#include "common\trace.h"
 
 namespace GFW { namespace OpenGL {
 
@@ -126,6 +126,9 @@ namespace GFW { namespace OpenGL {
 
     private:
         HMODULE         mLibrary;
+
+    protected:
+        virtual void * GetImplThis() { return this; }
     };
 
     IPlatformRef CreatePlatform(IAllocator * a)

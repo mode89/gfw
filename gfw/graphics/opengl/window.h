@@ -19,6 +19,9 @@ namespace GFW { namespace OpenGL {
         OpenglWindow(Platform::IWindowIn, Common::IAllocator *);
         ~OpenglWindow();
 
+    protected:
+        virtual void *  GetImplThis()   { return this; }
+
     private:
         Platform::WindowRef     mWindowPlat;
         HWND                    mHWND;

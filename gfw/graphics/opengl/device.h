@@ -22,6 +22,9 @@ namespace GFW { namespace OpenGL {
 
     private:
         IPlatformRef            mPlatform;
+
+    protected:
+        virtual void *          GetImplThis()   { return this; }
     };
     AUTOREF_REFERENCE_DECLARATION(Device);
 

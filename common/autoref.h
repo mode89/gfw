@@ -22,10 +22,12 @@ namespace Common {
     public:
         AutoRefObject()
             : mCounter(0)
+            , mAllocator(0)
         {}
 
     protected:
-        int mCounter;
+        int             mCounter;
+        IAllocator *    mAllocator;
 
         template < class ObjectClass > friend class AutoRef;
     };
