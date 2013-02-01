@@ -46,7 +46,7 @@ namespace AutoRefTests {
             return new(a) Factory(a);
         }
 
-        Factory::Factory(IAllocator * a)
+        Factory(IAllocator * a)
         {
             mAllocator = a;
         }

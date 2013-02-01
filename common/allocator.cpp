@@ -21,7 +21,7 @@ namespace Common {
 
     } gDefaultAllocator;
 
-    IAllocator * Common::GetDefaultAllocator()
+    IAllocator * GetDefaultAllocator()
     {
         return &gDefaultAllocator;
     }
