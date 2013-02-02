@@ -30,6 +30,12 @@ namespace GFW {
         BufferType  type;
         Usage       usage;
         uint32_t    size;
+
+        BufferDesc()
+            : type(BUFFER_UNKNOWN)
+            , usage(USAGE_UNKNOWN)
+            , size(0)
+        {}
     };
 
 } // namespace GFW
