@@ -1,9 +1,10 @@
+#include "common/trace.h"
+
 #include "gfw\graphics\opengl\device.h"
 #include "gfw\graphics\opengl\context.h"
 #include "gfw\graphics\opengl\shader.h"
+#include "gfw\graphics\opengl\buffer.h"
 #include "gfw\allocator.h"
-
-#include "common\trace.h"
 
 namespace GFW { namespace OpenGL {
 
@@ -44,9 +45,15 @@ namespace GFW { namespace OpenGL {
         return NULL;
     }
 
-    IBufferRef Device::CreateBuffer( uint32_t size, const void * initialData )
+    IBufferRef Device::CreateBuffer( const BufferDesc & desc, const void * initialData )
     {
-        TRACE_FAIL_MSG("Not yet implemented");
+        BufferRef buffer = GFW_NEW(mAllocator, Buffer) (desc, mAllocator);
+
+        if (buffer->Init(initialData) != 0)
+        {
+            return buffer.StaticCast<IBuffer>();
+        }
+
         return NULL;
     }
 

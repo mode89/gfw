@@ -1,7 +1,7 @@
+#include "common/trace.h"
+
 #include "gfw\platform\win\window.h"
 #include "gfw\allocator.h"
-
-#include "common\trace.h"
 
 namespace GFW { namespace Platform {
 

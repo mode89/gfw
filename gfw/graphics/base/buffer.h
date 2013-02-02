@@ -2,6 +2,7 @@
 #define __GFW_GRAPHICS_BASE_BUFFER_H__
 
 #include "common/autoref.h"
+#include "gfw/graphics/base/resource.h"
 
 namespace GFW {
 

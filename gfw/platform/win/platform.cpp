@@ -1,8 +1,8 @@
+#include "common/trace.h"
+
 #include "gfw\platform\win\platform.h"
 #include "gfw\platform\win\window.h"
 #include "gfw\allocator.h"
-
-#include "common\trace.h"
 
 #include <windows.h>
 

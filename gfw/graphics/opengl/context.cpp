@@ -1,4 +1,5 @@
 #include "common\trace.h"
+
 #include "gfw\graphics\opengl\context.h"
 #include "gfw\graphics\opengl\functions.h"
 

@@ -1,7 +1,7 @@
+#include "common/trace.h"
+
 #include "gfw\graphics\opengl\window.h"
 #include "gfw\graphics\opengl\functions_platform.h"
-
-#include "common\trace.h"
 
 namespace GFW { namespace OpenGL {
 

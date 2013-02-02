@@ -1,10 +1,10 @@
+#include "common/trace.h"
+
 #include "gfw\allocator.h"
 #include "gfw\graphics\opengl\platform.h"
 #include "gfw\graphics\opengl\functions.h"
 #include "gfw\graphics\opengl\functions_platform.h"
 #include "gfw\graphics\opengl\window.h"
-
-#include "common\trace.h"
 
 namespace GFW { namespace OpenGL {
 

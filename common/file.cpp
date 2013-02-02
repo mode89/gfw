@@ -1,6 +1,7 @@
+#include "common/trace.h"
+
 #include "common\file.h"
 #include "common\platform.h"
-#include "common\trace.h"
 
 #if PLATFORM_WIN32
 #include <windows.h>

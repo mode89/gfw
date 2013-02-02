@@ -108,7 +108,11 @@ namespace GFWTests {
              1.0f,  1.0f, 0.0f, 0.0f, 1.0f
         };
 
-        IBufferRef vertexBuffer = device->CreateBuffer(60, vertices);
+        BufferDesc vertexBufferDesc;
+        vertexBufferDesc.type = BUFFER_VERTEX;
+        vertexBufferDesc.size = 60;
+        vertexBufferDesc.usage = USAGE_STATIC_DRAW;
+        IBufferRef vertexBuffer = device->CreateBuffer(vertexBufferDesc, vertices);
 
         // Define vertex attributes
 

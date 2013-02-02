@@ -1,8 +1,8 @@
+#include "common/trace.h"
+
 #include "gfw/allocator.h"
 #include "gfw/graphics/opengl/shader.h"
 #include "gfw/graphics/opengl/functions.h"
-
-#include "common/trace.h"
 
 namespace GFW { namespace OpenGL {
 

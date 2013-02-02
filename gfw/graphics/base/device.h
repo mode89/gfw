@@ -23,7 +23,7 @@ namespace GFW {
 
         virtual IShaderRef      CreateShader(ShaderStage, const void * shaderData) = 0;
 
-        virtual IBufferRef      CreateBuffer(uint32_t size, const void * initialData) = 0;
+        virtual IBufferRef      CreateBuffer(const BufferDesc &, const void * initialData) = 0;
 
     public:
         virtual                 ~IDevice() { }

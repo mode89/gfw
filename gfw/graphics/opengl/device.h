@@ -14,7 +14,7 @@ namespace GFW { namespace OpenGL {
 
         virtual IShaderRef      CreateShader(ShaderStage, const void * shaderData);
 
-        virtual IBufferRef      CreateBuffer(uint32_t size, const void * initialData);
+        virtual IBufferRef      CreateBuffer(const BufferDesc &, const void * initialData);
 
     public:
         static IDeviceRef       CreateInstance(Common::IAllocator *);

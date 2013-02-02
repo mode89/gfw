@@ -34,6 +34,12 @@
     F(PFNGLCOMPILESHADERPROC,       glCompileShader) \
     F(PFNGLGETSHADERIVPROC,         glGetShaderiv) \
     F(PFNGLGETSHADERINFOLOGPROC,    glGetShaderInfoLog) \
+    \
+    F(PFNGLGENBUFFERSPROC,          glGenBuffers) \
+    F(PFNGLDELETEBUFFERSPROC,       glDeleteBuffers) \
+    F(PFNGLBINDBUFFERPROC,          glBindBuffer) \
+    F(PFNGLBUFFERDATAPROC,          glBufferData) \
+    F(PFNGLBUFFERSUBDATAPROC,       glBufferSubData) \
 
 namespace GFW { namespace OpenGL {
 
