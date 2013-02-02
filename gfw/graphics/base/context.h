@@ -3,13 +3,26 @@
 
 #include "common\autoref.h"
 #include "gfw\graphics\base\clear_params.h"
+#include "gfw\graphics\base\vertex_attribute.h"
+#include "gfw\graphics\base\draw_params.h"
+#include "gfw\graphics\base\shader.h"
+#include "gfw\graphics\base\buffer.h"
 
 namespace GFW {
 
     class IContext: public Common::ARefCounted
     {
     public:
-        virtual void    Clear(ClearParams &) = 0;
+
+        virtual void    SetShader(IShaderRef) = 0;
+
+        virtual void    SetVertexAttributes(VertexAttribute []) = 0;
+
+        virtual void    SetVertexBuffer(uint32_t slot, IBufferRef) = 0;
+
+        virtual void    Clear(const ClearParams &) = 0;
+
+        virtual void    Draw(const DrawParams &) = 0;
 
         virtual void    Present() = 0;
 

@@ -31,4 +31,16 @@ namespace GFW { namespace OpenGL {
         return NULL;
     }
 
+    IShaderRef Device::CreateShader( ShaderStage, const void * shaderData )
+    {
+        TRACE_FAIL_MSG("Not yet implemented");
+        return NULL;
+    }
+
+    IBufferRef Device::CreateBuffer( uint32_t size, const void * initialData )
+    {
+        TRACE_FAIL_MSG("Not yet implemented");
+        return NULL;
+    }
+
 }} // namespace GFW::OpenGL

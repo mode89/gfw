@@ -19,7 +19,22 @@ namespace GFW { namespace OpenGL {
 
     }
 
-    void Context::Clear(ClearParams & cp)
+    void Context::SetVertexAttributes( VertexAttribute [] )
+    {
+        TRACE_FAIL_MSG("Not yet implemented");
+    }
+
+    void Context::SetVertexBuffer( uint32_t slot, IBufferRef )
+    {
+        TRACE_FAIL_MSG("Not yet implemented");
+    }
+
+    void Context::SetShader( IShaderRef )
+    {
+        TRACE_FAIL_MSG("Not yet implemented");
+    }
+
+    void Context::Clear(const ClearParams & cp)
     {
         uint32_t mask = 0;
 
@@ -30,6 +45,11 @@ namespace GFW { namespace OpenGL {
         }
 
         TRACE_ASSERT_GL(glClear, mask);
+    }
+
+    void Context::Draw( const DrawParams & )
+    {
+        TRACE_FAIL_MSG("Not yet implemented");
     }
 
     void Context::Present()

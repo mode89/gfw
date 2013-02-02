@@ -9,9 +9,18 @@ namespace GFW { namespace OpenGL {
     class Context: public IContext
     {
     public:
-        virtual void            Clear(ClearParams &);
 
-        virtual void            Present();
+        virtual void    SetShader(IShaderRef);
+
+        virtual void    SetVertexAttributes(VertexAttribute []);
+
+        virtual void    SetVertexBuffer(uint32_t slot, IBufferRef);
+
+        virtual void    Clear(const ClearParams &);
+
+        virtual void    Draw(const DrawParams &);
+
+        virtual void    Present();
 
     public:
         Context(Platform::IWindowIn, DeviceIn, Common::IAllocator *);

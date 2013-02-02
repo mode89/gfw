@@ -9,7 +9,12 @@ namespace GFW { namespace OpenGL {
     class Device: public IDevice
     {
     public:
-        virtual IContextRef     CreateContext(Platform::IWindowIn);
+
+        virtual IContextRef     CreateContext(GFW::Platform::IWindowIn);
+
+        virtual IShaderRef      CreateShader(ShaderStage, const void * shaderData);
+
+        virtual IBufferRef      CreateBuffer(uint32_t size, const void * initialData);
 
     public:
         static IDeviceRef       CreateInstance(Common::IAllocator *);
