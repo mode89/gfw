@@ -24,6 +24,11 @@ inline void * operator new(uint32_t size, Common::IAllocator * a)
     return a->Alloc(size);
 }
 
+inline void * operator new(uint32_t size, uint32_t number, Common::IAllocator * a)
+{
+    return a->Alloc(size * number);
+}
+
 inline void operator delete(void * data, Common::IAllocator * a)
 {
     a->Free(data);
