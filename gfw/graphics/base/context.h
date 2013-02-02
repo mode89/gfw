@@ -14,17 +14,19 @@ namespace GFW {
     {
     public:
 
-        virtual void    SetShader(IShaderRef) = 0;
+        virtual void    SetShader(ShaderStage, IShaderIn) = 0;
 
-        virtual void    SetVertexAttributes(VertexAttribute []) = 0;
+        virtual void    SetVertexAttributes(uint32_t number, VertexAttribute []) = 0;
 
-        virtual void    SetVertexBuffer(uint32_t slot, IBufferRef) = 0;
+        virtual void    SetVertexBuffer(uint32_t slot, IBufferIn) = 0;
 
         virtual void    Clear(const ClearParams &) = 0;
 
         virtual void    Draw(const DrawParams &) = 0;
 
         virtual void    Present() = 0;
+
+        virtual void    ClearState() = 0;
 
     public:
         virtual         ~IContext() { }

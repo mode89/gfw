@@ -10,6 +10,9 @@ namespace GFW { namespace OpenGL {
     public:
         uint32_t        Init(const void * initialData);
 
+        inline
+        uint32_t        GetBufferObject()   { return mBuffer; }
+
     public:
         Buffer(const BufferDesc &, Common::IAllocator *);
         ~Buffer();

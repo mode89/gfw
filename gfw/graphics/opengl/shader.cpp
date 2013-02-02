@@ -1,10 +1,15 @@
 #include "common/trace.h"
+#include "common/crc32.h"
 
 #include "gfw/allocator.h"
 #include "gfw/graphics/opengl/shader.h"
 #include "gfw/graphics/opengl/functions.h"
 
+#include <string.h>
+
 namespace GFW { namespace OpenGL {
+
+    using namespace Common;
 
     static uint32_t GetShaderType(ShaderStage stage)
     {
@@ -21,6 +26,7 @@ namespace GFW { namespace OpenGL {
     Shader::Shader( ShaderStage stage, Common::IAllocator * a )
         : mStage(stage)
         , mShader(0)
+        , mHash(0)
     {
         mAllocator = a;
     }
@@ -50,6 +56,8 @@ namespace GFW { namespace OpenGL {
 
             if (compileStatus == GL_TRUE)
             {
+                uint32_t sourceLength = strlen(source);
+                mHash = CRC32(0, source, sourceLength);
                 return 1;
             }
 

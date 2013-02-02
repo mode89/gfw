@@ -3,6 +3,11 @@
 
 #include "gfw\graphics\opengl\device.h"
 #include "gfw\graphics\opengl\window.h"
+#include "gfw\graphics\opengl\shader.h"
+#include "gfw\graphics\opengl\limits.h"
+#include "gfw\graphics\opengl\buffer.h"
+
+#include <map>
 
 namespace GFW { namespace OpenGL {
 
@@ -10,11 +15,11 @@ namespace GFW { namespace OpenGL {
     {
     public:
 
-        virtual void    SetShader(IShaderRef);
+        virtual void    SetShader(ShaderStage, IShaderIn);
 
-        virtual void    SetVertexAttributes(VertexAttribute []);
+        virtual void    SetVertexAttributes(uint32_t number, VertexAttribute []);
 
-        virtual void    SetVertexBuffer(uint32_t slot, IBufferRef);
+        virtual void    SetVertexBuffer(uint32_t slot, IBufferIn);
 
         virtual void    Clear(const ClearParams &);
 
@@ -22,13 +27,29 @@ namespace GFW { namespace OpenGL {
 
         virtual void    Present();
 
+        virtual void    ClearState();
+
+    public:
+
+        void            FlushState();
+
     public:
         Context(Platform::IWindowIn, DeviceIn, Common::IAllocator *);
         ~Context();
 
     private:
+        typedef std::map < uint32_t, uint32_t > tMapProgs;
+
         DeviceRef               mDevice;
         OpenglWindowRef         mWindow;
+
+        ShaderRef               mShaders[SHADER_STAGE_NUMBER];
+
+        VertexAttribute         mVertAttrs[MAX_VERTEX_BUFFER_BIND];
+
+        BufferRef               mVertexBuffers[MAX_VERTEX_BUFFER_BIND];
+
+        tMapProgs               mPrograms;
     };
 
 }} // namespace GFW::OpenGL

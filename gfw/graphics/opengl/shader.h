@@ -8,15 +8,25 @@ namespace GFW { namespace OpenGL {
     class Shader: public IShader
     {
     public:
-        uint32_t            Compile(const char * source);
+        virtual ShaderStage     GetStage()          { return mStage; }
+
+    public:
+        uint32_t                Compile(const char * source);
+
+        inline
+        uint32_t                GetHash()           { return mHash; }
+
+        inline
+        uint32_t                GetShaderObject()   { return mShader; }
 
     public:
         Shader(ShaderStage, Common::IAllocator *);
         ~Shader();
 
     private:
-        const ShaderStage   mStage;
-        uint32_t            mShader;
+        const ShaderStage       mStage;
+        uint32_t                mShader;
+        uint32_t                mHash;
     };
     AUTOREF_REFERENCE_DECLARATION(Shader);
 

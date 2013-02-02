@@ -22,24 +22,40 @@
 #endif // TRACE_ASSERT_ENABLED
 
 #define OPENGL_FUNCTIONS_CORE \
-    F(PFNGLGETERRORPROC,            glGetError) \
-    F(PFNGLGETSTRINGPROC,           glGetString) \
-    F(PFNGLCLEARCOLORPROC,          glClearColor) \
-    F(PFNGLCLEARPROC,               glClear) \
+    F(PFNGLGETERRORPROC,                    glGetError) \
+    F(PFNGLGETSTRINGPROC,                   glGetString) \
+    F(PFNGLCLEARCOLORPROC,                  glClearColor) \
+    F(PFNGLCLEARPROC,                       glClear) \
+    F(PFNGLDRAWARRAYSPROC,                  glDrawArrays) \
 
 #define OPENGL_FUNCTIONS_EXT \
-    F(PFNGLCREATESHADERPROC,        glCreateShader) \
-    F(PFNGLDELETESHADERPROC,        glDeleteShader) \
-    F(PFNGLSHADERSOURCEPROC,        glShaderSource) \
-    F(PFNGLCOMPILESHADERPROC,       glCompileShader) \
-    F(PFNGLGETSHADERIVPROC,         glGetShaderiv) \
-    F(PFNGLGETSHADERINFOLOGPROC,    glGetShaderInfoLog) \
+    F(PFNGLCREATESHADERPROC,                glCreateShader) \
+    F(PFNGLDELETESHADERPROC,                glDeleteShader) \
+    F(PFNGLSHADERSOURCEPROC,                glShaderSource) \
+    F(PFNGLCOMPILESHADERPROC,               glCompileShader) \
+    F(PFNGLGETSHADERIVPROC,                 glGetShaderiv) \
+    F(PFNGLGETSHADERINFOLOGPROC,            glGetShaderInfoLog) \
     \
-    F(PFNGLGENBUFFERSPROC,          glGenBuffers) \
-    F(PFNGLDELETEBUFFERSPROC,       glDeleteBuffers) \
-    F(PFNGLBINDBUFFERPROC,          glBindBuffer) \
-    F(PFNGLBUFFERDATAPROC,          glBufferData) \
-    F(PFNGLBUFFERSUBDATAPROC,       glBufferSubData) \
+    F(PFNGLCREATEPROGRAMPROC,               glCreateProgram) \
+    F(PFNGLDELETEPROGRAMPROC,               glDeleteProgram) \
+    F(PFNGLATTACHSHADERPROC,                glAttachShader) \
+    F(PFNGLDETACHSHADERPROC,                glDetachShader) \
+    F(PFNGLLINKPROGRAMPROC,                 glLinkProgram) \
+    F(PFNGLUSEPROGRAMPROC,                  glUseProgram) \
+    F(PFNGLGETPROGRAMIVPROC,                glGetProgramiv) \
+    F(PFNGLGETPROGRAMINFOLOGPROC,           glGetProgramInfoLog) \
+    \
+    F(PFNGLGETATTRIBLOCATIONPROC,           glGetAttribLocation) \
+    \
+    F(PFNGLGENBUFFERSPROC,                  glGenBuffers) \
+    F(PFNGLDELETEBUFFERSPROC,               glDeleteBuffers) \
+    F(PFNGLBINDBUFFERPROC,                  glBindBuffer) \
+    F(PFNGLBUFFERDATAPROC,                  glBufferData) \
+    F(PFNGLBUFFERSUBDATAPROC,               glBufferSubData) \
+    \
+    F(PFNGLVERTEXATTRIBPOINTERPROC,         glVertexAttribPointer) \
+    F(PFNGLENABLEVERTEXATTRIBARRAYPROC,     glEnableVertexAttribArray) \
+    F(PFNGLDISABLEVERTEXATTRIBARRAYPROC,    glDisableVertexAttribArray) \
 
 namespace GFW { namespace OpenGL {
 

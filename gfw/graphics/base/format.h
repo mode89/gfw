@@ -3,6 +3,12 @@
 
 namespace GFW {
 
+    enum Type
+    {
+        TYPE_UNKNOWN = 0,
+        TYPE_FLOAT
+    };
+
     enum Format
     {
         FORMAT_UNKNOWN = 0,

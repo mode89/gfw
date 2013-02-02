@@ -11,7 +11,7 @@ namespace GFWTests {
     using namespace GFW::Platform;
     using namespace Common;
 
-    TEST(GFW, DISABLED_ClearDarkBlue)
+    TEST(GFW, ClearDarkBlue)
     {
         // Create a graphical device
 
@@ -103,7 +103,7 @@ namespace GFWTests {
         // Create geometry
 
         float vertices[] = {
-            -1.0f, -1.0f, 0.1f, 0.0f, 0.0f,
+            -1.0f, -1.0f, 1.0f, 0.0f, 0.0f,
             -1.0f,  1.0f, 0.0f, 1.0f, 0.0f,
              1.0f,  1.0f, 0.0f, 0.0f, 1.0f
         };
@@ -130,22 +130,28 @@ namespace GFWTests {
 
         // Main loop
 
-        uint64_t timeStart = GetPerformanceCounter();
-        while ((GetPerformanceCounter() - timeStart) < GetPerformanceCounterFrequency())
+        for (int frame = 0; frame < 60; ++ frame)
         {
-            window->Tick();
+            uint64_t timeStart = GetPerformanceCounter();
 
-            context->Clear(cp);
+            {
+                window->Tick();
 
-            context->SetShader(vertexShader);
-            context->SetShader(pixelShader);
+                context->Clear(cp);
 
-            context->SetVertexAttributes(vertexAttribs);
-            context->SetVertexBuffer(0, vertexBuffer);
+                context->SetShader(SHADER_VERTEX, vertexShader);
+                context->SetShader(SHADER_PIXEL,  pixelShader);
 
-            context->Draw(drawParams);
+                context->SetVertexAttributes(2, vertexAttribs);
+                context->SetVertexBuffer(0, vertexBuffer);
 
-            context->Present();
+                context->Draw(drawParams);
+
+                context->Present();
+            }
+
+            uint64_t period = GetPerformanceCounterFrequency() / 60;
+            while ((GetPerformanceCounter() - timeStart) < period);
         }
     }
 
