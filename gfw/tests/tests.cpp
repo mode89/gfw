@@ -1,6 +1,9 @@
 #include "gfw/gfw.h"
 #include "gtest/gtest.h"
+
 #include "common/file.h"
+
+#include "config.h"
 
 namespace GFWTests {
 
@@ -8,7 +11,7 @@ namespace GFWTests {
     using namespace GFW::Platform;
     using namespace Common;
 
-    TEST(GFW, ClearDarkBlue)
+    TEST(GFW, DISABLED_ClearDarkBlue)
     {
         // Create a graphical device
 
@@ -86,12 +89,16 @@ namespace GFWTests {
         // Create shaders
 
         FileRef vertexShaderSource = File::Create();
-        vertexShaderSource->Read("draw.vs");
+        ASSERT_TRUE(vertexShaderSource->Read(TESTS_SOURCE_DIR "draw_vert.glsl") != 0);
+
         IShaderRef vertexShader = device->CreateShader(SHADER_VERTEX, vertexShaderSource->GetData());
+        ASSERT_TRUE(vertexShader.IsAttached());
 
         FileRef pixelShaderSource = File::Create();
-        pixelShaderSource->Read("draw.ps");
+        ASSERT_TRUE(pixelShaderSource->Read(TESTS_SOURCE_DIR "draw_frag.glsl") != 0);
+
         IShaderRef pixelShader  = device->CreateShader(SHADER_PIXEL, pixelShaderSource->GetData());
+        ASSERT_TRUE(pixelShader.IsAttached());
 
         // Create geometry
 

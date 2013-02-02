@@ -23,13 +23,23 @@
 
 #define OPENGL_FUNCTIONS_CORE \
     F(PFNGLGETERRORPROC,            glGetError) \
+    F(PFNGLGETSTRINGPROC,           glGetString) \
     F(PFNGLCLEARCOLORPROC,          glClearColor) \
     F(PFNGLCLEARPROC,               glClear) \
+
+#define OPENGL_FUNCTIONS_EXT \
+    F(PFNGLCREATESHADERPROC,        glCreateShader) \
+    F(PFNGLDELETESHADERPROC,        glDeleteShader) \
+    F(PFNGLSHADERSOURCEPROC,        glShaderSource) \
+    F(PFNGLCOMPILESHADERPROC,       glCompileShader) \
+    F(PFNGLGETSHADERIVPROC,         glGetShaderiv) \
+    F(PFNGLGETSHADERINFOLOGPROC,    glGetShaderInfoLog) \
 
 namespace GFW { namespace OpenGL {
 
 #define F(type, func) extern type func;
     OPENGL_FUNCTIONS_CORE
+    OPENGL_FUNCTIONS_EXT
 #undef F
 
 }} // namespace GFW::OpenGL

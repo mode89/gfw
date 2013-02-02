@@ -13,6 +13,7 @@ namespace GFW { namespace OpenGL {
 
 #define F(type, func) type func = NULL;
     OPENGL_FUNCTIONS_CORE
+    OPENGL_FUNCTIONS_EXT
 #undef F
 
 #if PLATFORM_WIN32
@@ -97,6 +98,11 @@ namespace GFW { namespace OpenGL {
 
 #define F(type, func)   func = reinterpret_cast<type>(GetProcAddress(mLibrary, #func));
                 OPENGL_FUNCTIONS_CORE
+#undef F
+
+                // Load extended functions
+#define F(type, func)   func = reinterpret_cast<type>(wglGetProcAddress(#func));
+                OPENGL_FUNCTIONS_EXT
 #undef F
 
                 // Release resources

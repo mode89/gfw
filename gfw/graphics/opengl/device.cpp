@@ -1,5 +1,6 @@
 #include "gfw\graphics\opengl\device.h"
 #include "gfw\graphics\opengl\context.h"
+#include "gfw\graphics\opengl\shader.h"
 #include "gfw\allocator.h"
 
 #include "common\trace.h"
@@ -31,9 +32,15 @@ namespace GFW { namespace OpenGL {
         return NULL;
     }
 
-    IShaderRef Device::CreateShader( ShaderStage, const void * shaderData )
+    IShaderRef Device::CreateShader( ShaderStage stage, const void * shaderData )
     {
-        TRACE_FAIL_MSG("Not yet implemented");
+        ShaderRef shader = GFW_NEW(mAllocator, Shader) (stage, mAllocator);
+
+        if (shader->Compile(static_cast<const char*>(shaderData)) != 0)
+        {
+            return shader.StaticCast<IShader>();
+        }
+
         return NULL;
     }
 
