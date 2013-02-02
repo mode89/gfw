@@ -24,7 +24,7 @@ namespace Common {
         File(IAllocator * a);
 
     private:
-        void *          mData;
+        char8_t *       mData;
         uint64_t        mSize;
     };
 

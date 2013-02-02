@@ -37,7 +37,7 @@ namespace Common {
 
             if (size != 0)
             {
-                void * data = mAllocator->Alloc(size);
+                void * data = mAllocator->Alloc(size + 1);
                 TRACE_ASSERT(data != NULL);
 
                 if (data != NULL)
@@ -50,7 +50,8 @@ namespace Common {
                     if (res != 0 && rb == size)
                     {
                         mSize = size;
-                        mData = data;
+                        mData = static_cast<char8_t*>(data);
+                        mData[mSize] = 0;
 
                         return 1;
                     }
