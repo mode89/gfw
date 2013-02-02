@@ -38,21 +38,19 @@ namespace Common {
     class AutoRef
     {
     public:
+
         inline ObjectClass * GetPointer() { return mObject; }
 
-        inline bool IsAttached() { return (mObject == NULL) ? 0 : 1; }
+        inline bool IsAttached() const { return (mObject == NULL) ? 0 : 1; }
+
+        inline bool IsNull() const { return (mObject == NULL) ? 1 : 0; }
+
+        inline int GetRefCounter() const { return (mObject == NULL) ? 0 : mObject->mRefCounter; }
 
         inline void Detach()
         {
-            if (mObject != NULL)
-            {
-                AtomicDecrement(mObject->mRefCounter);
-                if (mObject->mRefCounter == 0)
-                {
-                    delete(mObject, mObject->mAllocator);
-                    mObject = NULL;
-                }
-            }
+            ReleaseObject();
+            mObject = NULL;
         }
 
         AutoRef()
@@ -64,33 +62,19 @@ namespace Common {
         AutoRef(ObjectClass * object)
             : mObject(object)
         {
-            if (mObject != NULL)
-            {
-                AtomicIncrement(mObject->mRefCounter);
-            }
+            AddRefObject();
         }
 
         inline AutoRef(const AutoRef & ref)
             : mObject(ref.mObject)
         {
-            if (mObject != NULL)
-            {
-                AtomicIncrement(mObject->mRefCounter);
-            }
+            AddRefObject();
         }
 
         ~AutoRef()
         {
-            if (mObject != NULL)
-            {
-                AtomicDecrement(mObject->mRefCounter);
-                if (mObject->mRefCounter == 0)
-                {
-                    mObject->~ObjectClass();
-                    operator delete(mObject, mObject->mAllocator);
-                    mObject = NULL;
-                }
-            }
+            ReleaseObject();
+            mObject = NULL;
         }
 
         inline ObjectClass * operator * () const { return mObject; }
@@ -101,22 +85,9 @@ namespace Common {
         {
             if (this != &ref)
             {
-                if (mObject != NULL)
-                {
-                    AtomicDecrement(mObject->mRefCounter);
-                    if (mObject->mRefCounter == 0)
-                    {
-                        mObject->~ObjectClass();
-                        operator delete(mObject, mObject->mAllocator);
-                    }
-                }
-
+                ReleaseObject();
                 mObject = ref.mObject;
-
-                if (mObject != NULL)
-                {
-                    AtomicIncrement(mObject->mRefCounter);
-                }
+                AddRefObject();
             }
 
             return *this;
@@ -126,6 +97,29 @@ namespace Common {
         inline AutoRef<CastClass> StaticCast() const
         {
             return static_cast<CastClass*>(mObject);
+        }
+
+    private:
+
+        inline void ReleaseObject()
+        {
+            if (mObject != NULL)
+            {
+                AtomicDecrement(mObject->mRefCounter);
+                if (mObject->mRefCounter == 0)
+                {
+                    mObject->~ObjectClass();
+                    operator delete(mObject, mObject->mAllocator);
+                }
+            }
+        }
+
+        inline void AddRefObject()
+        {
+            if (mObject != NULL)
+            {
+                AtomicIncrement(mObject->mRefCounter);
+            }
         }
 
     private:
