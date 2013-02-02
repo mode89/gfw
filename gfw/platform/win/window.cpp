@@ -28,7 +28,7 @@ namespace GFW { namespace Platform {
 
             if (RegisterClass(&wc) == 0)
             {
-                TRACE_MESSAGE_ERROR("Cannot register window class");
+                TRACE_ERROR("Cannot register window class");
                 return;
             }
         }
@@ -37,7 +37,7 @@ namespace GFW { namespace Platform {
         {
             if (UnregisterClass("GFW", m_hInstance) == 0)
             {
-                TRACE_MESSAGE_ERROR("Cannot unregister window class");
+                TRACE_ERROR("Cannot unregister window class");
             }
         }
 
@@ -96,7 +96,7 @@ namespace GFW { namespace Platform {
 
             if (ChangeDisplaySettings(&devMode, CDS_FULLSCREEN) != DISP_CHANGE_SUCCESSFUL)
             {
-                TRACE_MESSAGE_ERROR("Cannot enter fullscreen mode");
+                TRACE_ERROR("Cannot enter fullscreen mode");
                 return 0;
             }
         }
@@ -140,7 +140,7 @@ namespace GFW { namespace Platform {
 
         if (mHwnd == NULL)
         {
-            TRACE_MESSAGE_ERROR("Cannot create a window");
+            TRACE_ERROR("Cannot create a window");
             return 0;
         }
 

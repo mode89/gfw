@@ -30,6 +30,10 @@
     Trace::Message("Failed in %s : line %d : %s\n", __FILE__, __LINE__, msg); \
     TRACE_DEBUG_BREAK() \
 
+#define TRACE_FAIL() TRACE_DEBUG_BREAK()
+
+// Assertion
+
 #if TRACE_ASSERT_ENABLED
 
     #define TRACE_ASSERT(expr) \
@@ -52,6 +56,8 @@
 
 #endif // TRACE_ASSERT_ENABLED
 
+// Messages
+
 #if TRACE_MESSAGE_ENABLED
 
     #define TRACE_MESSAGE(msg)                  Trace::Message(msg)
@@ -59,16 +65,19 @@
     #define TRACE_MESSAGE_FORMATTED(fmt, ...)   Trace::Message(fmt, __VA_ARGS__)
 
     #if PLATFORM_DEBUG
-        #define TRACE_MESSAGE_ERROR(msg)        Trace::Message("Error in %s : line %d : %s\n", __FILE__, __LINE__, msg); TRACE_DEBUG_BREAK()
+        #define TRACE_ERROR(msg)                Trace::Message("Error in %s : line %d : %s\n", __FILE__, __LINE__, msg); TRACE_DEBUG_BREAK()
+        #define TRACE_ERROR_FORMATTED(fmt, ...) Trace::Message("Error in %s : line %d : " fmt "\n", __FILE__, __LINE__, __VA_ARGS__); TRACE_DEBUG_BREAK()
     #elif PLATFORM_NDEBUG
-        #define TRACE_MESSAGE_ERROR(msg)        Trace::Message("Error in %s : line %d : %s\n", __FILE__, __LINE__, msg);
+        #define TRACE_ERROR(msg)                Trace::Message("Error in %s : line %d : %s\n", __FILE__, __LINE__, msg);
+        #define TRACE_ERROR_FORMATTED(fmt, ...) Trace::Message("Error in %s : line %d : " fmt "\n", __FILE__, __LINE__, __VA_ARGS__);
     #endif // PLATFORM_DEBUG
 
 #else
 
     #define TRACE_MESSAGE(msg)
     #define TRACE_MESSAGE_FORMATTED(fmt, ...)
-    #define TRACE_MESSAGE_ERROR(msg)
+    #define TRACE_ERROR(msg)
+    #define TRACE_ERROR_FORMATTED(fmt, ...)
 
 #endif // TRACE_MESSAGE_ENABLED
 
