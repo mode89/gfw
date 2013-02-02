@@ -11,6 +11,14 @@ namespace GFWTests {
     using namespace GFW::Platform;
     using namespace Common;
 
+    void Wait()
+    {
+        static uint64_t freq = GetPerformanceCounterFrequency();
+
+        uint64_t timeStart = GetPerformanceCounter();
+        while ((GetPerformanceCounter() - timeStart) < (freq / 120));
+    }
+
     TEST(GFW, ClearDarkBlue)
     {
         // Create a graphical device
@@ -44,14 +52,15 @@ namespace GFWTests {
 
         // Main loop
 
-        uint64_t timeStart = GetPerformanceCounter();
-        while ((GetPerformanceCounter() - timeStart) < GetPerformanceCounterFrequency())
+        for (int i = 0; i < 60; ++ i)
         {
             window->Tick();
 
             context->Clear(cp);
 
             context->Present();
+
+            Wait();
         }
     }
 
@@ -130,28 +139,23 @@ namespace GFWTests {
 
         // Main loop
 
-        for (int frame = 0; frame < 60; ++ frame)
+        for (int i = 0; i < 60; ++ i)
         {
-            uint64_t timeStart = GetPerformanceCounter();
+            window->Tick();
 
-            {
-                window->Tick();
+            context->Clear(cp);
 
-                context->Clear(cp);
+            context->SetShader(SHADER_VERTEX, vertexShader);
+            context->SetShader(SHADER_PIXEL,  pixelShader);
 
-                context->SetShader(SHADER_VERTEX, vertexShader);
-                context->SetShader(SHADER_PIXEL,  pixelShader);
+            context->SetVertexAttributes(2, vertexAttribs);
+            context->SetVertexBuffer(0, vertexBuffer);
 
-                context->SetVertexAttributes(2, vertexAttribs);
-                context->SetVertexBuffer(0, vertexBuffer);
+            context->Draw(drawParams);
 
-                context->Draw(drawParams);
+            context->Present();
 
-                context->Present();
-            }
-
-            uint64_t period = GetPerformanceCounterFrequency() / 60;
-            while ((GetPerformanceCounter() - timeStart) < period);
+            Wait();
         }
     }
 
