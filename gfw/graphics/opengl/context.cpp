@@ -1,3 +1,5 @@
+#include "profiler\profiler.h"
+
 #include "common\trace.h"
 #include "common\crc32.h"
 
@@ -88,6 +90,8 @@ namespace GFW { namespace OpenGL {
 
     void Context::Clear(const ClearParams & cp)
     {
+        PROFILE();
+
         uint32_t mask = 0;
 
         if (cp.mask | CLEAR_COLOR)
@@ -97,18 +101,32 @@ namespace GFW { namespace OpenGL {
         }
 
         TRACE_ASSERT_GL(glClear, mask);
+
+#if PROFILING
+        TRACE_ASSERT_GL(glFlush);
+        TRACE_ASSERT_GL(glFinish);
+#endif
     }
 
     void Context::Draw( const DrawParams & dp )
     {
+        PROFILE();
+
         FlushState();
 
         uint32_t mode = GetDrawMode(dp.primTop);
         TRACE_ASSERT_GL(glDrawArrays, mode, dp.vertexStart, dp.vertexCount);
+
+#if PROFILING
+        TRACE_ASSERT_GL(glFlush);
+        TRACE_ASSERT_GL(glFinish);
+#endif
     }
 
     void Context::Present()
     {
+        PROFILE();
+
         mWindow->SwapBuffers();
 
         ClearState();
@@ -116,6 +134,8 @@ namespace GFW { namespace OpenGL {
 
     void Context::ClearState()
     {
+        PROFILE();
+
         // Detach shaders
 
         TRACE_ASSERT_GL(glUseProgram, 0);
@@ -135,6 +155,8 @@ namespace GFW { namespace OpenGL {
 
     void Context::FlushState()
     {
+        PROFILE();
+
         // Setup shaders
 
         uint32_t shaderHashes[SHADER_STAGE_NUMBER];
@@ -225,6 +247,11 @@ namespace GFW { namespace OpenGL {
                 }
             }
         }
+
+#if PROFILING
+        TRACE_ASSERT_GL(glFlush);
+        TRACE_ASSERT_GL(glFinish);
+#endif
     }
 
 }} // namespace GFW::OpenGL

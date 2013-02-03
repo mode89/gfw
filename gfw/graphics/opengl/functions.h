@@ -27,6 +27,8 @@
     F(PFNGLCLEARCOLORPROC,                  glClearColor) \
     F(PFNGLCLEARPROC,                       glClear) \
     F(PFNGLDRAWARRAYSPROC,                  glDrawArrays) \
+    F(PFNGLFLUSHPROC,                       glFlush) \
+    F(PFNGLFINISHPROC,                      glFinish) \
 
 #define OPENGL_FUNCTIONS_EXT \
     F(PFNGLCREATESHADERPROC,                glCreateShader) \

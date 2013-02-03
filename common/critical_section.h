@@ -3,15 +3,15 @@
 
 namespace Common {
 
-    typedef void * crit_sec_t;
+    typedef void * CritSec;
 
-    crit_sec_t  CreateCriticalSection();
+    CritSec  CreateCriticalSection();
 
-    void        DeleteCriticalSection(crit_sec_t);
+    void     DeleteCriticalSection(CritSec);
 
-    void        EnterCriticalSection(crit_sec_t);
+    void     EnterCriticalSection(CritSec);
 
-    void        LeaveCriticalSection(crit_sec_t);
+    void     LeaveCriticalSection(CritSec);
 
 } // namespace Common
 

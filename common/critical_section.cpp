@@ -7,24 +7,24 @@
 
     namespace Common {
 
-        crit_sec_t CreateCriticalSection()
+        CritSec CreateCriticalSection()
         {
             CRITICAL_SECTION * section = new CRITICAL_SECTION;
             ::InitializeCriticalSection(section);
             return section;
         }
 
-        void DeleteCriticalSection(crit_sec_t section)
+        void DeleteCriticalSection(CritSec section)
         {
             delete static_cast<CRITICAL_SECTION*>(section);
         }
 
-        void EnterCriticalSection(crit_sec_t section)
+        void EnterCriticalSection(CritSec section)
         {
             ::EnterCriticalSection(static_cast<CRITICAL_SECTION *>(section));
         }
 
-        void LeaveCriticalSection(crit_sec_t section)
+        void LeaveCriticalSection(CritSec section)
         {
             ::LeaveCriticalSection(static_cast<CRITICAL_SECTION *>(section));
         }
