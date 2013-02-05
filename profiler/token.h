@@ -10,10 +10,14 @@ namespace Profiler {
     public:
         Token(const char * name, const char * fileName, uint32_t lineNumber);
 
+        inline
+        uint32_t     GetHash() { return mHash; }
+
     private:
         const char * mName;
         const char * mFileName;
         uint32_t     mLineNumber;
+        uint32_t     mHash;
     };
 
 } // namespace Profiler

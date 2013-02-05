@@ -34,4 +34,8 @@ inline void operator delete(void * data, Common::IAllocator * a)
     a->Free(data);
 }
 
+#define COMMON_NEW(a, typeName)                 new(a) typeName
+#define COMMON_NEW_ARRAY(a, typeName, number)   new(a, number) typeName
+#define COMMON_DELETE(a, typeName, pnt)         pnt->~typeName(); operator delete(a, pnt)
+
 #endif // __COMMON_ALLOCATOR_H__

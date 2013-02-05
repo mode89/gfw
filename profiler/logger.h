@@ -3,33 +3,39 @@
 
 #include "common/typedefs.h"
 #include "common/critical_section.h"
+#include "common/allocator.h"
 
 #include "profiler/event_bucket.h"
 
 namespace Profiler {
 
-    class Manager
+    class Logger
     {
     public:
         void CreateEvent(const Token *, RegionEnding ending);
 
     public:
-        Manager();
-        ~Manager();
+        Logger();
+        ~Logger();
 
     private:
+        void Process();
         void Dump();
 
     private:
-        EventBucket *   m_firstBucket;
-        EventBucket *   m_lastBucket;
+        Common::IAllocator *    mAllocator;
 
-        Common::CritSec  m_eventCriticalSection;
+        EventBucket *           mFirstBucket;
+        EventBucket *           mLastBucket;
 
-        const char *    m_outFileName;
+        Common::CritSec         mEventCriticalSection;
+
+        const char *            mOutputFileName;
+
+
     };
 
-    Manager * GetGlobalManager();
+    Logger * GetGlobalLogger();
 
 } // namespace Profiler
 

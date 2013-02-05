@@ -103,7 +103,6 @@ namespace GFW { namespace OpenGL {
         TRACE_ASSERT_GL(glClear, mask);
 
 #if PROFILING
-        TRACE_ASSERT_GL(glFlush);
         TRACE_ASSERT_GL(glFinish);
 #endif
     }
@@ -118,7 +117,6 @@ namespace GFW { namespace OpenGL {
         TRACE_ASSERT_GL(glDrawArrays, mode, dp.vertexStart, dp.vertexCount);
 
 #if PROFILING
-        TRACE_ASSERT_GL(glFlush);
         TRACE_ASSERT_GL(glFinish);
 #endif
     }
@@ -162,7 +160,6 @@ namespace GFW { namespace OpenGL {
         uint32_t shaderHashes[SHADER_STAGE_NUMBER];
         for (int stage = 0; stage < SHADER_STAGE_NUMBER; ++ stage)
         {
-            TRACE_ASSERT(mShaders[stage].IsAttached());
             shaderHashes[stage] = mShaders[stage].IsAttached() ? mShaders[stage]->GetHash() : 0;
         }
 
@@ -249,7 +246,6 @@ namespace GFW { namespace OpenGL {
         }
 
 #if PROFILING
-        TRACE_ASSERT_GL(glFlush);
         TRACE_ASSERT_GL(glFinish);
 #endif
     }
