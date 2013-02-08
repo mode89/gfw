@@ -7,6 +7,7 @@ namespace GFW {
     {
         PRIM_UNKNOWN = 0,
         PRIM_TRIANGLES,
+        PRIM_TRIANGLES_STRIP
     };
 
 } // namespace GFW

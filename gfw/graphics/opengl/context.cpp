@@ -107,6 +107,11 @@ namespace GFW { namespace OpenGL {
         TRACE_ASSERT_GL(glDrawArrays, mode, dp.vertexStart, dp.vertexCount);
     }
 
+    void Context::Draw( const DrawIndexedParams & )
+    {
+        TRACE_FAIL_MSG("Not yet implemented");
+    }
+
     void Context::Present()
     {
         mWindow->SwapBuffers();
@@ -225,6 +230,32 @@ namespace GFW { namespace OpenGL {
                 }
             }
         }
+    }
+
+    IRenderBufferRef Context::GetDefaultColorBuffer()
+    {
+        TRACE_FAIL_MSG("Not yet implemented");
+        return NULL;
+    }
+
+    void Context::SetIndexBuffer( IBufferIn )
+    {
+        TRACE_FAIL_MSG("Not yet implemented");
+    }
+
+    void Context::SetTexture( ShaderStage, uint32_t slot, ITextureIn )
+    {
+        TRACE_FAIL_MSG("Not yet implemented");
+    }
+
+    void Context::BuildFramebuffer( uint32_t colorBufferCount, IRenderBufferRef color[], IRenderBufferIn depth )
+    {
+        TRACE_FAIL_MSG("Not yet implemented");
+    }
+
+    void Context::DrawScreenQuad()
+    {
+        TRACE_FAIL_MSG("Not yet implemented");
     }
 
 }} // namespace GFW::OpenGL

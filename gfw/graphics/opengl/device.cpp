@@ -57,4 +57,16 @@ namespace GFW { namespace OpenGL {
         return NULL;
     }
 
+    ITextureRef Device::CreateTexture( const TextureDesc &, const void * initialData /*= 0*/ )
+    {
+        TRACE_FAIL_MSG("Not yet implemented");
+        return NULL;
+    }
+
+    IRenderBufferRef Device::CreateColorBuffer( ITextureIn, const SubResIdx & )
+    {
+        TRACE_FAIL_MSG("Not yet implemented");
+        return NULL;
+    }
+
 }} // namespace GFW::OpenGL

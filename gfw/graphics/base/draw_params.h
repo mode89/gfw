@@ -19,6 +19,21 @@ namespace GFW {
         {}
     };
 
+    struct DrawIndexedParams
+    {
+        Primitive   primTop;
+        Type        indexType;
+        uint32_t    indexStart;
+        uint32_t    indexCount;
+
+        DrawIndexedParams()
+            : primTop(PRIM_UNKNOWN)
+            , indexType(TYPE_UNKNOWN)
+            , indexStart(0)
+            , indexCount(0)
+        {}
+    };
+
 } // namespace GFW
 
 #endif // __GFW_GRAPHICS_BASE_DRAW_PARAMS_H__

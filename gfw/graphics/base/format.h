@@ -6,7 +6,8 @@ namespace GFW {
     enum Type
     {
         TYPE_UNKNOWN = 0,
-        TYPE_FLOAT
+        TYPE_FLOAT,
+        TYPE_UNSIGNED_SHORT
     };
 
     enum Format

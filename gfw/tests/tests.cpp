@@ -183,7 +183,7 @@ namespace GFWTests {
 
         // Get default color buffer
 
-        IRenderbufferRef defaultColorBuffer = context->GetDefaultColorBuffer();
+        IRenderBufferRef defaultColorBuffer = context->GetDefaultColorBuffer();
 
         // Create clear parameters
 
@@ -267,7 +267,7 @@ namespace GFWTests {
         defaultColorBuffer->GetDesc(textureDesc);
         ITextureRef texture = device->CreateTexture(textureDesc);
 
-        IRenderbufferRef colorBuffer = device->CreateColorBuffer(texture, SubResIndex(0, 0));
+        IRenderBufferRef colorBuffer = device->CreateColorBuffer(texture, SubResIdx(0, 0));
 
         // Main loop
 
@@ -277,7 +277,7 @@ namespace GFWTests {
 
             // Draw to texture
 
-            context->BuildFramebuffer(1, colorBuffer, NULL);
+            context->BuildFramebuffer(1, &colorBuffer, NULL);
             context->Clear(cp);
 
             context->SetShader(SHADER_VERTEX, vertexShader);
@@ -292,7 +292,7 @@ namespace GFWTests {
 
             // Draw screen quad with texture
 
-            context->BuildFramebuffer(1, defaultColorBuffer, NULL);
+            context->BuildFramebuffer(1, &defaultColorBuffer, NULL);
             context->Clear(cp);
 
             context->SetTexture(SHADER_PIXEL, 0, texture);

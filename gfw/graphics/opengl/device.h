@@ -10,23 +10,27 @@ namespace GFW { namespace OpenGL {
     {
     public:
 
-        virtual IContextRef     CreateContext(GFW::Platform::IWindowIn);
+        virtual IContextRef         CreateContext(GFW::Platform::IWindowIn);
 
-        virtual IShaderRef      CreateShader(ShaderStage, const void * shaderData);
+        virtual IShaderRef          CreateShader(ShaderStage, const void * shaderData);
 
-        virtual IBufferRef      CreateBuffer(const BufferDesc &, const void * initialData);
+        virtual IBufferRef          CreateBuffer(const BufferDesc &, const void * initialData);
+
+        virtual ITextureRef         CreateTexture(const TextureDesc &, const void * initialData = 0);
+
+        virtual IRenderBufferRef    CreateColorBuffer(ITextureIn, const SubResIdx &);
 
     public:
-        static IDeviceRef       CreateInstance(Common::IAllocator *);
+        static IDeviceRef           CreateInstance(Common::IAllocator *);
 
         inline
-        IPlatformRef            GetPlatform()   { return mPlatform; }
+        IPlatformRef                GetPlatform()   { return mPlatform; }
 
     public:
         Device(IPlatformIn, Common::IAllocator *);
 
     private:
-        IPlatformRef            mPlatform;
+        IPlatformRef                mPlatform;
     };
     AUTOREF_REFERENCE_DECLARATION(Device);
 
