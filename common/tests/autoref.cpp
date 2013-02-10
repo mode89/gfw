@@ -17,10 +17,10 @@ namespace AutoRefTests {
         uint32_t GetCounter() { return mRefCounter; }
 
     public:
-        Object(FactoryIn factory, IAllocator * a)
+        Object(FactoryIn factory)
 		    : mFactory(factory)
         {
-            mAllocator = a;
+
         }
 
     private:
@@ -41,18 +41,12 @@ namespace AutoRefTests {
     public:
 	    static FactoryRef CreateInstance()
 	    {
-            IAllocator * a = GetDefaultAllocator();
-            return new(a) Factory(a);
-        }
-
-        Factory(IAllocator * a)
-        {
-            mAllocator = a;
+            return new Factory;
         }
 
         ObjectRef CreateObject()
         {
-            return new(mAllocator) Object(this, mAllocator);
+            return new Object(this);
         }
     };
 

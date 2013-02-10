@@ -14,7 +14,7 @@ namespace GFW { namespace OpenGL {
         uint32_t        GetBufferObject()   { return mBuffer; }
 
     public:
-        Buffer(const BufferDesc &, Common::IAllocator *);
+        Buffer(const BufferDesc &);
         ~Buffer();
 
     private:

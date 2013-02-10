@@ -1,7 +1,6 @@
 #include "common/trace.h"
 
 #include "gfw\platform\win\window.h"
-#include "gfw\allocator.h"
 
 namespace GFW { namespace Platform {
 
@@ -46,9 +45,9 @@ namespace GFW { namespace Platform {
 
     } g_WindowClassRegisterer;
 
-    IWindowRef Window::CreateInstance(const WindowDesc & desc, IAllocator * a)
+    IWindowRef Window::CreateInstance(const WindowDesc & desc)
     {
-        Window * wnd = GFW_NEW(a, Window) (desc, a);
+        Window * wnd = new Window(desc);
 
         if (wnd != NULL)
         {
@@ -57,17 +56,16 @@ namespace GFW { namespace Platform {
                 return wnd;
             }
 
-            GFW_DELETE(a, wnd);
+            delete wnd;
         }
 
         return NULL;
     }
 
-    Window::Window(const WindowDesc & desc, IAllocator * a)
+    Window::Window(const WindowDesc & desc)
         : mDesc(desc)
         , mHwnd(NULL)
     {
-        mAllocator = a;
     }
 
     Window::~Window()

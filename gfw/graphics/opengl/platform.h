@@ -2,7 +2,6 @@
 #define __GFW_GRAPHICS_OPENGL_PLATFORM_H__
 
 #include "common\autoref.h"
-#include "common\allocator.h"
 #include "gfw\platform\base\window.h"
 
 namespace GFW { namespace OpenGL {
@@ -19,7 +18,7 @@ namespace GFW { namespace OpenGL {
     };
     AUTOREF_REFERENCE_DECLARATION(IPlatform);
 
-    IPlatformRef CreatePlatform(Common::IAllocator *);
+    IPlatformRef CreatePlatform();
 
 }} // namespace GFW::OpenGL
 

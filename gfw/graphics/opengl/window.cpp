@@ -8,11 +8,9 @@ namespace GFW { namespace OpenGL {
     using namespace Common;
     using namespace Platform;
 
-    OpenglWindow::OpenglWindow(IWindowIn window, IAllocator * a)
+    OpenglWindow::OpenglWindow(IWindowIn window)
         : mWindowPlat(window.StaticCast<Window>())
     {
-        mAllocator = a;
-
         mHWND = mWindowPlat->GetWindowHandle();
         TRACE_ASSERT(mHWND != NULL);
 

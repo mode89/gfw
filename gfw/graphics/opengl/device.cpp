@@ -1,33 +1,32 @@
 #include "common/trace.h"
 
-#include "gfw\graphics\opengl\device.h"
-#include "gfw\graphics\opengl\context.h"
-#include "gfw\graphics\opengl\shader.h"
-#include "gfw\graphics\opengl\buffer.h"
-#include "gfw\allocator.h"
+#include "gfw/graphics/opengl/device.h"
+#include "gfw/graphics/opengl/context.h"
+#include "gfw/graphics/opengl/shader.h"
+#include "gfw/graphics/opengl/buffer.h"
 
 namespace GFW { namespace OpenGL {
 
     using namespace Common;
 
-    Device::Device(IPlatformIn p, IAllocator * a)
+    Device::Device(IPlatformIn p)
         : mPlatform(p)
     {
-        mAllocator = a;
+
     }
 
     IContextRef Device::CreateContext(Platform::IWindowIn window)
     {
-        return GFW_NEW(mAllocator, Context) (window, this, mAllocator);
+        return new Context(window, this);
     }
 
-    IDeviceRef Device::CreateInstance(IAllocator * a)
+    IDeviceRef Device::CreateInstance()
     {
-        IPlatformRef platform = CreatePlatform(a);
+        IPlatformRef platform = CreatePlatform();
 
         if (platform->Init())
         {
-            return GFW_NEW(a, Device) (platform, a);
+            return new Device(platform);
         }
 
         return NULL;
@@ -35,7 +34,7 @@ namespace GFW { namespace OpenGL {
 
     IShaderRef Device::CreateShader( ShaderStage stage, const void * shaderData )
     {
-        ShaderRef shader = GFW_NEW(mAllocator, Shader) (stage, mAllocator);
+        ShaderRef shader = new Shader(stage);
 
         if (shader->Compile(static_cast<const char*>(shaderData)) != 0)
         {
@@ -47,7 +46,7 @@ namespace GFW { namespace OpenGL {
 
     IBufferRef Device::CreateBuffer( const BufferDesc & desc, const void * initialData )
     {
-        BufferRef buffer = GFW_NEW(mAllocator, Buffer) (desc, mAllocator);
+        BufferRef buffer = new Buffer(desc);
 
         if (buffer->Init(initialData) != 0)
         {

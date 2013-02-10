@@ -3,10 +3,9 @@
 #include "common\trace.h"
 #include "common\crc32.h"
 
-#include "gfw\allocator.h"
-#include "gfw\graphics\common\format.h"
-#include "gfw\graphics\opengl\context.h"
-#include "gfw\graphics\opengl\functions.h"
+#include "gfw/graphics/common/format.h"
+#include "gfw/graphics/opengl/context.h"
+#include "gfw/graphics/opengl/functions.h"
 
 namespace GFW { namespace OpenGL {
 
@@ -34,11 +33,9 @@ namespace GFW { namespace OpenGL {
         return 0;
     }
 
-    Context::Context(Platform::IWindowIn window, DeviceIn d, IAllocator * a)
+    Context::Context(Platform::IWindowIn window, DeviceIn d)
         : mDevice(d)
     {
-        mAllocator = a;
-
         mWindow = mDevice->GetPlatform()->CreateOpenglWindow(window).StaticCast<OpenglWindow>();
 
         memset(mVertAttrs, 0, sizeof(mVertAttrs));
@@ -194,12 +191,12 @@ namespace GFW { namespace OpenGL {
                 int32_t infoLogLength = 0;
                 TRACE_ASSERT_GL(glGetProgramiv, program, GL_INFO_LOG_LENGTH, &infoLogLength);
 
-                char * infoLog = GFW_NEW_ARRAY(mAllocator, char8_t, infoLogLength + 1);
+                char * infoLog = new char8_t [infoLogLength + 1];
                 TRACE_ASSERT_GL(glGetProgramInfoLog, program, infoLogLength, NULL, infoLog);
 
                 TRACE_ERROR_FORMATTED("Cannot link the program\n\n%s\n", infoLog);
 
-                GFW_DELETE(mAllocator, infoLog);
+                delete infoLog;
 
                 TRACE_ASSERT_GL(glDeleteProgram, program);
                 program = 0;
