@@ -39,11 +39,11 @@ namespace GFW { namespace OpenGL {
         return 0;
     }
 
-    Buffer::Buffer(const BufferDesc & desc, IAllocator * a)
+    Buffer::Buffer(const BufferDesc & desc)
         : mDesc(desc)
         , mBuffer(0)
     {
-        mAllocator = a;
+
     }
 
     Buffer::~Buffer()

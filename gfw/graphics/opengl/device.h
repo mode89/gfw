@@ -17,13 +17,13 @@ namespace GFW { namespace OpenGL {
         virtual IBufferRef      CreateBuffer(const BufferDesc &, const void * initialData);
 
     public:
-        static IDeviceRef       CreateInstance(Common::IAllocator *);
+        static IDeviceRef       CreateInstance();
 
         inline
         IPlatformRef            GetPlatform()   { return mPlatform; }
 
     public:
-        Device(IPlatformIn, Common::IAllocator *);
+        Device(IPlatformIn);
 
     private:
         IPlatformRef            mPlatform;

@@ -3,7 +3,6 @@
 
 #include "common\typedefs.h"
 #include "common\atomic.h"
-#include "common\allocator.h"
 
 #define AUTOREF_REFERENCE_DECLARATION(typeName) \
     typedef       Common::AutoRef <       typeName >            typeName ## Ref; \
@@ -23,12 +22,10 @@ namespace Common {
     public:
         ARefCounted()
             : mRefCounter(0)
-            , mAllocator(NULL)
         {}
 
     protected:
-        int             mRefCounter;
-        IAllocator *    mAllocator;
+        int mRefCounter;
 
         template < class ObjectClass > friend class AutoRef;
     };
@@ -108,8 +105,7 @@ namespace Common {
                 AtomicDecrement(mObject->mRefCounter);
                 if (mObject->mRefCounter == 0)
                 {
-                    mObject->~ObjectClass();
-                    operator delete(mObject, mObject->mAllocator);
+                    delete mObject;
                 }
             }
         }
