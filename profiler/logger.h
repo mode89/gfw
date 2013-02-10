@@ -3,7 +3,6 @@
 
 #include "common/typedefs.h"
 #include "common/critical_section.h"
-#include "common/allocator.h"
 
 #include "profiler/event_bucket.h"
 
@@ -23,8 +22,6 @@ namespace Profiler {
         void Dump();
 
     private:
-        Common::IAllocator *    mAllocator;
-
         EventBucket *           mFirstBucket;
         EventBucket *           mLastBucket;
 

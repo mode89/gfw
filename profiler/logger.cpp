@@ -13,8 +13,7 @@ namespace Profiler {
     static Logger sGlobalLogger;
 
     Logger::Logger()
-        : mAllocator(Common::GetDefaultAllocator())
-        , mFirstBucket(0)
+        : mFirstBucket(0)
         , mLastBucket(0)
         , mOutputFileName(DEFAULT_DATA_FILE_NAME)
     {
@@ -39,13 +38,13 @@ namespace Profiler {
             if (mFirstBucket == NULL)
             {
                 TRACE_ASSERT(mLastBucket == NULL);
-                mFirstBucket = mLastBucket = COMMON_NEW(mAllocator, EventBucket);
+                mFirstBucket = mLastBucket = new EventBucket;
             }
 
             // Reached the end of the bucket
             if (mLastBucket->lastEvent == &mLastBucket->end)
             {
-                mLastBucket->nextBucket = COMMON_NEW(mAllocator, EventBucket);
+                mLastBucket->nextBucket = new EventBucket;
 
                 if (mLastBucket->nextBucket != 0)
                 {
@@ -60,11 +59,11 @@ namespace Profiler {
                     for (EventBucket * bucket = mFirstBucket; bucket != NULL;)
                     {
                         EventBucket * nextBucket = bucket->nextBucket;
-                        COMMON_DELETE(mAllocator, EventBucket, bucket);
+                        delete bucket;
                         bucket = nextBucket;
                     }
 
-                    mFirstBucket = mLastBucket = COMMON_NEW(mAllocator, EventBucket);
+                    mFirstBucket = mLastBucket = new EventBucket;
                 }
             }
 
