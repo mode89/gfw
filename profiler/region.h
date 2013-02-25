@@ -3,34 +3,39 @@
 
 #include "common/typedefs.h"
 #include "profiler/token.h"
+#include "profiler/event.h"
 
 namespace Profiler {
-
-    enum RegionEnding
-    {
-        REGION_BEGIN = 0,
-        REGION_END
-    };
 
     class Region
     {
     public:
+        bool                    Dispatch(const Event *);
 
-        bool                    operator < ( const Region & other );
+        inline RegionEnding     GetLastEnding() const   { return mLastEnding; }
 
-        void                    Hit(uint64_t time);
+        inline const char *     GetName() const         { return mName; }
 
-        inline RegionEnding     GetLastEnding()     { return mLastEnding; }
+        inline unsigned int     GetHits() const         { return mHits; }
 
-        inline const char *     GetName()           { return mName; }
+        inline uint64_t         GetTotalTime() const    { return mTotalTime; }
 
-        inline unsigned int     GetHits()           { return mHits; }
+        inline uint64_t         GetMinTime() const      { return mMinTime; }
 
-        inline uint64_t         GetTotalTime()      { return mTotalTime; }
+        inline uint64_t         GetMaxTime() const      { return mMaxTime; }
 
-        inline uint64_t         GetMinTime()        { return mMinTime; }
-
-        inline uint64_t         GetMaxTime()        { return mMaxTime; }
+    public:
+        Region()
+            : mName(NULL)
+            , mFileName(NULL)
+            , mLineNumber(0)
+            , mLastEnding(REGION_END)
+            , mLastTime(0)
+            , mHits(0)
+            , mTotalTime(0)
+            , mMinTime(-1)
+            , mMaxTime(0)
+        {}
 
     private:
 
@@ -43,8 +48,6 @@ namespace Profiler {
         const char *            mName;
         const char *            mFileName;
         uint32_t                mLineNumber;
-
-        uint32_t                mHash;
 
         // State
 

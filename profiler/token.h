@@ -11,7 +11,16 @@ namespace Profiler {
         Token(const char * name, const char * fileName, uint32_t lineNumber);
 
         inline
-        uint32_t     GetHash() { return mHash; }
+        uint32_t        GetHash() const         { return mHash; }
+
+        inline
+        const char *    GetName() const         { return mName; }
+
+        inline
+        const char *    GetFileName() const     { return mFileName; }
+
+        inline
+        uint32_t        GetLineNumber() const   { return mLineNumber; }
 
     private:
         const char * mName;

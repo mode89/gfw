@@ -5,6 +5,9 @@
 #include "common/critical_section.h"
 
 #include "profiler/event_bucket.h"
+#include "profiler/region.h"
+
+#include <map>
 
 namespace Profiler {
 
@@ -22,6 +25,8 @@ namespace Profiler {
         void Dump();
 
     private:
+        typedef std::map< uint32_t, Region > RegionMap;
+
         EventBucket *           mFirstBucket;
         EventBucket *           mLastBucket;
 
@@ -29,7 +34,7 @@ namespace Profiler {
 
         const char *            mOutputFileName;
 
-
+        RegionMap               mRegions;
     };
 
     Logger * GetGlobalLogger();

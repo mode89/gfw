@@ -1,9 +1,15 @@
 #ifndef __PROFILER_EVENT_H__
 #define __PROFILER_EVENT_H__
 
-#include "profiler/region.h"
+#include "profiler/token.h"
 
 namespace Profiler {
+
+    enum RegionEnding
+    {
+        REGION_BEGIN = 0,
+        REGION_END
+    };
 
     struct Event
     {

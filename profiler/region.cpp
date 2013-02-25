@@ -1,37 +1,56 @@
-#include "profiler/region.h"
+#include "common/trace.h"
 
-#include "common/crc32.h"
+#include "profiler/region.h"
 
 namespace Profiler {
 
-    using namespace Common;
-
-    void Region::Hit(uint64_t time)
+    bool Region::Dispatch( const Event * e )
     {
-        // The beginning of the region
-        if (mLastEnding == REGION_END)
+        switch (mLastEnding)
         {
-            mHits ++;
-            mLastTime   = time;
-            mLastEnding = REGION_BEGIN;
+        case REGION_BEGIN:
+            {
+                if (e->ending == REGION_BEGIN)
+                {
+                    TRACE_ERROR("Wrong ending of the event");
+                    return false;
+                }
+
+                if (mName == NULL)
+                {
+                    mName       = e->token->GetName();
+                    mFileName   = e->token->GetFileName();
+                    mLineNumber = e->token->GetLineNumber();
+                }
+
+                uint64_t period = e->time - mLastTime;
+                mTotalTime  += period;
+                mMinTime    =  (mMinTime > period) ? period : mMinTime;
+                mMaxTime    =  (mMaxTime < period) ? period : mMaxTime;
+                mLastEnding = e->ending;
+            }
+            break;
+
+        case REGION_END:
+            {
+                if (e->ending == REGION_END)
+                {
+                    TRACE_ERROR("Wrong ending of the event");
+                    return false;
+                }
+
+                mHits ++;
+                mLastTime   = e->time;
+                mLastEnding = e->ending;
+            }
+            break;
+
+        default:
+            TRACE_FAIL();
+            return false;
         }
-        // The end of the region
-        else
-        {
-            uint64_t period = time - mLastTime;
 
-            mTotalTime  += period;
-            mMinTime    = (mMinTime > period) ? period : mMinTime;
-            mMaxTime    = (mMaxTime < period) ? period : mMaxTime;
-
-            mLastTime   =  time;
-            mLastEnding =  REGION_END;
-        }
-    }
-
-    bool Region::operator < ( const Region & other )
-    {
-        return mHash < other.mHash;
+        return true;
     }
 
 } // namespace Profiler
