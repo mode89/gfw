@@ -11,6 +11,8 @@ namespace Trace {
         va_start(args, format);
         vprintf(format, args);
         va_end(args);
+
+        printf("\n");
     }
 
 } // namespace Trace
