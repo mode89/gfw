@@ -2,7 +2,6 @@
 #define __GFW_PLATFORM_WIN_WINDOW_H__
 
 #include "gfw\platform\base\window.h"
-#include "common\allocator.h"
 
 #include <windows.h>
 
@@ -16,7 +15,7 @@ namespace GFW { namespace Platform {
         virtual void                Tick();
 
     public:
-        static IWindowRef           CreateInstance(const WindowDesc &, Common::IAllocator * a);
+        static IWindowRef           CreateInstance(const WindowDesc &);
 
         uint32_t                    Initialize();
 
@@ -26,7 +25,7 @@ namespace GFW { namespace Platform {
         static LRESULT CALLBACK     Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
     public:
-        Window(const WindowDesc &, Common::IAllocator * a);
+        Window(const WindowDesc &);
         ~Window();
 
     protected:

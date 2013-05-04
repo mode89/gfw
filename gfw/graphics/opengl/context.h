@@ -46,7 +46,7 @@ namespace GFW { namespace OpenGL {
         void                        FlushState();
 
     public:
-        Context(Platform::IWindowIn, DeviceIn, Common::IAllocator *);
+        Context(Platform::IWindowIn, DeviceIn);
         ~Context();
 
     private:

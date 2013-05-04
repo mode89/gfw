@@ -13,15 +13,13 @@ namespace Common {
 
     FileRef File::Create()
     {
-        IAllocator * a = GetDefaultAllocator();
-        return new(a) File(a);
+        return new File;
     }
 
-    File::File(IAllocator * a)
+    File::File()
         : mData(NULL)
         , mSize(0)
     {
-        mAllocator = a;
     }
 
     uint32_t File::Read( const char * filePath )
@@ -38,7 +36,7 @@ namespace Common {
 
             if (size != 0)
             {
-                void * data = mAllocator->Alloc(size + 1);
+                void * data = new char8_t [size + 1];
                 TRACE_ASSERT(data != NULL);
 
                 if (data != NULL)

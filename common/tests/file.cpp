@@ -3,8 +3,6 @@
 
 #include "gtest\gtest.h"
 
-#include "config.h"
-
 namespace FileTests {
 
     using namespace Common;

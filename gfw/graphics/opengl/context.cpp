@@ -1,10 +1,11 @@
+#include "profiler\profiler.h"
+
 #include "common\trace.h"
 #include "common\crc32.h"
 
-#include "gfw\allocator.h"
-#include "gfw\graphics\common\format.h"
-#include "gfw\graphics\opengl\context.h"
-#include "gfw\graphics\opengl\functions.h"
+#include "gfw/graphics/common/format.h"
+#include "gfw/graphics/opengl/context.h"
+#include "gfw/graphics/opengl/functions.h"
 
 namespace GFW { namespace OpenGL {
 
@@ -32,11 +33,9 @@ namespace GFW { namespace OpenGL {
         return 0;
     }
 
-    Context::Context(Platform::IWindowIn window, DeviceIn d, IAllocator * a)
+    Context::Context(Platform::IWindowIn window, DeviceIn d)
         : mDevice(d)
     {
-        mAllocator = a;
-
         mWindow = mDevice->GetPlatform()->CreateOpenglWindow(window).StaticCast<OpenglWindow>();
 
         memset(mVertAttrs, 0, sizeof(mVertAttrs));
@@ -88,6 +87,8 @@ namespace GFW { namespace OpenGL {
 
     void Context::Clear(const ClearParams & cp)
     {
+        PROFILE();
+
         uint32_t mask = 0;
 
         if (cp.mask | CLEAR_COLOR)
@@ -97,14 +98,24 @@ namespace GFW { namespace OpenGL {
         }
 
         TRACE_ASSERT_GL(glClear, mask);
+
+#if PROFILING
+        TRACE_ASSERT_GL(glFinish);
+#endif
     }
 
     void Context::Draw( const DrawParams & dp )
     {
+        PROFILE();
+
         FlushState();
 
         uint32_t mode = GetDrawMode(dp.primTop);
         TRACE_ASSERT_GL(glDrawArrays, mode, dp.vertexStart, dp.vertexCount);
+
+#if PROFILING
+        TRACE_ASSERT_GL(glFinish);
+#endif
     }
 
     void Context::Draw( const DrawIndexedParams & )
@@ -114,6 +125,8 @@ namespace GFW { namespace OpenGL {
 
     void Context::Present()
     {
+        PROFILE();
+
         mWindow->SwapBuffers();
 
         ClearState();
@@ -121,6 +134,8 @@ namespace GFW { namespace OpenGL {
 
     void Context::ClearState()
     {
+        PROFILE();
+
         // Detach shaders
 
         TRACE_ASSERT_GL(glUseProgram, 0);
@@ -140,12 +155,13 @@ namespace GFW { namespace OpenGL {
 
     void Context::FlushState()
     {
+        PROFILE();
+
         // Setup shaders
 
         uint32_t shaderHashes[SHADER_STAGE_NUMBER];
         for (int stage = 0; stage < SHADER_STAGE_NUMBER; ++ stage)
         {
-            TRACE_ASSERT(mShaders[stage].IsAttached());
             shaderHashes[stage] = mShaders[stage].IsAttached() ? mShaders[stage]->GetHash() : 0;
         }
 
@@ -180,12 +196,12 @@ namespace GFW { namespace OpenGL {
                 int32_t infoLogLength = 0;
                 TRACE_ASSERT_GL(glGetProgramiv, program, GL_INFO_LOG_LENGTH, &infoLogLength);
 
-                char * infoLog = GFW_NEW_ARRAY(mAllocator, char8_t, infoLogLength + 1);
+                char * infoLog = new char8_t [infoLogLength + 1];
                 TRACE_ASSERT_GL(glGetProgramInfoLog, program, infoLogLength, NULL, infoLog);
 
                 TRACE_ERROR_FORMATTED("Cannot link the program\n\n%s\n", infoLog);
 
-                GFW_DELETE(mAllocator, infoLog);
+                delete infoLog;
 
                 TRACE_ASSERT_GL(glDeleteProgram, program);
                 program = 0;
@@ -230,6 +246,10 @@ namespace GFW { namespace OpenGL {
                 }
             }
         }
+
+#if PROFILING
+        TRACE_ASSERT_GL(glFinish);
+#endif
     }
 
     IRenderBufferRef Context::GetDefaultColorBuffer()

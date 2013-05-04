@@ -4,18 +4,6 @@
 #include "common\typedefs.h"
 #include "common\platform.h"
 
-// By default enable trace for debug configuration
-
-#if !defined(TRACE_ASSERT_ENABLED) && defined(PLATFORM_DEBUG)
-#define TRACE_ASSERT_ENABLED 1
-#endif // !defined(TRACE_ASSERT_ENABLED) && defined(PLATFORM_DEBUG)
-
-// By default enable trace messages
-
-#if !defined(TRACE_MESSAGE_ENABLED)
-#define TRACE_MESSAGE_ENABLED 1
-#endif // !defined(TRACE_MESSAGE_ENABLED)
-
 // Software breakpoint
 
 #if PLATFORM_COMPILER_MSVC
@@ -24,7 +12,7 @@
 #define TRACE_DEBUG_BREAK()     asm("int $3")
 #endif // Determine the compiler
 
-// Immediately fail with output a message
+// Failing
 
 #define TRACE_FAIL_MSG(msg) \
     Trace::Message("Failed in %s : line %d : %s\n", __FILE__, __LINE__, msg); \
@@ -33,6 +21,10 @@
 #define TRACE_FAIL() TRACE_DEBUG_BREAK()
 
 // Assertion
+
+#if !defined(TRACE_ASSERT_ENABLED) && defined(PLATFORM_DEBUG) // By default enable trace for debug configuration
+#define TRACE_ASSERT_ENABLED 1
+#endif // !defined(TRACE_ASSERT_ENABLED) && defined(PLATFORM_DEBUG)
 
 #if TRACE_ASSERT_ENABLED
 
@@ -57,6 +49,10 @@
 #endif // TRACE_ASSERT_ENABLED
 
 // Messages
+
+#if !defined(TRACE_MESSAGE_ENABLED) // By default enable trace messages
+#define TRACE_MESSAGE_ENABLED 1
+#endif // !defined(TRACE_MESSAGE_ENABLED)
 
 #if TRACE_MESSAGE_ENABLED
 

@@ -2,7 +2,6 @@
 
 #include "gfw\platform\win\platform.h"
 #include "gfw\platform\win\window.h"
-#include "gfw\allocator.h"
 
 #include <windows.h>
 
@@ -31,7 +30,7 @@ namespace GFW { namespace Platform {
 
     IWindowRef CreateEmptyWindow(WindowDesc & desc)
     {
-        return Window::CreateInstance(desc, GetDefaultAllocator());
+        return Window::CreateInstance(desc);
     }
 
 }} // namespace GFW::Platform

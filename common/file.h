@@ -2,7 +2,6 @@
 #define __COMMON_FILE_H__
 
 #include "common\autoref.h"
-#include "common\allocator.h"
 
 namespace Common {
 
@@ -21,7 +20,7 @@ namespace Common {
         virtual uint64_t        GetSize() const     { return mSize; }
 
     public:
-        File(IAllocator * a);
+        File();
 
     private:
         char8_t *       mData;

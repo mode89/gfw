@@ -1,6 +1,0 @@
-#ifndef __GFW_TESTS_CONFIG_H__
-#define __GFW_TESTS_CONFIG_H__
-
-#define TESTS_SOURCE_DIR "${GFW_TESTS_SOURCE_DIR}/"
-
-#endif // __GFW_TESTS_CONFIG_H__

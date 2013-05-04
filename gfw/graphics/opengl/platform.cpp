@@ -1,10 +1,9 @@
 #include "common/trace.h"
 
-#include "gfw\allocator.h"
-#include "gfw\graphics\opengl\platform.h"
-#include "gfw\graphics\opengl\functions.h"
-#include "gfw\graphics\opengl\functions_platform.h"
-#include "gfw\graphics\opengl\window.h"
+#include "gfw/graphics/opengl/platform.h"
+#include "gfw/graphics/opengl/functions.h"
+#include "gfw/graphics/opengl/functions_platform.h"
+#include "gfw/graphics/opengl/window.h"
 
 namespace GFW { namespace OpenGL {
 
@@ -27,10 +26,10 @@ namespace GFW { namespace OpenGL {
     class PlatformWin: public IPlatform
     {
     public:
-        PlatformWin(IAllocator * a)
+        PlatformWin()
             : mLibrary(NULL)
         {
-            mAllocator = a;
+
         }
 
         ~PlatformWin()
@@ -125,7 +124,7 @@ namespace GFW { namespace OpenGL {
 
         virtual IWindowRef CreateOpenglWindow(IWindowIn window)
         {
-            OpenglWindowRef oglWindow = GFW_NEW(mAllocator, OpenglWindow) (window, mAllocator);
+            OpenglWindowRef oglWindow = new OpenglWindow(window);
             return (oglWindow->Init() != 0) ? oglWindow.StaticCast<IWindow>() : NULL;
         }
 
@@ -133,9 +132,9 @@ namespace GFW { namespace OpenGL {
         HMODULE mLibrary;
     };
 
-    IPlatformRef CreatePlatform(IAllocator * a)
+    IPlatformRef CreatePlatform()
     {
-        return GFW_NEW(a, PlatformWin) (a);
+        return new PlatformWin;
     }
 
 #else

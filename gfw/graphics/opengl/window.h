@@ -16,7 +16,7 @@ namespace GFW { namespace OpenGL {
         void            SwapBuffers();
 
     public:
-        OpenglWindow(Platform::IWindowIn, Common::IAllocator *);
+        OpenglWindow(Platform::IWindowIn);
         ~OpenglWindow();
 
     private:

@@ -1,7 +1,6 @@
 #include "common/trace.h"
 #include "common/crc32.h"
 
-#include "gfw/allocator.h"
 #include "gfw/graphics/opengl/shader.h"
 #include "gfw/graphics/opengl/functions.h"
 
@@ -23,12 +22,11 @@ namespace GFW { namespace OpenGL {
         return 0;
     }
 
-    Shader::Shader( ShaderStage stage, Common::IAllocator * a )
+    Shader::Shader( ShaderStage stage )
         : mStage(stage)
         , mShader(0)
         , mHash(0)
     {
-        mAllocator = a;
     }
 
     Shader::~Shader()
@@ -64,13 +62,13 @@ namespace GFW { namespace OpenGL {
             int32_t infoLogLength = 0;
             TRACE_ASSERT_GL(glGetShaderiv, mShader, GL_INFO_LOG_LENGTH, &infoLogLength);
 
-            char * infoLog = GFW_NEW_ARRAY(mAllocator, char, infoLogLength + 1);
+            char * infoLog = new char [infoLogLength + 1];
             TRACE_ASSERT_GL(glGetShaderInfoLog, mShader, infoLogLength, NULL, infoLog);
 
             infoLog[infoLogLength] = 0;
             TRACE_ERROR_FORMATTED("Cannot compile the shader\n\n%s\n", infoLog);
 
-            GFW_DELETE(mAllocator, infoLog);
+            delete infoLog;
 
             TRACE_ASSERT_GL(glDeleteShader, mShader);
             mShader = 0;

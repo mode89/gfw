@@ -3,8 +3,6 @@
 
 #include "common/file.h"
 
-#include "config.h"
-
 namespace GFWTests {
 
     using namespace GFW;

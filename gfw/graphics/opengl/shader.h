@@ -20,7 +20,7 @@ namespace GFW { namespace OpenGL {
         uint32_t                GetShaderObject()   { return mShader; }
 
     public:
-        Shader(ShaderStage, Common::IAllocator *);
+        Shader(ShaderStage);
         ~Shader();
 
     private:

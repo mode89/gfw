@@ -1,24 +1,28 @@
+#include "common/platform.h"
 #include "common\atomic.h"
-#include "common\platform.h"
 
 #if PLATFORM_WIN32
 
-#include <windows.h>
+    #include <windows.h>
 
-namespace Common {
+    namespace Common {
 
-    void AtomicIncrement(int32_t & val)
-    {
-        volatile LONG * v = static_cast<volatile LONG *>(static_cast<void *>(&val));
-        InterlockedIncrement(v);
-    }
+        void AtomicIncrement(int32_t & val)
+        {
+            volatile LONG * v = static_cast<volatile LONG *>(static_cast<void *>(&val));
+            InterlockedIncrement(v);
+        }
 
-    void AtomicDecrement(int32_t & val)
-    {
-        volatile LONG * v = static_cast<volatile LONG *>(static_cast<void *>(&val));
-        InterlockedDecrement(v);
-    }
+        void AtomicDecrement(int32_t & val)
+        {
+            volatile LONG * v = static_cast<volatile LONG *>(static_cast<void *>(&val));
+            InterlockedDecrement(v);
+        }
 
-} // namespace Common
+    } // namespace Common
+
+#else
+
+    #error Unrecognized platform
 
 #endif // Selecting the platform
