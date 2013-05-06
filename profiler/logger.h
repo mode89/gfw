@@ -30,7 +30,7 @@ namespace Profiler {
         EventBucket *           mFirstBucket;
         EventBucket *           mLastBucket;
 
-        Common::CritSec         mEventCriticalSection;
+        Common::CriticalSection mEventCriticalSection;
 
         const char *            mOutputFileName;
 
