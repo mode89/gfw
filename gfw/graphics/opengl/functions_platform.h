@@ -14,14 +14,18 @@ namespace GFW { namespace OpenGL {
     typedef PROC  (WINAPI *  PFNWGLGETPROCADDRESS)(LPCSTR);
     typedef HGLRC (WINAPI *  PFNWGLCREATECONTEXT)(HDC);
     typedef BOOL  (WINAPI *  PFNWGLMAKECURRENT)(HDC, HGLRC);
+    typedef HGLRC (WINAPI *  PFNWGLGETCURRENTCONTEXT)();
     typedef BOOL  (WINAPI *  PFNWGLDELETECONTEXT)(HGLRC);
-    typedef BOOL  (WINAPI *  PFNWGLCHOOSEPIXELFORMAT) (HDC, const int *, const FLOAT *, UINT, int *, UINT *);
+    typedef BOOL  (WINAPI *  PFNWGLCHOOSEPIXELFORMAT)(HDC, const int *, const FLOAT *, UINT, int *, UINT *);
+    typedef BOOL  (WINAPI *  PFNWGLSHARELISTS)(HGLRC, HGLRC);
 
     extern PFNWGLGETPROCADDRESS     wglGetProcAddress;
     extern PFNWGLCREATECONTEXT      wglCreateContext;
     extern PFNWGLMAKECURRENT        wglMakeCurrent;
+    extern PFNWGLGETCURRENTCONTEXT  wglGetCurrentContext;
     extern PFNWGLDELETECONTEXT      wglDeleteContext;
     extern PFNWGLCHOOSEPIXELFORMAT  wglChoosePixelFormat;
+    extern PFNWGLSHARELISTS         wglShareLists;
 
 }} // namespace GFW::OpenGL
 

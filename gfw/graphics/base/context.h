@@ -16,8 +16,6 @@ namespace GFW {
     {
     public:
 
-        virtual IRenderBufferRef    GetDefaultColorBuffer() = 0;
-
         virtual void                SetShader(ShaderStage, IShaderIn) = 0;
 
         virtual void                SetVertexAttributes(uint32_t number, VertexAttribute []) = 0;
@@ -28,7 +26,11 @@ namespace GFW {
 
         virtual void                SetTexture(ShaderStage, uint32_t slot, ITextureIn) = 0;
 
-        virtual void                BuildFramebuffer(uint32_t colorBufferCount, IRenderBufferRef color[], IRenderBufferIn depth) = 0;
+        virtual void                SetFrameBuffer(uint32_t colorBufferCount, IRenderBufferRef color[], IRenderBufferIn depth) = 0;
+
+        virtual void                BeginScene() = 0;
+
+        virtual void                EndScene() = 0;
 
         virtual void                Clear(const ClearParams &) = 0;
 
@@ -38,12 +40,10 @@ namespace GFW {
 
         virtual void                DrawScreenQuad() = 0;
 
-        virtual void                Present() = 0;
-
         virtual void                ClearState() = 0;
 
     public:
-        virtual         ~IContext() { }
+        virtual                     ~IContext() { }
     };
     AUTOREF_REFERENCE_DECLARATION(IContext);
 

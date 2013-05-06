@@ -3,15 +3,21 @@
 
 namespace GFW {
 
-    const uint32_t CLEAR_COLOR = (1 << 0);
+	enum
+	{
+		CLEAR_COLOR = (1 << 0),
+		CLEAR_DEPTH = (1 << 1)
+	};
 
     struct ClearParams
     {
         uint32_t mask;
         float    color[4];
+		float	 depth;
 
         ClearParams()
             : mask(0)
+			, depth(1.0f)
         {
             color[0] = 0.0f;
             color[1] = 0.0f;

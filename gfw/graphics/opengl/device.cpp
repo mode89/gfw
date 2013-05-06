@@ -5,35 +5,56 @@
 #include "gfw/graphics/opengl/shader.h"
 #include "gfw/graphics/opengl/buffer.h"
 
+#define AUTO_LOCK_CONTEXT   AutoLock __auto_lock_context(this, &mMutex, mNativeContext)
+
 namespace GFW { namespace OpenGL {
 
     using namespace Common;
 
-    Device::Device(IPlatformIn p)
-        : mPlatform(p)
+    class AutoLock
     {
-
-    }
-
-    IContextRef Device::CreateContext(Platform::IWindowIn window)
-    {
-        return new Context(window, this);
-    }
-
-    IDeviceRef Device::CreateInstance()
-    {
-        IPlatformRef platform = CreatePlatform();
-
-        if (platform->Init())
+    public:
+        AutoLock(Device * device, Futex * mutex, NativeContext nativeContext)
+            : mDevice(device)
+            , mMutex(mutex)
+            , mPrevContext(NULL)
         {
-            return new Device(platform);
+            mMutex->Lock();
+            mPrevContext = mDevice->GetCurrentContext();
+            mDevice->MakeCurrent(nativeContext);
         }
 
-        return NULL;
+        ~AutoLock()
+        {
+            mDevice->MakeCurrent(mPrevContext);
+            mMutex->Unlock();
+        }
+
+    private:
+        Device *        mDevice;
+        Futex *         mMutex;
+        NativeContext   mPrevContext;
+    };
+
+    Device::Device(WindowHandle window)
+        : mNativeContext(NULL)
+    {
+        mDrawingContext   = CreateDrawingContext(window);
+        mNativeContext    = mDrawingContext->GetRenderingContext();
+        mImmediateContext = new Context(this);
+    }
+
+    IContextRef Device::CreateContext()
+    {
+        AUTO_LOCK_CONTEXT;
+
+        return new Context(this);
     }
 
     IShaderRef Device::CreateShader( ShaderStage stage, const void * shaderData )
     {
+        AUTO_LOCK_CONTEXT;
+
         ShaderRef shader = new Shader(stage);
 
         if (shader->Compile(static_cast<const char*>(shaderData)) != 0)
@@ -46,6 +67,8 @@ namespace GFW { namespace OpenGL {
 
     IBufferRef Device::CreateBuffer( const BufferDesc & desc, const void * initialData )
     {
+        AUTO_LOCK_CONTEXT;
+
         BufferRef buffer = new Buffer(desc);
 
         if (buffer->Init(initialData) != 0)
@@ -58,14 +81,25 @@ namespace GFW { namespace OpenGL {
 
     ITextureRef Device::CreateTexture( const TextureDesc &, const void * initialData /*= 0*/ )
     {
+        AUTO_LOCK_CONTEXT;
+
         TRACE_FAIL_MSG("Not yet implemented");
         return NULL;
     }
 
     IRenderBufferRef Device::CreateColorBuffer( ITextureIn, const SubResIdx & )
     {
+        AUTO_LOCK_CONTEXT;
+
         TRACE_FAIL_MSG("Not yet implemented");
         return NULL;
+    }
+
+    bool Device::Present()
+    {
+        AUTO_LOCK_CONTEXT;
+
+        return mDrawingContext->SwapBuffers();
     }
 
 }} // namespace GFW::OpenGL

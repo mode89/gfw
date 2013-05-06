@@ -25,6 +25,7 @@
     F(PFNGLGETERRORPROC,                    glGetError) \
     F(PFNGLGETSTRINGPROC,                   glGetString) \
     F(PFNGLCLEARCOLORPROC,                  glClearColor) \
+    F(PFNGLCLEARDEPTHPROC,                  glClearDepth) \
     F(PFNGLCLEARPROC,                       glClear) \
     F(PFNGLDRAWARRAYSPROC,                  glDrawArrays) \
     F(PFNGLFLUSHPROC,                       glFlush) \

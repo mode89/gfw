@@ -2,7 +2,6 @@
 #define __GFW_GRAPHICS_OPENGL_CONTEXT_H__
 
 #include "gfw\graphics\opengl\device.h"
-#include "gfw\graphics\opengl\window.h"
 #include "gfw\graphics\opengl\shader.h"
 #include "gfw\graphics\opengl\limits.h"
 #include "gfw\graphics\opengl\buffer.h"
@@ -15,8 +14,6 @@ namespace GFW { namespace OpenGL {
     {
     public:
 
-        virtual IRenderBufferRef    GetDefaultColorBuffer();
-
         virtual void                SetShader(ShaderStage, IShaderIn);
 
         virtual void                SetVertexAttributes(uint32_t number, VertexAttribute []);
@@ -27,7 +24,11 @@ namespace GFW { namespace OpenGL {
 
         virtual void                SetTexture(ShaderStage, uint32_t slot, ITextureIn);
 
-        virtual void                BuildFramebuffer(uint32_t colorBufferCount, IRenderBufferRef color[], IRenderBufferIn depth);
+        virtual void                SetFrameBuffer(uint32_t colorBufferCount, IRenderBufferRef color[], IRenderBufferIn depth);
+
+        virtual void                BeginScene();
+
+        virtual void                EndScene();
 
         virtual void                Clear(const ClearParams &);
 
@@ -37,8 +38,6 @@ namespace GFW { namespace OpenGL {
 
         virtual void                DrawScreenQuad();
 
-        virtual void                Present();
-
         virtual void                ClearState();
 
     public:
@@ -46,14 +45,15 @@ namespace GFW { namespace OpenGL {
         void                        FlushState();
 
     public:
-        Context(Platform::IWindowIn, DeviceIn);
+        Context(DeviceIn);
         ~Context();
 
     private:
         typedef std::map < uint32_t, uint32_t > tMapProgs;
 
         DeviceRef                   mDevice;
-        OpenglWindowRef             mWindow;
+
+        NativeContext               mNativeContext;
 
         ShaderRef                   mShaders[SHADER_STAGE_NUMBER];
 

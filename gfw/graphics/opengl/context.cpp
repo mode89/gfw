@@ -33,10 +33,12 @@ namespace GFW { namespace OpenGL {
         return 0;
     }
 
-    Context::Context(Platform::IWindowIn window, DeviceIn d)
+    Context::Context(DeviceIn d)
         : mDevice(d)
+        , mNativeContext(NULL)
     {
-        mWindow = mDevice->GetPlatform()->CreateOpenglWindow(window).StaticCast<OpenglWindow>();
+        mNativeContext = mDevice->CreateNativeContext();
+        TRACE_ASSERT(mNativeContext != NULL);
 
         memset(mVertAttrs, 0, sizeof(mVertAttrs));
     }
@@ -50,6 +52,9 @@ namespace GFW { namespace OpenGL {
                 TRACE_ASSERT_GL(glDeleteProgram, it->second);
             }
         }
+
+        TRACE_ASSERT(mNativeContext != NULL);
+        mDevice->DeleteNativeContext(mNativeContext);
     }
 
     void Context::SetVertexAttributes( uint32_t number, VertexAttribute attr[] )
@@ -91,11 +96,17 @@ namespace GFW { namespace OpenGL {
 
         uint32_t mask = 0;
 
-        if (cp.mask | CLEAR_COLOR)
+        if (cp.mask & CLEAR_COLOR)
         {
             TRACE_ASSERT_GL(glClearColor, cp.color[0], cp.color[1], cp.color[2], cp.color[3]);
             mask |= GL_COLOR_BUFFER_BIT;
         }
+
+		if (cp.mask & CLEAR_DEPTH)
+		{
+			TRACE_ASSERT_GL(glClearDepth, cp.depth);
+			mask |= GL_DEPTH_BUFFER_BIT;
+		}
 
         TRACE_ASSERT_GL(glClear, mask);
 
@@ -121,15 +132,6 @@ namespace GFW { namespace OpenGL {
     void Context::Draw( const DrawIndexedParams & )
     {
         TRACE_FAIL_MSG("Not yet implemented");
-    }
-
-    void Context::Present()
-    {
-        PROFILE();
-
-        mWindow->SwapBuffers();
-
-        ClearState();
     }
 
     void Context::ClearState()
@@ -252,12 +254,6 @@ namespace GFW { namespace OpenGL {
 #endif
     }
 
-    IRenderBufferRef Context::GetDefaultColorBuffer()
-    {
-        TRACE_FAIL_MSG("Not yet implemented");
-        return NULL;
-    }
-
     void Context::SetIndexBuffer( IBufferIn )
     {
         TRACE_FAIL_MSG("Not yet implemented");
@@ -268,7 +264,7 @@ namespace GFW { namespace OpenGL {
         TRACE_FAIL_MSG("Not yet implemented");
     }
 
-    void Context::BuildFramebuffer( uint32_t colorBufferCount, IRenderBufferRef color[], IRenderBufferIn depth )
+    void Context::SetFrameBuffer( uint32_t colorBufferCount, IRenderBufferRef color[], IRenderBufferIn depth )
     {
         TRACE_FAIL_MSG("Not yet implemented");
     }
@@ -276,6 +272,16 @@ namespace GFW { namespace OpenGL {
     void Context::DrawScreenQuad()
     {
         TRACE_FAIL_MSG("Not yet implemented");
+    }
+
+    void Context::BeginScene()
+    {
+        mDevice->MakeCurrent(mNativeContext);
+    }
+
+    void Context::EndScene()
+    {
+        mDevice->MakeCurrent(NULL);
     }
 
 }} // namespace GFW::OpenGL

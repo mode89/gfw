@@ -2,41 +2,37 @@
 #include "gtest/gtest.h"
 
 #include "common/file.h"
+#include "common/counter.h"
 
 namespace GFWTests {
 
     using namespace GFW;
-    using namespace GFW::Platform;
     using namespace Common;
+
+    static const uint32_t WINDOW_WIDTH  = 640;
+    static const uint32_t WINDOW_HEIGHT = 480;
 
     void Wait()
     {
-        static uint64_t freq = GetPerformanceCounterFrequency();
+        static uint64_t freq = GetCounterFrequency();
 
-        uint64_t timeStart = GetPerformanceCounter();
-        while ((GetPerformanceCounter() - timeStart) < (freq / 120));
+        uint64_t timeStart = GetCounter();
+        while ((GetCounter() - timeStart) < (freq / 120));
     }
 
     TEST(GFW, Clear)
     {
-        // Create a graphical device
-
-        IDeviceRef device = CreateDevice();
-        ASSERT_TRUE(device.IsAttached());
-
         // Create a window
 
-	    WindowDesc wndDesc;
-        wndDesc.width      = 640;
-        wndDesc.height     = 480;
-        wndDesc.fullScreen = FALSE;
-
-        IWindowRef window = CreateEmptyWindow(wndDesc);
+        IWindowRef window = CreateEmptyWindow(WINDOW_WIDTH, WINDOW_HEIGHT);
         ASSERT_TRUE(window.IsAttached());
 
-        // Create a graphical context for the window
+        // Create a graphical device
 
-        IContextRef context = device->CreateContext(window);
+        IDeviceRef device = CreateDevice(window->GetHandle());
+        ASSERT_TRUE(device.IsAttached());
+
+        IContextRef context = device->GetDefaultContext();
         ASSERT_TRUE(context.IsAttached());
 
         // Create clear parameters
@@ -54,9 +50,11 @@ namespace GFWTests {
         {
             window->Tick();
 
+            context->BeginScene();
             context->Clear(cp);
+            context->EndScene();
 
-            context->Present();
+            device->Present();
 
             Wait();
         }
@@ -64,24 +62,17 @@ namespace GFWTests {
 
     TEST(GFW, Draw)
     {
-        // Create a graphical device
-
-        IDeviceRef device = CreateDevice();
-        ASSERT_TRUE(device.IsAttached());
-
         // Create a window
 
-        WindowDesc wndDesc;
-        wndDesc.width      = 640;
-        wndDesc.height     = 480;
-        wndDesc.fullScreen = FALSE;
-
-        IWindowRef window = CreateEmptyWindow(wndDesc);
+        IWindowRef window = CreateEmptyWindow(WINDOW_WIDTH, WINDOW_HEIGHT);
         ASSERT_TRUE(window.IsAttached());
 
-        // Create a graphical context for the window
+        // Create a graphical device
 
-        IContextRef context = device->CreateContext(window);
+        IDeviceRef device = CreateDevice(window->GetHandle());
+        ASSERT_TRUE(device.IsAttached());
+
+        IContextRef context = device->GetDefaultContext();
         ASSERT_TRUE(context.IsAttached());
 
         // Create clear parameters
@@ -141,47 +132,44 @@ namespace GFWTests {
         {
             window->Tick();
 
-            context->Clear(cp);
+            context->BeginScene();
+            {
+                context->Clear(cp);
 
-            context->SetShader(SHADER_VERTEX, vertexShader);
-            context->SetShader(SHADER_PIXEL,  pixelShader);
+                context->SetShader(SHADER_VERTEX, vertexShader);
+                context->SetShader(SHADER_PIXEL,  pixelShader);
 
-            context->SetVertexAttributes(2, vertexAttribs);
-            context->SetVertexBuffer(0, vertexBuffer);
+                context->SetVertexAttributes(2, vertexAttribs);
+                context->SetVertexBuffer(0, vertexBuffer);
 
-            context->Draw(drawParams);
+                context->Draw(drawParams);
+            }
+            context->EndScene();
 
-            context->Present();
+            device->Present();
 
             Wait();
         }
     }
 
-    TEST(GFW, RenderToTexture)
+    TEST(GFW, DISABLED_RenderToTexture)
     {
-        // Create a graphical device
-
-        IDeviceRef device = CreateDevice();
-        ASSERT_TRUE(device.IsAttached());
-
         // Create a window
 
-        WindowDesc wndDesc;
-        wndDesc.width      = 640;
-        wndDesc.height     = 480;
-        wndDesc.fullScreen = FALSE;
-
-        IWindowRef window = CreateEmptyWindow(wndDesc);
+        IWindowRef window = CreateEmptyWindow(WINDOW_WIDTH, WINDOW_HEIGHT);
         ASSERT_TRUE(window.IsAttached());
 
-        // Create a graphical context for the window
+        // Create a graphical device
 
-        IContextRef context = device->CreateContext(window);
+        IDeviceRef device = CreateDevice(window->GetHandle());
+        ASSERT_TRUE(device.IsAttached());
+
+        IContextRef context = device->GetDefaultContext();
         ASSERT_TRUE(context.IsAttached());
 
         // Get default color buffer
 
-        IRenderBufferRef defaultColorBuffer = context->GetDefaultColorBuffer();
+        IRenderBufferRef defaultColorBuffer = device->GetDefaultColorBuffer();
 
         // Create clear parameters
 
@@ -229,9 +217,9 @@ namespace GFWTests {
         };
 
         BufferDesc vertColBufDesc;
-        vertColBufDesc.type = BUFFER_VERTEX;
-        vertColBufDesc.size = sizeof(vertColData);
-        vertColBufDesc.usage = USAGE_STATIC_DRAW;
+        vertColBufDesc.type   = BUFFER_VERTEX;
+        vertColBufDesc.size   = sizeof(vertColData);
+        vertColBufDesc.usage  = USAGE_STATIC_DRAW;
         IBufferRef vertColBuf = device->CreateBuffer(vertColBufDesc, vertColData);
 
         uint16_t indexData[] = {
@@ -239,9 +227,9 @@ namespace GFWTests {
         };
 
         BufferDesc indexBufDesc;
-        indexBufDesc.type = BUFFER_INDEX;
-        indexBufDesc.size = sizeof(indexBufDesc);
-        indexBufDesc.usage = USAGE_STATIC_DRAW;
+        indexBufDesc.type   = BUFFER_INDEX;
+        indexBufDesc.size   = sizeof(indexBufDesc);
+        indexBufDesc.usage  = USAGE_STATIC_DRAW;
         IBufferRef indexBuf = device->CreateBuffer(indexBufDesc, indexData);
 
         // Define vertex attributes
@@ -273,31 +261,35 @@ namespace GFWTests {
         {
             window->Tick();
 
-            // Draw to texture
+            context->BeginScene();
+            {
+                // Draw to texture
 
-            context->BuildFramebuffer(1, &colorBuffer, NULL);
-            context->Clear(cp);
+                context->SetFrameBuffer(1, &colorBuffer, NULL);
+                context->Clear(cp);
 
-            context->SetShader(SHADER_VERTEX, vertexShader);
-            context->SetShader(SHADER_PIXEL,  pixelShader);
+                context->SetShader(SHADER_VERTEX, vertexShader);
+                context->SetShader(SHADER_PIXEL,  pixelShader);
 
-            context->SetVertexAttributes(2, vertexAttribs);
-            context->SetVertexBuffer(0, vertPosBuf);
-            context->SetVertexBuffer(1, vertColBuf);
-            context->SetIndexBuffer(indexBuf);
+                context->SetVertexAttributes(2, vertexAttribs);
+                context->SetVertexBuffer(0, vertPosBuf);
+                context->SetVertexBuffer(1, vertColBuf);
+                context->SetIndexBuffer(indexBuf);
 
-            context->Draw(drawParams);
+                context->Draw(drawParams);
 
-            // Draw screen quad with texture
+                // Draw screen quad with texture
 
-            context->BuildFramebuffer(1, &defaultColorBuffer, NULL);
-            context->Clear(cp);
+                context->SetFrameBuffer(1, &defaultColorBuffer, NULL);
+                context->Clear(cp);
 
-            context->SetTexture(SHADER_PIXEL, 0, texture);
+                context->SetTexture(SHADER_PIXEL, 0, texture);
 
-            context->DrawScreenQuad();
+                context->DrawScreenQuad();
+            }
+            context->EndScene();
 
-            context->Present();
+            device->Present();
 
             Wait();
         }

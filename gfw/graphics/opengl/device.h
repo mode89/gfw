@@ -1,8 +1,9 @@
 #ifndef __GFW_GRAPHICS_OPENGL_DEVICE_H__
 #define __GFW_GRAPHICS_OPENGL_DEVICE_H__
 
-#include "gfw\graphics\base\device.h"
-#include "gfw\graphics\opengl\platform.h"
+#include "common/futex.h"
+#include "gfw/graphics/base/device.h"
+#include "gfw/graphics/opengl/drawing_context.h"
 
 namespace GFW { namespace OpenGL {
 
@@ -10,7 +11,7 @@ namespace GFW { namespace OpenGL {
     {
     public:
 
-        virtual IContextRef         CreateContext(GFW::Platform::IWindowIn);
+        virtual IContextRef         CreateContext();
 
         virtual IShaderRef          CreateShader(ShaderStage, const void * shaderData);
 
@@ -20,17 +21,41 @@ namespace GFW { namespace OpenGL {
 
         virtual IRenderBufferRef    CreateColorBuffer(ITextureIn, const SubResIdx &);
 
-    public:
-        static IDeviceRef           CreateInstance();
+        virtual bool                Present();
 
         inline
-        IPlatformRef                GetPlatform()   { return mPlatform; }
+        virtual IContextRef         GetDefaultContext() { return mImmediateContext; }
+
+        inline
+        virtual IRenderBufferRef    GetDefaultColorBuffer() { return mDefaultColorBuffer; }
 
     public:
-        Device(IPlatformIn);
+
+        inline
+        NativeContext               CreateNativeContext()
+                                        { return mDrawingContext->CreateContext(); }
+
+        inline
+        void                        DeleteNativeContext(NativeContext nativeContext)
+                                        { return mDrawingContext->DeleteContext(nativeContext); }
+
+        inline
+        void                        MakeCurrent(NativeContext nativeContext)
+                                        { mDrawingContext->MakeCurrent(nativeContext); }
+
+        inline
+        NativeContext               GetCurrentContext()
+                                        { return mDrawingContext->GetCurrentContext(); }
+
+    public:
+        Device(WindowHandle);
 
     private:
-        IPlatformRef                mPlatform;
+        Common::Futex               mMutex;
+        IDrawingContextRef          mDrawingContext;
+        NativeContext               mNativeContext;
+        IContextRef                 mImmediateContext;
+        IRenderBufferRef            mDefaultColorBuffer;
     };
     AUTOREF_REFERENCE_DECLARATION(Device);
 

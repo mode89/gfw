@@ -7,12 +7,12 @@ namespace GFW {
 
     using namespace Common;
 
-    IDeviceRef CreateDevice(DeviceType deviceType)
+    IDeviceRef CreateDevice(WindowHandle window, DeviceType deviceType)
     {
         switch (deviceType)
         {
         case DEVICE_OPENGL:
-            return OpenGL::Device::CreateInstance();
+            return new OpenGL::Device(window);
 
         default:
             TRACE_FAIL_MSG("Unknown device type");
