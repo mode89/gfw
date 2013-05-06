@@ -90,7 +90,7 @@ namespace GFW {
             return true;
         }
 
-        void EmptyWindow::Tick()
+        void Tick()
         {
             MSG msg;
             if (PeekMessage(&msg, mHwnd, 0, 0, PM_REMOVE))
