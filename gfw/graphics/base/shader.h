@@ -10,7 +10,7 @@ namespace GFW {
         SHADER_UNKNOWN = -1,
         SHADER_VERTEX,
         SHADER_PIXEL,
-        SHADER_STAGE_NUMBER
+        SHADER_STAGE_COUNT
     };
 
     class IShader: public Common::ARefCounted

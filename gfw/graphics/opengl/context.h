@@ -55,7 +55,7 @@ namespace GFW { namespace OpenGL {
 
         NativeContext               mNativeContext;
 
-        ShaderRef                   mShaders[SHADER_STAGE_NUMBER];
+        ShaderRef                   mShaders[SHADER_STAGE_COUNT];
 
         VertexAttribute             mVertAttrs[MAX_VERTEX_BUFFER_BIND];
 

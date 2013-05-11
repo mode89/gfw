@@ -19,9 +19,9 @@ namespace GFW { namespace OpenGL {
 
         virtual ITextureRef         CreateTexture(const TextureDesc &, const void * initialData = 0);
 
-        virtual IRenderBufferRef    CreateColorBuffer(ITextureIn, const SubResIdx &);
+        virtual IRenderBufferRef    CreateRenderBuffer(ITextureIn, const SubResIdx &);
 
-        virtual bool                Present();
+        virtual bool                Present(bool clearState = true);
 
         inline
         virtual IContextRef         GetDefaultContext() { return mImmediateContext; }

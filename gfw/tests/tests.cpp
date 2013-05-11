@@ -20,7 +20,7 @@ namespace GFWTests {
         while ((GetCounter() - timeStart) < (freq / 120));
     }
 
-    TEST(GFW, Clear)
+    TEST(GFW, DISABLED_Clear)
     {
         // Create a window
 
@@ -152,7 +152,7 @@ namespace GFWTests {
         }
     }
 
-    TEST(GFW, DISABLED_RenderToTexture)
+    TEST(GFW, RenderToTexture)
     {
         // Create a window
 
@@ -253,7 +253,7 @@ namespace GFWTests {
         defaultColorBuffer->GetDesc(textureDesc);
         ITextureRef texture = device->CreateTexture(textureDesc);
 
-        IRenderBufferRef colorBuffer = device->CreateColorBuffer(texture, SubResIdx(0, 0));
+        IRenderBufferRef colorBuffer = device->CreateRenderBuffer(texture, SubResIdx(0, 0));
 
         // Main loop
 

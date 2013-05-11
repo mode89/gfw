@@ -80,14 +80,11 @@ namespace GFW { namespace OpenGL {
     void Context::SetShader( ShaderStage stage, IShaderIn shader )
     {
         TRACE_ASSERT(stage > SHADER_UNKNOWN);
-        TRACE_ASSERT(stage < SHADER_STAGE_NUMBER);
+        TRACE_ASSERT(stage < SHADER_STAGE_COUNT);
         TRACE_ASSERT(shader.IsAttached());
         TRACE_ASSERT(stage == shader->GetStage());
 
-        if (stage == shader->GetStage())
-        {
-            mShaders[stage] = shader.StaticCast<Shader>();
-        }
+        mShaders[stage] = shader.StaticCast<Shader>();
     }
 
     void Context::Clear(const ClearParams & cp)
@@ -142,7 +139,7 @@ namespace GFW { namespace OpenGL {
 
         TRACE_ASSERT_GL(glUseProgram, 0);
 
-        for (int i = 0; i < SHADER_STAGE_NUMBER; ++ i)
+        for (int i = 0; i < SHADER_STAGE_COUNT; ++ i)
         {
             mShaders[i].Detach();
         }
@@ -161,8 +158,8 @@ namespace GFW { namespace OpenGL {
 
         // Setup shaders
 
-        uint32_t shaderHashes[SHADER_STAGE_NUMBER];
-        for (int stage = 0; stage < SHADER_STAGE_NUMBER; ++ stage)
+        uint32_t shaderHashes[SHADER_STAGE_COUNT];
+        for (int stage = 0; stage < SHADER_STAGE_COUNT; ++ stage)
         {
             shaderHashes[stage] = mShaders[stage].IsAttached() ? mShaders[stage]->GetHash() : 0;
         }
@@ -180,7 +177,7 @@ namespace GFW { namespace OpenGL {
             program = TRACE_ASSERT_GL(glCreateProgram);
             TRACE_ASSERT(program != 0);
 
-            for (int stage = 0; stage < SHADER_STAGE_NUMBER; ++ stage)
+            for (int stage = 0; stage < SHADER_STAGE_COUNT; ++ stage)
             {
                 if (mShaders[stage].IsAttached())
                 {

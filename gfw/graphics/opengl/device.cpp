@@ -4,6 +4,7 @@
 #include "gfw/graphics/opengl/context.h"
 #include "gfw/graphics/opengl/shader.h"
 #include "gfw/graphics/opengl/buffer.h"
+#include "gfw/graphics/opengl/functions.h"
 
 #define AUTO_LOCK_CONTEXT   AutoLock __auto_lock_context(this, &mMutex, mNativeContext)
 
@@ -42,6 +43,10 @@ namespace GFW { namespace OpenGL {
         mDrawingContext   = CreateDrawingContext(window);
         mNativeContext    = mDrawingContext->GetRenderingContext();
         mImmediateContext = new Context(this);
+
+        AUTO_LOCK_CONTEXT;
+
+        const uint8_t * extensions = glGetString(GL_EXTENSIONS);
     }
 
     IContextRef Device::CreateContext()
@@ -57,7 +62,7 @@ namespace GFW { namespace OpenGL {
 
         ShaderRef shader = new Shader(stage);
 
-        if (shader->Compile(static_cast<const char*>(shaderData)) != 0)
+        if (shader->Compile(static_cast<const char*>(shaderData)))
         {
             return shader.StaticCast<IShader>();
         }
@@ -87,7 +92,7 @@ namespace GFW { namespace OpenGL {
         return NULL;
     }
 
-    IRenderBufferRef Device::CreateColorBuffer( ITextureIn, const SubResIdx & )
+    IRenderBufferRef Device::CreateRenderBuffer( ITextureIn, const SubResIdx & )
     {
         AUTO_LOCK_CONTEXT;
 
@@ -95,9 +100,14 @@ namespace GFW { namespace OpenGL {
         return NULL;
     }
 
-    bool Device::Present()
+    bool Device::Present(bool clearState)
     {
         AUTO_LOCK_CONTEXT;
+
+        if (clearState)
+        {
+            mImmediateContext->ClearState();
+        }
 
         return mDrawingContext->SwapBuffers();
     }

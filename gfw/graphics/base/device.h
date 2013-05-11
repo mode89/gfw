@@ -24,13 +24,13 @@ namespace GFW {
 
         virtual ITextureRef         CreateTexture(const TextureDesc &, const void * initialData = 0) = 0;
 
-        virtual IRenderBufferRef    CreateColorBuffer(ITextureIn, const SubResIdx &) = 0;
+        virtual IRenderBufferRef    CreateRenderBuffer(ITextureIn, const SubResIdx &) = 0;
 
         virtual IContextRef         GetDefaultContext() = 0;
 
         virtual IRenderBufferRef    GetDefaultColorBuffer() = 0;
 
-        virtual bool                Present() = 0;
+        virtual bool                Present(bool clearState = true) = 0;
 
     public:
         virtual                     ~IDevice() { }
