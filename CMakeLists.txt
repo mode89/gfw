@@ -10,8 +10,11 @@ endif()
 
 include_directories(${GLOBAL_SOLUTION_SOURCE_DIR})
 
+add_subdirectory(cmake) # CMake utilities
+
 add_subdirectory(gtest)
 add_subdirectory(irrlicht)
+add_subdirectory(ogre)
 
 add_subdirectory(common)
 add_subdirectory(profiler)
