@@ -10,12 +10,13 @@ endif()
 
 include_directories(${GLOBAL_SOLUTION_SOURCE_DIR})
 
-add_subdirectory(cmake) # CMake utilities
+# Add all projects to the build tree
 
-add_subdirectory(gtest)
-add_subdirectory(irrlicht)
-add_subdirectory(ogre)
-
-add_subdirectory(common)
-add_subdirectory(profiler)
-add_subdirectory(gfw)
+file(GLOB SUB_DIRS *)
+foreach(DIR ${SUB_DIRS})
+    if(IS_DIRECTORY ${DIR})
+        if(EXISTS ${DIR}/CMakeLists.txt)
+            add_subdirectory(${DIR})
+        endif()
+    endif()
+endforeach()
