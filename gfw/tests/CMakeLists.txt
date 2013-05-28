@@ -8,4 +8,11 @@ endif()
 add_definitions(-DTESTS_SOURCE_DIR="${GFW_TESTS_SOURCE_DIR}/")
 
 add_executable(gfw_tests tests.cpp)
-target_link_libraries(gfw_tests gfw gtest)
+
+find_package(gfw CONFIG)
+target_link_libraries(gfw_tests ${GFW_LIBRARIES})
+include_directories(${GFW_INCLUDE_DIRS})
+
+find_package(gtest CONFIG)
+target_link_libraries(gfw_tests ${GTEST_LIBRARIES})
+include_directories(${GTEST_INCLUDE_DIRS})

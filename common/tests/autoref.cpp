@@ -1,5 +1,5 @@
-#include "gtest\gtest.h"
-#include "common\autoref.h"
+#include "gtest/gtest.h"
+#include "common/autoref.h"
 
 namespace AutoRefTests {
 
