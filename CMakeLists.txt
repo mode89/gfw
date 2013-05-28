@@ -8,7 +8,9 @@ if (MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
 endif()
 
-include_directories(${GLOBAL_SOLUTION_SOURCE_DIR})
+# Setup packages search path
+
+set(CMAKE_PREFIX_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Add all projects to the build tree
 

@@ -1,15 +1,24 @@
 project(GFW)
 cmake_minimum_required(VERSION 2.8)
 
-add_subdirectory(graphics/opengl)
-add_subdirectory(platform)
-
-file(GLOB SOURCE_FILES *.cpp)
+file(GLOB SOURCE_FILES source/*.cpp)
 list(APPEND GFW_SOURCE_FILES ${SOURCE_FILES})
-file(GLOB SOURCE_FILES graphics/common/*.cpp)
+file(GLOB SOURCE_FILES source/graphics/common/*.cpp)
+list(APPEND GFW_SOURCE_FILES ${SOURCE_FILES})
+file(GLOB SOURCE_FILES source/graphics/opengl/*.cpp)
+list(APPEND GFW_SOURCE_FILES ${SOURCE_FILES})
+file(GLOB SOURCE_FILES source/platform/win/*.cpp)
 list(APPEND GFW_SOURCE_FILES ${SOURCE_FILES})
 
 add_library(gfw ${GFW_SOURCE_FILES})
-target_link_libraries(gfw gfw_platform gfw_opengl common)
+include_directories(include)
+
+find_package(common CONFIG)
+target_link_libraries(gfw ${COMMON_LIBRARIES})
+include_directories(${COMMON_INCLUDE_DIRS})
+
+find_package(profiler CONFIG)
+target_link_libraries(gfw ${PROFILER_LIBRARIES})
+include_directories(${PROFILER_INCLUDE_DIRS})
 
 add_subdirectory(tests)

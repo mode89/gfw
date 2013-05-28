@@ -5,4 +5,11 @@ add_definitions(-DTESTS_SOURCE_DIR="${COMMON_TESTS_SOURCE_DIR}/")
 
 file(GLOB COMMON_TESTS_SOURCE_FILES *.cpp)
 add_executable(common_tests ${COMMON_TESTS_SOURCE_FILES})
-target_link_libraries(common_tests common gtest)
+
+find_package(common CONFIG)
+target_link_libraries(common_tests ${COMMON_LIBRARIES})
+include_directories(${COMMON_INCLUDE_DIRS})
+
+find_package(gtest CONFIG)
+target_link_libraries(common_tests ${GTEST_LIBRARIES})
+include_directories(${GTEST_INCLUDE_DIRS})
