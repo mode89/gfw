@@ -9,7 +9,7 @@ if (MSVC)
 endif()
 
 macro(target_precompiled_header target precHeader precSource)
-    if (MSVC)
+    if (MSVC_IDE)
         set_target_properties(${target} PROPERTIES COMPILE_FLAGS "/Yu${precHeader}")
         set_source_files_properties(${precSource} PROPERTIES COMPILE_FLAGS "/Yc${precHeader}")
     endif()
