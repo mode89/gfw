@@ -1,6 +1,8 @@
 project(RIPPLES)
 cmake_minimum_required(VERSION 2.8)
 
+add_definitions(-DRIPPLES_DATA_DIR="${CMAKE_CURRENT_SOURCE_DIR}/data")
+
 file(GLOB RIPPLES_SOURCE_FILES source/*.cpp)
 add_executable(ripples ${RIPPLES_SOURCE_FILES})
 include_directories(include)
