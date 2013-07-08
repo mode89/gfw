@@ -13,6 +13,9 @@ list(APPEND GFW_SOURCE_FILES ${SOURCE_FILES})
 add_library(gfw ${GFW_SOURCE_FILES})
 include_directories(include)
 
+find_package(opengl CONFIG)
+include_directories(${OPENGL_INCLUDE_DIRS})
+
 find_package(common CONFIG)
 target_link_libraries(gfw ${COMMON_LIBRARIES})
 include_directories(${COMMON_INCLUDE_DIRS})
