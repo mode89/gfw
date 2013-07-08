@@ -6,8 +6,8 @@
 #if PLATFORM_WIN32
 
 #include <windows.h>
-#include "gfw\graphics\opengl\glcorearb.h"
-#include "gfw\graphics\opengl\wglext.h"
+#include "opengl/glcorearb.h"
+#include "opengl/wglext.h"
 
 namespace GFW { namespace OpenGL {
 
