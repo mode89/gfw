@@ -42,9 +42,19 @@
             TRACE_DEBUG_BREAK(); \
         } \
 
+    #define TRACE_ASSERT_AND(expr, var) \
+        var = var && (expr); \
+        if (!var) \
+        { \
+            Trace::Message("Assertion failed in %s : line %d : Expression %s\n", __FILE__, __LINE__, #expr); \
+            TRACE_DEBUG_BREAK(); \
+        } \
+
 #else
 
     #define TRACE_ASSERT(expr)
+    #define TRACE_ASSERT_MESSAGE_FORMATED(expr, fmt, ...)
+    #define TRACE_ASSERT_AND(expr, var)
 
 #endif // TRACE_ASSERT_ENABLED
 
