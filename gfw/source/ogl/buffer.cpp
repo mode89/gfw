@@ -1,9 +1,9 @@
 #include "common/trace.h"
 
-#include "gfw/graphics/opengl/buffer.h"
-#include "gfw/graphics/opengl/functions.h"
+#include "gfw/ogl/buffer.h"
+#include "gfw/ogl/functions.h"
 
-namespace GFW { namespace OpenGL {
+namespace GFW {
 
     using namespace Common;
 
@@ -77,4 +77,4 @@ namespace GFW { namespace OpenGL {
         return 0;
     }
 
-}} // namespce GFW::OpenGL
+} // namespce GFW

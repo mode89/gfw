@@ -1,35 +1,67 @@
 #include "common/trace.h"
 
-#include "gfw/graphics/opengl/device.h"
-#include "gfw/graphics/opengl/context.h"
-#include "gfw/graphics/opengl/shader.h"
-#include "gfw/graphics/opengl/buffer.h"
+#include "gfw/ogl/device.h"
+#include "gfw/ogl/context.h"
+#include "gfw/ogl/shader.h"
+#include "gfw/ogl/buffer.h"
 
-namespace GFW { namespace OpenGL {
+namespace GFW {
 
     using namespace Common;
 
-    Device::Device(IPlatformIn p)
-        : mPlatform(p)
+    IDeviceRef CreateDevice(DeviceParams & params)
     {
+        Device * obj = new Device(params);
 
-    }
-
-    IContextRef Device::CreateContext(Platform::IWindowIn window)
-    {
-        return new Context(window, this);
-    }
-
-    IDeviceRef Device::CreateInstance()
-    {
-        IPlatformRef platform = CreatePlatform();
-
-        if (platform->Init())
+        if (!obj->Initialize())
         {
-            return new Device(platform);
+            TRACE_ERROR("Failed to initialize the new device");
+            delete obj;
+            return NULL;
         }
 
-        return NULL;
+        return obj;
+    }
+
+    Device::Device(const DeviceParams & params)
+        : mParams(params)
+        , mRenderingContext(NULL)
+    {
+
+    }
+
+    Device::~Device()
+    {
+        TRACE_ASSERT(mDrawingContext.IsAttached());
+        TRACE_ASSERT(mRenderingContext != NULL);
+        mDrawingContext->MakeCurrent(NULL);
+        mDrawingContext->DeleteContext(mRenderingContext);
+    }
+
+    bool Device::Initialize()
+    {
+        mDrawingContext = CreateDrawingContext(mParams.windowHandle);
+        if (mDrawingContext.IsNull())
+        {
+            TRACE_ERROR("Failed to create a drawing context");
+            return false;
+        }
+
+        mRenderingContext = mDrawingContext->CreateContext();
+        if (mRenderingContext == NULL)
+        {
+            TRACE_ERROR("Cannot create a rendering context");
+            return false;
+        }
+
+        mDrawingContext->MakeCurrent(mRenderingContext);
+
+        return true;
+    }
+
+    IContextRef Device::CreateContext()
+    {
+        return new Context(this);
     }
 
     IShaderRef Device::CreateShader( ShaderStage stage, const void * shaderData )
@@ -56,4 +88,11 @@ namespace GFW { namespace OpenGL {
         return NULL;
     }
 
-}} // namespace GFW::OpenGL
+    bool Device::Present()
+    {
+        mDrawingContext->SwapBuffers();
+
+        return true;
+    }
+
+} // namespace GFW

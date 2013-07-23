@@ -1,42 +1,50 @@
 #include "gfw/gfw.h"
+
 #include "gtest/gtest.h"
 
 #include "common/file.h"
+#include "common/counter.h"
 
 namespace GFWTests {
 
     using namespace GFW;
-    using namespace GFW::Platform;
     using namespace Common;
+
+    static const uint32_t WINDOW_WIDTH  = 800;
+    static const uint32_t WINDOW_HEIGHT = 600;
 
     void Wait()
     {
-        static uint64_t freq = GetPerformanceCounterFrequency();
+        static uint64_t freq = GetCounterFrequency();
 
-        uint64_t timeStart = GetPerformanceCounter();
-        while ((GetPerformanceCounter() - timeStart) < (freq / 120));
+        uint64_t timeStart = GetCounter();
+        while ((GetCounter() - timeStart) < (freq / 120));
     }
 
     TEST(GFW, ClearDarkBlue)
     {
-        // Create a graphical device
-
-        IDeviceRef device = CreateDevice();
-        ASSERT_TRUE(device.IsAttached());
-
         // Create a window
 
-	    WindowDesc wndDesc;
-        wndDesc.width      = 640;
-        wndDesc.height     = 480;
-        wndDesc.fullScreen = FALSE;
+        WindowDesc windowDesc;
+        windowDesc.width  = WINDOW_WIDTH;
+        windowDesc.height = WINDOW_HEIGHT;
 
-        IWindowRef window = CreateEmptyWindow(wndDesc);
-        ASSERT_TRUE(window.IsAttached());
+        WindowHandle window = CreateDefaultWindow(windowDesc);
+        ASSERT_TRUE(window != NULL);
 
-        // Create a graphical context for the window
+        // Create a graphical device
 
-        IContextRef context = device->CreateContext(window);
+        DeviceParams deviceParams;
+        deviceParams.width        = WINDOW_WIDTH;
+        deviceParams.height       = WINDOW_HEIGHT;
+        deviceParams.windowHandle = window;
+
+        IDeviceRef device = CreateDevice(deviceParams);
+        ASSERT_TRUE(device.IsAttached());
+
+        // Create a graphical context
+
+        IContextRef context = device->CreateContext();
         ASSERT_TRUE(context.IsAttached());
 
         // Create clear parameters
@@ -52,36 +60,42 @@ namespace GFWTests {
 
         for (int i = 0; i < 60; ++ i)
         {
-            window->Tick();
+            ProcessDefaultWindow(window);
 
             context->Clear(cp);
 
-            context->Present();
+            device->Present();
 
             Wait();
         }
+
+        DestroyDefaultWindow(window);
     }
 
     TEST(GFW, Draw)
     {
-        // Create a graphical device
-
-        IDeviceRef device = CreateDevice();
-        ASSERT_TRUE(device.IsAttached());
-
         // Create a window
 
-        WindowDesc wndDesc;
-        wndDesc.width      = 640;
-        wndDesc.height     = 480;
-        wndDesc.fullScreen = FALSE;
+        WindowDesc windowDesc;
+        windowDesc.width  = WINDOW_WIDTH;
+        windowDesc.height = WINDOW_HEIGHT;
 
-        IWindowRef window = CreateEmptyWindow(wndDesc);
-        ASSERT_TRUE(window.IsAttached());
+        WindowHandle window = CreateDefaultWindow(windowDesc);
+        ASSERT_TRUE(window != NULL);
 
-        // Create a graphical context for the window
+        // Create a graphical device
 
-        IContextRef context = device->CreateContext(window);
+        DeviceParams deviceParams;
+        deviceParams.width        = WINDOW_WIDTH;
+        deviceParams.height       = WINDOW_HEIGHT;
+        deviceParams.windowHandle = window;
+
+        IDeviceRef device = CreateDevice(deviceParams);
+        ASSERT_TRUE(device.IsAttached());
+
+        // Create a graphical context
+
+        IContextRef context = device->CreateContext();
         ASSERT_TRUE(context.IsAttached());
 
         // Create clear parameters
@@ -139,7 +153,7 @@ namespace GFWTests {
 
         for (int i = 0; i < 60; ++ i)
         {
-            window->Tick();
+            ProcessDefaultWindow(window);
 
             context->Clear(cp);
 
@@ -151,10 +165,12 @@ namespace GFWTests {
 
             context->Draw(drawParams);
 
-            context->Present();
+            device->Present();
 
             Wait();
         }
+
+        DestroyDefaultWindow(window);
     }
 
 } // namespace GFWTests

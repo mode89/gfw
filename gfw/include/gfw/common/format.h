@@ -1,8 +1,8 @@
-#ifndef __GFW_GRAPHICS_COMMON_FORMAT_H__
-#define __GFW_GRAPHICS_COMMON_FORMAT_H__
+#ifndef __GFW_COMMON_FORMAT_H__
+#define __GFW_COMMON_FORMAT_H__
 
 #include "common/typedefs.h"
-#include "gfw/graphics/base/format.h"
+#include "gfw/base/format.h"
 
 namespace GFW {
 
@@ -11,4 +11,4 @@ namespace GFW {
 
 } // namespace GFW
 
-#endif // __GFW_GRAPHICS_COMMON_FORMAT_H__
+#endif // __GFW_COMMON_FORMAT_H__

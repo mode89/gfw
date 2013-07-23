@@ -1,5 +1,5 @@
-#ifndef __GFW_GRAPHICS_BASE_RESOURCE_H__
-#define __GFW_GRAPHICS_BASE_RESOURCE_H__
+#ifndef __GFW_BASE_RESOURCE_H__
+#define __GFW_BASE_RESOURCE_H__
 
 namespace GFW {
 
@@ -40,4 +40,4 @@ namespace GFW {
 
 } // namespace GFW
 
-#endif // __GFW_GRAPHICS_BASE_RESOURCE_H__
+#endif // __GFW_BASE_RESOURCE_H__

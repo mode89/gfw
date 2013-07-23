@@ -1,9 +1,9 @@
-#ifndef __GFW_GRAPHICS_OPENGL_SHADER_H__
-#define __GFW_GRAPHICS_OPENGL_SHADER_H__
+#ifndef __GFW_OGL_SHADER_H__
+#define __GFW_OGL_SHADER_H__
 
-#include "gfw/graphics/base/shader.h"
+#include "gfw/base/shader.h"
 
-namespace GFW { namespace OpenGL {
+namespace GFW {
 
     class Shader: public IShader
     {
@@ -30,6 +30,6 @@ namespace GFW { namespace OpenGL {
     };
     AUTOREF_REFERENCE_DECLARATION(Shader);
 
-}} // namespace GFW::OpenGL
+} // namespace GFW
 
-#endif // __GFW_GRAPHICS_OPENGL_SHADER_H__
+#endif // __GFW_OGL_SHADER_H__

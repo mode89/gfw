@@ -1,15 +1,14 @@
-#ifndef __GFW_GRAPHICS_OPENGL_CONTEXT_H__
-#define __GFW_GRAPHICS_OPENGL_CONTEXT_H__
+#ifndef __GFW_OGL_CONTEXT_H__
+#define __GFW_OGL_CONTEXT_H__
 
-#include "gfw\graphics\opengl\device.h"
-#include "gfw\graphics\opengl\window.h"
-#include "gfw\graphics\opengl\shader.h"
-#include "gfw\graphics\opengl\limits.h"
-#include "gfw\graphics\opengl\buffer.h"
+#include "gfw/ogl/device.h"
+#include "gfw/ogl/shader.h"
+#include "gfw/ogl/limits.h"
+#include "gfw/ogl/buffer.h"
 
 #include <map>
 
-namespace GFW { namespace OpenGL {
+namespace GFW {
 
     class Context: public IContext
     {
@@ -25,8 +24,6 @@ namespace GFW { namespace OpenGL {
 
         virtual void    Draw(const DrawParams &);
 
-        virtual void    Present();
-
         virtual void    ClearState();
 
     public:
@@ -34,14 +31,14 @@ namespace GFW { namespace OpenGL {
         void            FlushState();
 
     public:
-        Context(Platform::IWindowIn, DeviceIn);
+
+        Context(DeviceIn);
         ~Context();
 
     private:
         typedef std::map < uint32_t, uint32_t > tMapProgs;
 
         DeviceRef               mDevice;
-        OpenglWindowRef         mWindow;
 
         ShaderRef               mShaders[SHADER_STAGE_NUMBER];
 
@@ -52,6 +49,6 @@ namespace GFW { namespace OpenGL {
         tMapProgs               mPrograms;
     };
 
-}} // namespace GFW::OpenGL
+} // namespace GFW
 
-#endif // __GFW_GRAPHICS_OPENGL_CONTEXT_H__
+#endif // __GFW_OGL_CONTEXT_H__

@@ -1,12 +1,12 @@
 #include "common/trace.h"
 #include "common/crc32.h"
 
-#include "gfw/graphics/opengl/shader.h"
-#include "gfw/graphics/opengl/functions.h"
+#include "gfw/ogl/shader.h"
+#include "gfw/ogl/functions.h"
 
 #include <string.h>
 
-namespace GFW { namespace OpenGL {
+namespace GFW {
 
     using namespace Common;
 
@@ -77,4 +77,4 @@ namespace GFW { namespace OpenGL {
         return 0;
     }
 
-}} // namespace GFW::OpenGL
+} // namespace GFW

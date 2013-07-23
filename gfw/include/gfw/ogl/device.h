@@ -1,35 +1,41 @@
-#ifndef __GFW_GRAPHICS_OPENGL_DEVICE_H__
-#define __GFW_GRAPHICS_OPENGL_DEVICE_H__
+#ifndef __GFW_OGL_DEVICE_H__
+#define __GFW_OGL_DEVICE_H__
 
-#include "gfw\graphics\base\device.h"
-#include "gfw\graphics\opengl\platform.h"
+#include "gfw/base/device.h"
 
-namespace GFW { namespace OpenGL {
+#include "gfw/ogl/drawing_context.h"
+
+namespace GFW {
 
     class Device: public IDevice
     {
     public:
 
-        virtual IContextRef     CreateContext(GFW::Platform::IWindowIn);
+        virtual IContextRef     CreateContext();
 
         virtual IShaderRef      CreateShader(ShaderStage, const void * shaderData);
 
         virtual IBufferRef      CreateBuffer(const BufferDesc &, const void * initialData);
 
-    public:
-        static IDeviceRef       CreateInstance();
-
-        inline
-        IPlatformRef            GetPlatform()   { return mPlatform; }
+        virtual bool            Present();
 
     public:
-        Device(IPlatformIn);
+
+        Device(const DeviceParams &);
+        ~Device();
+
+        bool                    Initialize();
 
     private:
-        IPlatformRef            mPlatform;
+
+        const DeviceParams      mParams;
+
+        IDrawingContextRef      mDrawingContext;
+        RenderingContext        mRenderingContext;
+
     };
     AUTOREF_REFERENCE_DECLARATION(Device);
 
-}} // namespace GFW::OpenGL
+} // namespace GFW
 
-#endif // __GFW_GRAPHICS_OPENGL_DEVICE_H__
+#endif // __GFW_OGL_DEVICE_H__

@@ -1,101 +1,124 @@
 #include "common/trace.h"
 
-#include "gfw\platform\win\window.h"
+#include "gfw/base/window.h"
 
-namespace GFW { namespace Platform {
+#include <windows.h>
 
-    using namespace Common;
+namespace GFW {
 
-    class WindowClassRegisterer
+    LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, LPARAM lParam, WPARAM wParam)
+    {
+        return DefWindowProc(hWnd, uMsg, lParam, wParam);
+    }
+
+    // Singleton with reference counting
+
+    class WindowClass
     {
     public:
-        WindowClassRegisterer()
-            : m_hInstance(NULL)
+        bool Initialize()
         {
-            m_hInstance = GetModuleHandle(NULL);
-
-            // Register window class
+            HINSTANCE hInst = GetModuleHandle(NULL);
 
             WNDCLASS wc;
             ZeroMemory(&wc, sizeof(wc));
             wc.style            = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
-            wc.lpfnWndProc      = (WNDPROC) Window::Proc;
-            wc.hInstance        = m_hInstance;
+            wc.lpfnWndProc      = (WNDPROC) WindowProc;
+            wc.hInstance        = hInst;
             wc.hIcon            = LoadIcon(NULL, IDI_WINLOGO);
             wc.hCursor          = LoadCursor(NULL, IDC_ARROW);
-            wc.lpszClassName    = "GFW";
+            wc.lpszClassName    = kName;
 
             if (RegisterClass(&wc) == 0)
             {
-                TRACE_ERROR("Cannot register window class");
+                TRACE_ERROR("Failed to register window class");
+                return false;
+            }
+
+            return true;
+        }
+
+        ~WindowClass()
+        {
+            HINSTANCE hInst = GetModuleHandle(NULL);
+            if (UnregisterClass(kName, hInst) == 0)
+            {
+                TRACE_ERROR("Failed to unregister the window class");
                 return;
             }
         }
 
-        ~WindowClassRegisterer()
+        const char * GetName()
         {
-            if (UnregisterClass("GFW", m_hInstance) == 0)
+            return kName;
+        }
+
+        static WindowClass * GetInstance()
+        {
+            if (mInstance == NULL)
             {
-                TRACE_ERROR("Cannot unregister window class");
+                mInstance = new WindowClass;
+
+                if (!mInstance->Initialize())
+                {
+                    TRACE_ERROR("Failed to initialize the window class");
+                    delete mInstance;
+                    mInstance = NULL;
+                    return NULL;
+                }
+            }
+
+            mRefCounter ++;
+            return mInstance;
+        }
+
+        static void Release()
+        {
+            TRACE_ASSERT(mInstance != NULL);
+
+            mRefCounter --;
+            if (mRefCounter == 0)
+            {
+                delete mInstance;
+                mInstance = 0;
             }
         }
 
     private:
-        HINSTANCE m_hInstance;
+        static WindowClass *    mInstance;
+        static uint32_t         mRefCounter;
 
-    } g_WindowClassRegisterer;
+        static const char *     kName;
+    };
 
-    IWindowRef Window::CreateInstance(const WindowDesc & desc)
+    WindowClass *   WindowClass::mInstance   = NULL;
+    uint32_t        WindowClass::mRefCounter = 0;
+    const char *    WindowClass::kName       = "gfw_default_windows";
+
+    WindowHandle CreateDefaultWindow(const WindowDesc & desc)
     {
-        Window * wnd = new Window(desc);
+        HINSTANCE hInst = GetModuleHandle(NULL);
 
-        if (wnd != NULL)
-        {
-            if (wnd->Initialize())
-            {
-                return wnd;
-            }
+        // Acquire the window class
 
-            delete wnd;
-        }
-
-        return NULL;
-    }
-
-    Window::Window(const WindowDesc & desc)
-        : mDesc(desc)
-        , mHwnd(NULL)
-    {
-    }
-
-    Window::~Window()
-    {
-        int res = 0;
-
-        res = DestroyWindow(mHwnd);
-        TRACE_ASSERT(res != NULL);
-    }
-
-    uint32_t Window::Initialize()
-    {
-        HINSTANCE hInstance = GetModuleHandle(NULL);
+        WindowClass * wndClass = WindowClass::GetInstance();
 
         // Try to enter full screen mode
 
-        if (mDesc.fullScreen != 0)
+        if (desc.isFullscreen)
         {
             DEVMODE devMode;
             ZeroMemory(&devMode, sizeof(devMode));
             devMode.dmSize          = sizeof(devMode);
-            devMode.dmPelsWidth     = mDesc.width;
-            devMode.dmPelsHeight    = mDesc.height;
-            devMode.dmBitsPerPel    = mDesc.colorBits;
+            devMode.dmPelsWidth     = desc.width;
+            devMode.dmPelsHeight    = desc.height;
+            devMode.dmBitsPerPel    = 32;
             devMode.dmFields        = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
 
             if (ChangeDisplaySettings(&devMode, CDS_FULLSCREEN) != DISP_CHANGE_SUCCESSFUL)
             {
-                TRACE_ERROR("Cannot enter fullscreen mode");
-                return 0;
+                TRACE_ERROR("Failed to enter fullscreen mode");
+                return NULL;
             }
         }
 
@@ -104,7 +127,7 @@ namespace GFW { namespace Platform {
         DWORD dwExStyle = 0;
         DWORD dwStyle   = 0;
 
-        if (mDesc.fullScreen != 0)
+        if (desc.isFullscreen)
         {
             dwExStyle = WS_EX_APPWINDOW;
             dwStyle   = WS_POPUP;
@@ -119,50 +142,61 @@ namespace GFW { namespace Platform {
         RECT windowRect;
         windowRect.left   = 0;
         windowRect.top    = 0;
-        windowRect.right  = mDesc.width;
-        windowRect.bottom = mDesc.height;
+        windowRect.right  = desc.width;
+        windowRect.bottom = desc.height;
         AdjustWindowRectEx(&windowRect, dwStyle, FALSE, dwExStyle);
 
-        mHwnd = CreateWindowEx(
+        HWND handle = CreateWindowEx(
             dwExStyle,
-            "GFW",
-            "GFW Window",
+            wndClass->GetName(),
+            "Default Window",
             dwStyle | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
             0, 0,
             windowRect.right - windowRect.left,
             windowRect.bottom - windowRect.top,
             NULL,
             NULL,
-            hInstance,
+            hInst,
             NULL);
 
-        if (mHwnd == NULL)
+        if (handle == NULL)
         {
-            TRACE_ERROR("Cannot create a window");
-            return 0;
+            TRACE_ERROR("Failed to create a window");
+            return false;
         }
 
-        ShowWindow(mHwnd, SW_SHOW);	
-        SetForegroundWindow(mHwnd);
-        SetFocus(mHwnd);
+        ShowWindow(handle, SW_SHOW);
+        SetForegroundWindow(handle);
+        SetFocus(handle);
 
-        return 1;
+        return handle;
     }
 
-    void Window::Tick()
+    void DestroyDefaultWindow(const WindowHandle handle)
+    {
+        TRACE_ASSERT(handle != NULL);
+        if (handle != NULL)
+        {
+            int res = 0;
+
+            res = DestroyWindow(static_cast<HWND>(handle));
+            TRACE_ASSERT(res != NULL);
+
+            WindowClass::Release();
+        }
+    }
+
+    bool ProcessDefaultWindow(const WindowHandle handle)
     {
         MSG msg;
-        if (PeekMessage(&msg, mHwnd, 0, 0, PM_REMOVE))
+
+        if (PeekMessage(&msg, static_cast<HWND>(handle), 0, 0, PM_REMOVE))
         {
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
+
+        return true;
     }
 
-    LRESULT CALLBACK Window::Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-    {
-        // Process all unhandled messages
-        return DefWindowProc(hWnd, uMsg, wParam, lParam);
-    }
-
-}} // namespace GFW::Platform
+} // namespace GFW

@@ -1,12 +1,12 @@
-#ifndef __GFW_GRAPHICS_BASE_CONTEXT_H__
-#define __GFW_GRAPHICS_BASE_CONTEXT_H__
+#ifndef __GFW_BASE_CONTEXT_H__
+#define __GFW_BASE_CONTEXT_H__
 
-#include "common\autoref.h"
-#include "gfw\graphics\base\clear_params.h"
-#include "gfw\graphics\base\vertex_attribute.h"
-#include "gfw\graphics\base\draw_params.h"
-#include "gfw\graphics\base\shader.h"
-#include "gfw\graphics\base\buffer.h"
+#include "common/autoref.h"
+#include "gfw/base/clear_params.h"
+#include "gfw/base/vertex_attribute.h"
+#include "gfw/base/draw_params.h"
+#include "gfw/base/shader.h"
+#include "gfw/base/buffer.h"
 
 namespace GFW {
 
@@ -24,8 +24,6 @@ namespace GFW {
 
         virtual void    Draw(const DrawParams &) = 0;
 
-        virtual void    Present() = 0;
-
         virtual void    ClearState() = 0;
 
     public:
@@ -35,4 +33,4 @@ namespace GFW {
 
 } // namespace GFW
 
-#endif // __GFW_GRAPHICS_BASE_CONTEXT_H__
+#endif // __GFW_BASE_CONTEXT_H__

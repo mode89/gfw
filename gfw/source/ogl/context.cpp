@@ -1,13 +1,14 @@
-#include "profiler\profiler.h"
+#include "profiler/profiler.h"
 
-#include "common\trace.h"
-#include "common\crc32.h"
+#include "common/trace.h"
+#include "common/crc32.h"
 
-#include "gfw/graphics/common/format.h"
-#include "gfw/graphics/opengl/context.h"
-#include "gfw/graphics/opengl/functions.h"
+#include "gfw/common/format.h"
 
-namespace GFW { namespace OpenGL {
+#include "gfw/ogl/context.h"
+#include "gfw/ogl/functions.h"
+
+namespace GFW {
 
     using namespace Common;
 
@@ -33,11 +34,9 @@ namespace GFW { namespace OpenGL {
         return 0;
     }
 
-    Context::Context(Platform::IWindowIn window, DeviceIn d)
+    Context::Context(DeviceIn d)
         : mDevice(d)
     {
-        mWindow = mDevice->GetPlatform()->CreateOpenglWindow(window).StaticCast<OpenglWindow>();
-
         memset(mVertAttrs, 0, sizeof(mVertAttrs));
     }
 
@@ -116,15 +115,6 @@ namespace GFW { namespace OpenGL {
 #if PROFILING
         TRACE_ASSERT_GL(glFinish);
 #endif
-    }
-
-    void Context::Present()
-    {
-        PROFILE();
-
-        mWindow->SwapBuffers();
-
-        ClearState();
     }
 
     void Context::ClearState()
@@ -247,4 +237,4 @@ namespace GFW { namespace OpenGL {
 #endif
     }
 
-}} // namespace GFW::OpenGL
+} // namespace GFW
