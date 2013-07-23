@@ -1,0 +1,25 @@
+#ifndef __GFW_GRAPHICS_OPENGL_PLATFORM_H__
+#define __GFW_GRAPHICS_OPENGL_PLATFORM_H__
+
+#include "common\autoref.h"
+#include "gfw\platform\base\window.h"
+
+namespace GFW { namespace OpenGL {
+
+    class IPlatform: public Common::ARefCounted
+    {
+    public:
+        virtual uint32_t                Init() = 0;
+
+        virtual Platform::IWindowRef    CreateOpenglWindow(Platform::IWindowIn) = 0;
+
+    public:
+        virtual ~IPlatform() { }
+    };
+    AUTOREF_REFERENCE_DECLARATION(IPlatform);
+
+    IPlatformRef CreatePlatform();
+
+}} // namespace GFW::OpenGL
+
+#endif // __GFW_GRAPHICS_OPENGL_PLATFORM_H__
