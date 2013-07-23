@@ -1,37 +1,27 @@
 #ifndef __GFW_BASE_WINDOW_H__
 #define __GFW_BASE_WINDOW_H__
 
-#include "common\autoref.h"
+namespace GFW {
 
-namespace GFW { namespace Platform {
+    typedef void * WindowHandle; // Platform specific window handle
 
     struct WindowDesc
     {
-        uint32_t width;
-        uint32_t height;
-        uint32_t colorBits;
-        bool8_t  fullScreen;
+        uint32_t    width;
+        uint32_t    height;
+        bool        isFullscreen;
 
         WindowDesc()
             : width(0)
             , height(0)
-            , colorBits(32)
-            , fullScreen(0)
+            , isFullscreen(false)
         {}
     };
 
-    class IWindow: public Common::ARefCounted
-    {
-    public:
-        virtual void    Tick() = 0;
+    WindowHandle    CreateDefaultWindow(const WindowDesc &);
+    void            DestroyDefaultWindow(const WindowHandle);
+    bool            ProcessDefaultWindow(const WindowHandle);
 
-    public:
-        virtual ~IWindow() { }
-    };
-    AUTOREF_REFERENCE_DECLARATION(IWindow);
-
-    IWindowRef CreateEmptyWindow(WindowDesc &);
-
-}} // namespace GFW::Platform
+} // namespace GFW
 
 #endif // __GFW_BASE_WINDOW_H__

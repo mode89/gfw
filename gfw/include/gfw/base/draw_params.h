@@ -1,8 +1,8 @@
-#ifndef __GFW_GRAPHICS_BASE_DRAW_PARAMS_H__
-#define __GFW_GRAPHICS_BASE_DRAW_PARAMS_H__
+#ifndef __GFW_BASE_DRAW_PARAMS_H__
+#define __GFW_BASE_DRAW_PARAMS_H__
 
 #include "common/typedefs.h"
-#include "gfw/graphics/base/primitive.h"
+#include "gfw/base/primitive.h"
 
 namespace GFW {
 
@@ -36,4 +36,4 @@ namespace GFW {
 
 } // namespace GFW
 
-#endif // __GFW_GRAPHICS_BASE_DRAW_PARAMS_H__
+#endif // __GFW_BASE_DRAW_PARAMS_H__

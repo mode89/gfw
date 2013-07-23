@@ -1,22 +1,20 @@
-#ifndef __GFW_GRAPHICS_BASE_DEVICE_H__
-#define __GFW_GRAPHICS_BASE_DEVICE_H__
+#ifndef __GFW_BASE_DEVICE_H__
+#define __GFW_BASE_DEVICE_H__
 
 #include "common/autoref.h"
-#include "gfw/graphics/base/context.h"
-#include "gfw/graphics/base/shader.h"
-#include "gfw/graphics/base/buffer.h"
+
+#include "gfw/base/context.h"
+#include "gfw/base/shader.h"
+#include "gfw/base/buffer.h"
+#include "gfw/base/window.h"
 
 namespace GFW {
-
-    enum DeviceType
-    {
-        DEVICE_NULL = 0,
-        DEVICE_OPENGL
-    };
 
     class IDevice: public Common::ARefCounted
     {
     public:
+
+        virtual IContextRef         CreateContext() = 0;
 
         virtual IShaderRef          CreateShader(ShaderStage, const void * shaderData) = 0;
 
@@ -34,9 +32,25 @@ namespace GFW {
 
     public:
         virtual                     ~IDevice() { }
+
     };
 	AUTOREF_REFERENCE_DECLARATION(IDevice);
 
+    struct DeviceParams
+    {
+        WindowHandle    windowHandle;   // Platform specific window handle
+        uint32_t        width;          // Back buffer width
+        uint32_t        height;         // Back buffer height
+
+        DeviceParams()
+            : windowHandle(NULL)
+            , width(0)
+            , height(0)
+        {}
+    };
+
+    IDeviceRef CreateDevice(DeviceParams &);
+
 } // namespace GFW
 
-#endif // __GFW_GRAPHICS_BASE_DEVICE_H__
+#endif // __GFW_BASE_DEVICE_H__

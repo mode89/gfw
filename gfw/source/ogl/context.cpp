@@ -1,13 +1,14 @@
-#include "profiler\profiler.h"
+#include "profiler/profiler.h"
 
-#include "common\trace.h"
-#include "common\crc32.h"
+#include "common/trace.h"
+#include "common/crc32.h"
 
-#include "gfw/graphics/common/format.h"
-#include "gfw/graphics/opengl/context.h"
-#include "gfw/graphics/opengl/functions.h"
+#include "gfw/common/format.h"
 
-namespace GFW { namespace OpenGL {
+#include "gfw/ogl/context.h"
+#include "gfw/ogl/functions.h"
+
+namespace GFW {
 
     using namespace Common;
 
@@ -37,9 +38,6 @@ namespace GFW { namespace OpenGL {
         : mDevice(d)
         , mNativeContext(NULL)
     {
-        mNativeContext = mDevice->CreateNativeContext();
-        TRACE_ASSERT(mNativeContext != NULL);
-
         memset(mVertAttrs, 0, sizeof(mVertAttrs));
     }
 
@@ -281,4 +279,4 @@ namespace GFW { namespace OpenGL {
         mDevice->MakeCurrent(NULL);
     }
 
-}} // namespace GFW::OpenGL
+} // namespace GFW

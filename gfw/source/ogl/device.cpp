@@ -1,16 +1,30 @@
 #include "common/trace.h"
 
-#include "gfw/graphics/opengl/device.h"
-#include "gfw/graphics/opengl/context.h"
-#include "gfw/graphics/opengl/shader.h"
-#include "gfw/graphics/opengl/buffer.h"
+#include "gfw/ogl/device.h"
+#include "gfw/ogl/context.h"
+#include "gfw/ogl/shader.h"
+#include "gfw/ogl/buffer.h"
 #include "gfw/graphics/opengl/functions.h"
 
 #define AUTO_LOCK_CONTEXT   AutoLock __auto_lock_context(this, &mMutex, mNativeContext)
 
-namespace GFW { namespace OpenGL {
+namespace GFW {
 
     using namespace Common;
+
+    IDeviceRef CreateDevice(DeviceParams & params)
+    {
+        Device * obj = new Device(params);
+
+        if (!obj->Initialize())
+        {
+            TRACE_ERROR("Failed to initialize the new device");
+            delete obj;
+            return NULL;
+        }
+
+        return obj;
+    }
 
     class AutoLock
     {
@@ -37,8 +51,9 @@ namespace GFW { namespace OpenGL {
         NativeContext   mPrevContext;
     };
 
-    Device::Device(WindowHandle window)
-        : mNativeContext(NULL)
+    Device::Device(const DeviceParams & params)
+        : mParams(params)
+        , mRenderingContext(NULL)
     {
         mDrawingContext   = CreateDrawingContext(window);
         mNativeContext    = mDrawingContext->GetRenderingContext();
@@ -47,6 +62,35 @@ namespace GFW { namespace OpenGL {
         AUTO_LOCK_CONTEXT;
 
         const uint8_t * extensions = glGetString(GL_EXTENSIONS);
+    }
+
+    Device::~Device()
+    {
+        TRACE_ASSERT(mDrawingContext.IsAttached());
+        TRACE_ASSERT(mRenderingContext != NULL);
+        mDrawingContext->MakeCurrent(NULL);
+        mDrawingContext->DeleteContext(mRenderingContext);
+    }
+
+    bool Device::Initialize()
+    {
+        mDrawingContext = CreateDrawingContext(mParams.windowHandle);
+        if (mDrawingContext.IsNull())
+        {
+            TRACE_ERROR("Failed to create a drawing context");
+            return false;
+        }
+
+        mRenderingContext = mDrawingContext->CreateContext();
+        if (mRenderingContext == NULL)
+        {
+            TRACE_ERROR("Cannot create a rendering context");
+            return false;
+        }
+
+        mDrawingContext->MakeCurrent(mRenderingContext);
+
+        return true;
     }
 
     IContextRef Device::CreateContext()
@@ -112,4 +156,11 @@ namespace GFW { namespace OpenGL {
         return mDrawingContext->SwapBuffers();
     }
 
-}} // namespace GFW::OpenGL
+    bool Device::Present()
+    {
+        mDrawingContext->SwapBuffers();
+
+        return true;
+    }
+
+} // namespace GFW

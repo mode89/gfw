@@ -1,13 +1,12 @@
 project(GFW)
 cmake_minimum_required(VERSION 2.8)
 
-file(GLOB SOURCE_FILES source/*.cpp)
 list(APPEND GFW_SOURCE_FILES ${SOURCE_FILES})
-file(GLOB SOURCE_FILES source/graphics/common/*.cpp)
+file(GLOB SOURCE_FILES source/common/*.cpp)
 list(APPEND GFW_SOURCE_FILES ${SOURCE_FILES})
-file(GLOB SOURCE_FILES source/graphics/opengl/*.cpp)
+file(GLOB SOURCE_FILES source/ogl/*.cpp)
 list(APPEND GFW_SOURCE_FILES ${SOURCE_FILES})
-file(GLOB SOURCE_FILES source/platform/win/*.cpp)
+file(GLOB SOURCE_FILES source/win/*.cpp)
 list(APPEND GFW_SOURCE_FILES ${SOURCE_FILES})
 
 add_library(gfw ${GFW_SOURCE_FILES})

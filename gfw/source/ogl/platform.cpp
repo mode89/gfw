@@ -1,144 +1,171 @@
 #include "common/trace.h"
 
-#include "gfw/graphics/opengl/platform.h"
-#include "gfw/graphics/opengl/functions.h"
-#include "gfw/graphics/opengl/functions_platform.h"
-#include "gfw/graphics/opengl/window.h"
+#include "gfw/ogl/platform.h"
+#include "gfw/ogl/functions.h"
 
-namespace GFW { namespace OpenGL {
+#if defined(PLATFORM_WIN32)
+    #include <windows.h>
+#endif
+
+namespace GFW {
 
     using namespace Common;
-    using namespace Platform;
+
+#if defined(PLATFORM_WIN32)
 
 #define F(type, func) type func = NULL;
     OPENGL_FUNCTIONS_CORE
     OPENGL_FUNCTIONS_EXT
+    OPENGL_FUNCTIONS_PLAT
 #undef F
 
-#if PLATFORM_WIN32
-
-    PFNWGLGETPROCADDRESS    wglGetProcAddress       = NULL;
-    PFNWGLCREATECONTEXT     wglCreateContext        = NULL;
-    PFNWGLMAKECURRENT       wglMakeCurrent          = NULL;
-    PFNWGLDELETECONTEXT     wglDeleteContext        = NULL;
-    PFNWGLCHOOSEPIXELFORMAT wglChoosePixelFormat    = NULL;
-
-    class PlatformWin: public IPlatform
+    class Platform: public IPlatform
     {
     public:
-        PlatformWin()
-            : mLibrary(NULL)
-        {
+        static IPlatformRef Acquire();
 
-        }
+    protected:
+        Platform();
+        ~Platform();
 
-        ~PlatformWin()
-        {
-            if (mLibrary != NULL)
-            {
-                FreeLibrary(mLibrary);
-            }
-        }
-
-        virtual uint32_t Init()
-        {
-            mLibrary = LoadLibrary("opengl32.dll");
-            TRACE_ASSERT(mLibrary != NULL);
-
-            if (mLibrary != NULL)
-            {
-                // Load Windows specific functions
-
-                wglGetProcAddress = reinterpret_cast<PFNWGLGETPROCADDRESS>(GetProcAddress(mLibrary, "wglGetProcAddress"));
-                TRACE_ASSERT(wglGetProcAddress != NULL);
-
-                wglCreateContext = reinterpret_cast<PFNWGLCREATECONTEXT>(GetProcAddress(mLibrary, "wglCreateContext"));
-                TRACE_ASSERT(wglCreateContext != NULL);
-
-                wglMakeCurrent = reinterpret_cast<PFNWGLMAKECURRENT>(GetProcAddress(mLibrary, "wglMakeCurrent"));
-                TRACE_ASSERT(wglMakeCurrent != NULL);
-
-                wglDeleteContext = reinterpret_cast<PFNWGLDELETECONTEXT>(GetProcAddress(mLibrary, "wglDeleteContext"));
-                TRACE_ASSERT(wglDeleteContext != NULL);
-
-                // Create empty window
-
-                HWND hWnd = CreateWindow("STATIC", "Window",
-                    WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
-                    0, 0, 16, 16, NULL, NULL, GetModuleHandle(NULL), NULL);
-                TRACE_ASSERT(hWnd != NULL);
-
-                HDC hDC = GetDC(hWnd);
-                TRACE_ASSERT(hDC != NULL);
-
-                // Create temp rendering context
-
-                PIXELFORMATDESCRIPTOR pfd;
-                ZeroMemory(&pfd, sizeof(pfd));
-
-                int pixelFormat = ChoosePixelFormat(hDC, &pfd);
-                TRACE_ASSERT(pixelFormat != 0);
-
-                int res = SetPixelFormat(hDC, pixelFormat, &pfd);
-                TRACE_ASSERT(res != FALSE);
-
-                HGLRC hRC = wglCreateContext(hDC);
-                TRACE_ASSERT(hRC != NULL);
-
-                res = wglMakeCurrent(hDC, hRC);
-                TRACE_ASSERT(res != FALSE);
-
-                // Load Windows specific extensions
-
-                wglChoosePixelFormat = reinterpret_cast<PFNWGLCHOOSEPIXELFORMAT>(wglGetProcAddress("wglChoosePixelFormatARB"));
-                TRACE_ASSERT(wglChoosePixelFormat != NULL);
-
-                // Load core functions
-
-#define F(type, func)   func = reinterpret_cast<type>(GetProcAddress(mLibrary, #func));
-                OPENGL_FUNCTIONS_CORE
-#undef F
-
-                // Load extended functions
-#define F(type, func)   func = reinterpret_cast<type>(wglGetProcAddress(#func));
-                OPENGL_FUNCTIONS_EXT
-#undef F
-
-                // Release resources
-
-                res = wglMakeCurrent(hDC, 0);
-                TRACE_ASSERT(res != NULL);
-
-                res = wglDeleteContext(hRC);
-                TRACE_ASSERT(res != NULL);
-
-                res = ReleaseDC(hWnd, hDC);
-                TRACE_ASSERT(res != NULL);
-
-                res = DestroyWindow(hWnd);
-                TRACE_ASSERT(res != NULL);
-            }
-
-            return mLibrary != NULL;
-        }
-
-        virtual IWindowRef CreateOpenglWindow(IWindowIn window)
-        {
-            OpenglWindowRef oglWindow = new OpenglWindow(window);
-            return (oglWindow->Init() != 0) ? oglWindow.StaticCast<IWindow>() : NULL;
-        }
+        bool Initialize();
 
     private:
-        HMODULE mLibrary;
+        static Platform *   mInstance;
+        HMODULE             mLibrary;
+
+        friend class IPlatform;
     };
 
-    IPlatformRef CreatePlatform()
+    Platform * Platform::mInstance = NULL;
+
+    Platform::Platform()
+        : mLibrary(NULL)
     {
-        return new PlatformWin;
+
     }
 
-#else
-#error Unrecognized platform
-#endif // Determine OS
+    Platform::~Platform()
+    {
+#define F(type, func) func = NULL;
+        OPENGL_FUNCTIONS_CORE
+        OPENGL_FUNCTIONS_EXT
+        OPENGL_FUNCTIONS_PLAT
+#undef F
 
-}} // namespace GFW::OpenGL
+        TRACE_ASSERT(mLibrary != NULL);
+        FreeLibrary(mLibrary);
+
+        TRACE_ASSERT(mInstance != NULL);
+        mInstance = NULL;
+    }
+
+    // static
+    IPlatformRef Platform::Acquire()
+    {
+        if (mInstance == NULL)
+        {
+            mInstance = new Platform;
+
+            if (!mInstance->Initialize())
+            {
+                TRACE_ERROR("Failed to initialize a new platform");
+                delete mInstance;
+                mInstance = NULL;
+            }
+        }
+
+        return mInstance;
+    }
+
+    bool Platform::Initialize()
+    {
+        bool retVal = true;
+
+        mLibrary = LoadLibrary("opengl32.dll");
+        TRACE_ASSERT_AND(mLibrary != NULL, retVal);
+
+        // Load Windows specific functions
+
+        wglGetProcAddress = reinterpret_cast<PFNWGLGETPROCADDRESS>(GetProcAddress(mLibrary, "wglGetProcAddress"));
+        TRACE_ASSERT_AND(wglGetProcAddress != NULL, retVal);
+
+        wglCreateContext = reinterpret_cast<PFNWGLCREATECONTEXT>(GetProcAddress(mLibrary, "wglCreateContext"));
+        TRACE_ASSERT_AND(wglCreateContext != NULL, retVal);
+
+        wglMakeCurrent = reinterpret_cast<PFNWGLMAKECURRENT>(GetProcAddress(mLibrary, "wglMakeCurrent"));
+        TRACE_ASSERT_AND(wglMakeCurrent != NULL, retVal);
+
+        wglDeleteContext = reinterpret_cast<PFNWGLDELETECONTEXT>(GetProcAddress(mLibrary, "wglDeleteContext"));
+        TRACE_ASSERT_AND(wglDeleteContext != NULL, retVal);
+
+        // Create empty window
+
+        HWND hWnd = CreateWindow("STATIC", "Window",
+            WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
+            0, 0, 16, 16, NULL, NULL, GetModuleHandle(NULL), NULL);
+        TRACE_ASSERT_AND(hWnd != NULL, retVal);
+
+        HDC hDC = GetDC(hWnd);
+        TRACE_ASSERT_AND(hDC != NULL, retVal);
+
+        // Create temp rendering context
+
+        PIXELFORMATDESCRIPTOR pfd;
+        ZeroMemory(&pfd, sizeof(pfd));
+
+        int pixelFormat = ChoosePixelFormat(hDC, &pfd);
+        TRACE_ASSERT_AND(pixelFormat != 0, retVal);
+
+        int res = SetPixelFormat(hDC, pixelFormat, &pfd);
+        TRACE_ASSERT_AND(res != FALSE, retVal);
+
+        HGLRC hRC = wglCreateContext(hDC);
+        TRACE_ASSERT_AND(hRC != NULL, retVal);
+
+        res = wglMakeCurrent(hDC, hRC);
+        TRACE_ASSERT_AND(res != FALSE, retVal);
+
+        // Load Windows specific extensions
+
+        wglChoosePixelFormat = reinterpret_cast<PFNWGLCHOOSEPIXELFORMAT>(wglGetProcAddress("wglChoosePixelFormatARB"));
+        TRACE_ASSERT_AND(wglChoosePixelFormat != NULL, retVal);
+
+        // Load core functions
+
+#define F(type, func)   func = reinterpret_cast<type>(GetProcAddress(mLibrary, #func));
+        OPENGL_FUNCTIONS_CORE
+#undef F
+
+            // Load extended functions
+
+#define F(type, func)   func = reinterpret_cast<type>(wglGetProcAddress(#func));
+            OPENGL_FUNCTIONS_EXT
+#undef F
+
+            // Release resources
+
+            res = wglMakeCurrent(hDC, 0);
+        TRACE_ASSERT_AND(res != NULL, retVal);
+
+        res = wglDeleteContext(hRC);
+        TRACE_ASSERT_AND(res != NULL, retVal);
+
+        res = ReleaseDC(hWnd, hDC);
+        TRACE_ASSERT_AND(res != NULL, retVal);
+
+        res = DestroyWindow(hWnd);
+        TRACE_ASSERT_AND(res != NULL, retVal);
+
+        return retVal;
+    }
+
+#endif // PLATFORM_WIN32
+
+    // static
+    IPlatformRef IPlatform::Acquire()
+    {
+        return Platform::Acquire();
+    }
+
+} // namespace GFW

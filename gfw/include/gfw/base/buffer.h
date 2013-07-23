@@ -1,8 +1,8 @@
-#ifndef __GFW_GRAPHICS_BASE_BUFFER_H__
-#define __GFW_GRAPHICS_BASE_BUFFER_H__
+#ifndef __GFW_BASE_BUFFER_H__
+#define __GFW_BASE_BUFFER_H__
 
 #include "common/autoref.h"
-#include "gfw/graphics/base/resource.h"
+#include "gfw/base/resource.h"
 
 namespace GFW {
 
@@ -27,4 +27,4 @@ namespace GFW {
 
 } // namespace GFW
 
-#endif // _GFW_GRAPHICS_BASE_BUFFER_H__
+#endif // _GFW_BASE_BUFFER_H__

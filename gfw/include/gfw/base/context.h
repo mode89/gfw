@@ -1,14 +1,14 @@
-#ifndef __GFW_GRAPHICS_BASE_CONTEXT_H__
-#define __GFW_GRAPHICS_BASE_CONTEXT_H__
+#ifndef __GFW_BASE_CONTEXT_H__
+#define __GFW_BASE_CONTEXT_H__
 
 #include "common/autoref.h"
-#include "gfw/graphics/base/clear_params.h"
-#include "gfw/graphics/base/vertex_attribute.h"
-#include "gfw/graphics/base/draw_params.h"
-#include "gfw/graphics/base/shader.h"
-#include "gfw/graphics/base/buffer.h"
-#include "gfw/graphics/base/texture.h"
-#include "gfw/graphics/base/render_buffer.h"
+#include "gfw/base/clear_params.h"
+#include "gfw/base/vertex_attribute.h"
+#include "gfw/base/draw_params.h"
+#include "gfw/base/shader.h"
+#include "gfw/base/buffer.h"
+#include "gfw/base/texture.h"
+#include "gfw/base/render_buffer.h"
 
 namespace GFW {
 
@@ -49,4 +49,4 @@ namespace GFW {
 
 } // namespace GFW
 
-#endif // __GFW_GRAPHICS_BASE_CONTEXT_H__
+#endif // __GFW_BASE_CONTEXT_H__

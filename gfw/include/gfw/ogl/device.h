@@ -1,11 +1,13 @@
-#ifndef __GFW_GRAPHICS_OPENGL_DEVICE_H__
-#define __GFW_GRAPHICS_OPENGL_DEVICE_H__
+#ifndef __GFW_OGL_DEVICE_H__
+#define __GFW_OGL_DEVICE_H__
 
 #include "common/futex.h"
 #include "gfw/graphics/base/device.h"
 #include "gfw/graphics/opengl/drawing_context.h"
 
-namespace GFW { namespace OpenGL {
+#include "gfw/ogl/drawing_context.h"
+
+namespace GFW {
 
     class Device: public IDevice
     {
@@ -29,28 +31,22 @@ namespace GFW { namespace OpenGL {
         inline
         virtual IRenderBufferRef    GetDefaultColorBuffer() { return mDefaultColorBuffer; }
 
-    public:
-
-        inline
-        NativeContext               CreateNativeContext()
-                                        { return mDrawingContext->CreateContext(); }
-
-        inline
-        void                        DeleteNativeContext(NativeContext nativeContext)
-                                        { return mDrawingContext->DeleteContext(nativeContext); }
-
-        inline
-        void                        MakeCurrent(NativeContext nativeContext)
-                                        { mDrawingContext->MakeCurrent(nativeContext); }
-
-        inline
-        NativeContext               GetCurrentContext()
-                                        { return mDrawingContext->GetCurrentContext(); }
+        virtual bool                Present();
 
     public:
-        Device(WindowHandle);
+
+        Device(const DeviceParams &);
+        ~Device();
+
+        bool                        Initialize();
 
     private:
+
+        const DeviceParams          mParams;
+
+        IDrawingContextRef          mDrawingContext;
+        RenderingContext            mRenderingContext;
+
         Common::Futex               mMutex;
         IDrawingContextRef          mDrawingContext;
         NativeContext               mNativeContext;
@@ -59,6 +55,6 @@ namespace GFW { namespace OpenGL {
     };
     AUTOREF_REFERENCE_DECLARATION(Device);
 
-}} // namespace GFW::OpenGL
+} // namespace GFW
 
-#endif // __GFW_GRAPHICS_OPENGL_DEVICE_H__
+#endif // __GFW_OGL_DEVICE_H__

@@ -1,8 +1,8 @@
-#ifndef __GFW_GRAPHICS_BASE_VERTEX_ATTRIBUTE_H__
-#define __GFW_GRAPHICS_BASE_VERTEX_ATTRIBUTE_H__
+#ifndef __GFW_BASE_VERTEX_ATTRIBUTE_H__
+#define __GFW_BASE_VERTEX_ATTRIBUTE_H__
 
 #include "common/typedefs.h"
-#include "gfw/graphics/base/format.h"
+#include "gfw/base/format.h"
 
 namespace GFW {
 
@@ -17,4 +17,4 @@ namespace GFW {
 
 } // namespace GFW
 
-#endif // __GFW_GRAPHICS_BASE_VERTEX_ATTRIBUTE_H__
+#endif // __GFW_BASE_VERTEX_ATTRIBUTE_H__

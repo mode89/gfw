@@ -1,9 +1,9 @@
-#ifndef __GFW_GRAPHICS_OPENGL_BUFFER_H__
-#define __GFW_GRAPHICS_OPENGL_BUFFER_H__
+#ifndef __GFW_OGL_BUFFER_H__
+#define __GFW_OGL_BUFFER_H__
 
-#include "gfw/graphics/base/buffer.h"
+#include "gfw/base/buffer.h"
 
-namespace GFW { namespace OpenGL {
+namespace GFW {
 
     class Buffer: public IBuffer
     {
@@ -23,6 +23,6 @@ namespace GFW { namespace OpenGL {
     };
     AUTOREF_REFERENCE_DECLARATION(Buffer);
 
-}} // namespace GFW::OpenGL
+} // namespace GFW
 
-#endif // __GFW_GRAPHICS_OPENGL_BUFFER_H__
+#endif // __GFW_OGL_BUFFER_H__
