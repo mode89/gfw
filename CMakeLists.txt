@@ -7,13 +7,10 @@ add_definitions(-DPROFILING=1)
 
 include(cmake/common.cmake)
 
-# Add all projects to the build tree
+# Add necessary projects to the build tree
 
-file(GLOB SUB_DIRS *)
-foreach(DIR ${SUB_DIRS})
-    if(IS_DIRECTORY ${DIR})
-        if(EXISTS ${DIR}/CMakeLists.txt)
-            add_subdirectory(${DIR})
-        endif()
-    endif()
-endforeach()
+add_subdirectory(common)
+add_subdirectory(gfw)
+add_subdirectory(gtest)
+add_subdirectory(profiler)
+add_subdirectory(ripples)
