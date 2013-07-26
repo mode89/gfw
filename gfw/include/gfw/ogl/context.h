@@ -45,15 +45,16 @@ namespace GFW {
         void                        FlushState();
 
     public:
-        Context(DeviceIn);
+        Context(DeviceIn, IDrawingContextIn);
         ~Context();
 
     private:
         typedef std::map < uint32_t, uint32_t > tMapProgs;
 
         DeviceRef                   mDevice;
+        IDrawingContextRef          mDrawingContext;
 
-        NativeContext               mNativeContext;
+        RenderingContext            mContextGL;
 
         ShaderRef                   mShaders[SHADER_STAGE_COUNT];
 

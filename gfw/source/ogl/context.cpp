@@ -34,10 +34,13 @@ namespace GFW {
         return 0;
     }
 
-    Context::Context(DeviceIn d)
+    Context::Context(DeviceIn d, IDrawingContextIn dc)
         : mDevice(d)
-        , mNativeContext(NULL)
+        , mDrawingContext(dc)
+        , mContextGL(NULL)
     {
+        mContextGL = mDrawingContext->CreateContext();
+
         memset(mVertAttrs, 0, sizeof(mVertAttrs));
     }
 
@@ -51,8 +54,8 @@ namespace GFW {
             }
         }
 
-        TRACE_ASSERT(mNativeContext != NULL);
-        mDevice->DeleteNativeContext(mNativeContext);
+        TRACE_ASSERT(mContextGL != NULL);
+        mDrawingContext->DeleteContext(mContextGL);
     }
 
     void Context::SetVertexAttributes( uint32_t number, VertexAttribute attr[] )
@@ -271,12 +274,12 @@ namespace GFW {
 
     void Context::BeginScene()
     {
-        mDevice->MakeCurrent(mNativeContext);
+        mDrawingContext->MakeCurrent(mContextGL);
     }
 
     void Context::EndScene()
     {
-        mDevice->MakeCurrent(NULL);
+        mDrawingContext->MakeCurrent(NULL);
     }
 
 } // namespace GFW

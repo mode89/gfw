@@ -2,8 +2,7 @@
 #define __GFW_OGL_DEVICE_H__
 
 #include "common/futex.h"
-#include "gfw/graphics/base/device.h"
-#include "gfw/graphics/opengl/drawing_context.h"
+#include "gfw/base/device.h"
 
 #include "gfw/ogl/drawing_context.h"
 
@@ -23,15 +22,13 @@ namespace GFW {
 
         virtual IRenderBufferRef    CreateRenderBuffer(ITextureIn, const SubResIdx &);
 
-        virtual bool                Present(bool clearState = true);
-
         inline
-        virtual IContextRef         GetDefaultContext() { return mImmediateContext; }
+        virtual IContextRef         GetDefaultContext() { return mDefaultContext; }
 
         inline
         virtual IRenderBufferRef    GetDefaultColorBuffer() { return mDefaultColorBuffer; }
 
-        virtual bool                Present();
+        virtual void                Present(bool clearState = true);
 
     public:
 
@@ -45,12 +42,10 @@ namespace GFW {
         const DeviceParams          mParams;
 
         IDrawingContextRef          mDrawingContext;
-        RenderingContext            mRenderingContext;
+        RenderingContext            mContextGL;
 
         Common::Futex               mMutex;
-        IDrawingContextRef          mDrawingContext;
-        NativeContext               mNativeContext;
-        IContextRef                 mImmediateContext;
+        IContextRef                 mDefaultContext;
         IRenderBufferRef            mDefaultColorBuffer;
     };
     AUTOREF_REFERENCE_DECLARATION(Device);

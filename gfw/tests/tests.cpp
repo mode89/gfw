@@ -21,7 +21,7 @@ namespace GFWTests {
         while ((GetCounter() - timeStart) < (freq / 120));
     }
 
-    TEST(GFW, DISABLED_Clear)
+    TEST(GFW, Clear)
     {
         // Create a window
 
@@ -42,9 +42,7 @@ namespace GFWTests {
         IDeviceRef device = CreateDevice(deviceParams);
         ASSERT_TRUE(device.IsAttached());
 
-        // Create a graphical context
-
-        IContextRef context = device->CreateContext();
+        IContextRef context = device->GetDefaultContext();
         ASSERT_TRUE(context.IsAttached());
 
         // Create clear parameters
@@ -95,9 +93,7 @@ namespace GFWTests {
         IDeviceRef device = CreateDevice(deviceParams);
         ASSERT_TRUE(device.IsAttached());
 
-        // Create a graphical context
-
-        IContextRef context = device->CreateContext();
+        IContextRef context = device->GetDefaultContext();
         ASSERT_TRUE(context.IsAttached());
 
         // Create clear parameters
@@ -179,16 +175,25 @@ namespace GFWTests {
         DestroyDefaultWindow(window);
     }
 
-    TEST(GFW, RenderToTexture)
+    TEST(GFW, DISABLED_RenderToTexture)
     {
         // Create a window
 
-        IWindowRef window = CreateEmptyWindow(WINDOW_WIDTH, WINDOW_HEIGHT);
-        ASSERT_TRUE(window.IsAttached());
+        WindowDesc windowDesc;
+        windowDesc.width  = WINDOW_WIDTH;
+        windowDesc.height = WINDOW_HEIGHT;
+
+        WindowHandle window = CreateDefaultWindow(windowDesc);
+        ASSERT_TRUE(window != NULL);
 
         // Create a graphical device
 
-        IDeviceRef device = CreateDevice(window->GetHandle());
+        DeviceParams deviceParams;
+        deviceParams.width        = WINDOW_WIDTH;
+        deviceParams.height       = WINDOW_HEIGHT;
+        deviceParams.windowHandle = window;
+
+        IDeviceRef device = CreateDevice(deviceParams);
         ASSERT_TRUE(device.IsAttached());
 
         IContextRef context = device->GetDefaultContext();
@@ -286,7 +291,7 @@ namespace GFWTests {
 
         for (int i = 0; i < 60; ++ i)
         {
-            window->Tick();
+            ProcessDefaultWindow(window);
 
             context->BeginScene();
             {
@@ -320,6 +325,8 @@ namespace GFWTests {
 
             Wait();
         }
+
+        DestroyDefaultWindow(window);
     }
 
 } // namespace GFWTests
