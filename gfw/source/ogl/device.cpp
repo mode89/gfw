@@ -4,6 +4,9 @@
 #include "gfw/ogl/context.h"
 #include "gfw/ogl/shader.h"
 #include "gfw/ogl/buffer.h"
+#include "gfw/ogl/functions.h"
+
+#define AUTO_LOCK_CONTEXT   AutoLock __auto_lock_context(mDrawingContext.GetPointer(), &mMutex, mContextGL)
 
 namespace GFW {
 
@@ -23,9 +26,34 @@ namespace GFW {
         return obj;
     }
 
+    class AutoLock
+    {
+    public:
+        AutoLock(IDrawingContext * dc, Futex * mutex, RenderingContext nativeContext)
+            : mDrawingContext(dc)
+            , mMutex(mutex)
+            , mPrevContext(NULL)
+        {
+            mMutex->Lock();
+            mPrevContext = mDrawingContext->GetCurrentContext();
+            mDrawingContext->MakeCurrent(nativeContext);
+        }
+
+        ~AutoLock()
+        {
+            mDrawingContext->MakeCurrent(mPrevContext);
+            mMutex->Unlock();
+        }
+
+    private:
+        IDrawingContext *   mDrawingContext;
+        Futex *             mMutex;
+        RenderingContext    mPrevContext;
+    };
+
     Device::Device(const DeviceParams & params)
         : mParams(params)
-        , mRenderingContext(NULL)
+        , mContextGL(NULL)
     {
 
     }
@@ -33,9 +61,9 @@ namespace GFW {
     Device::~Device()
     {
         TRACE_ASSERT(mDrawingContext.IsAttached());
-        TRACE_ASSERT(mRenderingContext != NULL);
+        TRACE_ASSERT(mContextGL != NULL);
         mDrawingContext->MakeCurrent(NULL);
-        mDrawingContext->DeleteContext(mRenderingContext);
+        mDrawingContext->DeleteContext(mContextGL);
     }
 
     bool Device::Initialize()
@@ -47,28 +75,36 @@ namespace GFW {
             return false;
         }
 
-        mRenderingContext = mDrawingContext->CreateContext();
-        if (mRenderingContext == NULL)
+        mContextGL = mDrawingContext->CreateContext();
+        if (mContextGL == NULL)
         {
             TRACE_ERROR("Cannot create a rendering context");
             return false;
         }
 
-        mDrawingContext->MakeCurrent(mRenderingContext);
+        mDefaultContext = new Context(this, mDrawingContext);
+
+        AUTO_LOCK_CONTEXT;
+
+        const uint8_t * extensions = glGetString(GL_EXTENSIONS);
 
         return true;
     }
 
     IContextRef Device::CreateContext()
     {
-        return new Context(this);
+        AUTO_LOCK_CONTEXT;
+
+        return new Context(this, mDrawingContext);
     }
 
     IShaderRef Device::CreateShader( ShaderStage stage, const void * shaderData )
     {
+        AUTO_LOCK_CONTEXT;
+
         ShaderRef shader = new Shader(stage);
 
-        if (shader->Compile(static_cast<const char*>(shaderData)) != 0)
+        if (shader->Compile(static_cast<const char*>(shaderData)))
         {
             return shader.StaticCast<IShader>();
         }
@@ -78,6 +114,8 @@ namespace GFW {
 
     IBufferRef Device::CreateBuffer( const BufferDesc & desc, const void * initialData )
     {
+        AUTO_LOCK_CONTEXT;
+
         BufferRef buffer = new Buffer(desc);
 
         if (buffer->Init(initialData) != 0)
@@ -88,11 +126,32 @@ namespace GFW {
         return NULL;
     }
 
-    bool Device::Present()
+    ITextureRef Device::CreateTexture( const TextureDesc &, const void * initialData /*= 0*/ )
     {
-        mDrawingContext->SwapBuffers();
+        AUTO_LOCK_CONTEXT;
 
-        return true;
+        TRACE_FAIL_MSG("Not yet implemented");
+        return NULL;
+    }
+
+    IRenderBufferRef Device::CreateRenderBuffer( ITextureIn, const SubResIdx & )
+    {
+        AUTO_LOCK_CONTEXT;
+
+        TRACE_FAIL_MSG("Not yet implemented");
+        return NULL;
+    }
+
+    void Device::Present(bool clearState)
+    {
+        AUTO_LOCK_CONTEXT;
+
+        if (clearState)
+        {
+            mDefaultContext->ClearState();
+        }
+
+        mDrawingContext->SwapBuffers();
     }
 
 } // namespace GFW

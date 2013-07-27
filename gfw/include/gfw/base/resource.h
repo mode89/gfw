@@ -25,16 +25,14 @@ namespace GFW {
         USAGE_DYNAMIC_COPY
     };
 
-    struct BufferDesc
+    struct SubResIdx
     {
-        BufferType  type;
-        Usage       usage;
-        uint32_t    size;
+        uint32_t    mip;
+        uint32_t    slice;
 
-        BufferDesc()
-            : type(BUFFER_UNKNOWN)
-            , usage(USAGE_UNKNOWN)
-            , size(0)
+        SubResIdx(uint32_t m, uint32_t s)
+            : mip(m)
+            , slice(s)
         {}
     };
 

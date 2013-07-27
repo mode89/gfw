@@ -16,6 +16,7 @@ namespace GFW {
         virtual RenderingContext    CreateContext();
         virtual void                DeleteContext(RenderingContext);
         virtual void                MakeCurrent(RenderingContext);
+        virtual RenderingContext    GetCurrentContext();
         virtual void                SwapBuffers();
 
     public:
@@ -28,17 +29,25 @@ namespace GFW {
         IPlatformRef    mPlatform;
         HWND            mWindow;
         HDC             mDC;
+        HGLRC           mDefaultContext;
     };
 
     DrawingContext::DrawingContext(WindowHandle window)
         : mWindow(static_cast<HWND>(window))
         , mDC(NULL)
+        , mDefaultContext(NULL)
     {
 
     }
 
     DrawingContext::~DrawingContext()
     {
+        if (mDefaultContext != NULL)
+        {
+            BOOL res = wglDeleteContext(mDefaultContext);
+            TRACE_ASSERT(res == TRUE);
+        }
+
         if (IsWindow(mWindow) == TRUE)
         {
             BOOL res = ReleaseDC(mWindow, mDC);
@@ -93,6 +102,13 @@ namespace GFW {
             return false;
         }
 
+        mDefaultContext = wglCreateContext(mDC);
+        if (mDefaultContext == NULL)
+        {
+            TRACE_ERROR("Failed to create the default rendering context");
+            return false;
+        }
+
         return true;
     }
 
@@ -100,6 +116,8 @@ namespace GFW {
     {
         HGLRC hRC = wglCreateContext(mDC);
         TRACE_ASSERT(hRC != NULL);
+        BOOL res = wglShareLists(mDefaultContext, hRC);
+        TRACE_ASSERT(res == TRUE);
         return hRC;
     }
 
@@ -115,6 +133,11 @@ namespace GFW {
         BOOL res = FALSE;
         res = wglMakeCurrent(mDC, static_cast<HGLRC>(context));
         TRACE_ASSERT(res == TRUE);
+    }
+
+    RenderingContext DrawingContext::GetCurrentContext()
+    {
+        return wglGetCurrentContext();
     }
 
     void DrawingContext::SwapBuffers()

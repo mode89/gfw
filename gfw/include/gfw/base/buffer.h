@@ -6,6 +6,19 @@
 
 namespace GFW {
 
+    struct BufferDesc
+    {
+        BufferType  type;
+        Usage       usage;
+        uint32_t    size;
+
+        BufferDesc()
+            : type(BUFFER_UNKNOWN)
+            , usage(USAGE_UNKNOWN)
+            , size(0)
+        {}
+    };
+
     class IBuffer: public Common::ARefCounted
     {
 

@@ -27,38 +27,30 @@ namespace GFW {
         , mShader(0)
         , mHash(0)
     {
+        mShader = TRACE_ASSERT_GL(glCreateShader, GetShaderType(mStage));
+        TRACE_ASSERT(mShader != 0);
     }
 
     Shader::~Shader()
     {
-        if (mShader != 0)
-        {
-            TRACE_ASSERT_GL(glDeleteShader, mShader);
-        }
+        TRACE_ASSERT(mShader != 0);
+        TRACE_ASSERT_GL(glDeleteShader, mShader);
     }
 
-    uint32_t Shader::Compile( const char * source )
+    bool Shader::Compile( const char * source )
     {
-        mShader = TRACE_ASSERT_GL(glCreateShader, GetShaderType(mStage));
         TRACE_ASSERT(mShader != 0);
 
-        if (mShader != 0)
+        const char * strings[] = { source };
+        TRACE_ASSERT_GL(glShaderSource, mShader, 1, strings, NULL);
+
+        TRACE_ASSERT_GL(glCompileShader, mShader);
+
+        int32_t compileStatus = 0;
+        TRACE_ASSERT_GL(glGetShaderiv, mShader, GL_COMPILE_STATUS, &compileStatus);
+
+        if (compileStatus == GL_FALSE)
         {
-            const char * strings[] = { source };
-            TRACE_ASSERT_GL(glShaderSource, mShader, 1, strings, NULL);
-
-            TRACE_ASSERT_GL(glCompileShader, mShader);
-
-            int32_t compileStatus = 0;
-            TRACE_ASSERT_GL(glGetShaderiv, mShader, GL_COMPILE_STATUS, &compileStatus);
-
-            if (compileStatus == GL_TRUE)
-            {
-                uint32_t sourceLength = strlen(source);
-                mHash = CRC32(0, source, sourceLength);
-                return 1;
-            }
-
             int32_t infoLogLength = 0;
             TRACE_ASSERT_GL(glGetShaderiv, mShader, GL_INFO_LOG_LENGTH, &infoLogLength);
 
@@ -70,11 +62,13 @@ namespace GFW {
 
             delete infoLog;
 
-            TRACE_ASSERT_GL(glDeleteShader, mShader);
-            mShader = 0;
+            return false;
         }
 
-        return 0;
+        uint32_t sourceLength = strlen(source);
+        mHash = CRC32(0, source, sourceLength);
+
+        return true;
     }
 
 } // namespace GFW

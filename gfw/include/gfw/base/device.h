@@ -14,15 +14,24 @@ namespace GFW {
     {
     public:
 
-        virtual IContextRef     CreateContext() = 0;
+        virtual IContextRef         CreateContext() = 0;
 
-        virtual IShaderRef      CreateShader(ShaderStage, const void * shaderData) = 0;
+        virtual IShaderRef          CreateShader(ShaderStage, const void * shaderData) = 0;
 
-        virtual IBufferRef      CreateBuffer(const BufferDesc &, const void * initialData) = 0;
+        virtual IBufferRef          CreateBuffer(const BufferDesc &, const void * initialData) = 0;
 
-        virtual bool            Present() = 0;
+        virtual ITextureRef         CreateTexture(const TextureDesc &, const void * initialData = 0) = 0;
 
-        virtual                 ~IDevice() { }
+        virtual IRenderBufferRef    CreateRenderBuffer(ITextureIn, const SubResIdx &) = 0;
+
+        virtual IContextRef         GetDefaultContext() = 0;
+
+        virtual IRenderBufferRef    GetDefaultColorBuffer() = 0;
+
+        virtual void                Present(bool clearState = true) = 0;
+
+    public:
+        virtual                     ~IDevice() { }
 
     };
 	AUTOREF_REFERENCE_DECLARATION(IDevice);

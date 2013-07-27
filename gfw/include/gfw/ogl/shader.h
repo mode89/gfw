@@ -11,7 +11,7 @@ namespace GFW {
         virtual ShaderStage     GetStage()          { return mStage; }
 
     public:
-        uint32_t                Compile(const char * source);
+        bool                    Compile(const char * source);
 
         inline
         uint32_t                GetHash()           { return mHash; }

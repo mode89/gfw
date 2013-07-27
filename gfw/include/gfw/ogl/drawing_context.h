@@ -15,6 +15,7 @@ namespace GFW {
         virtual RenderingContext    CreateContext() = 0;
         virtual void                DeleteContext(RenderingContext) = 0;
         virtual void                MakeCurrent(RenderingContext) = 0;
+        virtual RenderingContext    GetCurrentContext() = 0;
         virtual void                SwapBuffers() = 0;
 
         virtual                     ~IDrawingContext()  {}

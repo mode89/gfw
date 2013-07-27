@@ -14,39 +14,55 @@ namespace GFW {
     {
     public:
 
-        virtual void    SetShader(ShaderStage, IShaderIn);
+        virtual void                SetShader(ShaderStage, IShaderIn);
 
-        virtual void    SetVertexAttributes(uint32_t number, VertexAttribute []);
+        virtual void                SetVertexAttributes(uint32_t number, VertexAttribute []);
 
-        virtual void    SetVertexBuffer(uint32_t slot, IBufferIn);
+        virtual void                SetVertexBuffer(uint32_t slot, IBufferIn);
 
-        virtual void    Clear(const ClearParams &);
+        virtual void                SetIndexBuffer(IBufferIn);
 
-        virtual void    Draw(const DrawParams &);
+        virtual void                SetTexture(ShaderStage, uint32_t slot, ITextureIn);
 
-        virtual void    ClearState();
+        virtual void                SetFrameBuffer(uint32_t colorBufferCount, IRenderBufferRef color[], IRenderBufferIn depth);
+
+        virtual void                BeginScene();
+
+        virtual void                EndScene();
+
+        virtual void                Clear(const ClearParams &);
+
+        virtual void                Draw(const DrawParams &);
+
+        virtual void                Draw(const DrawIndexedParams &);
+
+        virtual void                DrawScreenQuad();
+
+        virtual void                ClearState();
 
     public:
 
-        void            FlushState();
+        void                        FlushState();
 
     public:
-
-        Context(DeviceIn);
+        Context(DeviceIn, IDrawingContextIn);
         ~Context();
 
     private:
         typedef std::map < uint32_t, uint32_t > tMapProgs;
 
-        DeviceRef               mDevice;
+        DeviceRef                   mDevice;
+        IDrawingContextRef          mDrawingContext;
 
-        ShaderRef               mShaders[SHADER_STAGE_NUMBER];
+        RenderingContext            mContextGL;
 
-        VertexAttribute         mVertAttrs[MAX_VERTEX_BUFFER_BIND];
+        ShaderRef                   mShaders[SHADER_STAGE_COUNT];
 
-        BufferRef               mVertexBuffers[MAX_VERTEX_BUFFER_BIND];
+        VertexAttribute             mVertAttrs[MAX_VERTEX_BUFFER_BIND];
 
-        tMapProgs               mPrograms;
+        BufferRef                   mVertexBuffers[MAX_VERTEX_BUFFER_BIND];
+
+        tMapProgs                   mPrograms;
     };
 
 } // namespace GFW

@@ -34,9 +34,13 @@ namespace GFW {
         return 0;
     }
 
-    Context::Context(DeviceIn d)
+    Context::Context(DeviceIn d, IDrawingContextIn dc)
         : mDevice(d)
+        , mDrawingContext(dc)
+        , mContextGL(NULL)
     {
+        mContextGL = mDrawingContext->CreateContext();
+
         memset(mVertAttrs, 0, sizeof(mVertAttrs));
     }
 
@@ -49,6 +53,9 @@ namespace GFW {
                 TRACE_ASSERT_GL(glDeleteProgram, it->second);
             }
         }
+
+        TRACE_ASSERT(mContextGL != NULL);
+        mDrawingContext->DeleteContext(mContextGL);
     }
 
     void Context::SetVertexAttributes( uint32_t number, VertexAttribute attr[] )
@@ -74,14 +81,11 @@ namespace GFW {
     void Context::SetShader( ShaderStage stage, IShaderIn shader )
     {
         TRACE_ASSERT(stage > SHADER_UNKNOWN);
-        TRACE_ASSERT(stage < SHADER_STAGE_NUMBER);
+        TRACE_ASSERT(stage < SHADER_STAGE_COUNT);
         TRACE_ASSERT(shader.IsAttached());
         TRACE_ASSERT(stage == shader->GetStage());
 
-        if (stage == shader->GetStage())
-        {
-            mShaders[stage] = shader.StaticCast<Shader>();
-        }
+        mShaders[stage] = shader.StaticCast<Shader>();
     }
 
     void Context::Clear(const ClearParams & cp)
@@ -90,11 +94,17 @@ namespace GFW {
 
         uint32_t mask = 0;
 
-        if (cp.mask | CLEAR_COLOR)
+        if (cp.mask & CLEAR_COLOR)
         {
             TRACE_ASSERT_GL(glClearColor, cp.color[0], cp.color[1], cp.color[2], cp.color[3]);
             mask |= GL_COLOR_BUFFER_BIT;
         }
+
+		if (cp.mask & CLEAR_DEPTH)
+		{
+			TRACE_ASSERT_GL(glClearDepth, cp.depth);
+			mask |= GL_DEPTH_BUFFER_BIT;
+		}
 
         TRACE_ASSERT_GL(glClear, mask);
 
@@ -117,6 +127,11 @@ namespace GFW {
 #endif
     }
 
+    void Context::Draw( const DrawIndexedParams & )
+    {
+        TRACE_FAIL_MSG("Not yet implemented");
+    }
+
     void Context::ClearState()
     {
         PROFILE();
@@ -125,7 +140,7 @@ namespace GFW {
 
         TRACE_ASSERT_GL(glUseProgram, 0);
 
-        for (int i = 0; i < SHADER_STAGE_NUMBER; ++ i)
+        for (int i = 0; i < SHADER_STAGE_COUNT; ++ i)
         {
             mShaders[i].Detach();
         }
@@ -144,8 +159,8 @@ namespace GFW {
 
         // Setup shaders
 
-        uint32_t shaderHashes[SHADER_STAGE_NUMBER];
-        for (int stage = 0; stage < SHADER_STAGE_NUMBER; ++ stage)
+        uint32_t shaderHashes[SHADER_STAGE_COUNT];
+        for (int stage = 0; stage < SHADER_STAGE_COUNT; ++ stage)
         {
             shaderHashes[stage] = mShaders[stage].IsAttached() ? mShaders[stage]->GetHash() : 0;
         }
@@ -163,7 +178,7 @@ namespace GFW {
             program = TRACE_ASSERT_GL(glCreateProgram);
             TRACE_ASSERT(program != 0);
 
-            for (int stage = 0; stage < SHADER_STAGE_NUMBER; ++ stage)
+            for (int stage = 0; stage < SHADER_STAGE_COUNT; ++ stage)
             {
                 if (mShaders[stage].IsAttached())
                 {
@@ -235,6 +250,36 @@ namespace GFW {
 #if PROFILING
         TRACE_ASSERT_GL(glFinish);
 #endif
+    }
+
+    void Context::SetIndexBuffer( IBufferIn )
+    {
+        TRACE_FAIL_MSG("Not yet implemented");
+    }
+
+    void Context::SetTexture( ShaderStage, uint32_t slot, ITextureIn )
+    {
+        TRACE_FAIL_MSG("Not yet implemented");
+    }
+
+    void Context::SetFrameBuffer( uint32_t colorBufferCount, IRenderBufferRef color[], IRenderBufferIn depth )
+    {
+        TRACE_FAIL_MSG("Not yet implemented");
+    }
+
+    void Context::DrawScreenQuad()
+    {
+        TRACE_FAIL_MSG("Not yet implemented");
+    }
+
+    void Context::BeginScene()
+    {
+        mDrawingContext->MakeCurrent(mContextGL);
+    }
+
+    void Context::EndScene()
+    {
+        mDrawingContext->MakeCurrent(NULL);
     }
 
 } // namespace GFW

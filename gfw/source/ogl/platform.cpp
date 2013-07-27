@@ -99,6 +99,12 @@ namespace GFW {
         wglDeleteContext = reinterpret_cast<PFNWGLDELETECONTEXT>(GetProcAddress(mLibrary, "wglDeleteContext"));
         TRACE_ASSERT_AND(wglDeleteContext != NULL, retVal);
 
+        wglGetCurrentContext = reinterpret_cast<PFNWGLGETCURRENTCONTEXT>(GetProcAddress(mLibrary, "wglGetCurrentContext"));
+        TRACE_ASSERT_AND(wglGetCurrentContext != NULL, retVal);
+
+        wglShareLists = reinterpret_cast<PFNWGLSHARELISTS>(GetProcAddress(mLibrary, "wglShareLists"));
+        TRACE_ASSERT_AND(wglShareLists != NULL, retVal);
+
         // Create empty window
 
         HWND hWnd = CreateWindow("STATIC", "Window",
