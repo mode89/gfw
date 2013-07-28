@@ -142,14 +142,9 @@ namespace GFW {
         return NULL;
     }
 
-    void Device::Present(bool clearState)
+    void Device::Present()
     {
         AUTO_LOCK_CONTEXT;
-
-        if (clearState)
-        {
-            mDefaultContext->ClearState();
-        }
 
         mDrawingContext->SwapBuffers();
     }

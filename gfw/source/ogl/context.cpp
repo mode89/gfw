@@ -279,6 +279,8 @@ namespace GFW {
 
     void Context::EndScene()
     {
+        ClearState();
+
         mDrawingContext->MakeCurrent(NULL);
     }
 

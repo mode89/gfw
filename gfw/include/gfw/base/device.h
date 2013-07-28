@@ -28,7 +28,7 @@ namespace GFW {
 
         virtual IRenderBufferRef    GetDefaultColorBuffer() = 0;
 
-        virtual void                Present(bool clearState = true) = 0;
+        virtual void                Present() = 0;
 
     public:
         virtual                     ~IDevice() { }
