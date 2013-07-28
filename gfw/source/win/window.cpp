@@ -162,7 +162,7 @@ namespace GFW {
         if (handle == NULL)
         {
             TRACE_ERROR("Failed to create a window");
-            return false;
+            return NULL;
         }
 
         ShowWindow(handle, SW_SHOW);
@@ -192,6 +192,11 @@ namespace GFW {
 
         if (PeekMessage(&msg, static_cast<HWND>(handle), 0, 0, PM_REMOVE))
         {
+            if (msg.message == WM_SYSCOMMAND && msg.wParam == SC_CLOSE)
+            {
+                return false;
+            }
+
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
