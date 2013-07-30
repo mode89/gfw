@@ -74,7 +74,7 @@ namespace Common {
             mObject = NULL;
         }
 
-        inline ObjectClass * operator * () const { return mObject; }
+        inline ObjectClass & operator * () const { return *mObject; }
 
         inline ObjectClass * operator-> () const { return mObject; }
 
@@ -118,8 +118,53 @@ namespace Common {
             }
         }
 
-    private:
+    protected:
         ObjectClass * mObject;
+    };
+
+    // Encapsulates a pointer with ref counting
+    template <typename T>
+    class Pointer : public ARefCounted
+    {
+    public:
+        Pointer()
+            : mData(NULL)
+        {}
+
+        Pointer(T * data)
+            : mData(data)
+        {}
+
+        ~Pointer()
+        {
+            delete mData;
+        }
+
+    private:
+        T * mData;
+
+        template < typename T >
+        friend class AutoPointer;
+    };
+
+    // Wrapper for AutoRef<Pointer>
+    template <typename T>
+    class AutoPointer : public AutoRef<Pointer<T>>
+    {
+    public:
+        inline
+        AutoPointer(T * object)
+            : AutoRef(new Pointer<T>(object))
+        {}
+
+        inline T &
+        operator [] (uint32_t index) { return mObject->mData[index]; }
+
+        inline T &
+        operator * () { return *mObject->mData; }
+
+        inline T *
+        operator -> () { return mObject->mData; }
     };
 
 } // namespace Common
