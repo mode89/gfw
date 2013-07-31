@@ -39,6 +39,7 @@ namespace GFW {
 
     bool Shader::Compile( const char * source )
     {
+        TRACE_ASSERT(source != NULL);
         TRACE_ASSERT(mShader != 0);
 
         const char * strings[] = { source };

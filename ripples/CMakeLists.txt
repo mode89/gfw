@@ -14,3 +14,6 @@ include_directories(${COMMON_INCLUDE_DIRS})
 find_package(gfw CONFIG)
 target_link_libraries(ripples ${GFW_LIBRARIES})
 include_directories(${GFW_INCLUDE_DIRS})
+
+file(GLOB RIPPLES_GLSL_FILES RELATIVE data *.glsl)
+message("${RIPPLES_GLSL_FILES}")
