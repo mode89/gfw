@@ -143,29 +143,34 @@ namespace Common {
     private:
         T * mData;
 
-        template < typename T >
+        template < typename Type >
         friend class AutoPointer;
     };
 
     // Wrapper for AutoRef<Pointer>
-    template <typename T>
-    class AutoPointer : public AutoRef<Pointer<T>>
+#define AUTOREF AutoRef< Pointer< T > >
+    template < typename T >
+    class AutoPointer : public AUTOREF
     {
     public:
         inline
         AutoPointer(T * object)
-            : AutoRef(new Pointer<T>(object))
+            : AUTOREF(new Pointer<T>(object))
         {}
 
         inline T &
-        operator [] (uint32_t index) { return mObject->mData[index]; }
+        operator [] (uint32_t index) { return AUTOREF::mObject->mData[index]; }
 
         inline T &
-        operator * () { return *mObject->mData; }
+        operator * () { return *AUTOREF::mObject->mData; }
 
         inline T *
-        operator -> () { return mObject->mData; }
+        operator -> () { return AUTOREF::mObject->mData; }
+
+        inline
+        operator T* () { return AUTOREF::mObject->mData; }
     };
+#undef AUTOREF
 
 } // namespace Common
 
