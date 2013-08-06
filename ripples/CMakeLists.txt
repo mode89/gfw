@@ -15,5 +15,9 @@ find_package(gfw CONFIG)
 target_link_libraries(ripples ${GFW_LIBRARIES})
 include_directories(${GFW_INCLUDE_DIRS})
 
-file(GLOB RIPPLES_GLSL_FILES RELATIVE data *.glsl)
-message("${RIPPLES_GLSL_FILES}")
+file(GLOB RIPPLES_GLSL_FILES data/*.glsl)
+foreach (item ${RIPPLES_GLSL_FILES})
+    add_custom_command(
+        TARGET ripples POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different "${item}" "${CMAKE_CURRENT_BINARY_DIR}")
+endforeach()
