@@ -11,7 +11,7 @@ namespace Common {
     public:
         static FileRef          Create();
 
-        virtual uint32_t        Read(const char * filePath);
+        virtual bool            Read(const char * filePath);
 
         inline
         virtual const void *    GetData() const     { return mData; }

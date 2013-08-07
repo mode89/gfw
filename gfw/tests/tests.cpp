@@ -103,7 +103,7 @@ TEST_F(GFWTests, Draw)
     float vertices[] = {
         -1.0f, -1.0f, 1.0f, 0.0f, 0.0f,
         -1.0f,  1.0f, 0.0f, 1.0f, 0.0f,
-            1.0f,  1.0f, 0.0f, 0.0f, 1.0f
+         1.0f,  1.0f, 0.0f, 0.0f, 1.0f
     };
 
     BufferDesc vertexBufferDesc;
@@ -141,6 +141,89 @@ TEST_F(GFWTests, Draw)
 
             mContext->SetVertexAttributes(2, vertexAttribs);
             mContext->SetVertexBuffer(0, vertexBuffer);
+
+            mContext->Draw(drawParams);
+        }
+        mContext->EndScene();
+
+        mDevice->Present();
+
+        Wait();
+    }
+}
+
+TEST_F(GFWTests, DrawIndexed)
+{
+    // Create shaders
+
+    FileRef vertexShaderSource = File::Create();
+    ASSERT_TRUE(vertexShaderSource->Read(TESTS_SOURCE_DIR "draw_vert.glsl") != 0);
+
+    IShaderRef vertexShader = mDevice->CreateShader(SHADER_VERTEX, vertexShaderSource->GetData());
+    ASSERT_TRUE(vertexShader.IsAttached());
+
+    FileRef pixelShaderSource = File::Create();
+    ASSERT_TRUE(pixelShaderSource->Read(TESTS_SOURCE_DIR "draw_frag.glsl") != 0);
+
+    IShaderRef pixelShader  = mDevice->CreateShader(SHADER_PIXEL, pixelShaderSource->GetData());
+    ASSERT_TRUE(pixelShader.IsAttached());
+
+    // Create geometry
+
+    float vertices[] = {
+        -1.0f,  1.0f, 1.0f, 0.0f, 0.0f,
+         1.0f,  1.0f, 0.0f, 1.0f, 0.0f,
+         1.0f, -1.0f, 0.0f, 0.0f, 1.0f,
+        -1.0f, -1.0f, 1.0f, 1.0f, 0.0f
+    };
+
+    BufferDesc vertexBufferDesc;
+    vertexBufferDesc.type  = BUFFER_VERTEX;
+    vertexBufferDesc.size  = sizeof(vertices);
+    vertexBufferDesc.usage = USAGE_STATIC_DRAW;
+    IBufferRef vertexBuffer = mDevice->CreateBuffer(vertexBufferDesc, vertices);
+
+    uint16_t indices[] = {
+        3, 0, 2, 1
+    };
+
+    BufferDesc indexBufferDesc;
+    indexBufferDesc.type  = BUFFER_INDEX;
+    indexBufferDesc.size  = sizeof(indices);
+    indexBufferDesc.usage = USAGE_STATIC_DRAW;
+    IBufferRef indexBuffer = mDevice->CreateBuffer(indexBufferDesc, indices);
+
+    // Define vertex attributes
+
+    VertexAttribute vertexAttribs[] = {
+        { "pos",   FORMAT_R32G32_FLOAT,    20, 0, 0 },
+        { "color", FORMAT_R32G32B32_FLOAT, 20, 8, 0 }
+    };
+
+    // Define draw params
+
+    DrawIndexedParams drawParams;
+    drawParams.primTop     = PRIM_TRIANGLES_STRIP;
+    drawParams.indexType   = TYPE_UNSIGNED_SHORT;
+    drawParams.indexStart  = 0;
+    drawParams.indexCount  = 4;
+
+    // Main loop
+
+    for (int i = 0; i < 60; ++ i)
+    {
+        ProcessDefaultWindow(mWindow);
+
+        mContext->BeginScene();
+        {
+            mContext->Clear(mClearParams);
+
+            mContext->SetShader(SHADER_VERTEX, vertexShader);
+            mContext->SetShader(SHADER_PIXEL,  pixelShader);
+
+            mContext->SetVertexAttributes(2, vertexAttribs);
+            mContext->SetVertexBuffer(0, vertexBuffer);
+            mContext->SetIndexBuffer(indexBuffer);
 
             mContext->Draw(drawParams);
         }

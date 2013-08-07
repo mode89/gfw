@@ -22,7 +22,7 @@ namespace Common {
     {
     }
 
-    uint32_t File::Read( const char * filePath )
+    bool File::Read( const char * filePath )
     {
         HANDLE hFile = CreateFile(filePath, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
         TRACE_ASSERT(hFile != INVALID_HANDLE_VALUE);
@@ -52,7 +52,7 @@ namespace Common {
                         mData = static_cast<char8_t*>(data);
                         mData[mSize] = 0;
 
-                        return 1;
+                        return true;
                     }
                 }
             }
@@ -61,7 +61,7 @@ namespace Common {
             TRACE_ASSERT(res != NULL);
         }
 
-        return 0;
+        return false;
     }
 
 } // namespace Common

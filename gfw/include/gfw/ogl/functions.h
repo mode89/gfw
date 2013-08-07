@@ -28,6 +28,7 @@
     F(PFNGLCLEARDEPTHPROC,                  glClearDepth) \
     F(PFNGLCLEARPROC,                       glClear) \
     F(PFNGLDRAWARRAYSPROC,                  glDrawArrays) \
+    F(PFNGLDRAWELEMENTSPROC,                glDrawElements) \
     F(PFNGLFLUSHPROC,                       glFlush) \
     F(PFNGLFINISHPROC,                      glFinish) \
 

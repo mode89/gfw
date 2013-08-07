@@ -62,6 +62,8 @@ namespace GFW {
 
         BufferRef                   mVertexBuffers[MAX_VERTEX_BUFFER_BIND];
 
+        BufferRef                   mIndexBuffer;
+
         tMapProgs                   mPrograms;
     };
 

@@ -6,33 +6,12 @@
 #include "gfw/common/format.h"
 
 #include "gfw/ogl/context.h"
+#include "gfw/ogl/format.h"
 #include "gfw/ogl/functions.h"
 
 namespace GFW {
 
     using namespace Common;
-
-    static uint32_t GetOGLType(Type type)
-    {
-        switch (type)
-        {
-        case TYPE_FLOAT:    return GL_FLOAT;
-        default:            TRACE_FAIL();
-        }
-
-        return 0;
-    }
-
-    static uint32_t GetDrawMode(Primitive prim)
-    {
-        switch (prim)
-        {
-        case PRIM_TRIANGLES:    return GL_TRIANGLES;
-        default:                TRACE_FAIL();
-        }
-
-        return 0;
-    }
 
     Context::Context(DeviceIn d, IDrawingContextIn dc)
         : mDevice(d)
@@ -119,7 +98,7 @@ namespace GFW {
 
         FlushState();
 
-        uint32_t mode = GetDrawMode(dp.primTop);
+        uint32_t mode = GetOGLDrawMode(dp.primTop);
         TRACE_ASSERT_GL(glDrawArrays, mode, dp.vertexStart, dp.vertexCount);
 
 #if PROFILING
@@ -127,9 +106,15 @@ namespace GFW {
 #endif
     }
 
-    void Context::Draw( const DrawIndexedParams & )
+    void Context::Draw( const DrawIndexedParams & dp )
     {
-        TRACE_FAIL_MSG("Not yet implemented");
+        FlushState();
+
+        uint32_t mode     = GetOGLDrawMode(dp.primTop);
+        uint32_t type     = GetOGLType(dp.indexType);
+        uint32_t typeSize = GetTypeSize(dp.indexType);
+
+        TRACE_ASSERT_GL(glDrawElements, mode, dp.indexCount, type, reinterpret_cast<void*>(typeSize * dp.indexStart));
     }
 
     void Context::ClearState()
@@ -145,12 +130,15 @@ namespace GFW {
             mShaders[i].Detach();
         }
 
-        // Detach vertex buffers
+        // Detach buffers
 
         for (int i = 0; i < MAX_VERTEX_BUFFER_BIND; ++ i)
         {
             mVertexBuffers[i].Detach();
         }
+
+        TRACE_ASSERT_GL(glBindBuffer, GL_ELEMENT_ARRAY_BUFFER, 0);
+        mIndexBuffer.Detach();
     }
 
     void Context::FlushState()
@@ -247,14 +235,19 @@ namespace GFW {
             }
         }
 
+        if (mIndexBuffer.IsAttached())
+        {
+            TRACE_ASSERT_GL(glBindBuffer, GL_ELEMENT_ARRAY_BUFFER, mIndexBuffer->GetBufferObject());
+        }
+
 #if PROFILING
         TRACE_ASSERT_GL(glFinish);
 #endif
     }
 
-    void Context::SetIndexBuffer( IBufferIn )
+    void Context::SetIndexBuffer( IBufferIn buffer )
     {
-        TRACE_FAIL_MSG("Not yet implemented");
+        mIndexBuffer = buffer.StaticCast<Buffer>();
     }
 
     void Context::SetTexture( ShaderStage, uint32_t slot, ITextureIn )

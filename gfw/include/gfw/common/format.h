@@ -6,8 +6,11 @@
 
 namespace GFW {
 
-    uint32_t GetFormatElementNumber(Format);
-    Type     GetFormatElementType(Format);
+    uint32_t    GetFormatElementNumber(Format);
+
+    Type        GetFormatElementType(Format);
+
+    uint32_t    GetTypeSize(Type);
 
 } // namespace GFW
 
