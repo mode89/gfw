@@ -60,6 +60,14 @@
     F(PFNGLVERTEXATTRIBPOINTERPROC,         glVertexAttribPointer) \
     F(PFNGLENABLEVERTEXATTRIBARRAYPROC,     glEnableVertexAttribArray) \
     F(PFNGLDISABLEVERTEXATTRIBARRAYPROC,    glDisableVertexAttribArray) \
+    \
+    F(PFNGLENABLEIPROC,                     glEnablei) \
+    F(PFNGLDISABLEIPROC,                    glDisablei) \
+    \
+    F(PFNGLBLENDFUNCSEPARATEIPROC,          glBlendFuncSeparatei) \
+    F(PFNGLBLENDEQUATIONSEPARATEIPROC,      glBlendEquationSeparatei) \
+    F(PFNGLCOLORMASKIPROC,                  glColorMaski) \
+    F(PFNGLBLENDCOLORPROC,                  glBlendColor) \
 
 #ifdef PLATFORM_WIN32
 
