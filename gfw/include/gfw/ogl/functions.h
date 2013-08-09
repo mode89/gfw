@@ -31,6 +31,8 @@
     F(PFNGLDRAWELEMENTSPROC,                glDrawElements) \
     F(PFNGLFLUSHPROC,                       glFlush) \
     F(PFNGLFINISHPROC,                      glFinish) \
+    F(PFNGLENABLEPROC,                      glEnable) \
+    F(PFNGLDISABLEPROC,                     glDisable)
 
 #define OPENGL_FUNCTIONS_EXT \
     F(PFNGLCREATESHADERPROC,                glCreateShader) \
@@ -68,6 +70,15 @@
     F(PFNGLBLENDEQUATIONSEPARATEIPROC,      glBlendEquationSeparatei) \
     F(PFNGLCOLORMASKIPROC,                  glColorMaski) \
     F(PFNGLBLENDCOLORPROC,                  glBlendColor) \
+    \
+    F(PFNGLDEPTHFUNCPROC,                   glDepthFunc) \
+    F(PFNGLDEPTHMASKPROC,                   glDepthMask) \
+    F(PFNGLSTENCILOPPROC,                   glStencilOp) \
+    F(PFNGLSTENCILOPSEPARATEPROC,           glStencilOpSeparate) \
+    F(PFNGLSTENCILFUNCPROC,                 glStencilFunc) \
+    F(PFNGLSTENCILFUNCSEPARATEPROC,         glStencilFuncSeparate) \
+    F(PFNGLSTENCILMASKPROC,                 glStencilMask) \
+    F(PFNGLSTENCILMASKSEPARATEPROC,         glStencilMaskSeparate) \
 
 #ifdef PLATFORM_WIN32
 
