@@ -1,8 +1,8 @@
 #include "common/trace.h"
 #include "common/crc32.h"
 
-#include "gfw/ogl/shader.h"
-#include "gfw/ogl/functions.h"
+#include "gfw/core/shader.h"
+#include "gfw/core/functions.h"
 
 #include <string.h>
 

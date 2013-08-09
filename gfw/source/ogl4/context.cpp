@@ -5,9 +5,9 @@
 
 #include "gfw/common/format.h"
 
-#include "gfw/ogl/context.h"
-#include "gfw/ogl/format.h"
-#include "gfw/ogl/functions.h"
+#include "gfw/core/context.h"
+#include "gfw/core/format.h"
+#include "gfw/core/functions.h"
 
 namespace GFW {
 

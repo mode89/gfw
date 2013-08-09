@@ -3,8 +3,7 @@
 
 #include "common/futex.h"
 #include "gfw/base/device.h"
-
-#include "gfw/ogl/drawing_context.h"
+#include "gfw/core/drawing_context.h"
 
 namespace GFW {
 

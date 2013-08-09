@@ -1,10 +1,10 @@
 #include "common/trace.h"
 
-#include "gfw/ogl/device.h"
-#include "gfw/ogl/context.h"
-#include "gfw/ogl/shader.h"
-#include "gfw/ogl/buffer.h"
-#include "gfw/ogl/functions.h"
+#include "gfw/core/device.h"
+#include "gfw/core/context.h"
+#include "gfw/core/shader.h"
+#include "gfw/core/buffer.h"
+#include "gfw/core/functions.h"
 
 #define AUTO_LOCK_CONTEXT   AutoLock __auto_lock_context(mDrawingContext.GetPointer(), &mMutex, mContextGL)
 

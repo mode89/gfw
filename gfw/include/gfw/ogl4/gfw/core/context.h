@@ -1,10 +1,10 @@
 #ifndef __GFW_OGL_CONTEXT_H__
 #define __GFW_OGL_CONTEXT_H__
 
-#include "gfw/ogl/device.h"
-#include "gfw/ogl/shader.h"
-#include "gfw/ogl/limits.h"
-#include "gfw/ogl/buffer.h"
+#include "gfw/core/device.h"
+#include "gfw/core/shader.h"
+#include "gfw/core/limits.h"
+#include "gfw/core/buffer.h"
 
 #include <map>
 

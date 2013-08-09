@@ -1,7 +1,7 @@
 #include "common/trace.h"
 
-#include "gfw/ogl/format.h"
-#include "gfw/ogl/functions.h"
+#include "gfw/core/format.h"
+#include "gfw/core/functions.h"
 
 namespace GFW {
 
