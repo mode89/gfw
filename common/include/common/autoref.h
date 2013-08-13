@@ -24,6 +24,9 @@ namespace Common {
             : mRefCounter(0)
         {}
 
+        inline
+        int GetRefCounter() const { return mRefCounter; }
+
     protected:
         int mRefCounter;
 
@@ -36,13 +39,11 @@ namespace Common {
     {
     public:
 
-        inline ObjectClass * GetPointer() { return mObject; }
+        inline ObjectClass * GetPointer() const { return mObject; }
 
         inline bool IsAttached() const { return (mObject == NULL) ? 0 : 1; }
 
         inline bool IsNull() const { return (mObject == NULL) ? 1 : 0; }
-
-        inline int GetRefCounter() const { return (mObject == NULL) ? 0 : mObject->mRefCounter; }
 
         inline void Detach()
         {
@@ -58,6 +59,13 @@ namespace Common {
 
         AutoRef(ObjectClass * object)
             : mObject(object)
+        {
+            AddRefObject();
+        }
+
+        template < class SourceClass >
+        inline AutoRef(const AutoRef< SourceClass > & ref)
+            : mObject(static_cast< ObjectClass* >(ref.GetPointer()))
         {
             AddRefObject();
         }
