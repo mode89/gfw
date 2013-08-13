@@ -8,10 +8,18 @@ namespace GFW {
     class Buffer: public IBuffer
     {
     public:
-        uint32_t        Init(const void * initialData);
+        virtual const BufferDesc &
+        GetDesc()       { return mDesc; }
 
-        inline
-        uint32_t        GetBufferObject()   { return mBuffer; }
+    public:
+        bool
+        Init(const void * initialData);
+
+        inline uint32_t
+        GetHandle()     { return mHandle; }
+
+        inline uint32_t
+        GetTarget()     { return mTarget; }
 
     public:
         Buffer(const BufferDesc &);
@@ -19,7 +27,8 @@ namespace GFW {
 
     private:
         BufferDesc      mDesc;
-        uint32_t        mBuffer;
+        uint32_t        mHandle;
+        uint32_t        mTarget;
     };
     AUTOREF_REFERENCE_DECLARATION(Buffer);
 

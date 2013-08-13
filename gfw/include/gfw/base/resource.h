@@ -1,6 +1,8 @@
 #ifndef __GFW_BASE_RESOURCE_H__
 #define __GFW_BASE_RESOURCE_H__
 
+#include "common/autoref.h"
+
 namespace GFW {
 
     enum BufferType
@@ -35,6 +37,18 @@ namespace GFW {
             , slice(s)
         {}
     };
+
+    enum MapFlags
+    {
+        MAP_FLAG_READ  = (1 << 0),
+        MAP_FLAG_WRITE = (1 << 1)
+    };
+
+    class IResource : public Common::ARefCounted
+    {
+
+    };
+    AUTOREF_REFERENCE_DECLARATION(IResource);
 
 } // namespace GFW
 

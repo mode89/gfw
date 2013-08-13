@@ -19,9 +19,11 @@ namespace GFW {
         {}
     };
 
-    class IBuffer: public Common::ARefCounted
+    class IBuffer: public IResource
     {
-
+    public:
+        virtual const BufferDesc &
+        GetDesc() = 0;
     };
     AUTOREF_REFERENCE_DECLARATION(IBuffer);
 

@@ -220,7 +220,7 @@ namespace GFW {
 
                     if (attrIndex != -1)
                     {
-                        uint32_t bufObj = mVertexBuffers[attr.bufSlot]->GetBufferObject();
+                        uint32_t bufObj = mVertexBuffers[attr.bufSlot]->GetHandle();
                         TRACE_ASSERT_GL(glBindBuffer, GL_ARRAY_BUFFER, bufObj);
 
                         int32_t size = GetFormatElementNumber(attr.format);
@@ -237,7 +237,7 @@ namespace GFW {
 
         if (mIndexBuffer.IsAttached())
         {
-            TRACE_ASSERT_GL(glBindBuffer, GL_ELEMENT_ARRAY_BUFFER, mIndexBuffer->GetBufferObject());
+            TRACE_ASSERT_GL(glBindBuffer, GL_ELEMENT_ARRAY_BUFFER, mIndexBuffer->GetHandle());
         }
 
 #if PROFILING
@@ -275,6 +275,42 @@ namespace GFW {
         ClearState();
 
         mDrawingContext->MakeCurrent(NULL);
+    }
+
+    void * Context::Map(IResourceIn buffer, uint32_t mapFlags)
+    {
+        TRACE_ASSERT((mapFlags & (MAP_FLAG_READ | MAP_FLAG_WRITE)) != 0);
+
+        BufferRef bufImpl = buffer.StaticCast<Buffer>();
+
+        uint32_t access;
+        if (mapFlags & (MAP_FLAG_READ | MAP_FLAG_WRITE))
+        {
+            access = GL_READ_WRITE;
+        }
+        else if (mapFlags & MAP_FLAG_READ)
+        {
+            access = GL_READ_ONLY;
+        }
+        else if (mapFlags & MAP_FLAG_WRITE)
+        {
+            access = GL_WRITE_ONLY;
+        }
+
+        TRACE_ASSERT_GL(glBindBuffer, bufImpl->GetTarget(), bufImpl->GetHandle());
+        void * retVal = TRACE_ASSERT_GL(glMapBuffer, bufImpl->GetTarget(), access);
+        TRACE_ASSERT_GL(glBindBuffer, bufImpl->GetTarget(), 0);
+
+        return retVal;
+    }
+
+    void Context::Unmap(IResourceIn buffer)
+    {
+        BufferRef bufImpl = buffer.StaticCast<Buffer>();
+
+        TRACE_ASSERT_GL(glBindBuffer, bufImpl->GetTarget(), bufImpl->GetHandle());
+        TRACE_ASSERT_GL(glUnmapBuffer, bufImpl->GetTarget());
+        TRACE_ASSERT_GL(glBindBuffer, bufImpl->GetTarget(), 0);
     }
 
 } // namespace GFW

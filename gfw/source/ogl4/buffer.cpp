@@ -41,40 +41,42 @@ namespace GFW {
 
     Buffer::Buffer(const BufferDesc & desc)
         : mDesc(desc)
-        , mBuffer(0)
+        , mHandle(0)
+        , mTarget(0)
     {
 
     }
 
     Buffer::~Buffer()
     {
-        if (mBuffer != 0)
+        if (mHandle != 0)
         {
-            TRACE_ASSERT_GL(glDeleteBuffers, 1, &mBuffer);
+            TRACE_ASSERT_GL(glDeleteBuffers, 1, &mHandle);
         }
     }
 
-    uint32_t Buffer::Init( const void * initialData )
+    bool Buffer::Init( const void * initialData )
     {
-        TRACE_ASSERT_GL(glGenBuffers, 1, &mBuffer);
-        TRACE_ASSERT(mBuffer != 0);
+        TRACE_ASSERT_GL(glGenBuffers, 1, &mHandle);
+        TRACE_ASSERT(mHandle != 0);
 
-        if (mBuffer != 0)
+        if (mHandle != 0)
         {
+            mTarget = GetBufferTarget(mDesc.type);
+
             if (initialData != NULL)
             {
-                uint32_t target = GetBufferTarget(mDesc.type);
                 uint32_t usage  = GetUsage(mDesc.usage);
 
-                TRACE_ASSERT_GL(glBindBuffer, target, mBuffer);
-                TRACE_ASSERT_GL(glBufferData, target, mDesc.size, initialData, usage);
-                TRACE_ASSERT_GL(glBindBuffer, target, 0);
+                TRACE_ASSERT_GL(glBindBuffer, mTarget, mHandle);
+                TRACE_ASSERT_GL(glBufferData, mTarget, mDesc.size, initialData, usage);
+                TRACE_ASSERT_GL(glBindBuffer, mTarget, 0);
             }
 
-            return 1;
+            return true;
         }
 
-        return 0;
+        return false;
     }
 
-} // namespce GFW
+} // namespace GFW

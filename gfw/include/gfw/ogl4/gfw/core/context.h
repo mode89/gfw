@@ -13,36 +13,54 @@ namespace GFW {
     class Context: public IContext
     {
     public:
+        virtual void
+        SetShader(ShaderStage, IShaderIn);
 
-        virtual void                SetShader(ShaderStage, IShaderIn);
+        virtual void
+        SetVertexAttributes(uint32_t number, VertexAttribute []);
 
-        virtual void                SetVertexAttributes(uint32_t number, VertexAttribute []);
+        virtual void
+        SetVertexBuffer(uint32_t slot, IBufferIn);
 
-        virtual void                SetVertexBuffer(uint32_t slot, IBufferIn);
+        virtual void
+        SetIndexBuffer(IBufferIn);
 
-        virtual void                SetIndexBuffer(IBufferIn);
+        virtual void
+        SetTexture(ShaderStage, uint32_t slot, ITextureIn);
 
-        virtual void                SetTexture(ShaderStage, uint32_t slot, ITextureIn);
+        virtual void
+        SetFrameBuffer(uint32_t colorBufferCount, IRenderBufferRef color[], IRenderBufferIn depth);
 
-        virtual void                SetFrameBuffer(uint32_t colorBufferCount, IRenderBufferRef color[], IRenderBufferIn depth);
+        virtual void
+        BeginScene();
 
-        virtual void                BeginScene();
+        virtual void
+        EndScene();
 
-        virtual void                EndScene();
+        virtual void
+        Clear(const ClearParams &);
 
-        virtual void                Clear(const ClearParams &);
+        virtual void
+        Draw(const DrawParams &);
 
-        virtual void                Draw(const DrawParams &);
+        virtual void
+        Draw(const DrawIndexedParams &);
 
-        virtual void                Draw(const DrawIndexedParams &);
+        virtual void
+        DrawScreenQuad();
 
-        virtual void                DrawScreenQuad();
+        virtual void
+        ClearState();
 
-        virtual void                ClearState();
+        virtual void *
+        Map(IResourceIn, uint32_t mapFlags);
+
+        virtual void
+        Unmap(IResourceIn);
 
     public:
-
-        void                        FlushState();
+        void
+        FlushState();
 
     public:
         Context(DeviceIn, IDrawingContextIn);

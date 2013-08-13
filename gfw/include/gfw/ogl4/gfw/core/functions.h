@@ -56,7 +56,13 @@
     F(PFNGLBINDBUFFERPROC,                  glBindBuffer) \
     F(PFNGLBUFFERDATAPROC,                  glBufferData) \
     F(PFNGLBUFFERSUBDATAPROC,               glBufferSubData) \
+    F(PFNGLMAPBUFFERPROC,                   glMapBuffer) \
+    F(PFNGLMAPBUFFERRANGEPROC,              glMapBufferRange) \
+    F(PFNGLUNMAPBUFFERPROC,                 glUnmapBuffer) \
     \
+    F(PFNGLVERTEXATTRIBFORMATPROC,          glVertexAttribFormat) \
+    F(PFNGLVERTEXATTRIBBINDINGPROC,         glVertexAttribBinding) \
+    F(PFNGLBINDVERTEXBUFFERPROC,            glBindVertexBuffer) \
     F(PFNGLVERTEXATTRIBPOINTERPROC,         glVertexAttribPointer) \
     F(PFNGLENABLEVERTEXATTRIBARRAYPROC,     glEnableVertexAttribArray) \
     F(PFNGLDISABLEVERTEXATTRIBARRAYPROC,    glDisableVertexAttribArray) \
