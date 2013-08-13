@@ -10,7 +10,7 @@ rem Generate solution
 
 cd build
 
-cmake ..
+cmake -G "Visual Studio 10" ..
 if %errorlevel% neq 0 (
     echo Cannot generate soltion
     pause

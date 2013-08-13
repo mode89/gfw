@@ -103,5 +103,4 @@ namespace GFW {
         TRACE_ASSERT_GL(glBlendColor, mDesc.blendFactor[0], mDesc.blendFactor[1], mDesc.blendFactor[2], mDesc.blendFactor[3]);
     }
 
-
 } // namespace GFW

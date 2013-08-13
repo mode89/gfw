@@ -79,6 +79,11 @@
     F(PFNGLSTENCILFUNCSEPARATEPROC,         glStencilFuncSeparate) \
     F(PFNGLSTENCILMASKPROC,                 glStencilMask) \
     F(PFNGLSTENCILMASKSEPARATEPROC,         glStencilMaskSeparate) \
+    \
+    F(PFNGLPOLYGONMODEPROC,                 glPolygonMode) \
+    F(PFNGLPOLYGONOFFSETPROC,               glPolygonOffset) \
+    F(PFNGLCULLFACEPROC,                    glCullFace) \
+    F(PFNGLFRONTFACEPROC,                   glFrontFace)
 
 #ifdef PLATFORM_WIN32
 
