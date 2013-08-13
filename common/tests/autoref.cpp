@@ -17,25 +17,11 @@ public:
 };
 AUTOREF_REFERENCE_DECLARATION(IObject);
 
-class ISpecificObject : public IObject
-{
-public:
-    virtual int32_t
-    GetSpecificData() = 0;
-
-    virtual
-    ~ISpecificObject() {}
-};
-AUTOREF_REFERENCE_DECLARATION(ISpecificObject);
-
 class IFactory : public ARefCounted
 {
 public:
     virtual IObjectRef
     CreateObject() = 0;
-
-    virtual ISpecificObjectRef
-    CreateSpecificObject() = 0;
 
     ~IFactory() {}
 };
@@ -67,31 +53,12 @@ private:
 };
 AUTOREF_REFERENCE_DECLARATION(Object);
 
-class SpecificObject : public ISpecificObject
-{
-public:
-    virtual int32_t
-    GetData()           { return mRefCounter; }
-
-    virtual void
-    SetData(int32_t)    {}
-
-    virtual int32_t
-    GetSpecificData()   { return -mRefCounter; }
-};
-AUTOREF_REFERENCE_DECLARATION(SpecificObject);
-
 class Factory: public IFactory
 {
 public:
     virtual IObjectRef CreateObject()
     {
         return new Object(this);
-    }
-
-    virtual ISpecificObjectRef CreateSpecificObject()
-    {
-        return new SpecificObject();
     }
 };
 AUTOREF_REFERENCE_DECLARATION(Factory);
