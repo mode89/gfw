@@ -1,4 +1,4 @@
-project(GLOBAL_SOLUTION)
+project(MASTER)
 cmake_minimum_required(VERSION 2.8)
 
 add_definitions(-DPROFILING=1)
