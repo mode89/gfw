@@ -235,3 +235,13 @@ TEST_F(AutoRefTests, CastCtor)
     ASSERT_TRUE(AutoRefTests_In(ref) == 2);
     ASSERT_TRUE(ref->GetRefCounter() == 1);
 }
+
+TEST_F(AutoRefTests, AutoPointerBracket)
+{
+    AutoPointer<uint32_t> autoPnt = new uint32_t [100];
+
+    for (int i = 0; i < 100; ++ i)
+    {
+        autoPnt[i] = i;
+    }
+}

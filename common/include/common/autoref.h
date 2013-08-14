@@ -167,9 +167,6 @@ namespace Common {
         {}
 
         inline T &
-        operator [] (uint32_t index) { return AUTOREF::mObject->mData[index]; }
-
-        inline T &
         operator * () { return *AUTOREF::mObject->mData; }
 
         inline T *
