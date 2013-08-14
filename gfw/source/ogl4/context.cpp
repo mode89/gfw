@@ -3,10 +3,19 @@
 #include "common/trace.h"
 #include "common/crc32.h"
 
+#include "gfw/base/clear_params.h"
+#include "gfw/base/draw_params.h"
+#include "gfw/base/render_buffer.h"
+
 #include "gfw/common/format.h"
 
+#include "gfw/core/buffer.h"
 #include "gfw/core/context.h"
+#include "gfw/core/device.h"
+#include "gfw/core/drawing_context.h"
 #include "gfw/core/format.h"
+#include "gfw/core/shader.h"
+
 #include "gfw/core/functions.h"
 
 namespace GFW {
@@ -57,7 +66,7 @@ namespace GFW {
         mVertexBuffers[slot] = buf.StaticCast<Buffer>();
     }
 
-    void Context::SetShader( ShaderStage stage, IShaderIn shader )
+    void Context::SetShader( int32_t stage, IShaderIn shader )
     {
         TRACE_ASSERT(stage > SHADER_UNKNOWN);
         TRACE_ASSERT(stage < SHADER_STAGE_COUNT);
@@ -250,7 +259,7 @@ namespace GFW {
         mIndexBuffer = buffer.StaticCast<Buffer>();
     }
 
-    void Context::SetTexture( ShaderStage, uint32_t slot, ITextureIn )
+    void Context::SetTexture( int32_t stage, uint32_t slot, ITextureIn )
     {
         TRACE_FAIL_MSG("Not yet implemented");
     }

@@ -2,6 +2,7 @@
 #define __GFW_OGL_BUFFER_H__
 
 #include "gfw/base/buffer.h"
+#include "gfw/base/types_fwd.h"
 
 namespace GFW {
 

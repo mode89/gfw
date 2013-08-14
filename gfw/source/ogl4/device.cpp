@@ -1,9 +1,14 @@
 #include "common/trace.h"
 
-#include "gfw/core/device.h"
-#include "gfw/core/context.h"
-#include "gfw/core/shader.h"
+#include "gfw/base/render_buffer.h"
+#include "gfw/base/texture.h"
+
 #include "gfw/core/buffer.h"
+#include "gfw/core/context.h"
+#include "gfw/core/device.h"
+#include "gfw/core/drawing_context.h"
+#include "gfw/core/shader.h"
+
 #include "gfw/core/functions.h"
 
 #define AUTO_LOCK_CONTEXT   AutoLock __auto_lock_context(mDrawingContext.GetPointer(), &mMutex, mContextGL)
@@ -98,7 +103,7 @@ namespace GFW {
         return new Context(this, mDrawingContext);
     }
 
-    IShaderRef Device::CreateShader( ShaderStage stage, const void * shaderData )
+    IShaderRef Device::CreateShader( int32_t stage, const void * shaderData )
     {
         AUTO_LOCK_CONTEXT;
 

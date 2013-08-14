@@ -5,14 +5,6 @@
 
 namespace GFW {
 
-    enum BufferType
-    {
-        BUFFER_UNKNOWN = 0,
-        BUFFER_VERTEX,
-        BUFFER_INDEX,
-        BUFFER_PIXEL
-    };
-
     enum Usage
     {
         USAGE_UNKNOWN = 0,

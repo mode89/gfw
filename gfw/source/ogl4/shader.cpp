@@ -10,7 +10,7 @@ namespace GFW {
 
     using namespace Common;
 
-    static uint32_t GetShaderType(ShaderStage stage)
+    static uint32_t GetShaderType(int32_t stage)
     {
         switch (stage)
         {
@@ -22,7 +22,7 @@ namespace GFW {
         return 0;
     }
 
-    Shader::Shader( ShaderStage stage )
+    Shader::Shader( int32_t stage )
         : mStage(stage)
         , mShader(0)
         , mHash(0)

@@ -1,10 +1,12 @@
 #ifndef __GFW_OGL_CONTEXT_H__
 #define __GFW_OGL_CONTEXT_H__
 
-#include "gfw/core/device.h"
-#include "gfw/core/shader.h"
+#include "gfw/base/context.h"
+#include "gfw/base/shader.h"
+#include "gfw/base/vertex_attribute.h"
+
 #include "gfw/core/limits.h"
-#include "gfw/core/buffer.h"
+#include "gfw/core/types_fwd.h"
 
 #include <map>
 
@@ -14,7 +16,7 @@ namespace GFW {
     {
     public:
         virtual void
-        SetShader(ShaderStage, IShaderIn);
+        SetShader(int32_t stage, IShaderIn);
 
         virtual void
         SetVertexAttributes(uint32_t number, VertexAttribute []);
@@ -26,7 +28,7 @@ namespace GFW {
         SetIndexBuffer(IBufferIn);
 
         virtual void
-        SetTexture(ShaderStage, uint32_t slot, ITextureIn);
+        SetTexture(int32_t stage, uint32_t slot, ITextureIn);
 
         virtual void
         SetFrameBuffer(uint32_t colorBufferCount, IRenderBufferRef color[], IRenderBufferIn depth);

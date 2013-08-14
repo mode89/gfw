@@ -5,9 +5,9 @@
 
 #include "gfw/base/window.h"
 
-namespace GFW {
+#include "gfw/core/types_fwd.h"
 
-    typedef void * RenderingContext;
+namespace GFW {
 
     class IDrawingContext : public Common::ARefCounted
     {

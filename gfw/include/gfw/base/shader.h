@@ -16,7 +16,8 @@ namespace GFW {
     class IShader: public Common::ARefCounted
     {
     public:
-        virtual ShaderStage     GetStage() = 0;
+        virtual int32_t
+        GetStage() = 0;
     };
     AUTOREF_REFERENCE_DECLARATION(IShader);
 

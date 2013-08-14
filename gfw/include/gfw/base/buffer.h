@@ -1,10 +1,18 @@
 #ifndef __GFW_BASE_BUFFER_H__
 #define __GFW_BASE_BUFFER_H__
 
-#include "common/autoref.h"
 #include "gfw/base/resource.h"
+#include "gfw/base/types_fwd.h"
 
 namespace GFW {
+
+    enum BufferType
+    {
+        BUFFER_UNKNOWN = 0,
+        BUFFER_VERTEX,
+        BUFFER_INDEX,
+        BUFFER_PIXEL
+    };
 
     struct BufferDesc
     {

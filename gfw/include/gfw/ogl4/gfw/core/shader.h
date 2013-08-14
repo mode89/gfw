@@ -8,25 +8,27 @@ namespace GFW {
     class Shader: public IShader
     {
     public:
-        virtual ShaderStage     GetStage()          { return mStage; }
+        virtual int32_t
+        GetStage()          { return mStage; }
 
     public:
-        bool                    Compile(const char * source);
+        bool
+        Compile(const char * source);
 
-        inline
-        uint32_t                GetHash()           { return mHash; }
+        inline uint32_t
+        GetHash()           { return mHash; }
 
-        inline
-        uint32_t                GetShaderObject()   { return mShader; }
+        inline uint32_t
+        GetShaderObject()   { return mShader; }
 
     public:
-        Shader(ShaderStage);
+        Shader(int32_t stage);
         ~Shader();
 
     private:
-        const ShaderStage       mStage;
-        uint32_t                mShader;
-        uint32_t                mHash;
+        const int32_t   mStage;
+        uint32_t        mShader;
+        uint32_t        mHash;
     };
     AUTOREF_REFERENCE_DECLARATION(Shader);
 
