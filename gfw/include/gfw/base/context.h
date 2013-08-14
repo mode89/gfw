@@ -47,12 +47,6 @@ namespace GFW {
         virtual void
         ClearState() = 0;
 
-        virtual void *
-        Map(IResourceIn, uint32_t mapFlags) = 0;
-
-        virtual void
-        Unmap(IResourceIn) = 0;
-
     public:
         virtual
         ~IContext() { }

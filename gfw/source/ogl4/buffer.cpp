@@ -63,20 +63,49 @@ namespace GFW {
         if (mHandle != 0)
         {
             mTarget = GetBufferTarget(mDesc.type);
+            uint32_t usage  = GetUsage(mDesc.usage);
 
-            if (initialData != NULL)
-            {
-                uint32_t usage  = GetUsage(mDesc.usage);
-
-                TRACE_ASSERT_GL(glBindBuffer, mTarget, mHandle);
-                TRACE_ASSERT_GL(glBufferData, mTarget, mDesc.size, initialData, usage);
-                TRACE_ASSERT_GL(glBindBuffer, mTarget, 0);
-            }
+            TRACE_ASSERT_GL(glBindBuffer, mTarget, mHandle);
+            TRACE_ASSERT_GL(glBufferData, mTarget, mDesc.size, initialData, usage);
+            TRACE_ASSERT_GL(glBindBuffer, mTarget, 0);
 
             return true;
         }
 
         return false;
+    }
+
+    void * Buffer::Map(IContextRef context, uint32_t mapFlags)
+    {
+        TRACE_ASSERT(context.IsAttached());
+        TRACE_ASSERT((mapFlags & (MAP_FLAG_READ | MAP_FLAG_WRITE)) != 0);
+
+        uint32_t access;
+        if (mapFlags & MAP_FLAG_READ && mapFlags & MAP_FLAG_WRITE)
+        {
+            access = GL_READ_WRITE;
+        }
+        else if (mapFlags & MAP_FLAG_READ)
+        {
+            access = GL_READ_ONLY;
+        }
+        else if (mapFlags & MAP_FLAG_WRITE)
+        {
+            access = GL_WRITE_ONLY;
+        }
+
+        TRACE_ASSERT_GL(glBindBuffer, mTarget, mHandle);
+        void * retVal = TRACE_ASSERT_GL(glMapBuffer, mTarget, access);
+        TRACE_ASSERT_GL(glBindBuffer, mTarget, 0);
+
+        return retVal;
+    }
+
+    void Buffer::Unmap()
+    {
+        TRACE_ASSERT_GL(glBindBuffer, mTarget, mHandle);
+        TRACE_ASSERT_GL(glUnmapBuffer, mTarget);
+        TRACE_ASSERT_GL(glBindBuffer, mTarget, 0);
     }
 
 } // namespace GFW

@@ -12,6 +12,12 @@ namespace GFW {
         virtual const BufferDesc &
         GetDesc()       { return mDesc; }
 
+        virtual void *
+        Map(IContextRef, uint32_t mapFlags);
+
+        virtual void
+        Unmap();
+
     public:
         bool
         Init(const void * initialData);

@@ -2,6 +2,7 @@
 #define __GFW_BASE_RESOURCE_H__
 
 #include "common/autoref.h"
+#include "gfw/base/context.h"
 
 namespace GFW {
 
@@ -38,7 +39,15 @@ namespace GFW {
 
     class IResource : public Common::ARefCounted
     {
+    public:
+        virtual void *
+        Map(IContextRef, uint32_t mapFlags) = 0;
 
+        virtual void
+        Unmap() = 0;
+
+        virtual
+        ~IResource() {}
     };
     AUTOREF_REFERENCE_DECLARATION(IResource);
 

@@ -54,12 +54,6 @@ namespace GFW {
         virtual void
         ClearState();
 
-        virtual void *
-        Map(IResourceIn, uint32_t mapFlags);
-
-        virtual void
-        Unmap(IResourceIn);
-
     public:
         void
         FlushState();
