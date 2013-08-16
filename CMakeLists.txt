@@ -1,8 +1,6 @@
 project(MASTER)
 cmake_minimum_required(VERSION 2.8)
 
-add_definitions(-DPROFILING=1)
-
 # Include common utils
 
 include(cmake/common.cmake)
