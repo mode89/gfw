@@ -75,9 +75,8 @@ namespace GFW {
         return false;
     }
 
-    void * Buffer::Map(IContextRef context, uint32_t mapFlags)
+    void * Buffer::Map(uint32_t mapFlags)
     {
-        TRACE_ASSERT(context.IsAttached());
         TRACE_ASSERT((mapFlags & (MAP_FLAG_READ | MAP_FLAG_WRITE)) != 0);
 
         uint32_t access;

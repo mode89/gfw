@@ -41,7 +41,7 @@ namespace GFW {
     {
     public:
         virtual void *
-        Map(IContextRef, uint32_t mapFlags) = 0;
+        Map(uint32_t mapFlags) = 0;
 
         virtual void
         Unmap() = 0;

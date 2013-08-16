@@ -13,7 +13,7 @@ namespace GFW {
         GetDesc()       { return mDesc; }
 
         virtual void *
-        Map(IContextRef, uint32_t mapFlags);
+        Map(uint32_t mapFlags);
 
         virtual void
         Unmap();

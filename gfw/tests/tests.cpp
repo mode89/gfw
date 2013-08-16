@@ -262,7 +262,7 @@ TEST_F(GFWTests, MapBuffer)
         // Write the buffer
 
         mContext->BeginScene();
-        uint32_t * mappedData = static_cast<uint32_t*>(buffer->Map(mContext, MAP_FLAG_WRITE));
+        uint32_t * mappedData = static_cast<uint32_t*>(buffer->Map(MAP_FLAG_WRITE));
         memcpy(mappedData, data, bufferSize);
         buffer->Unmap();
         mContext->EndScene();
@@ -270,7 +270,7 @@ TEST_F(GFWTests, MapBuffer)
         // Compare buffer with the data
 
         mContext->BeginScene();
-        mappedData = static_cast<uint32_t*>(buffer->Map(mContext, MAP_FLAG_READ));
+        mappedData = static_cast<uint32_t*>(buffer->Map(MAP_FLAG_READ));
         ASSERT_TRUE(memcmp(mappedData, data, bufferSize) == 0);
         buffer->Unmap();
         mContext->EndScene();
