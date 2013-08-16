@@ -21,4 +21,11 @@
     #define PLAT_NDEBUG 1
 #endif // defined(NDEBUG)
 
+// Thread local storage
+#if defined(PLAT_COMPILER_MSVC)
+    #define PLAT_THREAD_LOCAL   __declspec(thread)
+#elif defined(PLAT_COMPILER_MINGW)
+    #define PLAT_THREAD_LOCAL   __thread
+#endif
+
 #endif // __COMMON_PLATFORM_H__
