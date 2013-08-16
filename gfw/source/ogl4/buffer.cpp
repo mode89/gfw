@@ -107,4 +107,12 @@ namespace GFW {
         TRACE_ASSERT_GL(glBindBuffer, mTarget, 0);
     }
 
+    void Buffer::UpdateSubresource(const void * data, uint32_t subResourceIndex)
+    {
+        TRACE_ASSERT_GL(glBindBuffer, mTarget, mHandle);
+        TRACE_ASSERT_GL(glBufferData, mTarget, 0, NULL, GetUsage(mDesc.usage));
+        TRACE_ASSERT_GL(glBufferData, mTarget, mDesc.size, data, GetUsage(mDesc.usage));
+        TRACE_ASSERT_GL(glBindBuffer, mTarget, 0);
+    }
+
 } // namespace GFW

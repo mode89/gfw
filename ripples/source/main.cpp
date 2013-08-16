@@ -166,9 +166,7 @@ int main()
         {
             // Update the geometry
 
-            void * bufferMap = vertexBuffer->Map(MAP_FLAG_WRITE);
-            memcpy(bufferMap, u, vertexBufferDesc.size);
-            vertexBuffer->Unmap();
+            vertexBuffer->UpdateSubresource(u);
 
             // Draw the geometry
 

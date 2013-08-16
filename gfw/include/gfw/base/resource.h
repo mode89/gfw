@@ -46,6 +46,9 @@ namespace GFW {
         virtual void
         Unmap() = 0;
 
+        virtual void
+        UpdateSubresource(const void * data, uint32_t subResourceIndex = 0) = 0;
+
         virtual
         ~IResource() {}
     };

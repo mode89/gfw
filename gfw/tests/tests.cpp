@@ -262,15 +262,60 @@ TEST_F(GFWTests, MapBuffer)
         // Write the buffer
 
         mContext->BeginScene();
-        uint32_t * mappedData = static_cast<uint32_t*>(buffer->Map(MAP_FLAG_WRITE));
-        memcpy(mappedData, data, bufferSize);
-        buffer->Unmap();
+        {
+            uint32_t * mappedData = static_cast<uint32_t*>(buffer->Map(MAP_FLAG_WRITE));
+            memcpy(mappedData, data, bufferSize);
+            buffer->Unmap();
+        }
         mContext->EndScene();
 
         // Compare buffer with the data
 
         mContext->BeginScene();
-        mappedData = static_cast<uint32_t*>(buffer->Map(MAP_FLAG_READ));
+        {
+            uint32_t * mappedData = static_cast<uint32_t*>(buffer->Map(MAP_FLAG_READ));
+            ASSERT_TRUE(memcmp(mappedData, data, bufferSize) == 0);
+            buffer->Unmap();
+        }
+        mContext->EndScene();
+    }
+}
+
+TEST_F(GFWTests, UpdateBuffer)
+{
+
+    static const uint32_t kDataCount = 100;
+
+    // Allocate system copy of the buffer data
+    AutoPointer<uint32_t> data = new uint32_t [kDataCount];
+
+    uint32_t bufferSize = sizeof(uint32_t) * kDataCount;
+
+    BufferDesc bufferDesc;
+    bufferDesc.size  = bufferSize;
+    bufferDesc.usage = USAGE_DYNAMIC_DRAW;
+    bufferDesc.type  = BUFFER_VERTEX;
+    IBufferRef buffer = mDevice->CreateBuffer(bufferDesc);
+
+    for (int i = 0; i < 60; ++ i)
+    {
+        // Prepare a random data
+
+        for (int i = 0; i < kDataCount; ++ i)
+        {
+            data[i] = rand();
+        }
+
+        // Write the buffer
+
+        mContext->BeginScene();
+        buffer->UpdateSubresource(data);
+        mContext->EndScene();
+
+        // Compare buffer with the data
+
+        mContext->BeginScene();
+        void * mappedData = buffer->Map(MAP_FLAG_READ);
         ASSERT_TRUE(memcmp(mappedData, data, bufferSize) == 0);
         buffer->Unmap();
         mContext->EndScene();

@@ -18,6 +18,9 @@ namespace GFW {
         virtual void
         Unmap();
 
+        virtual void
+        UpdateSubresource(const void * data, uint32_t subResourceIndex = 0);
+
     public:
         bool
         Init(const void * initialData);
