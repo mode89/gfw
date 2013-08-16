@@ -8,16 +8,16 @@ namespace GFW {
 
     enum Usage
     {
-        USAGE_UNKNOWN = 0,
-        USAGE_STREAM_DRAW,
-        USAGE_STREAM_READ,
-        USAGE_STREAM_COPY,
-        USAGE_STATIC_DRAW,
-        USAGE_STATIC_READ,
-        USAGE_STATIC_COPY,
-        USAGE_DYNAMIC_DRAW,
-        USAGE_DYNAMIC_READ,
-        USAGE_DYNAMIC_COPY
+        USAGE_DEFAULT = 0,      // Only read/write access by GPU is allowed (draw, copy to/from)
+        USAGE_STATIC,           // Only read access by GPU is allowed (draw, copy from)
+        USAGE_DYNAMIC,          // Can only be read by GPU (draw, copy from) and written by CPU (update, map write)
+        USAGE_STAGING           // Can be read/written by GPU (copy to/from) and CPU (update, map read/write)
+    };
+
+    enum CpuAccessFlags
+    {
+        CPU_ACCESS_READ  = (1 << 0),    // Only dynamic or staging resources
+        CPU_ACCESS_WRITE = (1 << 1)     // Only staging resources
     };
 
     struct SubResIdx

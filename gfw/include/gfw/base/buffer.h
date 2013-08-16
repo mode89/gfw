@@ -18,11 +18,13 @@ namespace GFW {
     {
         BufferType  type;
         Usage       usage;
+        uint32_t    access;     // See CpuAccessFlags
         uint32_t    size;
 
         BufferDesc()
             : type(BUFFER_UNKNOWN)
-            , usage(USAGE_UNKNOWN)
+            , usage(USAGE_DEFAULT)
+            , access(0)
             , size(0)
         {}
     };

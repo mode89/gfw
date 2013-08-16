@@ -109,7 +109,7 @@ TEST_F(GFWTests, Draw)
     BufferDesc vertexBufferDesc;
     vertexBufferDesc.type = BUFFER_VERTEX;
     vertexBufferDesc.size = 60;
-    vertexBufferDesc.usage = USAGE_STATIC_DRAW;
+    vertexBufferDesc.usage = USAGE_STATIC;
     IBufferRef vertexBuffer = mDevice->CreateBuffer(vertexBufferDesc, vertices);
 
     // Define vertex attributes
@@ -180,7 +180,7 @@ TEST_F(GFWTests, DrawIndexed)
     BufferDesc vertexBufferDesc;
     vertexBufferDesc.type  = BUFFER_VERTEX;
     vertexBufferDesc.size  = sizeof(vertices);
-    vertexBufferDesc.usage = USAGE_STATIC_DRAW;
+    vertexBufferDesc.usage = USAGE_STATIC;
     IBufferRef vertexBuffer = mDevice->CreateBuffer(vertexBufferDesc, vertices);
 
     uint16_t indices[] = {
@@ -190,7 +190,7 @@ TEST_F(GFWTests, DrawIndexed)
     BufferDesc indexBufferDesc;
     indexBufferDesc.type  = BUFFER_INDEX;
     indexBufferDesc.size  = sizeof(indices);
-    indexBufferDesc.usage = USAGE_STATIC_DRAW;
+    indexBufferDesc.usage = USAGE_STATIC;
     IBufferRef indexBuffer = mDevice->CreateBuffer(indexBufferDesc, indices);
 
     // Define vertex attributes
@@ -246,7 +246,7 @@ TEST_F(GFWTests, MapBuffer)
 
     BufferDesc bufferDesc;
     bufferDesc.size  = bufferSize;
-    bufferDesc.usage = USAGE_DYNAMIC_DRAW;
+    bufferDesc.usage = USAGE_DYNAMIC;
     bufferDesc.type  = BUFFER_VERTEX;
     IBufferRef buffer = mDevice->CreateBuffer(bufferDesc);
 
@@ -293,7 +293,7 @@ TEST_F(GFWTests, UpdateBuffer)
 
     BufferDesc bufferDesc;
     bufferDesc.size  = bufferSize;
-    bufferDesc.usage = USAGE_DYNAMIC_DRAW;
+    bufferDesc.usage = USAGE_DYNAMIC;
     bufferDesc.type  = BUFFER_VERTEX;
     IBufferRef buffer = mDevice->CreateBuffer(bufferDesc);
 
@@ -354,7 +354,7 @@ TEST_F(GFWTests, DISABLED_RenderToTexture)
     BufferDesc vertPosBufDesc;
     vertPosBufDesc.type   = BUFFER_VERTEX;
     vertPosBufDesc.size   = sizeof(vertPosData);
-    vertPosBufDesc.usage  = USAGE_STATIC_DRAW;
+    vertPosBufDesc.usage  = USAGE_STATIC;
     IBufferRef vertPosBuf = mDevice->CreateBuffer(vertPosBufDesc, vertPosData);
 
     float vertColData[] = {
@@ -367,7 +367,7 @@ TEST_F(GFWTests, DISABLED_RenderToTexture)
     BufferDesc vertColBufDesc;
     vertColBufDesc.type   = BUFFER_VERTEX;
     vertColBufDesc.size   = sizeof(vertColData);
-    vertColBufDesc.usage  = USAGE_STATIC_DRAW;
+    vertColBufDesc.usage  = USAGE_STATIC;
     IBufferRef vertColBuf = mDevice->CreateBuffer(vertColBufDesc, vertColData);
 
     uint16_t indexData[] = {
@@ -377,7 +377,7 @@ TEST_F(GFWTests, DISABLED_RenderToTexture)
     BufferDesc indexBufDesc;
     indexBufDesc.type   = BUFFER_INDEX;
     indexBufDesc.size   = sizeof(indexBufDesc);
-    indexBufDesc.usage  = USAGE_STATIC_DRAW;
+    indexBufDesc.usage  = USAGE_STATIC;
     IBufferRef indexBuf = mDevice->CreateBuffer(indexBufDesc, indexData);
 
     // Define vertex attributes

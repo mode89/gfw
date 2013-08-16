@@ -72,7 +72,7 @@ int main()
     BufferDesc vertexBufferDesc;
     vertexBufferDesc.size  = sizeof(Vertex) * nodeCnt;
     vertexBufferDesc.type  = BUFFER_VERTEX;
-    vertexBufferDesc.usage = USAGE_DYNAMIC_DRAW;
+    vertexBufferDesc.usage = USAGE_DYNAMIC;
     IBufferRef vertexBuffer = device->CreateBuffer(vertexBufferDesc, u);
 
     uint32_t indexCount = (xNodeDim - 1) * (yNodeDim - 1) * 2 * 3;
@@ -101,7 +101,7 @@ int main()
     BufferDesc indexBufferDesc;
     indexBufferDesc.size  = 2 * (xNodeDim - 1) * (yNodeDim - 1) * 2 * 3;
     indexBufferDesc.type  = BUFFER_INDEX;
-    indexBufferDesc.usage = USAGE_STATIC_DRAW;
+    indexBufferDesc.usage = USAGE_STATIC;
     IBufferRef indexBuffer = device->CreateBuffer(indexBufferDesc, indexBufferData);
     indexBufferData.Detach();
 
