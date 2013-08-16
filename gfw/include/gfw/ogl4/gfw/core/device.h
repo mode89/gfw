@@ -43,8 +43,8 @@ namespace GFW {
         Initialize();
 
     private:
-        PLAT_THREAD_LOCAL
-        static IContext *           mCurrentContext;
+        static PLAT_THREAD_LOCAL
+        IContext *                  mCurrentContext;
 
         const DeviceParams          mParams;
 
