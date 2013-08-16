@@ -8,7 +8,6 @@ if (NOT GFW_CORE)
     set(GFW_CORE ${GFW_CORE_DEFAULT})
 endif()
 
-list(APPEND GFW_SOURCE_FILES ${SOURCE_FILES})
 file(GLOB SOURCE_FILES source/common/*.cpp)
 list(APPEND GFW_SOURCE_FILES ${SOURCE_FILES})
 file(GLOB SOURCE_FILES source/${GFW_CORE}/*.cpp)
