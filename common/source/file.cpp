@@ -3,7 +3,7 @@
 #include "common\file.h"
 #include "common\platform.h"
 
-#if PLATFORM_WIN32
+#if PLAT_WIN32
 #include <windows.h>
 #else
 #error Unrecognized platform

@@ -6,9 +6,9 @@
 
 // Software breakpoint
 
-#if PLATFORM_COMPILER_MSVC
+#if PLAT_COMPILER_MSVC
 #define TRACE_DEBUG_BREAK()     __debugbreak()
-#elif PLATFORM_COMPILER_MINGW
+#elif PLAT_COMPILER_MINGW
 #define TRACE_DEBUG_BREAK()     asm("int $3")
 #endif // Determine the compiler
 
@@ -70,10 +70,10 @@
 
     #define TRACE_MESSAGE_FORMATTED(fmt, ...)   Trace::Message(fmt, __VA_ARGS__)
 
-    #if PLATFORM_DEBUG
+    #if PLAT_DEBUG
         #define TRACE_ERROR(msg)                Trace::Message("Error in %s : line %d : %s\n", __FILE__, __LINE__, msg); TRACE_DEBUG_BREAK()
         #define TRACE_ERROR_FORMATTED(fmt, ...) Trace::Message("Error in %s : line %d : " fmt "\n", __FILE__, __LINE__, __VA_ARGS__); TRACE_DEBUG_BREAK()
-    #elif PLATFORM_NDEBUG
+    #elif PLAT_NDEBUG
         #define TRACE_ERROR(msg)                Trace::Message("Error in %s : line %d : %s\n", __FILE__, __LINE__, msg);
         #define TRACE_ERROR_FORMATTED(fmt, ...) Trace::Message("Error in %s : line %d : " fmt "\n", __FILE__, __LINE__, __VA_ARGS__);
     #endif // PLATFORM_DEBUG

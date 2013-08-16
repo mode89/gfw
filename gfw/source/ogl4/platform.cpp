@@ -11,7 +11,7 @@ namespace GFW {
 
     using namespace Common;
 
-#if defined(PLATFORM_WIN32)
+#if defined(PLAT_WIN32)
 
 #define F(type, func) type func = NULL;
     OPENGL_FUNCTIONS_CORE
