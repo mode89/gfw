@@ -2,6 +2,18 @@
 
 set(CMAKE_PREFIX_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 
+# Enable C++11
+
+if (MINGW)
+    add_definitions(-std=gnu++11)
+endif()
+
+# VS2012 doesn't support correctly the tuples yet
+
+if (MSVC)
+    add_definitions(/D _VARIADIC_MAX=10)
+endif()
+
 # Enable multithreaded compiling
 
 if (MSVC)
