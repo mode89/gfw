@@ -2,6 +2,12 @@
 
 set(CMAKE_PREFIX_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 
+# Static link MinGW std libs
+
+if (MINGW)
+    set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
+endif()
+
 # Enable C++11
 
 if (MINGW)
