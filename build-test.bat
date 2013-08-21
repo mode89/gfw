@@ -8,13 +8,24 @@ cd build-test
 
 rem Build release version with MinGW
 
-if not exist mingw-release ( mkdir mingw-release )
+if "%MINGW_HOME%" == "" (
+    echo Unable to find MinGW installation path. Please, define MINGW_HOME
+    goto build_vc
+)
+
+if not exist mingw-release (
+    mkdir mingw-release
+)
+
 cd mingw-release
 
+set PATH=%PATH%;%MINGW_HOME%\bin
 cmake -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release ../..
 mingw32-make
 
 cd ..
+
+:build-vc
 
 rem Setup Visual Studio environment
 
@@ -26,7 +37,7 @@ if not exist vcvarsall.bat (
     @if not "%VCVARSALL_BAT%"=="" (
         echo call "%VCVARSALL_BAT%" > vcvarsall.bat
     ) else (
-        echo Cannot locate vcvarsval.bat
+        echo Failed to locate vcvarsval.bat
         goto end
     )
 )
