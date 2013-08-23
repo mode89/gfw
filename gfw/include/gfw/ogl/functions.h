@@ -83,7 +83,13 @@
     F(PFNGLPOLYGONMODEPROC,                 glPolygonMode) \
     F(PFNGLPOLYGONOFFSETPROC,               glPolygonOffset) \
     F(PFNGLCULLFACEPROC,                    glCullFace) \
-    F(PFNGLFRONTFACEPROC,                   glFrontFace)
+    F(PFNGLFRONTFACEPROC,                   glFrontFace) \
+    \
+    F(PFNGLGENSAMPLERSPROC,                 glGenSamplers) \
+    F(PFNGLDELETESAMPLERSPROC,              glDeleteSamplers) \
+    F(PFNGLSAMPLERPARAMETERIPROC,           glSamplerParameteri) \
+    F(PFNGLSAMPLERPARAMETERFVPROC,          glSamplerParameterfv) \
+    F(PFNGLSAMPLERPARAMETERFPROC,           glSamplerParameterf) \
 
 #ifdef PLATFORM_WIN32
 
