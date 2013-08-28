@@ -7,6 +7,7 @@
 #include "gfw/base/device.h"
 #include "gfw/base/device_child.h"
 #include "gfw/base/draw_params.h"
+#include "gfw/base/factory.h"
 #include "gfw/base/primitive.h"
 #include "gfw/base/render_buffer.h"
 #include "gfw/base/resource.h"

@@ -35,6 +35,10 @@ public:
 
         mContext = mDevice->GetDefaultContext();
 
+        // Create a factory
+
+        mFactory = CreateFactory(mDevice);
+
         // Create clear parameters
 
         mClearParams.mask     = CLEAR_COLOR;
@@ -53,6 +57,7 @@ protected:
     WindowHandle    mWindow;
     IDeviceRef      mDevice;
     IContextRef     mContext;
+    IFactoryRef     mFactory;
     ClearParams     mClearParams;
 };
 
