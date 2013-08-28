@@ -14,17 +14,13 @@ namespace GFW {
         BUFFER_PIXEL
     };
 
-    struct BufferDesc
+    struct BufferDesc : public ResourceDesc
     {
         BufferType  type;
-        Usage       usage;
-        uint32_t    access;     // See CpuAccessFlags
         uint32_t    size;
 
         BufferDesc()
             : type(BUFFER_UNKNOWN)
-            , usage(USAGE_DEFAULT)
-            , access(0)
             , size(0)
         {}
     };

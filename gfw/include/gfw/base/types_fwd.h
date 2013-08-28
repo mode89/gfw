@@ -8,6 +8,7 @@ namespace GFW {
     AUTOREF_FORWARD_DECLARATION(IBuffer);
     AUTOREF_FORWARD_DECLARATION(IContext);
     AUTOREF_FORWARD_DECLARATION(IDevice);
+    AUTOREF_FORWARD_DECLARATION(IDeviceChild);
     AUTOREF_FORWARD_DECLARATION(IRenderBuffer);
     AUTOREF_FORWARD_DECLARATION(IResource);
     AUTOREF_FORWARD_DECLARATION(IShader);
@@ -17,6 +18,7 @@ namespace GFW {
     struct ClearParams;
     struct DrawParams;
     struct DrawIndexedParams;
+    struct ResourceDesc;
     struct TextureDesc;
     struct SubResIdx;
     struct VertexAttribute;

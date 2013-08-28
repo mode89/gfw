@@ -1,5 +1,6 @@
 #include "common/trace.h"
 
+#include "gfw/base/device_child.h"
 #include "gfw/core/functions.h"
 #include "gfw/core/resource.h"
 

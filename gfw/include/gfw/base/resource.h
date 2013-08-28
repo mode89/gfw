@@ -1,8 +1,8 @@
 #ifndef __GFW_BASE_RESOURCE_H__
 #define __GFW_BASE_RESOURCE_H__
 
-#include "common/autoref.h"
-#include "gfw/base/context.h"
+#include "gfw/base/types_fwd.h"
+#include "gfw/base/device_child.h"
 
 namespace GFW {
 
@@ -37,7 +37,18 @@ namespace GFW {
         MAP_FLAG_WRITE = (1 << 1)
     };
 
-    class IResource : public Common::ARefCounted
+    struct ResourceDesc
+    {
+        Usage       usage;
+        uint32_t    access;
+
+        ResourceDesc()
+            : usage(USAGE_DEFAULT)
+            , access(0)
+        {}
+    };
+
+    class IResource : public IDeviceChild
     {
     public:
         virtual void *

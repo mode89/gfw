@@ -4,9 +4,11 @@
 #include "gfw/base/buffer.h"
 #include "gfw/base/types_fwd.h"
 
+#include "gfw/common/device_child.h"
+
 namespace GFW {
 
-    class Buffer: public IBuffer
+    class Buffer: public ADeviceChild<IBuffer>
     {
     public:
         virtual const BufferDesc &
@@ -32,7 +34,7 @@ namespace GFW {
         GetTarget()     { return mTarget; }
 
     public:
-        Buffer(const BufferDesc &);
+        Buffer(const BufferDesc &, IDeviceRef);
         ~Buffer();
 
     private:

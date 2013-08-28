@@ -1,6 +1,8 @@
 #include "common/trace.h"
 
+#include "gfw/base/device_child.h"
 #include "gfw/base/render_buffer.h"
+#include "gfw/base/resource.h"
 #include "gfw/base/texture.h"
 
 #include "gfw/core/buffer.h"
@@ -121,7 +123,7 @@ namespace GFW {
     {
         AUTO_LOCK_CONTEXT;
 
-        BufferRef buffer = new Buffer(desc);
+        BufferRef buffer = new Buffer(desc, this);
 
         if (buffer->Init(initialData) != 0)
         {

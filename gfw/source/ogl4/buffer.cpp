@@ -4,6 +4,8 @@
 #include "gfw/core/functions.h"
 #include "gfw/core/resource.h"
 
+#include "gfw/common/device_child.inl"
+
 namespace GFW {
 
     using namespace Common;
@@ -21,8 +23,9 @@ namespace GFW {
         return 0;
     }
 
-    Buffer::Buffer(const BufferDesc & desc)
-        : mDesc(desc)
+    Buffer::Buffer(const BufferDesc & desc, IDeviceRef device)
+        : ADeviceChild(device)
+        , mDesc(desc)
         , mHandle(0)
         , mTarget(0)
     {
