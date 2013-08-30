@@ -288,7 +288,6 @@ TEST_F(GFWTests, MapBuffer)
 
 TEST_F(GFWTests, UpdateBuffer)
 {
-
     static const uint32_t kDataCount = 100;
 
     // Allocate system copy of the buffer data

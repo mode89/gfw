@@ -2,11 +2,12 @@
 #define __GFW_CORE_DEPTH_STENCIL_STATE_H__
 
 #include "gfw/base/depth_stencil_state.h"
+#include "gfw/common/device_child.h"
 #include "gfw/core/types_fwd.h"
 
 namespace GFW {
 
-    class DepthStencilState : public IDepthStencilState
+    class DepthStencilState : public ADeviceChild<IDepthStencilState>
     {
     public:
         virtual const DepthStencilStateDesc &
@@ -16,7 +17,7 @@ namespace GFW {
         Apply() const;
 
     public:
-        DepthStencilState(const DepthStencilStateDesc &, uint32_t descHash);
+        DepthStencilState(const DepthStencilStateDesc &, uint32_t descHash, IDeviceRef);
         ~DepthStencilState();
 
     private:

@@ -2,6 +2,7 @@
 #define __GFW_BASE_BLEND_STATE_H__
 
 #include "gfw/base/compare.h"
+#include "gfw/base/device_child.h"
 #include "gfw/base/types_fwd.h"
 
 namespace GFW {
@@ -98,7 +99,7 @@ namespace GFW {
         }
     };
 
-    class IBlendState : public Common::ARefCounted
+    class IBlendState : public IDeviceChild
     {
     public:
         virtual void    Apply() const = 0;

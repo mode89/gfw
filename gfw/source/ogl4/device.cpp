@@ -109,7 +109,7 @@ namespace GFW {
     {
         AUTO_LOCK_CONTEXT;
 
-        ShaderRef shader = new Shader(stage);
+        ShaderRef shader = new Shader(stage, this);
 
         if (shader->Compile(static_cast<const char*>(shaderData)))
         {

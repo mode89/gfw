@@ -1,12 +1,15 @@
 #include "common/trace.h"
 
+#include "gfw/common/device_child.inl"
+
 #include "gfw/core/rasterizer_state.h"
 #include "gfw/core/functions.h"
 
 namespace GFW {
 
-    RasterizerState::RasterizerState(const RasterizerStateDesc & desc, uint32_t descHash)
-        : mDesc(desc)
+    RasterizerState::RasterizerState(const RasterizerStateDesc & desc, uint32_t descHash, IDeviceRef device)
+        : ADeviceChild(device)
+        , mDesc(desc)
     { }
 
     RasterizerState::~RasterizerState()

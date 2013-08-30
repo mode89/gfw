@@ -1,6 +1,8 @@
 #include "common/trace.h"
 #include "common/crc32.h"
 
+#include "gfw/common/device_child.inl"
+
 #include "gfw/core/shader.h"
 #include "gfw/core/functions.h"
 
@@ -22,8 +24,9 @@ namespace GFW {
         return 0;
     }
 
-    Shader::Shader( int32_t stage )
-        : mStage(stage)
+    Shader::Shader( int32_t stage, IDeviceRef device )
+        : ADeviceChild(device)
+        , mStage(stage)
         , mShader(0)
         , mHash(0)
     {

@@ -1,6 +1,7 @@
 #ifndef __GFW_BASE_SHADER_H__
 #define __GFW_BASE_SHADER_H__
 
+#include "gfw/base/device_child.h"
 #include "gfw/base/types_fwd.h"
 
 namespace GFW {
@@ -13,7 +14,7 @@ namespace GFW {
         SHADER_STAGE_COUNT
     };
 
-    class IShader: public Common::ARefCounted
+    class IShader: public IDeviceChild
     {
     public:
         virtual int32_t

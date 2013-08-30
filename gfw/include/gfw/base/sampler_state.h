@@ -2,6 +2,7 @@
 #define __GFW_BASE_SAMPLER_STATE_H__
 
 #include "gfw/base/compare.h"
+#include "gfw/base/device_child.h"
 #include "gfw/base/types_fwd.h"
 
 #include <float.h>
@@ -75,7 +76,7 @@ namespace GFW {
         }
     };
 
-    class ISamplerState : public Common::ARefCounted
+    class ISamplerState : public IDeviceChild
     {
     public:
         virtual void

@@ -1,5 +1,7 @@
 #include "common/trace.h"
 
+#include "gfw/common/device_child.inl"
+
 #include "gfw/core/blend_state.h"
 #include "gfw/core/functions.h"
 
@@ -43,8 +45,9 @@ namespace GFW {
         return GL_FUNC_ADD;
     }
 
-    BlendState::BlendState(const BlendStateDesc & desc, uint32_t descHash)
-        : mDesc(desc)
+    BlendState::BlendState(const BlendStateDesc & desc, uint32_t descHash, IDeviceRef device)
+        : ADeviceChild(device)
+        , mDesc(desc)
     {
 
     }

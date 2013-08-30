@@ -1,6 +1,7 @@
 #ifndef __GFW_BASE_RASTERIZER_STATE_H__
 #define __GFW_BASE_RASTERIZER_STATE_H__
 
+#include "gfw/base/device_child.h"
 #include "gfw/base/types_fwd.h"
 
 namespace GFW {
@@ -50,7 +51,7 @@ namespace GFW {
         {}
     };
 
-    class IRasterizerState : public Common::ARefCounted
+    class IRasterizerState : public IDeviceChild
     {
     public:
         virtual void

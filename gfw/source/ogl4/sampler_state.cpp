@@ -1,5 +1,7 @@
 #include "common/trace.h"
 
+#include "gfw/common/device_child.inl"
+
 #include "gfw/core/sampler_state.h"
 #include "gfw/core/functions.h"
 
@@ -118,8 +120,9 @@ namespace GFW {
         return 0;
     }
 
-    SamplerState::SamplerState(const SamplerStateDesc & desc, uint32_t descHash)
-        : mDesc(desc)
+    SamplerState::SamplerState(const SamplerStateDesc & desc, uint32_t descHash, IDeviceRef device)
+        : ADeviceChild(device)
+        , mDesc(desc)
         , mHandle(0)
     {
         TRACE_ASSERT_GL(glGenSamplers, 1, &mHandle);
@@ -136,7 +139,6 @@ namespace GFW {
 
         TRACE_ASSERT_GL(glSamplerParameteri,  mHandle, GL_TEXTURE_MIN_FILTER,   GetGLMinFilter(desc.filter));
         TRACE_ASSERT_GL(glSamplerParameteri,  mHandle, GL_TEXTURE_MAG_FILTER,   GetGLMagFilter(desc.filter));
-
 
         TRACE_ASSERT_GL(glSamplerParameterf,  mHandle, GL_TEXTURE_MAX_LOD,      desc.maxLod);
         TRACE_ASSERT_GL(glSamplerParameterf,  mHandle, GL_TEXTURE_MIN_LOD,      desc.minLod);

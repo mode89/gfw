@@ -2,6 +2,7 @@
 #define __GFW_BASE_DEPTH_STENCIL_STATE_H__
 
 #include "gfw/base/compare.h"
+#include "gfw/base/device_child.h"
 #include "gfw/base/types_fwd.h"
 
 namespace GFW {
@@ -59,7 +60,7 @@ namespace GFW {
         {}
     };
 
-    class IDepthStencilState : public Common::ARefCounted
+    class IDepthStencilState : public IDeviceChild
     {
     public:
         virtual const DepthStencilStateDesc &
