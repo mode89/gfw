@@ -1,5 +1,6 @@
 #include "common/trace.h"
 #include "gfw/base/device.h"
+#include "gfw/common/effect.h"
 #include "gfw/common/factory.h"
 
 namespace GFW {
@@ -30,6 +31,13 @@ namespace GFW {
     bool Factory::Initialize()
     {
         return true;
+    }
+
+    IEffectRef Factory::CreateEffect(const char * fileName)
+    {
+        TRACE_ASSERT(fileName != NULL);
+
+        return NULL;
     }
 
 } // namespace GFW

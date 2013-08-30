@@ -327,6 +327,15 @@ TEST_F(GFWTests, UpdateBuffer)
     }
 }
 
+TEST_F(GFWTests, Effect)
+{
+    IEffectRef effect = mFactory->CreateEffect(TESTS_SOURCE_DIR "draw.fx");
+
+    mContext->BeginScene();
+    effect->Dispatch(mContext);
+    mContext->EndScene();
+}
+
 TEST_F(GFWTests, DISABLED_RenderToTexture)
 {
     // Get default color buffer

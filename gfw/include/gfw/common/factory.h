@@ -9,6 +9,10 @@ namespace GFW {
     class Factory : public IFactory
     {
     public:
+        virtual IEffectRef
+        CreateEffect(const char * fileName);
+
+    public:
         Factory(IDeviceRef);
         ~Factory();
 

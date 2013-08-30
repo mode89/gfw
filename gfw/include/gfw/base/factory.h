@@ -8,6 +8,9 @@ namespace GFW {
     class IFactory : public Common:: ARefCounted
     {
     public:
+        virtual IEffectRef
+        CreateEffect(const char * fileName) = 0;
+
         virtual
         ~IFactory() {}
     };
