@@ -1,8 +1,9 @@
 #ifndef __GFW_BASE_SAMPLER_STATE_H__
 #define __GFW_BASE_SAMPLER_STATE_H__
 
-#include "common/autoref.h"
 #include "gfw/base/compare.h"
+#include "gfw/base/types_fwd.h"
+
 #include <float.h>
 
 namespace GFW {

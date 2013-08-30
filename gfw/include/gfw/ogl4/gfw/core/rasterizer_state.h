@@ -2,6 +2,7 @@
 #define __GFW_CORE_RASTERIZER_STATE_H__
 
 #include "gfw/base/rasterizer_state.h"
+#include "gfw/core/types_fwd.h"
 
 namespace GFW {
 

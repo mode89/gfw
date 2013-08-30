@@ -2,6 +2,7 @@
 #define __GFW_COMMON_DEVICE_CHILD_INL__
 
 #include "gfw/base/device.h"
+#include "gfw/common/device_child.h"
 
 namespace GFW {
 

@@ -2,6 +2,7 @@
 #define __GFW_CORE_SHADER_H__
 
 #include "gfw/base/shader.h"
+#include "gfw/core/types_fwd.h"
 
 namespace GFW {
 

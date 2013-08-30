@@ -1,7 +1,7 @@
 #ifndef __GFW_GRAPHICS_BASE_TEXTURE_H__
 #define __GFW_GRAPHICS_BASE_TEXTURE_H__
 
-#include "common/autoref.h"
+#include "gfw/base/types_fwd.h"
 
 namespace GFW {
 

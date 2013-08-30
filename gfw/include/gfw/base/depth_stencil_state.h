@@ -1,9 +1,8 @@
 #ifndef __GFW_BASE_DEPTH_STENCIL_STATE_H__
 #define __GFW_BASE_DEPTH_STENCIL_STATE_H__
 
-#include "common/autoref.h"
-
 #include "gfw/base/compare.h"
+#include "gfw/base/types_fwd.h"
 
 namespace GFW {
 
@@ -73,6 +72,6 @@ namespace GFW {
         ~IDepthStencilState() {}
     };
 
-} // napespace GFW
+} // namespace GFW
 
-#endif __GFW_BASE_DEPTH_STENCIL_STATE_H__
+#endif // __GFW_BASE_DEPTH_STENCIL_STATE_H__

@@ -1,5 +1,7 @@
 #include "common/trace.h"
+
 #include "gfw/base/device.h"
+
 #include "gfw/common/effect.h"
 #include "gfw/common/factory.h"
 

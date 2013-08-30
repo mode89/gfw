@@ -3,8 +3,6 @@
 
 #include "gfw/base/types_fwd.h"
 
-#include "gfw/base/window.h"
-
 namespace GFW {
 
     class IDevice: public Common::ARefCounted

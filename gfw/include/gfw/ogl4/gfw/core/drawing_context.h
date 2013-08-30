@@ -1,13 +1,12 @@
 #ifndef __GFW_CORE_DRAWING_CONTEXT_H__
 #define __GFW_CORE_DRAWING_CONTEXT_H__
 
-#include "common/autoref.h"
-
-#include "gfw/base/window.h"
-
+#include "gfw/base/types_fwd.h"
 #include "gfw/core/types_fwd.h"
 
 namespace GFW {
+
+    typedef void * RenderingContext;
 
     class IDrawingContext : public Common::ARefCounted
     {

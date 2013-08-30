@@ -1,7 +1,9 @@
 #ifndef __GFW_CORE_CONTEXT_H__
 #define __GFW_CORE_CONTEXT_H__
 
+#include "gfw/base/clear_params.h"
 #include "gfw/base/context.h"
+#include "gfw/base/draw_params.h"
 #include "gfw/base/shader.h"
 #include "gfw/base/vertex_attribute.h"
 

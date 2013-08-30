@@ -9,9 +9,11 @@ namespace GFW {
     class IPlatform: public Common::ARefCounted
     {
     public:
-        static  IPlatformRef        Acquire();
+        static  IPlatformRef
+        Acquire();
 
-        virtual                     ~IPlatform() { }
+        virtual
+        ~IPlatform() { }
     };
 
 } // namespace GFW

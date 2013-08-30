@@ -1,7 +1,6 @@
 #ifndef __GFW_COMMON_FORMAT_H__
 #define __GFW_COMMON_FORMAT_H__
 
-#include "common/typedefs.h"
 #include "gfw/base/format.h"
 
 namespace GFW {

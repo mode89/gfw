@@ -5,14 +5,18 @@
 
 namespace GFW {
 
+    AUTOREF_FORWARD_DECLARATION(IBlendState);
     AUTOREF_FORWARD_DECLARATION(IBuffer);
     AUTOREF_FORWARD_DECLARATION(IContext);
+    AUTOREF_FORWARD_DECLARATION(IDepthStencilState);
     AUTOREF_FORWARD_DECLARATION(IDevice);
     AUTOREF_FORWARD_DECLARATION(IDeviceChild);
     AUTOREF_FORWARD_DECLARATION(IEffect);
     AUTOREF_FORWARD_DECLARATION(IFactory);
+    AUTOREF_FORWARD_DECLARATION(IRasterizerState);
     AUTOREF_FORWARD_DECLARATION(IRenderBuffer);
     AUTOREF_FORWARD_DECLARATION(IResource);
+    AUTOREF_FORWARD_DECLARATION(ISamplerState);
     AUTOREF_FORWARD_DECLARATION(IShader);
     AUTOREF_FORWARD_DECLARATION(ITexture);
 
@@ -24,6 +28,8 @@ namespace GFW {
     struct TextureDesc;
     struct SubResIdx;
     struct VertexAttribute;
+
+    typedef void * WindowHandle;
 
 } // namespace GFW
 

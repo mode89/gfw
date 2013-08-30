@@ -1,7 +1,6 @@
 #ifndef __GFW_BASE_VERTEX_ATTRIBUTE_H__
 #define __GFW_BASE_VERTEX_ATTRIBUTE_H__
 
-#include "common/typedefs.h"
 #include "gfw/base/format.h"
 
 namespace GFW {

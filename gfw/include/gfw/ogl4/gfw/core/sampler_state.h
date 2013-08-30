@@ -2,6 +2,7 @@
 #define __GFW_CORE_SMAPLER_STATE_H__
 
 #include "gfw/base/sampler_state.h"
+#include "gfw/core/types_fwd.h"
 
 namespace GFW {
 

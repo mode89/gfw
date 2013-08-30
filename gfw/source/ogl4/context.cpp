@@ -1,8 +1,6 @@
 #include "common/trace.h"
 #include "common/crc32.h"
 
-#include "gfw/base/clear_params.h"
-#include "gfw/base/draw_params.h"
 #include "gfw/base/render_buffer.h"
 
 #include "gfw/common/format.h"

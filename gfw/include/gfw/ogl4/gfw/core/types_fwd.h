@@ -1,6 +1,8 @@
 #ifndef __GFW_CORE_TYPES_FWD_H__
 #define __GFW_CORE_TYPES_FWD_H__
 
+#include "common/autoref.h"
+
 namespace GFW {
 
     AUTOREF_FORWARD_DECLARATION(IDrawingContext);

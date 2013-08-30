@@ -1,7 +1,6 @@
 #ifndef __GFW_BASE_DRAW_PARAMS_H__
 #define __GFW_BASE_DRAW_PARAMS_H__
 
-#include "common/typedefs.h"
 #include "gfw/base/primitive.h"
 #include "gfw/base/format.h"
 

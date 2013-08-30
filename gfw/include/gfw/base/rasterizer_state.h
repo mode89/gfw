@@ -1,7 +1,7 @@
 #ifndef __GFW_BASE_RASTERIZER_STATE_H__
 #define __GFW_BASE_RASTERIZER_STATE_H__
 
-#include "common/autoref.h"
+#include "gfw/base/types_fwd.h"
 
 namespace GFW {
 
