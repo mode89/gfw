@@ -1,8 +1,7 @@
 #include "common/trace.h"
 
-#include "gfw/ogl/sampler_state.h"
-
-#include "gfw/ogl/functions.h"
+#include "gfw/core/sampler_state.h"
+#include "gfw/core/functions.h"
 
 namespace GFW {
 

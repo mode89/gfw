@@ -31,6 +31,8 @@
     F(PFNGLDRAWELEMENTSPROC,                glDrawElements) \
     F(PFNGLFLUSHPROC,                       glFlush) \
     F(PFNGLFINISHPROC,                      glFinish) \
+    F(PFNGLENABLEPROC,                      glEnable) \
+    F(PFNGLDISABLEPROC,                     glDisable)
 
 #define OPENGL_FUNCTIONS_EXT \
     F(PFNGLCREATESHADERPROC,                glCreateShader) \
@@ -60,12 +62,37 @@
     F(PFNGLMAPBUFFERRANGEPROC,              glMapBufferRange) \
     F(PFNGLUNMAPBUFFERPROC,                 glUnmapBuffer) \
     \
-    F(PFNGLVERTEXATTRIBFORMATPROC,          glVertexAttribFormat) \
-    F(PFNGLVERTEXATTRIBBINDINGPROC,         glVertexAttribBinding) \
-    F(PFNGLBINDVERTEXBUFFERPROC,            glBindVertexBuffer) \
     F(PFNGLVERTEXATTRIBPOINTERPROC,         glVertexAttribPointer) \
     F(PFNGLENABLEVERTEXATTRIBARRAYPROC,     glEnableVertexAttribArray) \
     F(PFNGLDISABLEVERTEXATTRIBARRAYPROC,    glDisableVertexAttribArray) \
+    \
+    F(PFNGLENABLEIPROC,                     glEnablei) \
+    F(PFNGLDISABLEIPROC,                    glDisablei) \
+    \
+    F(PFNGLBLENDFUNCSEPARATEIPROC,          glBlendFuncSeparatei) \
+    F(PFNGLBLENDEQUATIONSEPARATEIPROC,      glBlendEquationSeparatei) \
+    F(PFNGLCOLORMASKIPROC,                  glColorMaski) \
+    F(PFNGLBLENDCOLORPROC,                  glBlendColor) \
+    \
+    F(PFNGLDEPTHFUNCPROC,                   glDepthFunc) \
+    F(PFNGLDEPTHMASKPROC,                   glDepthMask) \
+    F(PFNGLSTENCILOPPROC,                   glStencilOp) \
+    F(PFNGLSTENCILOPSEPARATEPROC,           glStencilOpSeparate) \
+    F(PFNGLSTENCILFUNCPROC,                 glStencilFunc) \
+    F(PFNGLSTENCILFUNCSEPARATEPROC,         glStencilFuncSeparate) \
+    F(PFNGLSTENCILMASKPROC,                 glStencilMask) \
+    F(PFNGLSTENCILMASKSEPARATEPROC,         glStencilMaskSeparate) \
+    \
+    F(PFNGLPOLYGONMODEPROC,                 glPolygonMode) \
+    F(PFNGLPOLYGONOFFSETPROC,               glPolygonOffset) \
+    F(PFNGLCULLFACEPROC,                    glCullFace) \
+    F(PFNGLFRONTFACEPROC,                   glFrontFace) \
+    \
+    F(PFNGLGENSAMPLERSPROC,                 glGenSamplers) \
+    F(PFNGLDELETESAMPLERSPROC,              glDeleteSamplers) \
+    F(PFNGLSAMPLERPARAMETERIPROC,           glSamplerParameteri) \
+    F(PFNGLSAMPLERPARAMETERFVPROC,          glSamplerParameterfv) \
+    F(PFNGLSAMPLERPARAMETERFPROC,           glSamplerParameterf) \
 
 #ifdef PLAT_WIN32
 

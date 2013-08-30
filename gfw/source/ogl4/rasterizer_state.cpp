@@ -1,8 +1,7 @@
 #include "common/trace.h"
 
-#include "gfw/ogl/rasterizer_state.h"
-
-#include "gfw/ogl/functions.h"
+#include "gfw/core/rasterizer_state.h"
+#include "gfw/core/functions.h"
 
 namespace GFW {
 

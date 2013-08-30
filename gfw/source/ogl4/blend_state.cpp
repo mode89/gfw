@@ -1,7 +1,7 @@
 #include "common/trace.h"
 
-#include "gfw/ogl/blend_state.h"
-#include "gfw/ogl/functions.h"
+#include "gfw/core/blend_state.h"
+#include "gfw/core/functions.h"
 
 namespace GFW {
 
