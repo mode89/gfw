@@ -1,5 +1,5 @@
-#ifndef __GFW_OGL_DEPTH_STENCIL_STATE_H__
-#define __GFW_OGL_DEPTH_STENCIL_STATE_H__
+#ifndef __GFW_CORE_DEPTH_STENCIL_STATE_H__
+#define __GFW_CORE_DEPTH_STENCIL_STATE_H__
 
 #include "gfw/base/depth_stencil_state.h"
 
@@ -24,4 +24,4 @@ namespace GFW {
 
 } // napespace GFW
 
-#endif __GFW_OGL_DEPTH_STENCIL_STATE_H__
+#endif __GFW_CORE_DEPTH_STENCIL_STATE_H__

@@ -1,5 +1,5 @@
-#ifndef __GFW_OGL_FORMAT_H__
-#define __GFW_OGL_FORMAT_H__
+#ifndef __GFW_CORE_FORMAT_H__
+#define __GFW_CORE_FORMAT_H__
 
 #include "gfw/base/format.h"
 #include "gfw/base/primitive.h"
@@ -12,4 +12,4 @@ namespace GFW {
 
 } // namespace GFW
 
-#endif // __GFW_OGL_FORMAT_H__
+#endif // __GFW_CORE_FORMAT_H__

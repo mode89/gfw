@@ -1,5 +1,5 @@
-#ifndef __GFW_OGL_DEVICE_H__
-#define __GFW_OGL_DEVICE_H__
+#ifndef __GFW_CORE_DEVICE_H__
+#define __GFW_CORE_DEVICE_H__
 
 #include "common/futex.h"
 
@@ -59,4 +59,4 @@ namespace GFW {
 
 } // namespace GFW
 
-#endif // __GFW_OGL_DEVICE_H__
+#endif // __GFW_CORE_DEVICE_H__

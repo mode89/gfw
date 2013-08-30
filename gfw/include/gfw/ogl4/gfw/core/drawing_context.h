@@ -1,5 +1,5 @@
-#ifndef __GFW_OGL_DRAWING_CONTEXT_H__
-#define __GFW_OGL_DRAWING_CONTEXT_H__
+#ifndef __GFW_CORE_DRAWING_CONTEXT_H__
+#define __GFW_CORE_DRAWING_CONTEXT_H__
 
 #include "common/autoref.h"
 
@@ -26,4 +26,4 @@ namespace GFW {
 
 } // namespace GFW
 
-#endif // __GFW_OGL_DRAWING_CONTEXT_H__
+#endif // __GFW_CORE_DRAWING_CONTEXT_H__

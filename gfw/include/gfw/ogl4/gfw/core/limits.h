@@ -1,5 +1,5 @@
-#ifndef __GFW_OGL_LIMITS_H__
-#define __GFW_OGL_LIMITS_H__
+#ifndef __GFW_CORE_LIMITS_H__
+#define __GFW_CORE_LIMITS_H__
 
 namespace GFW {
 
@@ -7,4 +7,4 @@ namespace GFW {
 
 } // namespace GFW
 
-#endif // __GFW_OGL_LIMITS_H__
+#endif // __GFW_CORE_LIMITS_H__

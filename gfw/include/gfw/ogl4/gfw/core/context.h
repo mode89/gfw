@@ -1,5 +1,5 @@
-#ifndef __GFW_OGL_CONTEXT_H__
-#define __GFW_OGL_CONTEXT_H__
+#ifndef __GFW_CORE_CONTEXT_H__
+#define __GFW_CORE_CONTEXT_H__
 
 #include "gfw/base/context.h"
 #include "gfw/base/shader.h"
@@ -83,4 +83,4 @@ namespace GFW {
 
 } // namespace GFW
 
-#endif // __GFW_OGL_CONTEXT_H__
+#endif // __GFW_CORE_CONTEXT_H__

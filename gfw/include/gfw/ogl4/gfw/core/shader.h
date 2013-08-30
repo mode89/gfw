@@ -1,5 +1,5 @@
-#ifndef __GFW_OGL_SHADER_H__
-#define __GFW_OGL_SHADER_H__
+#ifndef __GFW_CORE_SHADER_H__
+#define __GFW_CORE_SHADER_H__
 
 #include "gfw/base/shader.h"
 
@@ -34,4 +34,4 @@ namespace GFW {
 
 } // namespace GFW
 
-#endif // __GFW_OGL_SHADER_H__
+#endif // __GFW_CORE_SHADER_H__

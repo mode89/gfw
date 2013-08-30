@@ -1,5 +1,5 @@
-#ifndef __GFW_OGL_FUNCTIONS_H__
-#define __GFW_OGL_FUNCTIONS_H__
+#ifndef __GFW_CORE_FUNCTIONS_H__
+#define __GFW_CORE_FUNCTIONS_H__
 
 #include "common/platform.h"
 
@@ -125,4 +125,4 @@ namespace GFW {
 
 } // namespace GFW
 
-#endif // __GFW_OGL_FUNCTIONS_H__
+#endif // __GFW_CORE_FUNCTIONS_H__

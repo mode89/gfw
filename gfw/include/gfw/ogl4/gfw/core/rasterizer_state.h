@@ -1,5 +1,5 @@
-#ifndef __GFW_OGL_RASTERIZER_STATE_H__
-#define __GFW_OGL_RASTERIZER_STATE_H__
+#ifndef __GFW_CORE_RASTERIZER_STATE_H__
+#define __GFW_CORE_RASTERIZER_STATE_H__
 
 #include "gfw/base/rasterizer_state.h"
 
@@ -21,4 +21,4 @@ namespace GFW {
 
 } // namespace GFW
 
-#endif // __GFW_OGL_RASTERIZER_STATE_H__
+#endif // __GFW_CORE_RASTERIZER_STATE_H__
