@@ -1,5 +1,5 @@
-#ifndef __TRACE_H__
-#define __TRACE_H__
+#ifndef __COMMON_TRACE_H__
+#define __COMMON_TRACE_H__
 
 #include "common\typedefs.h"
 #include "common\platform.h"
@@ -95,4 +95,4 @@ namespace Trace {
 
 } // namespace Trace
 
-#endif // __TRACE_H__
+#endif // __COMMON_TRACE_H__

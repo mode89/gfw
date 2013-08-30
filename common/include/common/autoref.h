@@ -1,5 +1,5 @@
-#ifndef __AUTOREF_H__
-#define __AUTOREF_H__
+#ifndef __COMMON_AUTOREF_H__
+#define __COMMON_AUTOREF_H__
 
 #include "common\typedefs.h"
 #include "common\atomic.h"
@@ -179,4 +179,4 @@ namespace Common {
 
 } // namespace Common
 
-#endif // __AUTOREF_H__
+#endif // __COMMON_AUTOREF_H__
