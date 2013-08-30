@@ -35,6 +35,10 @@ public:
 
         mContext = mDevice->GetDefaultContext();
 
+        // Create a factory
+
+        mFactory = CreateFactory(mDevice);
+
         // Create clear parameters
 
         mClearParams.mask     = CLEAR_COLOR;
@@ -53,6 +57,7 @@ protected:
     WindowHandle    mWindow;
     IDeviceRef      mDevice;
     IContextRef     mContext;
+    IFactoryRef     mFactory;
     ClearParams     mClearParams;
 };
 
@@ -109,7 +114,7 @@ TEST_F(GFWTests, Draw)
     BufferDesc vertexBufferDesc;
     vertexBufferDesc.type = BUFFER_VERTEX;
     vertexBufferDesc.size = 60;
-    vertexBufferDesc.usage = USAGE_STATIC_DRAW;
+    vertexBufferDesc.usage = USAGE_STATIC;
     IBufferRef vertexBuffer = mDevice->CreateBuffer(vertexBufferDesc, vertices);
 
     // Define vertex attributes
@@ -180,7 +185,7 @@ TEST_F(GFWTests, DrawIndexed)
     BufferDesc vertexBufferDesc;
     vertexBufferDesc.type  = BUFFER_VERTEX;
     vertexBufferDesc.size  = sizeof(vertices);
-    vertexBufferDesc.usage = USAGE_STATIC_DRAW;
+    vertexBufferDesc.usage = USAGE_STATIC;
     IBufferRef vertexBuffer = mDevice->CreateBuffer(vertexBufferDesc, vertices);
 
     uint16_t indices[] = {
@@ -190,7 +195,7 @@ TEST_F(GFWTests, DrawIndexed)
     BufferDesc indexBufferDesc;
     indexBufferDesc.type  = BUFFER_INDEX;
     indexBufferDesc.size  = sizeof(indices);
-    indexBufferDesc.usage = USAGE_STATIC_DRAW;
+    indexBufferDesc.usage = USAGE_STATIC;
     IBufferRef indexBuffer = mDevice->CreateBuffer(indexBufferDesc, indices);
 
     // Define vertex attributes
@@ -235,6 +240,102 @@ TEST_F(GFWTests, DrawIndexed)
     }
 }
 
+TEST_F(GFWTests, MapBuffer)
+{
+    static const uint32_t kDataCount = 100;
+
+    // Allocate system copy of the buffer data
+    AutoPointer<uint32_t> data = new uint32_t [kDataCount];
+
+    uint32_t bufferSize = sizeof(uint32_t) * kDataCount;
+
+    BufferDesc bufferDesc;
+    bufferDesc.size  = bufferSize;
+    bufferDesc.usage = USAGE_DYNAMIC;
+    bufferDesc.type  = BUFFER_VERTEX;
+    IBufferRef buffer = mDevice->CreateBuffer(bufferDesc);
+
+    for (int i = 0; i < 60; ++ i)
+    {
+        // Prepare a random data
+
+        for (int i = 0; i < kDataCount; ++ i)
+        {
+            data[i] = rand();
+        }
+
+        // Write the buffer
+
+        mContext->BeginScene();
+        {
+            uint32_t * mappedData = static_cast<uint32_t*>(buffer->Map(MAP_FLAG_WRITE));
+            memcpy(mappedData, data, bufferSize);
+            buffer->Unmap();
+        }
+        mContext->EndScene();
+
+        // Compare buffer with the data
+
+        mContext->BeginScene();
+        {
+            uint32_t * mappedData = static_cast<uint32_t*>(buffer->Map(MAP_FLAG_READ));
+            ASSERT_TRUE(memcmp(mappedData, data, bufferSize) == 0);
+            buffer->Unmap();
+        }
+        mContext->EndScene();
+    }
+}
+
+TEST_F(GFWTests, UpdateBuffer)
+{
+
+    static const uint32_t kDataCount = 100;
+
+    // Allocate system copy of the buffer data
+    AutoPointer<uint32_t> data = new uint32_t [kDataCount];
+
+    uint32_t bufferSize = sizeof(uint32_t) * kDataCount;
+
+    BufferDesc bufferDesc;
+    bufferDesc.size  = bufferSize;
+    bufferDesc.usage = USAGE_DYNAMIC;
+    bufferDesc.type  = BUFFER_VERTEX;
+    IBufferRef buffer = mDevice->CreateBuffer(bufferDesc);
+
+    for (int i = 0; i < 60; ++ i)
+    {
+        // Prepare a random data
+
+        for (int i = 0; i < kDataCount; ++ i)
+        {
+            data[i] = rand();
+        }
+
+        // Write the buffer
+
+        mContext->BeginScene();
+        buffer->UpdateSubresource(data);
+        mContext->EndScene();
+
+        // Compare buffer with the data
+
+        mContext->BeginScene();
+        void * mappedData = buffer->Map(MAP_FLAG_READ);
+        ASSERT_TRUE(memcmp(mappedData, data, bufferSize) == 0);
+        buffer->Unmap();
+        mContext->EndScene();
+    }
+}
+
+TEST_F(GFWTests, Effect)
+{
+    IEffectRef effect = mFactory->CreateEffect(TESTS_SOURCE_DIR "draw.fx");
+
+    mContext->BeginScene();
+    effect->Dispatch(mContext);
+    mContext->EndScene();
+}
+
 TEST_F(GFWTests, DISABLED_RenderToTexture)
 {
     // Get default color buffer
@@ -267,7 +368,7 @@ TEST_F(GFWTests, DISABLED_RenderToTexture)
     BufferDesc vertPosBufDesc;
     vertPosBufDesc.type   = BUFFER_VERTEX;
     vertPosBufDesc.size   = sizeof(vertPosData);
-    vertPosBufDesc.usage  = USAGE_STATIC_DRAW;
+    vertPosBufDesc.usage  = USAGE_STATIC;
     IBufferRef vertPosBuf = mDevice->CreateBuffer(vertPosBufDesc, vertPosData);
 
     float vertColData[] = {
@@ -280,7 +381,7 @@ TEST_F(GFWTests, DISABLED_RenderToTexture)
     BufferDesc vertColBufDesc;
     vertColBufDesc.type   = BUFFER_VERTEX;
     vertColBufDesc.size   = sizeof(vertColData);
-    vertColBufDesc.usage  = USAGE_STATIC_DRAW;
+    vertColBufDesc.usage  = USAGE_STATIC;
     IBufferRef vertColBuf = mDevice->CreateBuffer(vertColBufDesc, vertColData);
 
     uint16_t indexData[] = {
@@ -290,7 +391,7 @@ TEST_F(GFWTests, DISABLED_RenderToTexture)
     BufferDesc indexBufDesc;
     indexBufDesc.type   = BUFFER_INDEX;
     indexBufDesc.size   = sizeof(indexBufDesc);
-    indexBufDesc.usage  = USAGE_STATIC_DRAW;
+    indexBufDesc.usage  = USAGE_STATIC;
     IBufferRef indexBuf = mDevice->CreateBuffer(indexBufDesc, indexData);
 
     // Define vertex attributes

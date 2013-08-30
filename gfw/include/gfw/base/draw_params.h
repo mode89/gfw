@@ -3,6 +3,7 @@
 
 #include "common/typedefs.h"
 #include "gfw/base/primitive.h"
+#include "gfw/base/format.h"
 
 namespace GFW {
 

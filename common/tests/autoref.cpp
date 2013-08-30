@@ -1,147 +1,247 @@
 #include "gtest/gtest.h"
 #include "common/autoref.h"
 
-namespace AutoRefTests {
+using namespace Common;
 
-    using namespace Common;
+class IObject : public ARefCounted
+{
+public:
+    virtual int32_t
+    GetData() = 0;
 
-    AUTOREF_FORWARD_DECLARATION(Factory);
-    AUTOREF_FORWARD_DECLARATION(Object);
-    AUTOREF_FORWARD_DECLARATION(ObjectImpl);
+    virtual void
+    SetData(int32_t) = 0;
 
-    // An Object that is produced by a Factory
+    virtual
+    ~IObject() {}
+};
+AUTOREF_REFERENCE_DECLARATION(IObject);
 
-    class Object : public ARefCounted
+class IFactory : public ARefCounted
+{
+public:
+    virtual IObjectRef
+    CreateObject() = 0;
+
+    ~IFactory() {}
+};
+AUTOREF_REFERENCE_DECLARATION(IFactory);
+
+class Object : public IObject
+{
+public:
+    virtual int32_t
+    GetData() { return mData; }
+
+    virtual void
+    SetData(int32_t data) { mData = data; }
+
+public:
+    Object(IFactoryIn factory)
+		: mFactory(factory)
+        , mData(0)
+    {}
+
+    ~Object()
     {
-    public:
-        uint32_t GetCounter() { return mRefCounter; }
 
-    public:
-        Object(FactoryIn factory)
-		    : mFactory(factory)
-        {
-
-        }
-
-    private:
-	    FactoryRef mFactory;
-    };
-
-    class ObjectImpl : public Object
-    {
-    public:
-        uint32_t GetCounter() { return mRefCounter; }
-    };
-
-    // A Factory that produces an Object
-    // It knows how to create and delete an Object
-
-    class Factory: public ARefCounted
-    {
-    public:
-	    static FactoryRef CreateInstance()
-	    {
-            return new Factory;
-        }
-
-        ObjectRef CreateObject()
-        {
-            return new Object(this);
-        }
-    };
-
-    // Try to receive and return a reference
-
-    ObjectRef ReturnReference(ObjectIn ref)
-    {
-        ObjectImplRef impl = ref.StaticCast<ObjectImpl>();
-        uint32_t cnt = ref.GetRefCounter();
-        return impl.StaticCast<Object>();
     }
 
-    TEST(AutoRef, Test)
+private:
+    IFactoryRef mFactory;
+    int32_t     mData;
+};
+AUTOREF_REFERENCE_DECLARATION(Object);
+
+class Factory: public IFactory
+{
+public:
+    virtual IObjectRef CreateObject()
     {
-	    FactoryRef factory = Factory::CreateInstance();
+        return new Object(this);
+    }
+};
+AUTOREF_REFERENCE_DECLARATION(Factory);
 
-        // Create and process an Object
-        {
-            // Try create an unused Object
-
-            factory->CreateObject();
-
-            // Create an Object for processing
-
-            ObjectRef ref1 = factory->CreateObject();
-            ASSERT_TRUE(ref1.GetRefCounter() == 1);
-
-            // Process the Object
-            {
-                // Try to create a reference from reference
-
-                ObjectRef ref2(ref1);
-                ASSERT_TRUE(ref1.GetRefCounter() == 2);
-
-                ObjectRef ref3(0);
-
-                // Try to copy a reference
-
-                ref3 = ref1;
-                ASSERT_TRUE(ref2.GetRefCounter() == 3);
-
-                ObjectRef ref4;
-
-                // Try to pass the reference to a function
-                // and receive a reference
-
-                ref4 = ReturnReference(ref2);
-                ASSERT_TRUE(ref3.GetRefCounter() == 4);
-
-                // Try self-assignment
-
-                ref2 = ref2;
-                ASSERT_TRUE(ref4.GetRefCounter() == 4);
-
-                ObjectRef ref5;
-
-                // Try to receive reference as a result of an assignment
-
-                ref5 = ref3 = ref3;
-                ASSERT_TRUE(ref1.GetRefCounter() == 5);
-
-                // Try to cast reference
-
-                ObjectImplRef impl = ref5.StaticCast<ObjectImpl>();
-                ASSERT_TRUE(impl.GetRefCounter() == 6);
-
-                // Construct null-reference and assign a value to it
-
-                ObjectRef ref6;
-                ref5 = ref6;
-                ASSERT_TRUE(ref4.GetRefCounter() == 5);
-
-                // Try to loose reference
-
-                ref5 = factory->CreateObject();
-                ASSERT_TRUE(ref5.GetRefCounter() == 1);
-
-                ref5 = ref4;
-                ASSERT_TRUE(ref5.GetRefCounter() == 6);
-
-                // Try to detach from the object
-
-                ref5.Detach();
-                ASSERT_TRUE(ref5.IsNull());
-                ASSERT_TRUE(ref5.IsAttached() == 0);
-                ASSERT_TRUE(ref5.GetRefCounter() == 0);
-                ASSERT_TRUE(ref4.GetRefCounter() == 5);
-            }
-
-            // Check that all references from the previous scope are deleted
-
-            ASSERT_TRUE(ref1.GetRefCounter() == 1);
-        }
-
-        ASSERT_TRUE(factory.GetRefCounter() == 1);
+class AutoRefTests : public ::testing::Test
+{
+public:
+    void SetUp()
+    {
+        mFactory = CreateFactory();
     }
 
-} // namespace AutoRefTests
+    void TearDown()
+    {
+        mFactory.Detach();
+    }
+
+protected:
+    IFactoryRef CreateFactory()
+    {
+        return new Factory;
+    }
+
+protected:
+    IFactoryRef     mFactory;
+};
+
+// After setting up the test there is only one reference to the factory object
+TEST_F(AutoRefTests, FactoryReference)
+{
+    ASSERT_TRUE(mFactory->GetRefCounter() == 1);
+}
+
+// Interface class of the object must have a virtual ctor to successfully destruct the instance of the object
+TEST_F(AutoRefTests, IfaceVirtualCtor)
+{
+    ASSERT_TRUE(mFactory->GetRefCounter() == 1);
+    {
+        IObjectRef object = mFactory->CreateObject();
+        ASSERT_TRUE(mFactory->GetRefCounter() == 2);
+        ASSERT_TRUE(object->GetRefCounter() == 1);
+    }
+    ASSERT_TRUE(mFactory->GetRefCounter() == 1);
+}
+
+// Test IsAttached() method
+TEST_F(AutoRefTests, IsAttached)
+{
+    IObjectRef object;
+    ASSERT_TRUE(!object.IsAttached());
+
+    object = mFactory->CreateObject();
+    ASSERT_TRUE(object.IsAttached());
+}
+
+// Test IsNull() method
+TEST_F(AutoRefTests, IsNull)
+{
+    IObjectRef object;
+    ASSERT_TRUE(object.IsNull());
+
+    object = mFactory->CreateObject();
+    ASSERT_TRUE(!object.IsNull());
+}
+
+// Construct from a null pointer
+TEST_F(AutoRefTests, ConstructFromNullPointer)
+{
+    IObjectRef ref(NULL);
+    ASSERT_TRUE(ref.IsNull());
+}
+
+// Construct from a pointer
+TEST_F(AutoRefTests, ConstructFromPointer)
+{
+    IObject * pnt = new Object(NULL);
+    IObjectRef ref = pnt;
+    ASSERT_TRUE(ref.GetPointer() == pnt);
+    ASSERT_TRUE(ref->GetRefCounter() == 1);
+}
+
+// Construct from a reference
+TEST_F(AutoRefTests, ConstructFromReference)
+{
+    IObjectRef ref1 = mFactory->CreateObject();
+    ASSERT_TRUE(ref1->GetRefCounter() == 1);
+
+    IObjectRef ref2(ref1);
+    ASSERT_TRUE(ref1->GetRefCounter() == 2);
+    ASSERT_TRUE(ref2->GetRefCounter() == 2);
+    ASSERT_TRUE(ref1.GetPointer() == ref2.GetPointer());
+}
+
+// Assignment operator
+TEST_F(AutoRefTests, AssignmentOperator)
+{
+    IObjectRef ref1 = mFactory->CreateObject();
+    IObjectRef ref2 = mFactory->CreateObject();
+    ASSERT_TRUE(ref1->GetRefCounter() == 1);
+    ASSERT_TRUE(ref2->GetRefCounter() == 1);
+
+    // Backup ref2
+    IObjectRef ref3 = ref2;
+    ASSERT_TRUE(ref2->GetRefCounter() == 2);
+    ASSERT_TRUE(ref2.GetPointer() == ref3.GetPointer());
+
+    // Assignment
+    ref2 = ref1;
+    ASSERT_TRUE(ref1->GetRefCounter() == 2);
+    ASSERT_TRUE(ref2->GetRefCounter() == 2);
+    ASSERT_TRUE(ref1.GetPointer() == ref2.GetPointer());
+    ASSERT_TRUE(ref3->GetRefCounter() == 1);
+    ASSERT_TRUE(ref3.GetPointer() != ref2.GetPointer());
+}
+
+// Self-assignment
+TEST_F(AutoRefTests, SelfAssignment)
+{
+    IObjectRef ref = mFactory->CreateObject();
+    ASSERT_TRUE(ref->GetRefCounter() == 1);
+    ref = ref;
+    ASSERT_TRUE(ref->GetRefCounter() == 1);
+}
+
+// Assignment result
+TEST_F(AutoRefTests, AssignmentResult)
+{
+    IObjectRef ref1 = mFactory->CreateObject();
+    IObjectRef ref2, ref3;
+    ASSERT_TRUE(ref1->GetRefCounter() == 1);
+
+    ref3 = ref2 = ref1;
+    ASSERT_TRUE(ref1->GetRefCounter() == 3);
+    ASSERT_TRUE(ref2->GetRefCounter() == 3);
+    ASSERT_TRUE(ref3->GetRefCounter() == 3);
+    ASSERT_TRUE(ref2.GetPointer() == ref1.GetPointer());
+    ASSERT_TRUE(ref3.GetPointer() == ref1.GetPointer());
+}
+
+uint32_t AutoRefTests_In(IObjectIn ref)
+{
+    return ref->GetRefCounter();
+}
+
+// Test *In reference
+TEST_F(AutoRefTests, In)
+{
+    IObjectRef ref = mFactory->CreateObject();
+    ASSERT_TRUE(ref->GetRefCounter() == 1);
+    ASSERT_TRUE(AutoRefTests_In(ref) == 1);
+    ASSERT_TRUE(ref->GetRefCounter() == 1);
+}
+
+// Static casting
+TEST_F(AutoRefTests, StaticCast)
+{
+    IObjectRef ref1 = mFactory->CreateObject();
+    ASSERT_TRUE(ref1->GetRefCounter() == 1);
+
+    const int32_t data = 0x12345321;
+    ref1->SetData(data);
+
+    ObjectRef ref2 = ref1.StaticCast<Object>();
+    ASSERT_TRUE(ref1->GetRefCounter() == 2);
+    ASSERT_TRUE(ref2->GetRefCounter() == 2);
+    ASSERT_TRUE(ref1->GetData() == data);
+    ASSERT_TRUE(ref2->GetData() == data);
+}
+
+TEST_F(AutoRefTests, CastCtor)
+{
+    ObjectRef ref = mFactory->CreateObject();
+    ASSERT_TRUE(ref->GetRefCounter() == 1);
+    ASSERT_TRUE(AutoRefTests_In(ref) == 2);
+    ASSERT_TRUE(ref->GetRefCounter() == 1);
+}
+
+TEST_F(AutoRefTests, AutoPointerBracket)
+{
+    AutoPointer<uint32_t> autoPnt = new uint32_t [100];
+
+    for (int i = 0; i < 100; ++ i)
+    {
+        autoPnt[i] = i;
+    }
+}

@@ -17,7 +17,7 @@ if %errorlevel% neq 0 (
     goto end
 )
 
-start GLOBAL_SOLUTION.sln
+start MASTER.sln
 
 :end
 
