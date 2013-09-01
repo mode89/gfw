@@ -1,6 +1,7 @@
 #ifndef __GFW_BASE_DEVICE_H__
 #define __GFW_BASE_DEVICE_H__
 
+#include "gfw/base/shader_stage.h"
 #include "gfw/base/types_fwd.h"
 
 namespace GFW {
@@ -12,7 +13,7 @@ namespace GFW {
         CreateContext() = 0;
 
         virtual IShaderRef
-        CreateShader(int32_t stage, const void * shaderData) = 0;
+        CreateShader(ShaderStage stage, const void * shaderData) = 0;
 
         virtual IBufferRef
         CreateBuffer(const BufferDesc &, const void * initialData = 0) = 0;

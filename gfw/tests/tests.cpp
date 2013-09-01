@@ -94,13 +94,13 @@ TEST_F(GFWTests, Draw)
     FileRef vertexShaderSource = File::Create();
     ASSERT_TRUE(vertexShaderSource->Read(TESTS_SOURCE_DIR "draw_vert.glsl") != 0);
 
-    IShaderRef vertexShader = mDevice->CreateShader(SHADER_VERTEX, vertexShaderSource->GetData());
+    IShaderRef vertexShader = mDevice->CreateShader(SHADER_STAGE_VERTEX, vertexShaderSource->GetData());
     ASSERT_TRUE(vertexShader.IsAttached());
 
     FileRef pixelShaderSource = File::Create();
     ASSERT_TRUE(pixelShaderSource->Read(TESTS_SOURCE_DIR "draw_frag.glsl") != 0);
 
-    IShaderRef pixelShader  = mDevice->CreateShader(SHADER_PIXEL, pixelShaderSource->GetData());
+    IShaderRef pixelShader  = mDevice->CreateShader(SHADER_STAGE_PIXEL, pixelShaderSource->GetData());
     ASSERT_TRUE(pixelShader.IsAttached());
 
     // Create geometry
@@ -141,8 +141,8 @@ TEST_F(GFWTests, Draw)
         {
             mContext->Clear(mClearParams);
 
-            mContext->SetShader(SHADER_VERTEX, vertexShader);
-            mContext->SetShader(SHADER_PIXEL,  pixelShader);
+            mContext->SetShader(SHADER_STAGE_VERTEX, vertexShader);
+            mContext->SetShader(SHADER_STAGE_PIXEL,  pixelShader);
 
             mContext->SetVertexAttributes(2, vertexAttribs);
             mContext->SetVertexBuffer(0, vertexBuffer);
@@ -164,13 +164,13 @@ TEST_F(GFWTests, DrawIndexed)
     FileRef vertexShaderSource = File::Create();
     ASSERT_TRUE(vertexShaderSource->Read(TESTS_SOURCE_DIR "draw_vert.glsl") != 0);
 
-    IShaderRef vertexShader = mDevice->CreateShader(SHADER_VERTEX, vertexShaderSource->GetData());
+    IShaderRef vertexShader = mDevice->CreateShader(SHADER_STAGE_VERTEX, vertexShaderSource->GetData());
     ASSERT_TRUE(vertexShader.IsAttached());
 
     FileRef pixelShaderSource = File::Create();
     ASSERT_TRUE(pixelShaderSource->Read(TESTS_SOURCE_DIR "draw_frag.glsl") != 0);
 
-    IShaderRef pixelShader  = mDevice->CreateShader(SHADER_PIXEL, pixelShaderSource->GetData());
+    IShaderRef pixelShader  = mDevice->CreateShader(SHADER_STAGE_PIXEL, pixelShaderSource->GetData());
     ASSERT_TRUE(pixelShader.IsAttached());
 
     // Create geometry
@@ -223,8 +223,8 @@ TEST_F(GFWTests, DrawIndexed)
         {
             mContext->Clear(mClearParams);
 
-            mContext->SetShader(SHADER_VERTEX, vertexShader);
-            mContext->SetShader(SHADER_PIXEL,  pixelShader);
+            mContext->SetShader(SHADER_STAGE_VERTEX, vertexShader);
+            mContext->SetShader(SHADER_STAGE_PIXEL,  pixelShader);
 
             mContext->SetVertexAttributes(2, vertexAttribs);
             mContext->SetVertexBuffer(0, vertexBuffer);
@@ -346,13 +346,13 @@ TEST_F(GFWTests, DISABLED_RenderToTexture)
     FileRef vertexShaderSource = File::Create();
     ASSERT_TRUE(vertexShaderSource->Read(TESTS_SOURCE_DIR "render_to_texture_vert.glsl") != 0);
 
-    IShaderRef vertexShader = mDevice->CreateShader(SHADER_VERTEX, vertexShaderSource->GetData());
+    IShaderRef vertexShader = mDevice->CreateShader(SHADER_STAGE_VERTEX, vertexShaderSource->GetData());
     ASSERT_TRUE(vertexShader.IsAttached());
 
     FileRef pixelShaderSource = File::Create();
     ASSERT_TRUE(pixelShaderSource->Read(TESTS_SOURCE_DIR "render_to_texture_frag.glsl") != 0);
 
-    IShaderRef pixelShader  = mDevice->CreateShader(SHADER_PIXEL, pixelShaderSource->GetData());
+    IShaderRef pixelShader  = mDevice->CreateShader(SHADER_STAGE_PIXEL, pixelShaderSource->GetData());
     ASSERT_TRUE(pixelShader.IsAttached());
 
     // Create geometry
@@ -429,8 +429,8 @@ TEST_F(GFWTests, DISABLED_RenderToTexture)
             mContext->SetFrameBuffer(1, &colorBuffer, NULL);
             mContext->Clear(mClearParams);
 
-            mContext->SetShader(SHADER_VERTEX, vertexShader);
-            mContext->SetShader(SHADER_PIXEL,  pixelShader);
+            mContext->SetShader(SHADER_STAGE_VERTEX, vertexShader);
+            mContext->SetShader(SHADER_STAGE_PIXEL,  pixelShader);
 
             mContext->SetVertexAttributes(2, vertexAttribs);
             mContext->SetVertexBuffer(0, vertPosBuf);
@@ -444,7 +444,7 @@ TEST_F(GFWTests, DISABLED_RenderToTexture)
             mContext->SetFrameBuffer(1, &defaultColorBuffer, NULL);
             mContext->Clear(mClearParams);
 
-            mContext->SetTexture(SHADER_PIXEL, 0, texture);
+            mContext->SetTexture(SHADER_STAGE_PIXEL, 0, texture);
 
             mContext->DrawScreenQuad();
         }

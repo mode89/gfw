@@ -16,15 +16,15 @@ namespace GFW {
     {
         switch (stage)
         {
-        case SHADER_VERTEX:     return GL_VERTEX_SHADER;
-        case SHADER_PIXEL:      return GL_FRAGMENT_SHADER;
+        case SHADER_STAGE_VERTEX:     return GL_VERTEX_SHADER;
+        case SHADER_STAGE_PIXEL:      return GL_FRAGMENT_SHADER;
         default:                TRACE_FAIL();
         }
 
         return 0;
     }
 
-    Shader::Shader( int32_t stage, IDeviceRef device )
+    Shader::Shader( ShaderStage stage, IDeviceRef device )
         : ADeviceChild(device)
         , mStage(stage)
         , mShader(0)

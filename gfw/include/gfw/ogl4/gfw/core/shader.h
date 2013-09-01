@@ -10,7 +10,7 @@ namespace GFW {
     class Shader: public ADeviceChild<IShader>
     {
     public:
-        virtual int32_t
+        virtual ShaderStage
         GetStage()          { return mStage; }
 
     public:
@@ -24,13 +24,13 @@ namespace GFW {
         GetShaderObject()   { return mShader; }
 
     public:
-        Shader(int32_t stage, IDeviceRef);
+        Shader(ShaderStage stage, IDeviceRef);
         ~Shader();
 
     private:
-        const int32_t   mStage;
-        uint32_t        mShader;
-        uint32_t        mHash;
+        const ShaderStage   mStage;
+        uint32_t            mShader;
+        uint32_t            mHash;
     };
     AUTOREF_REFERENCE_DECLARATION(Shader);
 

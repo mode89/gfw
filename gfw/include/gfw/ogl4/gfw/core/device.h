@@ -15,7 +15,7 @@ namespace GFW {
         CreateContext();
 
         virtual IShaderRef
-        CreateShader(int32_t stage, const void * shaderData);
+        CreateShader(ShaderStage stage, const void * shaderData);
 
         virtual IBufferRef
         CreateBuffer(const BufferDesc &, const void * initialData);

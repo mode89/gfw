@@ -2,22 +2,15 @@
 #define __GFW_BASE_SHADER_H__
 
 #include "gfw/base/device_child.h"
+#include "gfw/base/shader_stage.h"
 #include "gfw/base/types_fwd.h"
 
 namespace GFW {
 
-    enum ShaderStage
-    {
-        SHADER_UNKNOWN = -1,
-        SHADER_VERTEX,
-        SHADER_PIXEL,
-        SHADER_STAGE_COUNT
-    };
-
     class IShader: public IDeviceChild
     {
     public:
-        virtual int32_t
+        virtual ShaderStage
         GetStage() = 0;
     };
     AUTOREF_REFERENCE_DECLARATION(IShader);

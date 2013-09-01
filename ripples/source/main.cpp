@@ -113,11 +113,11 @@ int main()
 
     FileRef vertexShaderFile = new File();
     vertexShaderFile->Read("draw.vs.glsl");
-    IShaderRef vertexShader = device->CreateShader(SHADER_VERTEX, vertexShaderFile->GetData());
+    IShaderRef vertexShader = device->CreateShader(SHADER_STAGE_VERTEX, vertexShaderFile->GetData());
 
     FileRef pixelShaderFile = new File();
     pixelShaderFile->Read("draw.ps.glsl");
-    IShaderRef pixelShader  = device->CreateShader(SHADER_PIXEL, pixelShaderFile->GetData());
+    IShaderRef pixelShader  = device->CreateShader(SHADER_STAGE_PIXEL, pixelShaderFile->GetData());
 
     // Drawing parameters
 
@@ -176,8 +176,8 @@ int main()
             context->SetVertexBuffer(0, vertexBuffer);
             context->SetIndexBuffer(indexBuffer);
 
-            context->SetShader(SHADER_VERTEX, vertexShader);
-            context->SetShader(SHADER_PIXEL,  pixelShader);
+            context->SetShader(SHADER_STAGE_VERTEX, vertexShader);
+            context->SetShader(SHADER_STAGE_PIXEL,  pixelShader);
 
             context->Draw(drawParams);
         }

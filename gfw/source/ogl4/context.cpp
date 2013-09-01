@@ -64,7 +64,7 @@ namespace GFW {
 
     void Context::SetShader( int32_t stage, IShaderIn shader )
     {
-        TRACE_ASSERT(stage > SHADER_UNKNOWN);
+        TRACE_ASSERT(stage > SHADER_STAGE_UNKNOWN);
         TRACE_ASSERT(stage < SHADER_STAGE_COUNT);
         TRACE_ASSERT(shader.IsAttached());
         TRACE_ASSERT(stage == shader->GetStage());

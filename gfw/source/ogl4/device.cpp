@@ -105,7 +105,7 @@ namespace GFW {
         return new Context(this, mDrawingContext);
     }
 
-    IShaderRef Device::CreateShader( int32_t stage, const void * shaderData )
+    IShaderRef Device::CreateShader( ShaderStage stage, const void * shaderData )
     {
         AUTO_LOCK_CONTEXT;
 
