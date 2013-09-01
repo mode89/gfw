@@ -2,19 +2,24 @@
 #define __GFW_COMMON_EFFECT_H__
 
 #include "gfw/base/effect.h"
+#include "gfw/base/shader.h"
 #include "gfw/base/types_fwd.h"
+#include "gfw/common/device_child.h"
 
 namespace GFW {
 
-    class Effect : public IEffect
+    class Effect : public ADeviceChild<IEffect>
     {
     public:
         virtual void
         Dispatch(IContextRef);
 
     public:
-        Effect();
+        Effect(IShaderRef[], IDeviceIn);
         ~Effect();
+
+    private:
+        IShaderRef  mShaders[SHADER_STAGE_COUNT];
     };
     AUTOREF_REFERENCE_DECLARATION(Effect);
 

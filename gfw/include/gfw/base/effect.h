@@ -1,11 +1,12 @@
 #ifndef __GFW_BASE_EFFECT_H__
 #define __GFW_BASE_EFFECT_H__
 
+#include "gfw/base/device_child.h"
 #include "gfw/base/types_fwd.h"
 
 namespace GFW {
 
-    class IEffect : public Common::ARefCounted
+    class IEffect : public IDeviceChild
     {
     public:
         virtual void

@@ -89,19 +89,9 @@ TEST_F(GFWTests, Clear)
 
 TEST_F(GFWTests, Draw)
 {
-    // Create shaders
+    // Create effect
 
-    FileRef vertexShaderSource = File::Create();
-    ASSERT_TRUE(vertexShaderSource->Read(TESTS_SOURCE_DIR "draw_vert.glsl") != 0);
-
-    IShaderRef vertexShader = mDevice->CreateShader(SHADER_STAGE_VERTEX, vertexShaderSource->GetData());
-    ASSERT_TRUE(vertexShader.IsAttached());
-
-    FileRef pixelShaderSource = File::Create();
-    ASSERT_TRUE(pixelShaderSource->Read(TESTS_SOURCE_DIR "draw_frag.glsl") != 0);
-
-    IShaderRef pixelShader  = mDevice->CreateShader(SHADER_STAGE_PIXEL, pixelShaderSource->GetData());
-    ASSERT_TRUE(pixelShader.IsAttached());
+    IEffectRef effect = mFactory->CreateEffect(TESTS_SOURCE_DIR "draw.fx");
 
     // Create geometry
 
@@ -141,8 +131,7 @@ TEST_F(GFWTests, Draw)
         {
             mContext->Clear(mClearParams);
 
-            mContext->SetShader(SHADER_STAGE_VERTEX, vertexShader);
-            mContext->SetShader(SHADER_STAGE_PIXEL,  pixelShader);
+            effect->Dispatch(mContext);
 
             mContext->SetVertexAttributes(2, vertexAttribs);
             mContext->SetVertexBuffer(0, vertexBuffer);
@@ -159,19 +148,9 @@ TEST_F(GFWTests, Draw)
 
 TEST_F(GFWTests, DrawIndexed)
 {
-    // Create shaders
+    // Create effect
 
-    FileRef vertexShaderSource = File::Create();
-    ASSERT_TRUE(vertexShaderSource->Read(TESTS_SOURCE_DIR "draw_vert.glsl") != 0);
-
-    IShaderRef vertexShader = mDevice->CreateShader(SHADER_STAGE_VERTEX, vertexShaderSource->GetData());
-    ASSERT_TRUE(vertexShader.IsAttached());
-
-    FileRef pixelShaderSource = File::Create();
-    ASSERT_TRUE(pixelShaderSource->Read(TESTS_SOURCE_DIR "draw_frag.glsl") != 0);
-
-    IShaderRef pixelShader  = mDevice->CreateShader(SHADER_STAGE_PIXEL, pixelShaderSource->GetData());
-    ASSERT_TRUE(pixelShader.IsAttached());
+    IEffectRef effect = mFactory->CreateEffect(TESTS_SOURCE_DIR "draw.fx");
 
     // Create geometry
 
@@ -223,8 +202,7 @@ TEST_F(GFWTests, DrawIndexed)
         {
             mContext->Clear(mClearParams);
 
-            mContext->SetShader(SHADER_STAGE_VERTEX, vertexShader);
-            mContext->SetShader(SHADER_STAGE_PIXEL,  pixelShader);
+            effect->Dispatch(mContext);
 
             mContext->SetVertexAttributes(2, vertexAttribs);
             mContext->SetVertexBuffer(0, vertexBuffer);
@@ -324,15 +302,6 @@ TEST_F(GFWTests, UpdateBuffer)
         buffer->Unmap();
         mContext->EndScene();
     }
-}
-
-TEST_F(GFWTests, Effect)
-{
-    IEffectRef effect = mFactory->CreateEffect(TESTS_SOURCE_DIR "draw.fx");
-
-    mContext->BeginScene();
-    effect->Dispatch(mContext);
-    mContext->EndScene();
 }
 
 TEST_F(GFWTests, DISABLED_RenderToTexture)

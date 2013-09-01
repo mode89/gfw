@@ -1,6 +1,6 @@
 #version 120
 
-#if defined(GFW_STAGE_VERTEX)
+#if defined(GFW_SHADER_STAGE_VERTEX)
 
     attribute vec2 pos;
     attribute vec3 color;
@@ -13,7 +13,7 @@
         out_color   = vec4(color, 1.0f);
     }
 
-#elif defined(GFW_STAGE_PIXEL)
+#elif defined(GFW_SHADER_STAGE_PIXEL)
 
     varying vec4 out_color;
 

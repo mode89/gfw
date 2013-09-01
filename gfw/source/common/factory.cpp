@@ -4,6 +4,10 @@
 
 #include "gfw/common/effect.h"
 #include "gfw/common/factory.h"
+#include "gfw/common/shader_stage.h"
+
+#include <fstream>
+#include <string>
 
 namespace GFW {
 
@@ -39,7 +43,38 @@ namespace GFW {
     {
         TRACE_ASSERT(fileName != NULL);
 
-        return NULL;
+        std::ifstream file(fileName, std::ios_base::binary);
+        TRACE_ASSERT(file);
+
+        // Determine size
+
+        file.seekg(0, file.end);
+        uint64_t fileSize = file.tellg();
+        file.seekg(0, file.beg);
+
+        // Read the effect file
+
+        Common::AutoPointer<char> effectData = new char [static_cast<uint32_t>(fileSize + 1)];
+        file.read(effectData, fileSize);
+        effectData[fileSize] = 0;
+
+        // Create shaders
+
+        IShaderRef shaders[SHADER_STAGE_COUNT];
+
+        for (int stage = 0; stage < SHADER_STAGE_COUNT; ++ stage)
+        {
+            std::string shaderData = "#define GFW_SHADER_STAGE_";
+            shaderData += GetStageString(static_cast<ShaderStage>(stage));
+            shaderData += "\n";
+            shaderData += effectData;
+
+            shaders[stage] = mDevice->CreateShader(static_cast<ShaderStage>(stage), shaderData.c_str());
+            TRACE_ASSERT(shaders[stage].IsAttached());
+        }
+
+        EffectRef effect = new Effect(shaders, mDevice);
+        return effect.StaticCast<IEffect>();
     }
 
 } // namespace GFW
