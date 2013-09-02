@@ -58,6 +58,8 @@ namespace GFW {
         RenderingContext    mPrevContext;
     };
 
+    PLAT_THREAD_LOCAL IContext * Device::mCurrentContext = NULL;
+
     Device::Device(const DeviceParams & params)
         : mParams(params)
         , mContextGL(NULL)
@@ -154,6 +156,20 @@ namespace GFW {
         AUTO_LOCK_CONTEXT;
 
         mDrawingContext->SwapBuffers();
+    }
+
+    void Device::LockContext(IContextRef context)
+    {
+        TRACE_ASSERT(context.IsAttached());
+        TRACE_ASSERT(mCurrentContext == NULL);
+        mCurrentContext = context.GetPointer();
+    }
+
+    void Device::UnlockContext(IContextRef context)
+    {
+        TRACE_ASSERT(context.IsAttached());
+        TRACE_ASSERT(mCurrentContext == context.GetPointer());
+        mCurrentContext = NULL;
     }
 
 } // namespace GFW

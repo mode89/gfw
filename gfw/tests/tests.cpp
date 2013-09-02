@@ -135,7 +135,7 @@ TEST_F(GFWTests, Draw)
         {
             mContext->Clear(mClearParams);
 
-            effect->Dispatch(mContext);
+            effect->Dispatch();
 
             mContext->SetVertexAttributes(2, vertexAttribs);
             mContext->SetVertexBuffer(0, vertexBuffer);
@@ -210,7 +210,7 @@ TEST_F(GFWTests, DrawIndexed)
         {
             mContext->Clear(mClearParams);
 
-            effect->Dispatch(mContext);
+            effect->Dispatch();
 
             mContext->SetVertexAttributes(2, vertexAttribs);
             mContext->SetVertexBuffer(0, vertexBuffer);

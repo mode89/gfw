@@ -22,8 +22,11 @@ namespace GFW {
 
     }
 
-    void Effect::Dispatch(IContextRef context)
+    void Effect::Dispatch()
     {
+        IContextRef context = mDevice->GetCurrentContext();
+        TRACE_ASSERT(context.IsAttached());
+
         for (int stage = 0; stage < SHADER_STAGE_COUNT; ++ stage)
         {
             context->SetShader(stage, mShaders[stage]);

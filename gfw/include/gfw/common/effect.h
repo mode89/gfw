@@ -12,7 +12,7 @@ namespace GFW {
     {
     public:
         virtual void
-        Dispatch(IContextRef);
+        Dispatch();
 
     public:
         Effect(IShaderRef[], IDeviceIn);

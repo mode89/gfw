@@ -25,6 +25,9 @@ namespace GFW {
         CreateRenderBuffer(ITextureIn, const SubResIdx &) = 0;
 
         virtual IContextRef
+        GetCurrentContext() = 0;
+
+        virtual IContextRef
         GetDefaultContext() = 0;
 
         virtual IRenderBufferRef

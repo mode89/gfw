@@ -1,5 +1,7 @@
 #include "common/trace.h"
 
+#include "gfw/base/context.h"
+
 #include "gfw/common/device_child.inl"
 
 #include "gfw/core/buffer.h"
@@ -63,6 +65,7 @@ namespace GFW {
     void * Buffer::Map(uint32_t mapFlags)
     {
         TRACE_ASSERT((mapFlags & (MAP_FLAG_READ | MAP_FLAG_WRITE)) != 0);
+        TRACE_ASSERT(mDevice->GetCurrentContext().IsAttached());
 
         uint32_t access;
         if (mapFlags & MAP_FLAG_READ && mapFlags & MAP_FLAG_WRITE)
@@ -87,6 +90,8 @@ namespace GFW {
 
     void Buffer::Unmap()
     {
+        TRACE_ASSERT(mDevice->GetCurrentContext().IsAttached());
+
         TRACE_ASSERT_GL(glBindBuffer, mTarget, mHandle);
         TRACE_ASSERT_GL(glUnmapBuffer, mTarget);
         TRACE_ASSERT_GL(glBindBuffer, mTarget, 0);
@@ -94,6 +99,8 @@ namespace GFW {
 
     void Buffer::UpdateSubresource(const void * data, uint32_t subResourceIndex)
     {
+        TRACE_ASSERT(mDevice->GetCurrentContext().IsAttached());
+
         uint32_t usage = GetOGLUsage(mDesc.usage);
 
         TRACE_ASSERT_GL(glBindBuffer, mTarget, mHandle);

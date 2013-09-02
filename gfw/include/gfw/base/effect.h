@@ -10,7 +10,7 @@ namespace GFW {
     {
     public:
         virtual void
-        Dispatch(IContextRef) = 0;
+        Dispatch() = 0;
 
         virtual
         ~IEffect() {}

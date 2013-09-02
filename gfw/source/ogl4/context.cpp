@@ -250,6 +250,7 @@ namespace GFW {
 
     void Context::BeginScene()
     {
+        mDevice->LockContext(this);
         mDrawingContext->MakeCurrent(mContextGL);
     }
 
@@ -258,6 +259,7 @@ namespace GFW {
         ClearState();
 
         mDrawingContext->MakeCurrent(NULL);
+        mDevice->UnlockContext(this);
     }
 
 } // namespace GFW

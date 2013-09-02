@@ -27,6 +27,9 @@ namespace GFW {
         CreateRenderBuffer(ITextureIn, const SubResIdx &);
 
         inline virtual IContextRef
+        GetCurrentContext() { return mCurrentContext; }
+
+        inline virtual IContextRef
         GetDefaultContext() { return mDefaultContext; }
 
         inline virtual IRenderBufferRef
@@ -42,9 +45,15 @@ namespace GFW {
         bool
         Initialize();
 
+        void
+        LockContext(IContextRef);
+
+        void
+        UnlockContext(IContextRef);
+
     private:
         static PLAT_THREAD_LOCAL
-        IContext *                  mCurrentContext;
+        IContext*                   mCurrentContext;
 
         const DeviceParams          mParams;
 

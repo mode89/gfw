@@ -173,7 +173,7 @@ int main()
             context->SetVertexBuffer(0, vertexBuffer);
             context->SetIndexBuffer(indexBuffer);
 
-            effect->Dispatch(context);
+            effect->Dispatch();
 
             context->Draw(drawParams);
         }
