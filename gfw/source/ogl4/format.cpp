@@ -9,8 +9,12 @@ namespace GFW {
     {
         switch (type)
         {
-        case TYPE_FLOAT:            return GL_FLOAT;
-        case TYPE_UNSIGNED_SHORT:   return GL_UNSIGNED_SHORT;
+        case TYPE_FLOAT:
+            return GL_FLOAT;
+        case TYPE_UNSIGNED_SHORT:
+            return GL_UNSIGNED_SHORT;
+        case TYPE_UNSIGNED_INT:
+            return GL_UNSIGNED_INT;
         default:
             TRACE_FAIL();
         }
@@ -22,8 +26,10 @@ namespace GFW {
     {
         switch (prim)
         {
-        case PRIM_TRIANGLES:        return GL_TRIANGLES;
-        case PRIM_TRIANGLES_STRIP:  return GL_TRIANGLE_STRIP;
+        case PRIM_TRIANGLES:
+            return GL_TRIANGLES;
+        case PRIM_TRIANGLES_STRIP:
+            return GL_TRIANGLE_STRIP;
         default:
             TRACE_FAIL();
         }

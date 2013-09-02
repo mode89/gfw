@@ -11,6 +11,7 @@
 #include "gfw/base/draw_params.h"
 #include "gfw/base/effect.h"
 #include "gfw/base/factory.h"
+#include "gfw/base/mesh.h"
 #include "gfw/base/primitive.h"
 #include "gfw/base/rasterizer_state.h"
 #include "gfw/base/render_buffer.h"

@@ -10,8 +10,8 @@ namespace GFW {
 
 #define TYPES               /* Size   */ \
     T(TYPE_FLOAT,               4       ) \
-    T(TYPE_UNSIGNED_SHORT,      2       )
-
+    T(TYPE_UNSIGNED_SHORT,      2       ) \
+    T(TYPE_UNSIGNED_INT,        4       ) \
 
     uint32_t GetFormatElementNumber( Format format )
     {

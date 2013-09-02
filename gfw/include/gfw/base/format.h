@@ -7,14 +7,15 @@ namespace GFW {
     {
         TYPE_UNKNOWN = 0,
         TYPE_FLOAT,
-        TYPE_UNSIGNED_SHORT
+        TYPE_UNSIGNED_SHORT,
+        TYPE_UNSIGNED_INT,
     };
 
     enum Format
     {
         FORMAT_UNKNOWN = 0,
         FORMAT_R32G32B32_FLOAT,
-        FORMAT_R32G32_FLOAT
+        FORMAT_R32G32_FLOAT,
     };
 
 } // namespace GFW

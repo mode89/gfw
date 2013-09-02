@@ -226,6 +226,30 @@ TEST_F(GFWTests, DrawIndexed)
     }
 }
 
+TEST_F(GFWTests, SurfaceMesh)
+{
+    IEffectRef effect = mFactory->CreateEffect(TESTS_SOURCE_DIR "draw_color_flat.fx");
+
+    IMeshRef plane = mFactory->CreateSurfaceMesh(-1.0f, -1.0f, 1.0f, 1.0f, 16, 12);
+
+    for (int i = 0; i < 60; ++ i)
+    {
+        ProcessDefaultWindow(mWindow);
+
+        mContext->BeginScene();
+        {
+            mContext->Clear(mClearParams);
+            effect->Dispatch();
+            plane->Draw();
+        }
+        mContext->EndScene();
+
+        mDevice->Present();
+
+        Wait();
+    }
+}
+
 TEST_F(GFWTests, MapBuffer)
 {
     static const uint32_t kDataCount = 100;

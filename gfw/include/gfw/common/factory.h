@@ -12,6 +12,15 @@ namespace GFW {
         virtual IEffectRef
         CreateEffect(const char * fileName);
 
+        virtual IMeshRef
+        CreateSurfaceMesh(
+            float xLeft,
+            float yBottom,
+            float xRight,
+            float yTop,
+            uint32_t xSegments,
+            uint32_t ySegments);
+
     public:
         Factory(IDeviceRef);
         ~Factory();
