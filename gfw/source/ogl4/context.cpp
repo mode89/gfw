@@ -4,15 +4,15 @@
 #include "gfw/base/render_buffer.h"
 
 #include "gfw/common/format.h"
+#include "gfw/common/semantic.h"
 
 #include "gfw/core/buffer.h"
 #include "gfw/core/context.h"
 #include "gfw/core/device.h"
 #include "gfw/core/drawing_context.h"
 #include "gfw/core/format.h"
-#include "gfw/core/shader.h"
-
 #include "gfw/core/functions.h"
+#include "gfw/core/shader.h"
 
 namespace GFW {
 
@@ -24,8 +24,6 @@ namespace GFW {
         , mContextGL(NULL)
     {
         mContextGL = mDrawingContext->CreateContext();
-
-        memset(mVertAttrs, 0, sizeof(mVertAttrs));
     }
 
     Context::~Context()
@@ -200,11 +198,11 @@ namespace GFW {
         {
             const VertexAttribute & attr = mVertAttrs[i];
 
-            if (attr.name != NULL)
+            if (attr.semantic != SEMANTIC_UNKNOWN)
             {
                 if (mVertexBuffers[attr.bufSlot].IsAttached())
                 {
-                    int32_t attrIndex = TRACE_ASSERT_GL(glGetAttribLocation, program, attr.name);
+                    int32_t attrIndex = TRACE_ASSERT_GL(glGetAttribLocation, program, GetSemanticString(attr.semantic));
                     TRACE_ASSERT(attrIndex != -1);
 
                     if (attrIndex != -1)

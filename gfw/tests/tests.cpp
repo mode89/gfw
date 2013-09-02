@@ -109,10 +109,14 @@ TEST_F(GFWTests, Draw)
 
     // Define vertex attributes
 
-    VertexAttribute vertexAttribs[] = {
-        { "pos",   FORMAT_R32G32_FLOAT,    20, 0, 0 },
-        { "color", FORMAT_R32G32B32_FLOAT, 20, 8, 0 }
-    };
+    VertexAttribute vertexAttribs[2];
+    vertexAttribs[0].semantic = SEMANTIC_POSITION0;
+    vertexAttribs[0].format   = FORMAT_R32G32_FLOAT;
+    vertexAttribs[0].stride   = 20;
+    vertexAttribs[1].semantic = SEMANTIC_COLOR0;
+    vertexAttribs[1].format   = FORMAT_R32G32B32_FLOAT;
+    vertexAttribs[1].stride   = 20;
+    vertexAttribs[1].offset   = 8;
 
     // Define draw params
 
@@ -179,10 +183,14 @@ TEST_F(GFWTests, DrawIndexed)
 
     // Define vertex attributes
 
-    VertexAttribute vertexAttribs[] = {
-        { "pos",   FORMAT_R32G32_FLOAT,    20, 0, 0 },
-        { "color", FORMAT_R32G32B32_FLOAT, 20, 8, 0 }
-    };
+    VertexAttribute vertexAttribs[2];
+    vertexAttribs[0].semantic = SEMANTIC_POSITION0;
+    vertexAttribs[0].format   = FORMAT_R32G32_FLOAT;
+    vertexAttribs[0].stride   = 20;
+    vertexAttribs[1].semantic = SEMANTIC_COLOR0;
+    vertexAttribs[1].format   = FORMAT_R32G32B32_FLOAT;
+    vertexAttribs[1].stride   = 20;
+    vertexAttribs[1].offset   = 8;
 
     // Define draw params
 
@@ -364,10 +372,14 @@ TEST_F(GFWTests, DISABLED_RenderToTexture)
 
     // Define vertex attributes
 
-    VertexAttribute vertexAttribs[] = {
-        { "pos",   FORMAT_R32G32_FLOAT,     8, 0, 0 },
-        { "color", FORMAT_R32G32B32_FLOAT, 12, 0, 1 }
-    };
+    VertexAttribute vertexAttribs[2];
+    vertexAttribs[0].semantic = SEMANTIC_POSITION0;
+    vertexAttribs[0].format   = FORMAT_R32G32_FLOAT;
+    vertexAttribs[0].stride   = 20;
+    vertexAttribs[1].semantic = SEMANTIC_COLOR0;
+    vertexAttribs[1].format   = FORMAT_R32G32B32_FLOAT;
+    vertexAttribs[1].stride   = 20;
+    vertexAttribs[1].offset   = 8;
 
     // Define draw params
 

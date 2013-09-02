@@ -48,6 +48,8 @@ int main()
 
     IContextRef context = device->GetDefaultContext();
 
+    IFactoryRef factory = CreateFactory(device);
+
     // Initialize geometry
 
     AutoPointer<Vertex> u = new Vertex [nodeCnt];
@@ -105,19 +107,14 @@ int main()
     IBufferRef indexBuffer = device->CreateBuffer(indexBufferDesc, indexBufferData);
     indexBufferData.Detach();
 
-    VertexAttribute vertexAttributes[] = {
-        { "vs_vPosition", FORMAT_R32G32B32_FLOAT, sizeof(Vertex), 0, 0 }
-    };
+    VertexAttribute vertexAttribute;
+    vertexAttribute.semantic = SEMANTIC_POSITION0;
+    vertexAttribute.format   = FORMAT_R32G32B32_FLOAT;
+    vertexAttribute.stride   = sizeof(Vertex);
 
     // Initialize pipeline
 
-    FileRef vertexShaderFile = new File();
-    vertexShaderFile->Read("draw.vs.glsl");
-    IShaderRef vertexShader = device->CreateShader(SHADER_STAGE_VERTEX, vertexShaderFile->GetData());
-
-    FileRef pixelShaderFile = new File();
-    pixelShaderFile->Read("draw.ps.glsl");
-    IShaderRef pixelShader  = device->CreateShader(SHADER_STAGE_PIXEL, pixelShaderFile->GetData());
+    IEffectRef effect = factory->CreateEffect("draw.fx");
 
     // Drawing parameters
 
@@ -172,12 +169,11 @@ int main()
 
             context->Clear(clearParams);
 
-            context->SetVertexAttributes(1, vertexAttributes);
+            context->SetVertexAttributes(1, &vertexAttribute);
             context->SetVertexBuffer(0, vertexBuffer);
             context->SetIndexBuffer(indexBuffer);
 
-            context->SetShader(SHADER_STAGE_VERTEX, vertexShader);
-            context->SetShader(SHADER_STAGE_PIXEL,  pixelShader);
+            effect->Dispatch(context);
 
             context->Draw(drawParams);
         }

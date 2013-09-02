@@ -3,7 +3,7 @@
 
 namespace GFW {
 
-    static const uint32_t  MAX_VERTEX_BUFFER_BIND = 4;
+    static const uint32_t  MAX_VERTEX_BUFFER_BIND = 8;
 
 } // namespace GFW
 

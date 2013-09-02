@@ -15,7 +15,7 @@ find_package(gfw CONFIG)
 target_link_libraries(ripples ${GFW_LIBRARIES})
 include_directories(${GFW_INCLUDE_DIRS})
 
-file(GLOB RIPPLES_GLSL_FILES data/*.glsl)
+file(GLOB RIPPLES_GLSL_FILES data/*.fx)
 foreach (item ${RIPPLES_GLSL_FILES})
     add_custom_command(
         TARGET ripples POST_BUILD
