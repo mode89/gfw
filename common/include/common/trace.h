@@ -22,7 +22,7 @@
 
 // Assertion
 
-#if !defined(TRACE_ASSERT_ENABLED) && defined(PLATFORM_DEBUG) // By default enable trace for debug configuration
+#if !defined(TRACE_ASSERT_ENABLED) && defined(PLAT_DEBUG) // By default enable trace for debug configuration
 #define TRACE_ASSERT_ENABLED 1
 #endif // !defined(TRACE_ASSERT_ENABLED) && defined(PLATFORM_DEBUG)
 
