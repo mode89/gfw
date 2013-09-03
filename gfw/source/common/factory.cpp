@@ -8,6 +8,7 @@
 #include "gfw/common/effect.h"
 #include "gfw/common/factory.h"
 #include "gfw/common/mesh.h"
+#include "gfw/common/mesh_builder.h"
 #include "gfw/common/shader_stage.h"
 
 #include <fstream>
@@ -81,6 +82,11 @@ namespace GFW {
 
         EffectRef effect = new Effect(shaders, mDevice);
         return effect.StaticCast<IEffect>();
+    }
+
+    IMeshBuilderRef Factory::CreateMeshBuilder()
+    {
+        return new MeshBuilder();
     }
 
     IMeshRef Factory::CreateSurfaceMesh(

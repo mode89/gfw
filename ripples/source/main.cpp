@@ -112,11 +112,22 @@ int main()
     vertexAttribute.format   = FORMAT_R32G32B32_FLOAT;
     vertexAttribute.stride   = sizeof(Vertex);
 
+    DrawIndexedParams drawParams;
+    drawParams.primTop    = PRIM_TRIANGLES;
+    drawParams.indexType  = TYPE_UNSIGNED_SHORT;
+    drawParams.indexStart = 0;
+    drawParams.indexCount = indexCount;
+
+    IMeshBuilderRef meshBuilder = factory->CreateMeshBuilder();
+    meshBuilder->SetVertexAttributes(1, &vertexAttribute);
+    meshBuilder->SetVertexBuffers(1, &vertexBuffer);
+    meshBuilder->SetIndexBuffer(indexBuffer);
+    meshBuilder->SetDrawParams(drawParams);
+    IMeshRef mesh = meshBuilder->Build(device);
+
     // Initialize pipeline
 
     IEffectRef effect = factory->CreateEffect("draw.fx");
-
-    // Drawing parameters
 
     ClearParams clearParams;
     clearParams.mask  = CLEAR_COLOR;
@@ -124,12 +135,6 @@ int main()
     clearParams.color[1] = 0.0f;
     clearParams.color[2] = 0.3f;
     clearParams.color[3] = 1.0f;
-
-    DrawIndexedParams drawParams;
-    drawParams.primTop    = PRIM_TRIANGLES;
-    drawParams.indexType  = TYPE_UNSIGNED_SHORT;
-    drawParams.indexStart = 0;
-    drawParams.indexCount = indexCount;
 
     while (ProcessDefaultWindow(window))
     {
@@ -169,13 +174,8 @@ int main()
 
             context->Clear(clearParams);
 
-            context->SetVertexAttributes(1, &vertexAttribute);
-            context->SetVertexBuffer(0, vertexBuffer);
-            context->SetIndexBuffer(indexBuffer);
-
             effect->Dispatch();
-
-            context->Draw(drawParams);
+            mesh->Draw();
         }
         context->EndScene();
 

@@ -9,7 +9,7 @@
 
 namespace GFW {
 
-    Mesh::Mesh(IDeviceRef device)
+    Mesh::Mesh(IDeviceIn device)
         : ADeviceChild(device)
         , mAttrCnt(0)
         , mBufCnt(0)
@@ -47,6 +47,11 @@ namespace GFW {
             mVertexAttributes[i] = attrs[i];
         }
 
+        for (uint32_t i = attrCnt; i < mAttrCnt; ++ i)
+        {
+            mVertexAttributes[i] = VertexAttribute();
+        }
+
         mAttrCnt = attrCnt;
     }
 
@@ -56,6 +61,11 @@ namespace GFW {
         {
             TRACE_ASSERT(bufs[i].IsAttached());
             mVertexBuffers[i] = bufs[i];
+        }
+
+        for (uint32_t i = bufCnt; i < mBufCnt; ++ i)
+        {
+            mVertexBuffers[i].Detach();
         }
 
         mBufCnt = bufCnt;

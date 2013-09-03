@@ -2,6 +2,7 @@
 #define __GFW_BASE_MESH_H__
 
 #include "gfw/base/types_fwd.h"
+#include "gfw/base/device_child.h"
 
 namespace GFW {
 

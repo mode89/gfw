@@ -1,36 +1,33 @@
-#ifndef __GFW_COMMON_MESH_H__
-#define __GFW_COMMON_MESH_H__
+#ifndef __GFW_COMMON_MESH_BUILDER_H__
+#define __GFW_COMMON_MESH_BUILDER_H__
 
-#include "gfw/base/draw_params.h"
-#include "gfw/base/mesh.h"
+#include "gfw/base/mesh_builder.h"
 #include "gfw/base/vertex_attribute.h"
-#include "gfw/common/device_child.h"
 #include "gfw/core/limits.h"
 
 namespace GFW {
 
-    class Mesh : public ADeviceChild<IMesh>
+    class MeshBuilder : public IMeshBuilder
     {
     public:
         virtual void
-        Draw();
-
-    public:
-        void
         SetVertexAttributes(uint32_t attrCnt, VertexAttribute[]);
 
-        void
+        virtual void
         SetVertexBuffers(uint32_t bufCnt, IBufferRef[]);
 
-        void inline
+        virtual void
         SetIndexBuffer(IBufferIn buffer) { mIndexBuffer = buffer; }
 
-        void inline
+        virtual void
         SetDrawParams(const DrawIndexedParams & params) { mDrawParams = params; }
 
+        virtual IMeshRef
+        Build(IDeviceIn);
+
     public:
-        Mesh(IDeviceIn);
-        ~Mesh();
+        MeshBuilder();
+        ~MeshBuilder();
 
     private:
         VertexAttribute     mVertexAttributes[MAX_VERTEX_BUFFER_BIND];
@@ -43,8 +40,7 @@ namespace GFW {
 
         DrawIndexedParams   mDrawParams;
     };
-    AUTOREF_REFERENCE_DECLARATION(Mesh);
 
 } // namespace GFW
 
-#endif // __GFW_COMMON_MESH_H__
+#endif // __GFW_COMMON_MESH_BUILDER_H__

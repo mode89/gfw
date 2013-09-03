@@ -11,6 +11,9 @@ namespace GFW {
         virtual IEffectRef
         CreateEffect(const char * fileName) = 0;
 
+        virtual IMeshBuilderRef
+        CreateMeshBuilder() = 0;
+
         virtual IMeshRef
         CreateSurfaceMesh(
             float xLeft,
