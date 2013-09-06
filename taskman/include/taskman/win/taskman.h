@@ -12,7 +12,6 @@
 
 namespace TaskMan {
 
-    AUTOREF_FORWARD_DECLARATION(Task);
     AUTOREF_FORWARD_DECLARATION(TaskManager);
 
     struct WorkerThreadDesc
@@ -25,18 +24,15 @@ namespace TaskMan {
     class TaskManager : public ITaskManager
     {
     public:
-        virtual ITaskRef
-        CreateTask(TaskProc);
+        virtual void
+        Enqueue(ITaskIn);
 
         virtual void
         Run();
 
     public:
-        void
-        EnqueueTask(TaskIn);
-
-        TaskRef
-        DequeueTask();
+        ITaskRef
+        Dequeue();
 
     public:
         TaskManager();
@@ -53,7 +49,7 @@ namespace TaskMan {
         static TaskManager *            mInstance;
 
         std::vector<WorkerThreadDesc>   mWorkerThreads;
-        std::queue<TaskRef>             mTaskQueue;
+        std::queue<ITaskRef>            mTaskQueue;
         Common::Futex                   mMutexQueue;
         static PLAT_THREAD_LOCAL bool   mQueueLocked;
 

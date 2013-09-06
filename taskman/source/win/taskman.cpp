@@ -1,6 +1,5 @@
 #include "common/trace.h"
 
-#include "taskman/win/task.h"
 #include "taskman/win/taskman.h"
 
 namespace TaskMan {
@@ -51,13 +50,11 @@ namespace TaskMan {
 
         // Work loop
 
-        TaskRef task;
+        ITaskRef task;
 
-        while (task = taskManager->DequeueTask(), task.IsAttached())
+        while (task = taskManager->Dequeue(), task.IsAttached())
         {
-            TaskProc taskProc = task->GetProc();
-            taskProc(task->GetData());
-            Sleep(0);
+            task->Run();
         }
 
         return 0;
@@ -98,11 +95,6 @@ namespace TaskMan {
         mInstance = NULL;
     }
 
-    ITaskRef TaskManager::CreateTask(TaskProc proc)
-    {
-        return new Task(proc, this);
-    }
-
     void TaskManager::Run()
     {
         for (uint32_t i = 0; i < mWorkerThreads.size(); ++ i)
@@ -124,14 +116,14 @@ namespace TaskMan {
         TRACE_ASSERT(result == WAIT_OBJECT_0);
     }
 
-    void TaskManager::EnqueueTask(TaskIn task)
+    void TaskManager::Enqueue(ITaskIn task)
     {
         LockQueue();
         mTaskQueue.push(task);
         UnlockQueue();
     }
 
-    TaskRef TaskManager::DequeueTask()
+    ITaskRef TaskManager::Dequeue()
     {
         LockQueue();
 
@@ -143,7 +135,7 @@ namespace TaskMan {
             return NULL;
         }
 
-        TaskRef task = mTaskQueue.front();
+        ITaskRef task = mTaskQueue.front();
         mTaskQueue.pop();
 
         // If the last task has been just poped,

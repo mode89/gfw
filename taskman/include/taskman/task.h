@@ -9,7 +9,7 @@ namespace TaskMan {
     {
     public:
         virtual void
-        Run(void * data) = 0;
+        Run() = 0;
 
         virtual
         ~ITask() {}

@@ -6,47 +6,50 @@
 #define TASK_COUNT          100000
 #define TASK_ITER_COUNT     1000
 
+using namespace Common;
 using namespace TaskMan;
 
-struct TaskData
+class Task : public ITask
 {
-    uint64_t *          totalSum;
-    Common::Futex *     mutex;
-};
-
-void Task(void * data)
-{
-    uint32_t sum = 0;
-
-    for (int i = 0; i < TASK_ITER_COUNT; ++ i)
+public:
+    void Run()
     {
-        sum += i;
+        uint32_t sum = 0;
+
+        for (int i = 0; i < mIterCount; ++ i)
+        {
+            sum += i;
+        }
+
+        mMutexSum->Lock();
+        *mSum += sum;
+        mMutexSum->Unlock();
     }
 
-    TaskData * taskData = reinterpret_cast<TaskData*>(data);
+public:
+    Task(uint64_t * sum, Futex * mutexSum, uint32_t iterCnt)
+        : mSum(sum)
+        , mMutexSum(mutexSum)
+        , mIterCount(iterCnt)
+    {}
 
-    taskData->mutex->Lock();
-    *taskData->totalSum += sum;
-    taskData->mutex->Unlock();
-}
+private:
+    uint64_t *  mSum;
+    Futex *     mMutexSum;
+    uint32_t    mIterCount;
+};
 
 TEST(TaskManagerTests, CreateAndRunTasks)
 {
     ITaskManagerRef taskManager = ITaskManager::GetInstance();
-
-    Common::AutoPointer<ITaskRef> tasks    = new ITaskRef [TASK_COUNT];
-    Common::AutoPointer<TaskData> taskData = new TaskData [TASK_COUNT];
 
     Common::Futex mutexSum;
     uint64_t sum = 0;
 
     for (int i = 0; i < TASK_COUNT; ++ i)
     {
-        taskData[i].mutex = &mutexSum;
-        taskData[i].totalSum = &sum;
-
-        tasks[i] = taskManager->CreateTask(Task);
-        tasks[i]->Run(&taskData[i]);
+        Task * task = new Task(&sum, &mutexSum, TASK_ITER_COUNT);
+        taskManager->Enqueue(task);
     }
 
     taskManager->Run();
