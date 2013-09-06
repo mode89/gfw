@@ -245,3 +245,11 @@ TEST_F(AutoRefTests, AutoPointerBracket)
         autoPnt[i] = i;
     }
 }
+
+TEST_F(AutoRefTests, ArrayOfRefs)
+{
+    IObjectRef * objRefArray = new IObjectRef [100];
+    delete [] objRefArray;
+
+    AutoPointer<IObjectRef> objRefAutoArray = new IObjectRef [1000];
+}

@@ -145,7 +145,7 @@ namespace Common {
 
         ~Pointer()
         {
-            delete mData;
+            delete [] mData;
         }
 
     private:
