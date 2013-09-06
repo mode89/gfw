@@ -53,7 +53,7 @@ namespace TaskMan {
 
         TaskRef task;
 
-        while (task = taskManager->Pop(), task.IsAttached())
+        while (task = taskManager->DequeueTask(), task.IsAttached())
         {
             TaskProc taskProc = task->GetProc();
             taskProc(task->GetData());
@@ -74,6 +74,8 @@ namespace TaskMan {
 
         return instance;
     }
+
+    PLAT_THREAD_LOCAL bool TaskManager::mMutexLocked = false;
 
     TaskManager::TaskManager()
     {
@@ -122,28 +124,20 @@ namespace TaskMan {
         TRACE_ASSERT(result == WAIT_OBJECT_0);
     }
 
-    void TaskManager::Push(TaskIn task)
+    void TaskManager::EnqueueTask(TaskIn task)
     {
-        mMutexQueue.Lock();
+        LockQueue();
         mTaskQueue.push(task);
-        mMutexQueue.Unlock();
-
-        /*
-        if (mTaskQueue.size() > 0)
-        {
-            mMutexEmptyQueue.Unlock();
-        }
-        */
+        UnlockQueue();
     }
 
-    TaskRef TaskManager::Pop()
+    TaskRef TaskManager::DequeueTask()
     {
-        mMutexQueue.Lock();
+        LockQueue();
 
         if (mTaskQueue.size() == 0)
         {
-            mMutexQueue.Unlock();
-            mMutexQueue.Unlock();
+            UnlockQueue();
         }
 
         TaskRef task;
@@ -156,10 +150,28 @@ namespace TaskMan {
 
         if (mTaskQueue.size() > 0)
         {
-            mMutexQueue.Unlock();
+            UnlockQueue();
         }
 
         return task;
+    }
+
+    void TaskManager::LockQueue()
+    {
+        if (!mMutexLocked)
+        {
+            mMutexQueue.Lock();
+            mMutexLocked = true;
+        }
+    }
+
+    void TaskManager::UnlockQueue()
+    {
+        if (mMutexLocked)
+        {
+            mMutexQueue.Unlock();
+            mMutexLocked = false;
+        }
     }
 
 } // namespace TaskMan

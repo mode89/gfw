@@ -20,7 +20,7 @@ namespace TaskMan {
     void Task::Run(void * data)
     {
         mData = data;
-        mTaskManager->Push(this);
+        mTaskManager->EnqueueTask(this);
     }
 
 } // namespace TaskMan

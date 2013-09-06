@@ -33,20 +33,27 @@ namespace TaskMan {
 
     public:
         void
-        Push(TaskIn);
+        EnqueueTask(TaskIn);
 
         TaskRef
-        Pop();
+        DequeueTask();
 
     public:
         TaskManager();
         ~TaskManager();
 
     private:
+        void
+        LockQueue();
+
+        void
+        UnlockQueue();
+
+    private:
         std::vector<WorkerThreadDesc>   mWorkerThreads;
         std::queue<TaskRef>             mTaskQueue;
         Common::Futex                   mMutexQueue;
-        Common::Futex                   mMutexEmptyQueue;
+        static PLAT_THREAD_LOCAL bool   mMutexLocked;
     };
 
 } // namespace TaskMan
