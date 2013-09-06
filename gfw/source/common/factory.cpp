@@ -89,6 +89,13 @@ namespace GFW {
         return new MeshBuilder();
     }
 
+    struct Vertex
+    {
+        float x;
+        float y;
+        float z;
+    };
+
     IMeshRef Factory::CreateSurfaceMesh(
         float xLeft,
         float yBottom,
@@ -97,13 +104,6 @@ namespace GFW {
         uint32_t xSegments,
         uint32_t ySegments)
     {
-        struct Vertex
-        {
-            float x;
-            float y;
-            float z;
-        };
-
         uint32_t xVertCnt = xSegments + 1;
         uint32_t yVertCnt = ySegments + 1;
         uint32_t vertCnt  = xVertCnt * yVertCnt;

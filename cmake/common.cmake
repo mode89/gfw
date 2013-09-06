@@ -2,6 +2,10 @@
 
 set(CMAKE_PREFIX_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 
+if (CMAKE_COMPILER_IS_GNUCXX)
+    execute_process(COMMAND g++ -dumpversion OUTPUT_VARIABLE GXX_VERSION)
+endif()
+
 # Static link MinGW std libs
 
 if (MINGW)
@@ -10,7 +14,7 @@ endif()
 
 # Enable C++11
 
-if (MINGW)
+if (MINGW AND ((GXX_VERSION VERSION_GREATER "4.7.0") OR (GXX_VERSION VERSION_EQUAL "4.7.0")))
     add_definitions(-std=gnu++11)
 endif()
 
