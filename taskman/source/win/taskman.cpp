@@ -3,8 +3,6 @@
 #include "taskman/win/task.h"
 #include "taskman/win/taskman.h"
 
-#include <concrtrm.h>
-
 namespace TaskMan {
 
     using namespace Common;
@@ -38,7 +36,10 @@ namespace TaskMan {
 
     TaskManager::TaskManager()
     {
-        uint32_t threadCnt = concurrency::GetProcessorCount();
+        SYSTEM_INFO si;
+        GetSystemInfo(&si);
+
+        uint32_t threadCnt = si.dwNumberOfProcessors;
         mWorkerThreads.resize(threadCnt);
 
         for (uint32_t i = 0; i < threadCnt; ++ i)
