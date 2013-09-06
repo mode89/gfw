@@ -3,7 +3,7 @@
 #include "common/futex.h"
 #include "taskman/taskman.h"
 
-#define TASK_COUNT          1000000
+#define TASK_COUNT          100000
 #define TASK_ITER_COUNT     1000
 
 using namespace TaskMan;
@@ -32,7 +32,7 @@ void Task(void * data)
 
 TEST(TaskManagerTests, CreateAndRunTasks)
 {
-    ITaskManagerRef taskManager = TaskMan::GetInstance();
+    ITaskManagerRef taskManager = ITaskManager::GetInstance();
 
     Common::AutoPointer<ITaskRef> tasks    = new ITaskRef [TASK_COUNT];
     Common::AutoPointer<TaskData> taskData = new TaskData [TASK_COUNT];

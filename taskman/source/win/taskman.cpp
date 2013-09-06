@@ -63,19 +63,18 @@ namespace TaskMan {
         return 0;
     }
 
-    ITaskManagerRef GetInstance()
-    {
-        static ITaskManagerRef instance;
+    TaskManager *           TaskManager::mInstance      = NULL;
+    PLAT_THREAD_LOCAL bool  TaskManager::mQueueLocked   = false;
 
-        if (instance.IsNull())
+    ITaskManagerRef ITaskManager::GetInstance()
+    {
+        if (TaskManager::mInstance == NULL)
         {
-            instance = new TaskManager();
+            TaskManager::mInstance = new TaskManager;
         }
 
-        return instance;
+        return TaskManager::mInstance;
     }
-
-    PLAT_THREAD_LOCAL bool TaskManager::mMutexLocked = false;
 
     TaskManager::TaskManager()
     {
@@ -95,7 +94,8 @@ namespace TaskMan {
 
     TaskManager::~TaskManager()
     {
-
+        TRACE_ASSERT(mInstance != NULL);
+        mInstance = NULL;
     }
 
     ITaskRef TaskManager::CreateTask(TaskProc proc)
@@ -135,19 +135,19 @@ namespace TaskMan {
     {
         LockQueue();
 
+        // If no new tasks available,
+        // unlock the queue and exit
         if (mTaskQueue.size() == 0)
         {
             UnlockQueue();
+            return NULL;
         }
 
-        TaskRef task;
+        TaskRef task = mTaskQueue.front();
+        mTaskQueue.pop();
 
-        if (mTaskQueue.size())
-        {
-            task = mTaskQueue.front();
-            mTaskQueue.pop();
-        }
-
+        // If the last task has been just poped,
+        // do not unlock the queue to block other worker threads
         if (mTaskQueue.size() > 0)
         {
             UnlockQueue();
@@ -158,19 +158,19 @@ namespace TaskMan {
 
     void TaskManager::LockQueue()
     {
-        if (!mMutexLocked)
+        if (!mQueueLocked)
         {
             mMutexQueue.Lock();
-            mMutexLocked = true;
+            mQueueLocked = true;
         }
     }
 
     void TaskManager::UnlockQueue()
     {
-        if (mMutexLocked)
+        if (mQueueLocked)
         {
             mMutexQueue.Unlock();
-            mMutexLocked = false;
+            mQueueLocked = false;
         }
     }
 

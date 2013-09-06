@@ -8,9 +8,13 @@ namespace TaskMan {
 
     typedef void (*TaskProc)(void * data);
 
+    AUTOREF_FORWARD_DECLARATION(ITaskManager);
     class ITaskManager : public Common::ARefCounted
     {
     public:
+        static ITaskManagerRef
+        GetInstance();
+
         virtual ITaskRef
         CreateTask(TaskProc) = 0;
 
@@ -20,9 +24,6 @@ namespace TaskMan {
         virtual
         ~ITaskManager() {}
     };
-    AUTOREF_REFERENCE_DECLARATION(ITaskManager);
-
-    ITaskManagerRef GetInstance();
 
 } // namespace TaskMan
 

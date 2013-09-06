@@ -19,7 +19,7 @@ namespace TaskMan {
     {
         HANDLE          handle;
         uint32_t        id;
-        TaskManagerRef  taskManager;
+        TaskManager *   taskManager;
     };
 
     class TaskManager : public ITaskManager
@@ -50,10 +50,14 @@ namespace TaskMan {
         UnlockQueue();
 
     private:
+        static TaskManager *            mInstance;
+
         std::vector<WorkerThreadDesc>   mWorkerThreads;
         std::queue<TaskRef>             mTaskQueue;
         Common::Futex                   mMutexQueue;
-        static PLAT_THREAD_LOCAL bool   mMutexLocked;
+        static PLAT_THREAD_LOCAL bool   mQueueLocked;
+
+        friend class ITaskManager;
     };
 
 } // namespace TaskMan
