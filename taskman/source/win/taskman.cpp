@@ -138,35 +138,26 @@ namespace TaskMan {
 
     TaskRef TaskManager::Pop()
     {
-        // Block the queue if there is the only one task
+        mMutexQueue.Lock();
 
-        static PLAT_THREAD_LOCAL bool mutexEmptyQueueLocked = 0;
-
-        if (!mutexEmptyQueueLocked)
+        if (mTaskQueue.size() == 0)
         {
-            mMutexEmptyQueue.Lock();
-            mutexEmptyQueueLocked = true;
+            mMutexQueue.Unlock();
+            mMutexQueue.Unlock();
         }
-
-        if (mTaskQueue.size() != 1)
-        {
-            mMutexEmptyQueue.Unlock();
-            mutexEmptyQueueLocked = false;
-        }
-
-        // Get the next task and return it
 
         TaskRef task;
 
-        mMutexQueue.Lock();
+        if (mTaskQueue.size())
         {
-            if (mTaskQueue.size())
-            {
-                task = mTaskQueue.front();
-                mTaskQueue.pop();
-            }
+            task = mTaskQueue.front();
+            mTaskQueue.pop();
         }
-        mMutexQueue.Unlock();
+
+        if (mTaskQueue.size() > 0)
+        {
+            mMutexQueue.Unlock();
+        }
 
         return task;
     }
