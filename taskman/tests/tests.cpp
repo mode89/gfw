@@ -9,16 +9,17 @@ void Task(void * data)
     (*reinterpret_cast<uint32_t*>(data)) ++;
 }
 
-TEST(TaskManagerTests, Tasks)
+TEST(TaskManagerTests, CreateAndRunTasks)
 {
+    static const uint32_t TASK_COUNT = 10000000;
+
     ITaskManagerRef taskManager = TaskMan::GetInstance();
 
-    static const uint32_t taskCnt = 102400;
-    ITaskRef tasks[taskCnt];
+    ITaskRef * tasks = new ITaskRef [TASK_COUNT];
 
     uint32_t sum = 0;
 
-    for (int i = 0; i < 1024; ++ i)
+    for (int i = 0; i < TASK_COUNT; ++ i)
     {
         tasks[i] = taskManager->CreateTask(Task);
         tasks[i]->Run(&sum);
@@ -26,5 +27,5 @@ TEST(TaskManagerTests, Tasks)
 
     taskManager->Run();
 
-    ASSERT_TRUE(sum == taskCnt);
+    ASSERT_TRUE(sum == TASK_COUNT);
 }

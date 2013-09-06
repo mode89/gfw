@@ -13,6 +13,14 @@
 namespace TaskMan {
 
     AUTOREF_FORWARD_DECLARATION(Task);
+    AUTOREF_FORWARD_DECLARATION(TaskManager);
+
+    struct WorkerThreadDesc
+    {
+        HANDLE          handle;
+        uint32_t        id;
+        TaskManagerRef  taskManager;
+    };
 
     class TaskManager : public ITaskManager
     {
@@ -35,12 +43,11 @@ namespace TaskMan {
         ~TaskManager();
 
     private:
-        std::vector<HANDLE>     mWorkerThreads;
-        std::queue<TaskRef>     mTaskQueue;
-        Common::Futex           mTaskQueueMutex;
-        Common::Futex           mEmptyQueueMutex;
+        std::vector<WorkerThreadDesc>   mWorkerThreads;
+        std::queue<TaskRef>             mTaskQueue;
+        Common::Futex                   mMutexQueue;
+        Common::Futex                   mMutexEmptyQueue;
     };
-    AUTOREF_REFERENCE_DECLARATION(TaskManager);
 
 } // namespace TaskMan
 
