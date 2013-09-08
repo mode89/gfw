@@ -2,7 +2,7 @@
 #define __TASKMAN_WIN_TASKMAN_H__
 
 #include "common/autoref.h"
-#include "common/futex.h"
+#include "common/mutex.h"
 #include "taskman/taskman.h"
 
 #include <queue>
@@ -50,8 +50,9 @@ namespace TaskMan {
 
         std::vector<WorkerThreadDesc>   mWorkerThreads;
         std::queue<ITaskRef>            mTaskQueue;
-        Common::Futex                   mMutexQueue;
+        Common::Mutex                   mMutexQueue;
         static PLAT_THREAD_LOCAL bool   mQueueLocked;
+        // Common::Mutex                   mMutexEmptyQueue;
 
         friend class ITaskManager;
     };

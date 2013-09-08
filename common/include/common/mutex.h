@@ -1,39 +1,25 @@
-#ifndef __COMMON_FUTEX_H__
-#define __COMMON_FUTEX_H__
-
-#include "common/critical_section.h"
+#ifndef __COMMON_MUTEX_H__
+#define __COMMON_MUTEX_H__
 
 namespace Common {
 
-    class Futex
+    class Mutex
     {
     public:
-        inline void Lock()
-        {
-            EnterCriticalSection(mCriticalSection);
-        }
+        void
+        Lock();
 
-        inline void Unlock()
-        {
-            LeaveCriticalSection(mCriticalSection);
-        }
+        void
+        Unlock();
 
     public:
-        Futex()
-            : mCriticalSection(NULL)
-        {
-            mCriticalSection = CreateCriticalSection();
-        }
-
-        ~Futex()
-        {
-            DeleteCriticalSection(mCriticalSection);
-        }
+        Mutex();
+        ~Mutex();
 
     private:
-        CriticalSection     mCriticalSection;
+        void *  mImpl;
     };
 
 } // namespace Common
 
-#endif // __COMMON_FUTEX_H__
+#endif // __COMMON_MUTEX_H__

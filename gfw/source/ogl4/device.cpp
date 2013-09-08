@@ -36,7 +36,7 @@ namespace GFW {
     class AutoLock
     {
     public:
-        AutoLock(IDrawingContext * dc, Futex * mutex, RenderingContext nativeContext)
+        AutoLock(IDrawingContext * dc, Mutex * mutex, RenderingContext nativeContext)
             : mDrawingContext(dc)
             , mMutex(mutex)
             , mPrevContext(NULL)
@@ -54,7 +54,7 @@ namespace GFW {
 
     private:
         IDrawingContext *   mDrawingContext;
-        Futex *             mMutex;
+        Mutex *             mMutex;
         RenderingContext    mPrevContext;
     };
 

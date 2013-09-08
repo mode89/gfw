@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 
-#include "common/futex.h"
+#include "common/mutex.h"
 #include "taskman/taskman.h"
 
 #define TASK_COUNT          100000
@@ -27,7 +27,7 @@ public:
     }
 
 public:
-    Task(uint64_t * sum, Futex * mutexSum, uint32_t iterCnt)
+    Task(uint64_t * sum, Mutex * mutexSum, uint32_t iterCnt)
         : mSum(sum)
         , mMutexSum(mutexSum)
         , mIterCount(iterCnt)
@@ -35,7 +35,7 @@ public:
 
 private:
     uint64_t *  mSum;
-    Futex *     mMutexSum;
+    Mutex *     mMutexSum;
     uint32_t    mIterCount;
 };
 
@@ -43,7 +43,7 @@ TEST(TaskManagerTests, CreateAndRunTasks)
 {
     ITaskManagerRef taskManager = ITaskManager::GetInstance();
 
-    Common::Futex mutexSum;
+    Common::Mutex mutexSum;
     uint64_t sum = 0;
 
     for (int i = 0; i < TASK_COUNT; ++ i)
@@ -56,3 +56,71 @@ TEST(TaskManagerTests, CreateAndRunTasks)
 
     ASSERT_TRUE(sum == (1ll * TASK_COUNT * (0 + (TASK_ITER_COUNT - 1)) * TASK_ITER_COUNT / 2));
 }
+
+/*
+class TaskLauncher : public ITask
+{
+public:
+    void Run()
+    {
+        mMutexTaskCnt->Lock();
+        uint32_t taskCnt = *mTaskCnt;
+        mMutexTaskCnt->Unlock();
+
+        for (int i = 0; i < 100 && taskCnt > 0; ++ i, -- taskCnt)
+        {
+            Task * task = new Task(mSum, mMutexSum, TASK_ITER_COUNT);
+            mTaskManager->Enqueue(task);
+        }
+
+        mMutexTaskCnt->Lock();
+        {
+            if ((*mTaskCnt = taskCnt) > 0)
+            {
+                TaskLauncher * taskLauncher = new TaskLauncher(mSum, mMutexSum, mTaskCnt, mMutexTaskCnt, mTaskManager);
+                mTaskManager->Enqueue(taskLauncher);
+            }
+        }
+        mMutexTaskCnt->Unlock();
+    }
+
+public:
+    TaskLauncher(
+        uint64_t * sum,
+        Mutex * mutexSum,
+        uint32_t * taskCnt,
+        Mutex * mutexTaskCnt,
+        ITaskManagerIn taskManager)
+        : mTaskManager(taskManager)
+        , mSum(sum)
+        , mMutexSum(mutexSum)
+        , mTaskCnt(taskCnt)
+        , mMutexTaskCnt(mutexTaskCnt)
+    {}
+
+private:
+    ITaskManagerRef     mTaskManager;
+    uint64_t *          mSum;
+    Mutex *             mMutexSum;
+    uint32_t *          mTaskCnt;
+    Mutex *             mMutexTaskCnt;
+};
+
+TEST(TaskManagerTests, LaunchTasks)
+{
+    ITaskManagerRef taskManager = ITaskManager::GetInstance();
+
+    uint64_t sum = 0;
+    Mutex mutexSum;
+
+    uint32_t taskCnt = TASK_COUNT;
+    Mutex mutexTaskCnt;
+
+    TaskLauncher * taskLauncher = new TaskLauncher(&sum, &mutexSum, &taskCnt, &mutexTaskCnt, taskManager);
+    taskManager->Enqueue(taskLauncher);
+
+    taskManager->Run();
+
+    ASSERT_TRUE(sum == (1ll * TASK_COUNT * (0 + (TASK_ITER_COUNT - 1)) * TASK_ITER_COUNT / 2));
+}
+*/

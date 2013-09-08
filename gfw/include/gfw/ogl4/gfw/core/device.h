@@ -1,7 +1,7 @@
 #ifndef __GFW_CORE_DEVICE_H__
 #define __GFW_CORE_DEVICE_H__
 
-#include "common/futex.h"
+#include "common/mutex.h"
 
 #include "gfw/base/device.h"
 #include "gfw/core/types_fwd.h"
@@ -60,7 +60,7 @@ namespace GFW {
         IDrawingContextRef          mDrawingContext;
         RenderingContext            mContextGL;
 
-        Common::Futex               mMutex;
+        Common::Mutex               mMutex;
         IContextRef                 mDefaultContext;
         IRenderBufferRef            mDefaultColorBuffer;
     };
