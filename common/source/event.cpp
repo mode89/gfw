@@ -1,4 +1,7 @@
 #include "common/event.h"
+#include "common/platform.h"
+
+#ifdef PLAT_COMPILER_MSVC
 
 #include <windows.h>
 
@@ -8,14 +11,12 @@ namespace Common {
     {
         CONDITION_VARIABLE  condVar;
         CRITICAL_SECTION    critSect;
-        bool                flag;
     };
 
     Event::Event()
         : mImpl(NULL)
     {
         mImpl = new EventImpl;
-        mImpl->flag = false;
         InitializeCriticalSection(&mImpl->critSect);
         InitializeConditionVariable(&mImpl->condVar);
     }
@@ -44,3 +45,43 @@ namespace Common {
     }
 
 } // namespace Common
+
+#elif defined(PLAT_COMPILER_MINGW)
+
+#include <windows.h>
+
+namespace Common {
+
+    struct EventImpl
+    {
+        HANDLE handle;
+    };
+
+    Event::Event()
+        : mImpl(NULL)
+    {
+        mImpl = new EventImpl;
+        mImpl->handle = CreateEvent(NULL, FALSE, FALSE, NULL);
+    }
+
+    Event::~Event()
+    {
+        CloseHandle(mImpl->handle);
+        delete mImpl;
+    }
+
+    void Event::Wait()
+    {
+        WaitForSingleObject(mImpl->handle, INFINITE);
+    }
+
+    void Event::Notify()
+    {
+        SetEvent(mImpl->handle);
+    }
+
+} // namespace Common
+
+#else
+    #error Undefined platform
+#endif
