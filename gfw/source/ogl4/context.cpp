@@ -22,8 +22,11 @@ namespace GFW {
         : mDevice(d)
         , mDrawingContext(dc)
         , mContextGL(NULL)
+        , mScreenQuadBuffer(0)
     {
         mContextGL = mDrawingContext->CreateContext();
+
+        InitScreenQuad();
     }
 
     Context::~Context()
@@ -38,6 +41,24 @@ namespace GFW {
 
         TRACE_ASSERT(mContextGL != NULL);
         mDrawingContext->DeleteContext(mContextGL);
+
+        TRACE_ASSERT(mScreenQuadBuffer != 0);
+        TRACE_ASSERT_GL(glDeleteBuffers, 1, &mScreenQuadBuffer);
+    }
+
+    void Context::InitScreenQuad()
+    {
+        static const float vertices[] = {
+            -1.0f, -1.0f,
+            -1.0f,  1.0f,
+             1.0f, -1.0f,
+             1.0f,  1.0f
+        };
+
+        TRACE_ASSERT_GL(glGenBuffers, 1, &mScreenQuadBuffer);
+        TRACE_ASSERT_GL(glBindBuffer, GL_ARRAY_BUFFER, mScreenQuadBuffer);
+        TRACE_ASSERT_GL(glBufferData, GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+        TRACE_ASSERT_GL(glBindBuffer, GL_ARRAY_BUFFER, 0);
     }
 
     void Context::SetVertexAttributes( uint32_t number, VertexAttribute attr[] )
