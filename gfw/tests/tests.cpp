@@ -226,6 +226,27 @@ TEST_F(GFWTests, DrawIndexed)
     }
 }
 
+TEST_F(GFWTests, DrawScreenQuad)
+{
+    IEffectRef effect = mFactory->CreateEffect(TESTS_SOURCE_DIR "draw.fx");
+
+    for (int i = 0; i < 60; ++ i)
+    {
+        ProcessDefaultWindow(mWindow);
+
+        mContext->BeginScene();
+        {
+            effect->Dispatch();
+            mContext->DrawScreenQuad();
+        }
+        mContext->EndScene();
+
+        mDevice->Present();
+
+        Wait();
+    }
+}
+
 TEST_F(GFWTests, SurfaceMesh)
 {
     IEffectRef effect = mFactory->CreateEffect(TESTS_SOURCE_DIR "draw_color_flat.fx");
