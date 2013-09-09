@@ -6,26 +6,43 @@ namespace CommonTests {
 
     using namespace Common;
 
-    uint32_t g_Data = 0;
+#define ITER_COUNT  10000
 
-    uint32_t Foo(void * data)
+    class Runnable : public IRunnable
     {
-        g_Data = *static_cast<uint32_t*>(data);
-        return 0;
-    }
+    public:
+        virtual void Run()
+        {
+            for (int i = 0; i < ITER_COUNT; ++ i)
+            {
+                mData += i;
+            }
+        }
+
+    public:
+        Runnable()
+            : mData(0)
+        {}
+
+        uint32_t GetData() { return mData; }
+
+    private:
+        uint32_t mData;
+    };
+    AUTOREF_REFERENCE_DECLARATION(Runnable);
 
     TEST(Threads, CreateJoin)
     {
-        uint32_t data = rand();
+        RunnableRef runnable = new Runnable();
 
-        ASSERT_TRUE(g_Data == 0);
+        ASSERT_EQ(runnable->GetData(), 0);
 
-        IThreadRef thread = CreateThread(Foo, &data);
+        IThreadRef thread = CreateThread(runnable);
         ASSERT_TRUE(thread.IsAttached());
 
         thread->Join();
 
-        ASSERT_TRUE(g_Data == data);
+        ASSERT_EQ(runnable->GetData(), (0 + ITER_COUNT - 1) * ITER_COUNT / 2);
     }
 
 } // namespace CommonTests

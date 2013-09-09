@@ -1,11 +1,9 @@
 #ifndef __COMMON_THREADS_H__
 #define __COMMON_THREADS_H__
 
-#include "common/autoref.h"
+#include "common/runnable.h"
 
 namespace Common {
-
-    typedef uint32_t (*ThreadProc)(void *);
 
     class IThread : public ARefCounted
     {
@@ -19,7 +17,7 @@ namespace Common {
     AUTOREF_REFERENCE_DECLARATION(IThread);
 
     IThreadRef
-    CreateThread(ThreadProc, void * data);
+    CreateThread(IRunnableIn);
 
 } // namespace Common
 

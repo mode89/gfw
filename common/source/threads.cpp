@@ -12,7 +12,7 @@ namespace Common {
         Join();
 
     public:
-        Thread(ThreadProc, void * data);
+        Thread(IRunnableIn);
         ~Thread();
 
         bool
@@ -23,17 +23,15 @@ namespace Common {
         Proc(LPVOID data);
 
     private:
-        HANDLE      mHandle;
-
-        ThreadProc  mProc;
-        void *      mData;
+        HANDLE          mHandle;
+        IRunnableRef    mRunnable;
     };
 
-    IThreadRef CreateThread(ThreadProc proc, void * data)
+    IThreadRef CreateThread(IRunnableIn runnable)
     {
-        TRACE_ASSERT(proc != NULL);
+        TRACE_ASSERT(runnable.IsAttached());
 
-        Thread * thread = new Thread(proc, data);
+        Thread * thread = new Thread(runnable);
 
         if (!thread->Initialize())
         {
@@ -44,10 +42,9 @@ namespace Common {
         return thread;
     }
 
-    Thread::Thread(ThreadProc proc, void * data)
+    Thread::Thread(IRunnableIn runnable)
         : mHandle(NULL)
-        , mProc(proc)
-        , mData(data)
+        , mRunnable(runnable)
     {
 
     }
@@ -65,9 +62,10 @@ namespace Common {
 
     bool Thread::Initialize()
     {
-        mHandle = ::CreateThread(NULL, 0, Thread::Proc, this, 0, NULL);
+        mHandle = ::CreateThread(NULL, 0, Thread::Proc, mRunnable.GetPointer(), 0, NULL);
         if (mHandle == NULL)
         {
+            TRACE_ERROR("Failed to create a thread");
             return false;
         }
 
@@ -76,8 +74,9 @@ namespace Common {
 
     DWORD WINAPI Thread::Proc(LPVOID data)
     {
-        Thread * thread = static_cast<Thread*>(data);
-        return thread->mProc(thread->mData);
+        IRunnableRef runnable = static_cast<IRunnable*>(data);
+        runnable->Run();
+        return 0;
     }
 
     void Thread::Join()
