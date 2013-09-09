@@ -4,27 +4,32 @@
 
 namespace Common {
 
+    struct MutexImpl
+    {
+        CRITICAL_SECTION critSect;
+    };
+
     Mutex::Mutex()
         : mImpl(NULL)
     {
-        mImpl = new CRITICAL_SECTION;
-        InitializeCriticalSection(static_cast<LPCRITICAL_SECTION>(mImpl));
+        mImpl = new MutexImpl;
+        InitializeCriticalSection(&mImpl->critSect);
     }
 
     Mutex::~Mutex()
     {
-        DeleteCriticalSection(static_cast<LPCRITICAL_SECTION>(mImpl));
-        delete static_cast<LPCRITICAL_SECTION>(mImpl);
+        DeleteCriticalSection(&mImpl->critSect);
+        delete mImpl;
     }
 
     void Mutex::Lock()
     {
-        EnterCriticalSection(static_cast<LPCRITICAL_SECTION>(mImpl));
+        EnterCriticalSection(&mImpl->critSect);
     }
 
     void Mutex::Unlock()
     {
-        LeaveCriticalSection(static_cast<LPCRITICAL_SECTION>(mImpl));
+        LeaveCriticalSection(&mImpl->critSect);
     }
 
 } // namespace Common

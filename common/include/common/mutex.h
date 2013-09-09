@@ -3,6 +3,8 @@
 
 namespace Common {
 
+    struct MutexImpl;
+
     class Mutex
     {
     public:
@@ -17,7 +19,7 @@ namespace Common {
         ~Mutex();
 
     private:
-        void *  mImpl;
+        MutexImpl * mImpl;
     };
 
 } // namespace Common
