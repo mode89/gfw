@@ -48,8 +48,7 @@ namespace TaskMan {
     private:
         static TaskManager *                mInstance;
 
-        std::vector<WorkerThreadDesc>       mWorkerThreads;
-        std::queue<Common::IRunnableRef>    mTaskQueue;
+        std::queue<Common::IRunnableRef>    mQueue;
         Common::Mutex                       mMutexQueue;
 
         friend class ITaskManager;
