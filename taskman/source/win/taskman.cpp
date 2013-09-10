@@ -50,7 +50,7 @@ namespace TaskMan {
 
         // Work loop
 
-        ITaskRef task;
+        IRunnableRef task;
 
         while (task = taskManager->Dequeue(), task.IsAttached())
         {
@@ -61,7 +61,6 @@ namespace TaskMan {
     }
 
     TaskManager *           TaskManager::mInstance      = NULL;
-    PLAT_THREAD_LOCAL bool  TaskManager::mQueueLocked   = false;
 
     ITaskManagerRef ITaskManager::GetInstance()
     {
@@ -116,54 +115,30 @@ namespace TaskMan {
         TRACE_ASSERT(result == WAIT_OBJECT_0);
     }
 
-    void TaskManager::Enqueue(ITaskIn task)
+    void TaskManager::Enqueue(IRunnableIn task)
     {
-        LockQueue();
-        mTaskQueue.push(task);
-        UnlockQueue();
+        mMutexQueue.Lock();
+        {
+            mTaskQueue.push(task);
+        }
+        mMutexQueue.Unlock();
     }
 
-    ITaskRef TaskManager::Dequeue()
+    IRunnableRef TaskManager::Dequeue()
     {
-        LockQueue();
+        IRunnableRef task;
 
-        // If no new tasks available,
-        // unlock the queue and exit
-        if (mTaskQueue.size() == 0)
+        mMutexQueue.Lock();
         {
-            UnlockQueue();
-            return NULL;
+            if (!mTaskQueue.empty())
+            {
+                task = mTaskQueue.front();
+                mTaskQueue.pop();
+            }
         }
-
-        ITaskRef task = mTaskQueue.front();
-        mTaskQueue.pop();
-
-        // If the last task has been just poped,
-        // do not unlock the queue to block other worker threads
-        if (mTaskQueue.size() > 0)
-        {
-            UnlockQueue();
-        }
+        mMutexQueue.Unlock();
 
         return task;
-    }
-
-    void TaskManager::LockQueue()
-    {
-        if (!mQueueLocked)
-        {
-            mMutexQueue.Lock();
-            mQueueLocked = true;
-        }
-    }
-
-    void TaskManager::UnlockQueue()
-    {
-        if (mQueueLocked)
-        {
-            mMutexQueue.Unlock();
-            mQueueLocked = false;
-        }
     }
 
 } // namespace TaskMan

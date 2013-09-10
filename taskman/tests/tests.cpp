@@ -9,7 +9,7 @@
 using namespace Common;
 using namespace TaskMan;
 
-class Task : public ITask
+class Task : public IRunnable
 {
 public:
     void Run()

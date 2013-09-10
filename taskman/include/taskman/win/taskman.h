@@ -25,13 +25,13 @@ namespace TaskMan {
     {
     public:
         virtual void
-        Enqueue(ITaskIn);
+        Enqueue(Common::IRunnableIn);
 
         virtual void
         Run();
 
     public:
-        ITaskRef
+        Common::IRunnableRef
         Dequeue();
 
     public:
@@ -46,13 +46,11 @@ namespace TaskMan {
         UnlockQueue();
 
     private:
-        static TaskManager *            mInstance;
+        static TaskManager *                mInstance;
 
-        std::vector<WorkerThreadDesc>   mWorkerThreads;
-        std::queue<ITaskRef>            mTaskQueue;
-        Common::Mutex                   mMutexQueue;
-        static PLAT_THREAD_LOCAL bool   mQueueLocked;
-        // Common::Mutex                   mMutexEmptyQueue;
+        std::vector<WorkerThreadDesc>       mWorkerThreads;
+        std::queue<Common::IRunnableRef>    mTaskQueue;
+        Common::Mutex                       mMutexQueue;
 
         friend class ITaskManager;
     };

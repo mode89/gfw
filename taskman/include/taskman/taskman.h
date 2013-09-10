@@ -1,8 +1,7 @@
 #ifndef __TASKMAN_TASKMAN_H__
 #define __TASKMAN_TASKMAN_H__
 
-#include "common/autoref.h"
-#include "taskman/task.h"
+#include "common/runnable.h"
 
 namespace TaskMan {
 
@@ -14,7 +13,7 @@ namespace TaskMan {
         GetInstance();
 
         virtual void
-        Enqueue(ITaskIn) = 0;
+        Enqueue(Common::IRunnableIn) = 0;
 
         virtual void
         Run() = 0;
