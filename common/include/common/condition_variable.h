@@ -20,7 +20,7 @@ namespace Common {
         ConditionVariable();
         ~ConditionVariable();
 
-    private:
+    public:
         ConditionVariableImpl * mImpl;
     };
 
