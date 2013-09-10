@@ -18,7 +18,7 @@ namespace Common {
         Mutex();
         ~Mutex();
 
-    private:
+    public:
         MutexImpl * mImpl;
     };
 

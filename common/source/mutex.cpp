@@ -1,35 +1,29 @@
 #include "common/mutex.h"
-
-#include <windows.h>
+#include "common/mutex_impl.h"
 
 namespace Common {
-
-    struct MutexImpl
-    {
-        CRITICAL_SECTION critSect;
-    };
 
     Mutex::Mutex()
         : mImpl(NULL)
     {
         mImpl = new MutexImpl;
-        InitializeCriticalSection(&mImpl->critSect);
+        InitializeCriticalSection(&mImpl->nativeHandle);
     }
 
     Mutex::~Mutex()
     {
-        DeleteCriticalSection(&mImpl->critSect);
+        DeleteCriticalSection(&mImpl->nativeHandle);
         delete mImpl;
     }
 
     void Mutex::Lock()
     {
-        EnterCriticalSection(&mImpl->critSect);
+        EnterCriticalSection(&mImpl->nativeHandle);
     }
 
     void Mutex::Unlock()
     {
-        LeaveCriticalSection(&mImpl->critSect);
+        LeaveCriticalSection(&mImpl->nativeHandle);
     }
 
 } // namespace Common
