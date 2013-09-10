@@ -57,8 +57,7 @@ TEST(TaskManagerTests, CreateAndRunTasks)
     ASSERT_TRUE(sum == (1ll * TASK_COUNT * (0 + (TASK_ITER_COUNT - 1)) * TASK_ITER_COUNT / 2));
 }
 
-/*
-class TaskLauncher : public ITask
+class TaskLauncher : public IRunnable
 {
 public:
     void Run()
@@ -123,4 +122,3 @@ TEST(TaskManagerTests, LaunchTasks)
 
     ASSERT_TRUE(sum == (1ll * TASK_COUNT * (0 + (TASK_ITER_COUNT - 1)) * TASK_ITER_COUNT / 2));
 }
-*/

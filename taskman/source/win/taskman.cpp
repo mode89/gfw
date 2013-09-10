@@ -14,21 +14,54 @@ namespace TaskMan {
         {
             // Work loop
 
-            IRunnableRef task;
+            static uint32_t activityMask = 0;
+            static Mutex    mutexMask;
 
-            while (task = mTaskManager->Dequeue(), task.IsAttached())
+            while (true)
             {
-                task->Run();
+                mutexMask.Lock();
+                activityMask |= mMask;
+                mutexMask.Unlock();
+
+                IRunnableRef task;
+
+                while (task = mTaskManager->Dequeue(), task.IsAttached())
+                {
+                    task->Run();
+                }
+
+                bool lastThread = false;
+
+                mutexMask.Lock();
+                activityMask &= ~mMask;
+                if (activityMask == 0) lastThread = true;
+                mutexMask.Unlock();
+
+                if (!lastThread)
+                {
+                    mTaskManager->WaitNewTasks();
+
+                    mutexMask.Lock();
+                    activityMask |= mMask;
+                    mutexMask.Unlock();
+                }
+                else
+                {
+                    mTaskManager->UnblockWaiters();
+                    break;
+                }
             }
         }
 
     public:
-        WorkerThread(TaskManagerIn taskManager)
+        WorkerThread(uint32_t id, TaskManagerIn taskManager)
             : mTaskManager(taskManager)
+            , mMask(1 << id)
         {}
 
     private:
         TaskManagerRef  mTaskManager;
+        uint32_t        mMask;
     };
 
     TaskManager *   TaskManager::mInstance      = NULL;
@@ -64,7 +97,7 @@ namespace TaskMan {
 
         for (uint32_t i = 0; i < threadCount; ++ i)
         {
-            WorkerThread * workerThread = new WorkerThread(this);
+            WorkerThread * workerThread = new WorkerThread(i, this);
 
             const char * threadName = NULL;
 
@@ -91,6 +124,11 @@ namespace TaskMan {
         mMutexQueue.Lock();
         {
             mQueue.push(task);
+
+            if (mQueue.size() == 1)
+            {
+                UnblockWaiters();
+            }
         }
         mMutexQueue.Unlock();
     }
@@ -110,6 +148,16 @@ namespace TaskMan {
         mMutexQueue.Unlock();
 
         return task;
+    }
+
+    void TaskManager::WaitNewTasks()
+    {
+        mEventNewTask.Wait();
+    }
+
+    void TaskManager::UnblockWaiters()
+    {
+        mEventNewTask.Notify();
     }
 
 } // namespace TaskMan

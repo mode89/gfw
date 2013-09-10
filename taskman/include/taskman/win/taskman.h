@@ -2,6 +2,7 @@
 #define __TASKMAN_WIN_TASKMAN_H__
 
 #include "common/autoref.h"
+#include "common/event.h"
 #include "common/mutex.h"
 #include "taskman/taskman.h"
 
@@ -33,23 +34,23 @@ namespace TaskMan {
     public:
         Common::IRunnableRef
         Dequeue();
+        
+        void
+        WaitNewTasks();
+
+        void
+        UnblockWaiters();
 
     public:
         TaskManager();
         ~TaskManager();
 
     private:
-        void
-        LockQueue();
-
-        void
-        UnlockQueue();
-
-    private:
         static TaskManager *                mInstance;
 
         std::queue<Common::IRunnableRef>    mQueue;
         Common::Mutex                       mMutexQueue;
+        Common::Event                       mEventNewTask;
 
         friend class ITaskManager;
     };
