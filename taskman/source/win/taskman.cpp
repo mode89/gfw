@@ -3,6 +3,8 @@
 
 #include "taskman/win/taskman.h"
 
+#include <windows.h>
+
 namespace TaskMan {
 
     using namespace Common;
@@ -14,54 +16,21 @@ namespace TaskMan {
         {
             // Work loop
 
-            static uint32_t activityMask = 0;
-            static Mutex    mutexMask;
+            IRunnableRef task;
 
-            while (true)
+            while (task = mTaskManager->Dequeue(), task.IsAttached())
             {
-                mutexMask.Lock();
-                activityMask |= mMask;
-                mutexMask.Unlock();
-
-                IRunnableRef task;
-
-                while (task = mTaskManager->Dequeue(), task.IsAttached())
-                {
-                    task->Run();
-                }
-
-                bool lastThread = false;
-
-                mutexMask.Lock();
-                activityMask &= ~mMask;
-                if (activityMask == 0) lastThread = true;
-                mutexMask.Unlock();
-
-                if (!lastThread)
-                {
-                    mTaskManager->WaitNewTasks();
-
-                    mutexMask.Lock();
-                    activityMask |= mMask;
-                    mutexMask.Unlock();
-                }
-                else
-                {
-                    mTaskManager->UnblockWaiters();
-                    break;
-                }
+                task->Run();
             }
         }
 
     public:
         WorkerThread(uint32_t id, TaskManagerIn taskManager)
             : mTaskManager(taskManager)
-            , mMask(1 << id)
         {}
 
     private:
         TaskManagerRef  mTaskManager;
-        uint32_t        mMask;
     };
 
     TaskManager *   TaskManager::mInstance      = NULL;
@@ -77,8 +46,13 @@ namespace TaskMan {
     }
 
     TaskManager::TaskManager()
+        : mThreadCount(0)
+        , mWaitersCount(0)
     {
+        SYSTEM_INFO si;
+        GetSystemInfo(&si);
 
+        mThreadCount = si.dwNumberOfProcessors;
     }
 
     TaskManager::~TaskManager()
@@ -89,13 +63,11 @@ namespace TaskMan {
 
     void TaskManager::Run()
     {
-        SYSTEM_INFO si;
-        GetSystemInfo(&si);
+        mWaitersCount = 0;
 
-        uint32_t threadCount = si.dwNumberOfProcessors;
-        std::vector<IThreadRef> threads(threadCount);
+        std::vector<IThreadRef> threads(mThreadCount);
 
-        for (uint32_t i = 0; i < threadCount; ++ i)
+        for (uint32_t i = 0; i < mThreadCount; ++ i)
         {
             WorkerThread * workerThread = new WorkerThread(i, this);
 
@@ -113,7 +85,7 @@ namespace TaskMan {
 
         // Wait for the worker threads
 
-        for (uint32_t i = 0; i < threadCount; ++ i)
+        for (uint32_t i = 0; i < mThreadCount; ++ i)
         {
             threads[i]->Join();
         }
@@ -125,9 +97,10 @@ namespace TaskMan {
         {
             mQueue.push(task);
 
+            // Notify waiters that there is a new task on the queue
             if (mQueue.size() == 1)
             {
-                UnblockWaiters();
+                mNotEmptyCondition.Notify();
             }
         }
         mMutexQueue.Unlock();
@@ -139,6 +112,30 @@ namespace TaskMan {
 
         mMutexQueue.Lock();
         {
+            while (mQueue.empty())
+            {
+                mWaitersCount ++;
+
+                if (mWaitersCount < mThreadCount)
+                {
+                    mNotEmptyCondition.Wait(mMutexQueue);
+
+                    if (mWaitersCount < mThreadCount)
+                    {
+                        mWaitersCount --;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                else
+                {
+                    mNotEmptyCondition.Notify();
+                    break;
+                }
+            }
+
             if (!mQueue.empty())
             {
                 task = mQueue.front();
@@ -148,16 +145,6 @@ namespace TaskMan {
         mMutexQueue.Unlock();
 
         return task;
-    }
-
-    void TaskManager::WaitNewTasks()
-    {
-        mEventNewTask.Wait();
-    }
-
-    void TaskManager::UnblockWaiters()
-    {
-        mEventNewTask.Notify();
     }
 
 } // namespace TaskMan
