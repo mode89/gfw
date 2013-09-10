@@ -78,7 +78,10 @@ namespace Common {
         : mHandle(NULL)
         , mRunnable(runnable)
     {
-        strcpy(mName, debugName);
+        if (debugName != NULL)
+        {
+            strcpy(mName, debugName);
+        }
     }
 
     Thread::~Thread()
