@@ -17,7 +17,7 @@ namespace Common {
     AUTOREF_REFERENCE_DECLARATION(IThread);
 
     IThreadRef
-    CreateThread(IRunnableIn);
+    CreateThread(IRunnableIn, const char * debugName = 0);
 
 } // namespace Common
 
