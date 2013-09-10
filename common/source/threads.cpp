@@ -7,6 +7,8 @@ namespace Common {
 
     static void SetThreadName(const char * name)
     {
+        if (name == NULL) return;
+
 #if defined(PLAT_DEBUG) && defined(PLAT_COMPILER_MSVC)
         #define MS_VC_EXCEPTION 0x406d1388
 
