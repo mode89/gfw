@@ -3,7 +3,7 @@
 #include "common/mutex.h"
 #include "taskman/taskman.h"
 
-#define TASK_COUNT          100000
+#define TASK_COUNT          1000000
 #define TASK_ITER_COUNT     1000
 
 using namespace Common;
