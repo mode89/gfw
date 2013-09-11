@@ -1,11 +1,11 @@
 #include "common/trace.h"
 #include "common/threads.h"
 
-#include "taskman/win/taskman.h"
+#include "threadpool/win/threadpool.h"
 
 #include <windows.h>
 
-namespace TaskMan {
+namespace ThreadPool {
 
     using namespace Common;
 
@@ -18,34 +18,34 @@ namespace TaskMan {
 
             IRunnableRef task;
 
-            while (task = mTaskManager->Dequeue(), task.IsAttached())
+            while (task = mThreadPool->Dequeue(), task.IsAttached())
             {
                 task->Run();
             }
         }
 
     public:
-        WorkerThread(uint32_t id, TaskManagerIn taskManager)
-            : mTaskManager(taskManager)
+        WorkerThread(uint32_t id, ThreadPoolImplIn taskManager)
+            : mThreadPool(taskManager)
         {}
 
     private:
-        TaskManagerRef  mTaskManager;
+        ThreadPoolImplRef   mThreadPool;
     };
 
-    TaskManager *   TaskManager::mInstance      = NULL;
+    ThreadPoolImpl *   ThreadPoolImpl::mInstance      = NULL;
 
-    ITaskManagerRef ITaskManager::GetInstance()
+    IThreadPoolRef IThreadPool::GetInstance()
     {
-        if (TaskManager::mInstance == NULL)
+        if (ThreadPoolImpl::mInstance == NULL)
         {
-            TaskManager::mInstance = new TaskManager;
+            ThreadPoolImpl::mInstance = new ThreadPoolImpl;
         }
 
-        return TaskManager::mInstance;
+        return ThreadPoolImpl::mInstance;
     }
 
-    TaskManager::TaskManager()
+    ThreadPoolImpl::ThreadPoolImpl()
         : mThreadCount(0)
         , mWaitersCount(0)
     {
@@ -55,13 +55,13 @@ namespace TaskMan {
         mThreadCount = si.dwNumberOfProcessors;
     }
 
-    TaskManager::~TaskManager()
+    ThreadPoolImpl::~ThreadPoolImpl()
     {
         TRACE_ASSERT(mInstance != NULL);
         mInstance = NULL;
     }
 
-    void TaskManager::Run()
+    void ThreadPoolImpl::Run()
     {
         mWaitersCount = 0;
 
@@ -91,7 +91,7 @@ namespace TaskMan {
         }
     }
 
-    void TaskManager::Enqueue(IRunnableIn task)
+    void ThreadPoolImpl::Enqueue(IRunnableIn task)
     {
         mMutexQueue.Lock();
         {
@@ -106,7 +106,7 @@ namespace TaskMan {
         mMutexQueue.Unlock();
     }
 
-    IRunnableRef TaskManager::Dequeue()
+    IRunnableRef ThreadPoolImpl::Dequeue()
     {
         IRunnableRef task;
 

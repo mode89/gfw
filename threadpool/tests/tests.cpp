@@ -1,13 +1,13 @@
 #include "gtest/gtest.h"
 
 #include "common/mutex.h"
-#include "taskman/taskman.h"
+#include "threadpool/threadpool.h"
 
-#define TASK_COUNT          1000000
-#define TASK_ITER_COUNT     1000
+#define TASK_COUNT          100000
+#define TASK_ITER_COUNT     3000
 
 using namespace Common;
-using namespace TaskMan;
+using namespace ThreadPool;
 
 class Task : public IRunnable
 {
@@ -39,9 +39,9 @@ private:
     uint32_t    mIterCount;
 };
 
-TEST(TaskManagerTests, CreateAndRunTasks)
+TEST(ThreadPoolTests, CreateAndRunTasks)
 {
-    ITaskManagerRef taskManager = ITaskManager::GetInstance();
+    IThreadPoolRef threadPool = IThreadPool::GetInstance();
 
     Common::Mutex mutexSum;
     uint64_t sum = 0;
@@ -49,10 +49,10 @@ TEST(TaskManagerTests, CreateAndRunTasks)
     for (int i = 0; i < TASK_COUNT; ++ i)
     {
         Task * task = new Task(&sum, &mutexSum, TASK_ITER_COUNT);
-        taskManager->Enqueue(task);
+        threadPool->Enqueue(task);
     }
 
-    taskManager->Run();
+    threadPool->Run();
 
     ASSERT_TRUE(sum == (1ll * TASK_COUNT * (0 + (TASK_ITER_COUNT - 1)) * TASK_ITER_COUNT / 2));
 }
@@ -69,15 +69,15 @@ public:
         for (int i = 0; i < 100 && taskCnt > 0; ++ i, -- taskCnt)
         {
             Task * task = new Task(mSum, mMutexSum, TASK_ITER_COUNT);
-            mTaskManager->Enqueue(task);
+            mThreadPool->Enqueue(task);
         }
 
         mMutexTaskCnt->Lock();
         {
             if ((*mTaskCnt = taskCnt) > 0)
             {
-                TaskLauncher * taskLauncher = new TaskLauncher(mSum, mMutexSum, mTaskCnt, mMutexTaskCnt, mTaskManager);
-                mTaskManager->Enqueue(taskLauncher);
+                TaskLauncher * taskLauncher = new TaskLauncher(mSum, mMutexSum, mTaskCnt, mMutexTaskCnt, mThreadPool);
+                mThreadPool->Enqueue(taskLauncher);
             }
         }
         mMutexTaskCnt->Unlock();
@@ -89,8 +89,8 @@ public:
         Mutex * mutexSum,
         uint32_t * taskCnt,
         Mutex * mutexTaskCnt,
-        ITaskManagerIn taskManager)
-        : mTaskManager(taskManager)
+        IThreadPoolIn threadPool)
+        : mThreadPool(threadPool)
         , mSum(sum)
         , mMutexSum(mutexSum)
         , mTaskCnt(taskCnt)
@@ -98,16 +98,16 @@ public:
     {}
 
 private:
-    ITaskManagerRef     mTaskManager;
+    IThreadPoolRef      mThreadPool;
     uint64_t *          mSum;
     Mutex *             mMutexSum;
     uint32_t *          mTaskCnt;
     Mutex *             mMutexTaskCnt;
 };
 
-TEST(TaskManagerTests, LaunchTasks)
+TEST(ThreadPoolTests, LaunchTasks)
 {
-    ITaskManagerRef taskManager = ITaskManager::GetInstance();
+    IThreadPoolRef threadPool = IThreadPool::GetInstance();
 
     uint64_t sum = 0;
     Mutex mutexSum;
@@ -115,10 +115,10 @@ TEST(TaskManagerTests, LaunchTasks)
     uint32_t taskCnt = TASK_COUNT;
     Mutex mutexTaskCnt;
 
-    TaskLauncher * taskLauncher = new TaskLauncher(&sum, &mutexSum, &taskCnt, &mutexTaskCnt, taskManager);
-    taskManager->Enqueue(taskLauncher);
+    TaskLauncher * taskLauncher = new TaskLauncher(&sum, &mutexSum, &taskCnt, &mutexTaskCnt, threadPool);
+    threadPool->Enqueue(taskLauncher);
 
-    taskManager->Run();
+    threadPool->Run();
 
     ASSERT_TRUE(sum == (1ll * TASK_COUNT * (0 + (TASK_ITER_COUNT - 1)) * TASK_ITER_COUNT / 2));
 }

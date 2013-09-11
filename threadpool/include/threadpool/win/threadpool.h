@@ -1,16 +1,16 @@
-#ifndef __TASKMAN_WIN_TASKMAN_H__
-#define __TASKMAN_WIN_TASKMAN_H__
+#ifndef __THREADPOOL_WIN_THREADPOOL_H__
+#define __THREADPOOL_WIN_THREADPOOL_H__
 
 #include "common/autoref.h"
 #include "common/condition_variable.h"
 #include "common/mutex.h"
-#include "taskman/taskman.h"
+#include "threadpool/threadpool.h"
 
 #include <queue>
 
-namespace TaskMan {
+namespace ThreadPool {
 
-    class TaskManager : public ITaskManager
+    class ThreadPoolImpl : public IThreadPool
     {
     public:
         virtual void
@@ -24,11 +24,11 @@ namespace TaskMan {
         Dequeue();
 
     public:
-        TaskManager();
-        ~TaskManager();
+        ThreadPoolImpl();
+        ~ThreadPoolImpl();
 
     private:
-        static TaskManager *                mInstance;
+        static ThreadPoolImpl *             mInstance;
 
         uint32_t                            mThreadCount;
 
@@ -38,10 +38,10 @@ namespace TaskMan {
         Common::ConditionVariable           mNotEmptyCondition;
         uint32_t                            mWaitersCount;
 
-        friend class ITaskManager;
+        friend class IThreadPool;
     };
-    AUTOREF_REFERENCE_DECLARATION(TaskManager);
+    AUTOREF_REFERENCE_DECLARATION(ThreadPoolImpl);
 
 } // namespace TaskMan
 
-#endif // __TASKMAN_WIN_TASKMAN_H__
+#endif // __THREADPOOL_WIN_THREADPOOL_H__

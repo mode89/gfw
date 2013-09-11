@@ -1,12 +1,12 @@
-project(TASKMAN_TESTS)
+project(THREADPOOL_TESTS)
 cmake_minimum_required(VERSION 2.8)
 
-add_executable(taskman-tests tests.cpp)
+add_executable(threadpool-tests tests.cpp)
 
-find_package(taskman CONFIG)
-target_link_libraries(taskman-tests ${TASKMAN_LIBRARIES})
-include_directories(${TASKMAN_INCLUDE_DIRS})
+find_package(threadpool CONFIG)
+target_link_libraries(threadpool-tests ${THREADPOOL_LIBRARIES})
+include_directories(${THREADPOOL_INCLUDE_DIRS})
 
 find_package(gtest CONFIG)
-target_link_libraries(taskman-tests ${GTEST_LIBRARIES})
+target_link_libraries(threadpool-tests ${GTEST_LIBRARIES})
 include_directories(${GTEST_INCLUDE_DIRS})

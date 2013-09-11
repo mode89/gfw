@@ -1,15 +1,15 @@
-#ifndef __TASKMAN_TASKMAN_H__
-#define __TASKMAN_TASKMAN_H__
+#ifndef __THREADPOOL_THREADPOOL_H__
+#define __THREADPOOL_THREADPOOL_H__
 
 #include "common/runnable.h"
 
-namespace TaskMan {
+namespace ThreadPool {
 
-    AUTOREF_FORWARD_DECLARATION(ITaskManager);
-    class ITaskManager : public Common::ARefCounted
+    AUTOREF_FORWARD_DECLARATION(IThreadPool);
+    class IThreadPool : public Common::ARefCounted
     {
     public:
-        static ITaskManagerRef
+        static IThreadPoolRef
         GetInstance();
 
         virtual void
@@ -19,9 +19,9 @@ namespace TaskMan {
         Run() = 0;
 
         virtual
-        ~ITaskManager() {}
+        ~IThreadPool() {}
     };
 
 } // namespace TaskMan
 
-#endif // __TASKMAN_TASKMAN_H__
+#endif // __THREADPOOL_THREADPOOL_H__
