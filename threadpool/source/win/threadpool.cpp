@@ -25,8 +25,8 @@ namespace ThreadPool {
         }
 
     public:
-        WorkerThread(uint32_t id, ThreadPoolImplIn taskManager)
-            : mThreadPool(taskManager)
+        WorkerThread(uint32_t id, ThreadPoolImplIn threadPool)
+            : mThreadPool(threadPool)
         {}
 
     private:
@@ -74,7 +74,7 @@ namespace ThreadPool {
             const char * threadName = NULL;
 
 #ifdef PLAT_DEBUG
-            char name[32] = "TaskMan_Worker_";
+            char name[32] = "ThreadPool_Worker_";
             uint32_t nameLen = strlen(name);
             itoa(i, name + nameLen, 10);
             threadName = name;
@@ -147,4 +147,4 @@ namespace ThreadPool {
         return task;
     }
 
-} // namespace TaskMan
+} // namespace ThreadPool

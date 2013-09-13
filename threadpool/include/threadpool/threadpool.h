@@ -22,6 +22,6 @@ namespace ThreadPool {
         ~IThreadPool() {}
     };
 
-} // namespace TaskMan
+} // namespace ThreadPool
 
 #endif // __THREADPOOL_THREADPOOL_H__

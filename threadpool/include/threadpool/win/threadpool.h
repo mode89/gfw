@@ -42,6 +42,6 @@ namespace ThreadPool {
     };
     AUTOREF_REFERENCE_DECLARATION(ThreadPoolImpl);
 
-} // namespace TaskMan
+} // namespace ThreadPool
 
 #endif // __THREADPOOL_WIN_THREADPOOL_H__
