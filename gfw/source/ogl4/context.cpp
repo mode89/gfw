@@ -56,6 +56,7 @@ namespace GFW {
         };
 
         TRACE_ASSERT_GL(glGenBuffers, 1, &mScreenQuadBuffer);
+        TRACE_ASSERT(mScreenQuadBuffer != 0);
         TRACE_ASSERT_GL(glBindBuffer, GL_ARRAY_BUFFER, mScreenQuadBuffer);
         TRACE_ASSERT_GL(glBufferData, GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
         TRACE_ASSERT_GL(glBindBuffer, GL_ARRAY_BUFFER, 0);
@@ -108,6 +109,18 @@ namespace GFW {
 		}
 
         TRACE_ASSERT_GL(glClear, mask);
+    }
+
+    void Context::DrawScreenQuad()
+    {
+        FlushState();
+
+        TRACE_ASSERT_GL(glBindBuffer, GL_ARRAY_BUFFER, mScreenQuadBuffer);
+        TRACE_ASSERT_GL(glVertexAttribPointer, 0, 2, GL_FLOAT, GL_TRUE, 2 * sizeof(float), NULL);
+        TRACE_ASSERT_GL(glEnableVertexAttribArray, 0);
+        TRACE_ASSERT_GL(glBindBuffer, GL_ARRAY_BUFFER, 0);
+
+        TRACE_ASSERT_GL(glDrawArrays, GL_TRIANGLE_STRIP, 0, 4);
     }
 
     void Context::Draw( const DrawParams & dp )
@@ -260,11 +273,6 @@ namespace GFW {
     }
 
     void Context::SetFrameBuffer( uint32_t colorBufferCount, IRenderBufferRef color[], IRenderBufferIn depth )
-    {
-        TRACE_FAIL_MSG("Not yet implemented");
-    }
-
-    void Context::DrawScreenQuad()
     {
         TRACE_FAIL_MSG("Not yet implemented");
     }

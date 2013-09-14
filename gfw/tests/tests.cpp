@@ -228,7 +228,7 @@ TEST_F(GFWTests, DrawIndexed)
 
 TEST_F(GFWTests, DrawScreenQuad)
 {
-    IEffectRef effect = mFactory->CreateEffect(TESTS_SOURCE_DIR "draw.fx");
+    IEffectRef effect = mFactory->CreateEffect(TESTS_SOURCE_DIR "draw_screen_quad.fx");
 
     for (int i = 0; i < 60; ++ i)
     {
