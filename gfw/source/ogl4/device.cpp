@@ -91,9 +91,9 @@ namespace GFW {
             return false;
         }
 
-        mDefaultContext = new Context(this, mDrawingContext);
-
         AUTO_LOCK_CONTEXT;
+
+        mDefaultContext = new Context(this, mDrawingContext);
 
         const uint8_t * extensions = glGetString(GL_EXTENSIONS);
 

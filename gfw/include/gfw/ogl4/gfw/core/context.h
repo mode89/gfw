@@ -65,12 +65,18 @@ namespace GFW {
         ~Context();
 
     private:
+        void
+        InitScreenQuad();
+
+    private:
         typedef std::map < uint32_t, uint32_t > tMapProgs;
 
         DeviceRef                   mDevice;
         IDrawingContextRef          mDrawingContext;
 
         RenderingContext            mContextGL;
+
+        uint32_t                    mScreenQuadBuffer;
 
         ShaderRef                   mShaders[SHADER_STAGE_COUNT];
 
