@@ -87,6 +87,8 @@ namespace GFW {
         BufferRef                   mIndexBuffer;
 
         tMapProgs                   mPrograms;
+
+        TextureRef                  mTextures[SHADER_STAGE_COUNT][MAX_BIND_TEXTURES];
     };
 
 } // namespace GFW

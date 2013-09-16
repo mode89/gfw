@@ -13,6 +13,7 @@
 #include "gfw/core/format.h"
 #include "gfw/core/functions.h"
 #include "gfw/core/shader.h"
+#include "gfw/core/texture.h"
 
 namespace GFW {
 
@@ -260,16 +261,38 @@ namespace GFW {
         {
             TRACE_ASSERT_GL(glBindBuffer, GL_ELEMENT_ARRAY_BUFFER, mIndexBuffer->GetHandle());
         }
+
+        // Bind textures
+
+        for (int stage = 0; stage < SHADER_STAGE_COUNT; ++ stage)
+        {
+            for (int slot = 0; slot < MAX_BIND_TEXTURES; ++ slot)
+            {
+                TextureRef texture = mTextures[stage][slot];
+                if (texture.IsAttached())
+                {
+                    TRACE_ASSERT_GL(glBindTexture, GL_TEXTURE_2D, texture->GetHandle());
+                }
+            }
+        }
     }
 
     void Context::SetIndexBuffer( IBufferIn buffer )
     {
-        mIndexBuffer = buffer.StaticCast<Buffer>();
+        mIndexBuffer = buffer;
     }
 
-    void Context::SetTexture( int32_t stage, uint32_t slot, ITextureIn )
+    void Context::SetTexture( int32_t stage, uint32_t slot, ITextureIn texture )
     {
-        TRACE_FAIL_MSG("Not yet implemented");
+        switch (stage)
+        {
+        case SHADER_STAGE_PIXEL:
+            mTextures[stage][slot] = texture;
+            break;
+
+        default:
+            TRACE_FAIL();
+        }
     }
 
     void Context::SetFrameBuffer( uint32_t colorBufferCount, IRenderBufferRef color[], IRenderBufferIn depth )

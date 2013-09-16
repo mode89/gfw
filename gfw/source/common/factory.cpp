@@ -167,14 +167,14 @@ namespace GFW {
 
         VertexAttribute vertexAttribute;
         vertexAttribute.semantic = SEMANTIC_POSITION0;
-        vertexAttribute.format   = FORMAT_R32G32B32_FLOAT;
+        vertexAttribute.format   = FORMAT_RGB32_FLOAT;
         vertexAttribute.stride   = sizeof(Vertex);
 
         // Drawing parameters
 
         DrawIndexedParams drawParams;
         drawParams.primTop    = PRIM_TRIANGLES;
-        drawParams.indexType  = TYPE_UNSIGNED_INT;
+        drawParams.indexType  = TYPE_UINT;
         drawParams.indexStart = 0;
         drawParams.indexCount = indexCount;
 

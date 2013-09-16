@@ -3,13 +3,13 @@
 #include "gfw/base/device_child.h"
 #include "gfw/base/render_buffer.h"
 #include "gfw/base/resource.h"
-#include "gfw/base/texture.h"
 
 #include "gfw/core/buffer.h"
 #include "gfw/core/context.h"
 #include "gfw/core/device.h"
 #include "gfw/core/drawing_context.h"
 #include "gfw/core/shader.h"
+#include "gfw/core/texture.h"
 
 #include "gfw/core/functions.h"
 
@@ -135,12 +135,11 @@ namespace GFW {
         return NULL;
     }
 
-    ITextureRef Device::CreateTexture( const TextureDesc &, const void * initialData /*= 0*/ )
+    ITextureRef Device::CreateTexture( const TextureDesc & desc, const void * initialData /*= 0*/ )
     {
         AUTO_LOCK_CONTEXT;
 
-        TRACE_FAIL_MSG("Not yet implemented");
-        return NULL;
+        return new Texture(desc, initialData, this);
     }
 
     IRenderBufferRef Device::CreateRenderBuffer( ITextureIn, const SubResIdx & )

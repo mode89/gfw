@@ -32,7 +32,9 @@
     F(PFNGLFLUSHPROC,                       glFlush) \
     F(PFNGLFINISHPROC,                      glFinish) \
     F(PFNGLENABLEPROC,                      glEnable) \
-    F(PFNGLDISABLEPROC,                     glDisable)
+    F(PFNGLDISABLEPROC,                     glDisable) \
+    \
+    F(PFNGLTEXIMAGE2DPROC,                  glTexImage2D) \
 
 #define OPENGL_FUNCTIONS_EXT \
     F(PFNGLCREATESHADERPROC,                glCreateShader) \
@@ -93,6 +95,10 @@
     F(PFNGLSAMPLERPARAMETERIPROC,           glSamplerParameteri) \
     F(PFNGLSAMPLERPARAMETERFVPROC,          glSamplerParameterfv) \
     F(PFNGLSAMPLERPARAMETERFPROC,           glSamplerParameterf) \
+    \
+    F(PFNGLGENTEXTURESPROC,                 glGenTextures) \
+    F(PFNGLDELETETEXTURESPROC,              glDeleteTextures) \
+    F(PFNGLBINDTEXTUREPROC,                 glBindTexture) \
 
 #ifdef PLAT_WIN32
 

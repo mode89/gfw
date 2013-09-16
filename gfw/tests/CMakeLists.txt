@@ -3,7 +3,8 @@ cmake_minimum_required(VERSION 2.8)
 
 add_definitions(-DTESTS_SOURCE_DIR="${GFW_TESTS_SOURCE_DIR}/")
 
-add_executable(gfw-tests tests.cpp)
+file(GLOB GFW_TESTS_SOURCE_FILES *.cpp)
+add_executable(gfw-tests ${GFW_TESTS_SOURCE_FILES})
 
 find_package(gfw CONFIG)
 target_link_libraries(gfw-tests ${GFW_LIBRARIES})

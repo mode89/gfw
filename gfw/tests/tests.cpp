@@ -1,75 +1,9 @@
-#include "gfw/gfw.h"
-
-#include "gtest/gtest.h"
-
-#include "common/file.h"
-#include "common/counter.h"
+#include "gfw_tests.h"
 
 using namespace GFW;
 using namespace Common;
 
-static const uint32_t WINDOW_WIDTH  = 800;
-static const uint32_t WINDOW_HEIGHT = 600;
-
-class GFWTests : public testing::Test
-{
-public:
-    void SetUp()
-    {
-        // Create a window
-
-        WindowDesc windowDesc;
-        windowDesc.width  = WINDOW_WIDTH;
-        windowDesc.height = WINDOW_HEIGHT;
-
-        mWindow = CreateDefaultWindow(windowDesc);
-
-        // Create a graphical mDevice
-
-        DeviceParams deviceParams;
-        deviceParams.width        = WINDOW_WIDTH;
-        deviceParams.height       = WINDOW_HEIGHT;
-        deviceParams.windowHandle = mWindow;
-
-        mDevice = CreateDevice(deviceParams);
-
-        mContext = mDevice->GetDefaultContext();
-
-        // Create a factory
-
-        mFactory = CreateFactory(mDevice);
-
-        // Create clear parameters
-
-        mClearParams.mask     = CLEAR_COLOR;
-        mClearParams.color[0] = 0.0f;
-        mClearParams.color[1] = 0.0f;
-        mClearParams.color[2] = 0.3f;
-        mClearParams.color[3] = 1.0f;
-    }
-
-    void TearDown()
-    {
-        DestroyDefaultWindow(mWindow);
-    }
-
-protected:
-    WindowHandle    mWindow;
-    IDeviceRef      mDevice;
-    IContextRef     mContext;
-    IFactoryRef     mFactory;
-    ClearParams     mClearParams;
-};
-
-void Wait()
-{
-    static uint64_t freq = GetCounterFrequency();
-
-    uint64_t timeStart = GetCounter();
-    while ((GetCounter() - timeStart) < (freq / 120));
-}
-
-TEST_F(GFWTests, Clear)
+TEST_F(GfwTests, Clear)
 {
     // Main loop
 
@@ -87,7 +21,7 @@ TEST_F(GFWTests, Clear)
     }
 }
 
-TEST_F(GFWTests, Draw)
+TEST_F(GfwTests, Draw)
 {
     // Create effect
 
@@ -111,10 +45,10 @@ TEST_F(GFWTests, Draw)
 
     VertexAttribute vertexAttribs[2];
     vertexAttribs[0].semantic = SEMANTIC_POSITION0;
-    vertexAttribs[0].format   = FORMAT_R32G32_FLOAT;
+    vertexAttribs[0].format   = FORMAT_RG32_FLOAT;
     vertexAttribs[0].stride   = 20;
     vertexAttribs[1].semantic = SEMANTIC_COLOR0;
-    vertexAttribs[1].format   = FORMAT_R32G32B32_FLOAT;
+    vertexAttribs[1].format   = FORMAT_RGB32_FLOAT;
     vertexAttribs[1].stride   = 20;
     vertexAttribs[1].offset   = 8;
 
@@ -150,7 +84,7 @@ TEST_F(GFWTests, Draw)
     }
 }
 
-TEST_F(GFWTests, DrawIndexed)
+TEST_F(GfwTests, DrawIndexed)
 {
     // Create effect
 
@@ -185,10 +119,10 @@ TEST_F(GFWTests, DrawIndexed)
 
     VertexAttribute vertexAttribs[2];
     vertexAttribs[0].semantic = SEMANTIC_POSITION0;
-    vertexAttribs[0].format   = FORMAT_R32G32_FLOAT;
+    vertexAttribs[0].format   = FORMAT_RG32_FLOAT;
     vertexAttribs[0].stride   = 20;
     vertexAttribs[1].semantic = SEMANTIC_COLOR0;
-    vertexAttribs[1].format   = FORMAT_R32G32B32_FLOAT;
+    vertexAttribs[1].format   = FORMAT_RGB32_FLOAT;
     vertexAttribs[1].stride   = 20;
     vertexAttribs[1].offset   = 8;
 
@@ -196,7 +130,7 @@ TEST_F(GFWTests, DrawIndexed)
 
     DrawIndexedParams drawParams;
     drawParams.primTop     = PRIM_TRIANGLES_STRIP;
-    drawParams.indexType   = TYPE_UNSIGNED_SHORT;
+    drawParams.indexType   = TYPE_USHORT;
     drawParams.indexStart  = 0;
     drawParams.indexCount  = 4;
 
@@ -226,7 +160,7 @@ TEST_F(GFWTests, DrawIndexed)
     }
 }
 
-TEST_F(GFWTests, DrawScreenQuad)
+TEST_F(GfwTests, DrawScreenQuad)
 {
     IEffectRef effect = mFactory->CreateEffect(TESTS_SOURCE_DIR "draw_screen_quad.fx");
 
@@ -247,7 +181,7 @@ TEST_F(GFWTests, DrawScreenQuad)
     }
 }
 
-TEST_F(GFWTests, SurfaceMesh)
+TEST_F(GfwTests, SurfaceMesh)
 {
     IEffectRef effect = mFactory->CreateEffect(TESTS_SOURCE_DIR "draw_color_flat.fx");
 
@@ -271,7 +205,7 @@ TEST_F(GFWTests, SurfaceMesh)
     }
 }
 
-TEST_F(GFWTests, MapBuffer)
+TEST_F(GfwTests, MapBuffer)
 {
     static const uint32_t kDataCount = 100;
 
@@ -317,7 +251,7 @@ TEST_F(GFWTests, MapBuffer)
     }
 }
 
-TEST_F(GFWTests, UpdateBuffer)
+TEST_F(GfwTests, UpdateBuffer)
 {
     static const uint32_t kDataCount = 100;
 
@@ -357,25 +291,15 @@ TEST_F(GFWTests, UpdateBuffer)
     }
 }
 
-TEST_F(GFWTests, DISABLED_RenderToTexture)
+TEST_F(GfwTests, DISABLED_RenderToTexture)
 {
     // Get default color buffer
 
     IRenderBufferRef defaultColorBuffer = mDevice->GetDefaultColorBuffer();
 
-    // Create shaders
+    // Create effect
 
-    FileRef vertexShaderSource = File::Create();
-    ASSERT_TRUE(vertexShaderSource->Read(TESTS_SOURCE_DIR "render_to_texture_vert.glsl") != 0);
-
-    IShaderRef vertexShader = mDevice->CreateShader(SHADER_STAGE_VERTEX, vertexShaderSource->GetData());
-    ASSERT_TRUE(vertexShader.IsAttached());
-
-    FileRef pixelShaderSource = File::Create();
-    ASSERT_TRUE(pixelShaderSource->Read(TESTS_SOURCE_DIR "render_to_texture_frag.glsl") != 0);
-
-    IShaderRef pixelShader  = mDevice->CreateShader(SHADER_STAGE_PIXEL, pixelShaderSource->GetData());
-    ASSERT_TRUE(pixelShader.IsAttached());
+    IEffectRef effect = mFactory->CreateEffect("render_to_texture.fx");
 
     // Create geometry
 
@@ -419,10 +343,10 @@ TEST_F(GFWTests, DISABLED_RenderToTexture)
 
     VertexAttribute vertexAttribs[2];
     vertexAttribs[0].semantic = SEMANTIC_POSITION0;
-    vertexAttribs[0].format   = FORMAT_R32G32_FLOAT;
+    vertexAttribs[0].format   = FORMAT_RG32_FLOAT;
     vertexAttribs[0].stride   = 20;
     vertexAttribs[1].semantic = SEMANTIC_COLOR0;
-    vertexAttribs[1].format   = FORMAT_R32G32B32_FLOAT;
+    vertexAttribs[1].format   = FORMAT_RGB32_FLOAT;
     vertexAttribs[1].stride   = 20;
     vertexAttribs[1].offset   = 8;
 
@@ -430,7 +354,7 @@ TEST_F(GFWTests, DISABLED_RenderToTexture)
 
     DrawIndexedParams drawParams;
     drawParams.primTop    = PRIM_TRIANGLES_STRIP;
-    drawParams.indexType  = TYPE_UNSIGNED_SHORT;
+    drawParams.indexType  = TYPE_USHORT;
     drawParams.indexStart = 0;
     drawParams.indexCount = 4;
 
@@ -455,8 +379,7 @@ TEST_F(GFWTests, DISABLED_RenderToTexture)
             mContext->SetFrameBuffer(1, &colorBuffer, NULL);
             mContext->Clear(mClearParams);
 
-            mContext->SetShader(SHADER_STAGE_VERTEX, vertexShader);
-            mContext->SetShader(SHADER_STAGE_PIXEL,  pixelShader);
+            effect->Dispatch();
 
             mContext->SetVertexAttributes(2, vertexAttribs);
             mContext->SetVertexBuffer(0, vertPosBuf);

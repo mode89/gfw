@@ -11,6 +11,7 @@ namespace GFW {
     AUTOREF_FORWARD_DECLARATION(Context);
     AUTOREF_FORWARD_DECLARATION(Device);
     AUTOREF_FORWARD_DECLARATION(Shader);
+    AUTOREF_FORWARD_DECLARATION(Texture);
 
     typedef void * RenderingContext;
 

@@ -8,7 +8,13 @@ namespace GFW {
 
     uint32_t    GetOGLType(Type);
 
+    uint32_t    GetOGLType(Format);
+
     uint32_t    GetOGLDrawMode(Primitive);
+
+    uint32_t    GetOGLInternalFormat(Format);
+
+    uint32_t    GetOGLFormat(Format);
 
 } // namespace GFW
 

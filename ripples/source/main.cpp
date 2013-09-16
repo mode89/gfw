@@ -109,12 +109,12 @@ int main()
 
     VertexAttribute vertexAttribute;
     vertexAttribute.semantic = SEMANTIC_POSITION0;
-    vertexAttribute.format   = FORMAT_R32G32B32_FLOAT;
+    vertexAttribute.format   = FORMAT_RGB32_FLOAT;
     vertexAttribute.stride   = sizeof(Vertex);
 
     DrawIndexedParams drawParams;
     drawParams.primTop    = PRIM_TRIANGLES;
-    drawParams.indexType  = TYPE_UNSIGNED_SHORT;
+    drawParams.indexType  = TYPE_USHORT;
     drawParams.indexStart = 0;
     drawParams.indexCount = indexCount;
 
