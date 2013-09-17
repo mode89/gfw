@@ -253,3 +253,19 @@ TEST_F(AutoRefTests, ArrayOfRefs)
 
     AutoPointer<IObjectRef> objRefAutoArray = new IObjectRef [1000];
 }
+
+TEST_F(AutoRefTests, CompareRefs)
+{
+    IObjectRef ref1 = mFactory->CreateObject();
+    IObjectRef ref2 = mFactory->CreateObject();
+    ObjectRef  ref3 = mFactory->CreateObject();
+
+    ASSERT_TRUE(ref1 != ref2);
+    ASSERT_TRUE(ref1 != ref3);
+
+    ref1 = ref2;
+    ASSERT_TRUE(ref1 == ref2);
+
+    ref1 = ref3;
+    ASSERT_TRUE(ref1 == ref3);
+}

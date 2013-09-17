@@ -98,6 +98,18 @@ namespace Common {
             return *this;
         }
 
+        template < typename OtherClass >
+        inline bool operator != (const AutoRef<OtherClass> & other)
+        {
+            return mObject != other.GetPointer();
+        }
+
+        template < typename OtherClass >
+        inline bool operator == (const AutoRef<OtherClass> & other)
+        {
+            return mObject == other.GetPointer();
+        }
+
         template < class CastClass >
         inline AutoRef<CastClass> StaticCast() const
         {
