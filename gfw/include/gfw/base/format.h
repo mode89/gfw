@@ -9,6 +9,7 @@ namespace GFW {
         TYPE_FLOAT,
         TYPE_USHORT,
         TYPE_UINT,
+        TYPE_UBYTE,
     };
 
     enum Format

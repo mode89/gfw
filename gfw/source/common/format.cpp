@@ -7,12 +7,13 @@ namespace GFW {
 #define FORMATS             /*  Elem type    Elem num  */ \
     F(FORMAT_RG32_FLOAT,        TYPE_FLOAT,     2       ) \
     F(FORMAT_RGB32_FLOAT,       TYPE_FLOAT,     3       ) \
-    F(FORMAT_RGBA8_UNORM,       TYPE_UINT,      4       )
+    F(FORMAT_RGBA8_UNORM,       TYPE_UBYTE,     4       ) \
 
 #define TYPES               /* Size   */ \
     T(TYPE_FLOAT,               4       ) \
     T(TYPE_USHORT,              2       ) \
     T(TYPE_UINT,                4       ) \
+    T(TYPE_UBYTE,               1       ) \
 
     uint32_t GetFormatElementNumber( Format format )
     {

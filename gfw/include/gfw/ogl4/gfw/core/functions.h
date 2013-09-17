@@ -35,6 +35,7 @@
     F(PFNGLDISABLEPROC,                     glDisable) \
     \
     F(PFNGLTEXIMAGE2DPROC,                  glTexImage2D) \
+    F(PFNGLTEXPARAMETERIPROC,               glTexParameteri) \
 
 #define OPENGL_FUNCTIONS_EXT \
     F(PFNGLCREATESHADERPROC,                glCreateShader) \

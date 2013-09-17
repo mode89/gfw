@@ -8,9 +8,9 @@
 namespace GFW {
 
 #define FORMATS \
-    F(FORMAT_RGB32_FLOAT,   GL_RGB32F,      GL_RGB)             \
-    F(FORMAT_RG32_FLOAT,    GL_RG32F,       GL_RG)              \
-    F(FORMAT_RGBA8_UNORM,   GL_RGBA8,       GL_RGBA_INTEGER)    \
+    F(FORMAT_RGB32_FLOAT,   GL_RGB32F,      GL_RGB)     \
+    F(FORMAT_RG32_FLOAT,    GL_RG32F,       GL_RG)      \
+    F(FORMAT_RGBA8_UNORM,   GL_RGBA8,       GL_RGBA)    \
 
     uint32_t GetOGLType(Type type)
     {
@@ -22,6 +22,8 @@ namespace GFW {
             return GL_UNSIGNED_SHORT;
         case TYPE_UINT:
             return GL_UNSIGNED_INT;
+        case TYPE_UBYTE:
+            return GL_UNSIGNED_BYTE;
         default:
             TRACE_FAIL();
         }

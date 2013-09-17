@@ -20,6 +20,7 @@ namespace GFW {
         TRACE_ASSERT_GL(glTexImage2D,
             GL_TEXTURE_2D, 0, GetOGLInternalFormat(desc.format), desc.width, desc.height, 0,
             GetOGLFormat(desc.format), GetOGLType(desc.format), initialData);
+        TRACE_ASSERT_GL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         TRACE_ASSERT_GL(glBindTexture, GL_TEXTURE_2D, 0);
     }
 
