@@ -89,6 +89,8 @@ namespace GFW {
         tMapProgs                   mPrograms;
 
         TextureRef                  mTextures[SHADER_STAGE_COUNT][MAX_BIND_TEXTURES];
+
+        bool                        mDelayedClearState;
     };
 
 } // namespace GFW

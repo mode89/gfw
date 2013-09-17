@@ -24,10 +24,13 @@ namespace GFW {
         , mDrawingContext(dc)
         , mContextGL(NULL)
         , mScreenQuadBuffer(0)
+        , mDelayedClearState(false)
     {
         mContextGL = mDrawingContext->CreateContext();
 
         InitScreenQuad();
+
+        ClearState();
     }
 
     Context::~Context()
@@ -145,6 +148,12 @@ namespace GFW {
 
     void Context::ClearState()
     {
+        if (mDevice->GetCurrentContext().GetPointer() != this)
+        {
+            mDelayedClearState = true;
+            return;
+        }
+
         // Detach shaders
 
         TRACE_ASSERT_GL(glUseProgram, 0);
@@ -304,6 +313,12 @@ namespace GFW {
     {
         mDevice->LockContext(this);
         mDrawingContext->MakeCurrent(mContextGL);
+
+        if (mDelayedClearState)
+        {
+            ClearState();
+            mDelayedClearState = false;
+        }
     }
 
     void Context::EndScene()
