@@ -25,6 +25,8 @@ namespace GFW {
         , mContextGL(NULL)
         , mScreenQuadBuffer(0)
         , mDelayedClearState(false)
+        , mActiveTexturesDirtyMask(0)
+        , mNextActiveTextureUnit(0)
     {
         mContextGL = mDrawingContext->CreateContext();
 
@@ -172,6 +174,31 @@ namespace GFW {
 
         TRACE_ASSERT_GL(glBindBuffer, GL_ELEMENT_ARRAY_BUFFER, 0);
         mIndexBuffer.Detach();
+
+        // Detach textures
+
+        for (uint32_t stage = 0; stage < SHADER_STAGE_COUNT; ++ stage)
+        {
+            for (uint32_t slot = 0; slot < MAX_BIND_TEXTURES; ++ slot)
+            {
+                mTextureUnits[stage][slot] = -1;
+            }
+        }
+
+        for (uint32_t texUnit = 0; texUnit < MAX_BIND_TEXTURES; ++ texUnit)
+        {
+            if (mActiveTextures[texUnit].IsAttached())
+            {
+                TRACE_ASSERT_GL(glActiveTexture, GL_TEXTURE0 + texUnit);
+                TRACE_ASSERT_GL(glBindTexture, GL_TEXTURE_2D, 0);
+                mActiveTextures[texUnit].Detach();
+            }
+        }
+
+        mActiveTexturesDirtyMask = 0;
+        mNextActiveTextureUnit   = 0;
+
+        TRACE_ASSERT_GL(glActiveTexture, GL_TEXTURE0 + MAX_BIND_TEXTURES); // Is used as a temp texture
     }
 
     void Context::FlushState()
@@ -273,17 +300,17 @@ namespace GFW {
 
         // Bind textures
 
-        for (int stage = 0; stage < SHADER_STAGE_COUNT; ++ stage)
+        for (uint32_t unit = 0, mask = mActiveTexturesDirtyMask; mask; mask >>= 1, ++ unit)
         {
-            for (int slot = 0; slot < MAX_BIND_TEXTURES; ++ slot)
+            if (mask & 1)
             {
-                TextureRef texture = mTextures[stage][slot];
-                if (texture.IsAttached())
-                {
-                    TRACE_ASSERT_GL(glBindTexture, GL_TEXTURE_2D, texture->GetHandle());
-                }
+                TRACE_ASSERT_GL(glActiveTexture, GL_TEXTURE0 + unit);
+                TRACE_ASSERT_GL(glBindTexture, GL_TEXTURE_2D, mActiveTextures[unit]->GetHandle());
             }
         }
+        mActiveTexturesDirtyMask = 0;
+
+        TRACE_ASSERT_GL(glActiveTexture, GL_TEXTURE0 + MAX_BIND_TEXTURES); // Is used as a temp texture
     }
 
     void Context::SetIndexBuffer( IBufferIn buffer )
@@ -293,14 +320,42 @@ namespace GFW {
 
     void Context::SetTexture( int32_t stage, uint32_t slot, ITextureIn texture )
     {
-        switch (stage)
-        {
-        case SHADER_STAGE_PIXEL:
-            mTextures[stage][slot] = texture;
-            break;
+        TRACE_ASSERT(stage >= 0);
+        TRACE_ASSERT(stage < SHADER_STAGE_COUNT);
+        TRACE_ASSERT(slot < MAX_BIND_TEXTURES);
+        TRACE_ASSERT(texture.IsAttached());
 
-        default:
-            TRACE_FAIL();
+        int32_t & textureUnit = mTextureUnits[stage][slot];
+
+        if (textureUnit == -1)
+        {
+            TRACE_ASSERT(mActiveTextures[mNextActiveTextureUnit].IsNull());
+
+            textureUnit = mNextActiveTextureUnit;
+            mActiveTextures[mNextActiveTextureUnit] = texture;
+            mActiveTexturesDirtyMask |= (1 << mNextActiveTextureUnit);
+
+            // Find a free texture unit
+
+            uint32_t unit = (mNextActiveTextureUnit + 1) % MAX_BIND_TEXTURES;
+            while (mActiveTextures[unit].IsAttached() && unit != mNextActiveTextureUnit)
+            {
+                unit = (++ unit) % MAX_BIND_TEXTURES;
+            }
+            mNextActiveTextureUnit = unit;
+        }
+        else
+        {
+            if (mActiveTextures[textureUnit] != texture)
+            {
+                // Unbind a previous texture
+                TRACE_ASSERT_GL(glActiveTexture, GL_TEXTURE0 + textureUnit);
+                TRACE_ASSERT_GL(glBindTexture, GL_TEXTURE_2D, 0);
+                TRACE_ASSERT_GL(glActiveTexture, GL_TEXTURE0 + MAX_BIND_TEXTURES);
+
+                mActiveTextures[textureUnit] = texture;
+                mActiveTexturesDirtyMask |= (1 << textureUnit);
+            }
         }
     }
 

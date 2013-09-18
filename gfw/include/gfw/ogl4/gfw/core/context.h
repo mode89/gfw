@@ -88,7 +88,10 @@ namespace GFW {
 
         tMapProgs                   mPrograms;
 
-        TextureRef                  mTextures[SHADER_STAGE_COUNT][MAX_BIND_TEXTURES];
+        int32_t                     mTextureUnits[SHADER_STAGE_COUNT][MAX_BIND_TEXTURES];
+        TextureRef                  mActiveTextures[MAX_BIND_TEXTURES];
+        uint32_t                    mActiveTexturesDirtyMask;
+        uint32_t                    mNextActiveTextureUnit;
 
         bool                        mDelayedClearState;
     };

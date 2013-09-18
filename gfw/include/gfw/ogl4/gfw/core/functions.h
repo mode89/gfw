@@ -99,6 +99,7 @@
     \
     F(PFNGLGENTEXTURESPROC,                 glGenTextures) \
     F(PFNGLDELETETEXTURESPROC,              glDeleteTextures) \
+    F(PFNGLACTIVETEXTUREPROC,               glActiveTexture) \
     F(PFNGLBINDTEXTUREPROC,                 glBindTexture) \
 
 #ifdef PLAT_WIN32
