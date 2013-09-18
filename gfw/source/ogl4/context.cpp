@@ -349,9 +349,12 @@ namespace GFW {
             if (mActiveTextures[textureUnit] != texture)
             {
                 // Unbind a previous texture
-                TRACE_ASSERT_GL(glActiveTexture, GL_TEXTURE0 + textureUnit);
-                TRACE_ASSERT_GL(glBindTexture, GL_TEXTURE_2D, 0);
-                TRACE_ASSERT_GL(glActiveTexture, GL_TEXTURE0 + MAX_BIND_TEXTURES);
+                if ((mActiveTexturesDirtyMask & (1 << textureUnit)) == 0)
+                {
+                    TRACE_ASSERT_GL(glActiveTexture, GL_TEXTURE0 + textureUnit);
+                    TRACE_ASSERT_GL(glBindTexture, GL_TEXTURE_2D, 0);
+                    TRACE_ASSERT_GL(glActiveTexture, GL_TEXTURE0 + MAX_BIND_TEXTURES);
+                }
 
                 mActiveTextures[textureUnit] = texture;
                 mActiveTexturesDirtyMask |= (1 << textureUnit);
