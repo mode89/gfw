@@ -14,6 +14,9 @@ namespace GFW {
         virtual void
         Dispatch();
 
+        virtual IShaderRef
+        GetShader(ShaderStage stage) { return mShaders[stage]; }
+
     public:
         Effect(IShaderRef[], IDeviceIn);
         ~Effect();

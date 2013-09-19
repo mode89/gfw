@@ -2,6 +2,7 @@
 #define __GFW_BASE_EFFECT_H__
 
 #include "gfw/base/device_child.h"
+#include "gfw/base/shader_stage.h"
 #include "gfw/base/types_fwd.h"
 
 namespace GFW {
@@ -11,6 +12,9 @@ namespace GFW {
     public:
         virtual void
         Dispatch() = 0;
+
+        virtual IShaderRef
+        GetShader(ShaderStage) = 0;
 
         virtual
         ~IEffect() {}
