@@ -4,6 +4,7 @@
 #include "gfw/common/device_child.inl"
 
 #include "gfw/core/shader.h"
+#include "gfw/core/shader_stage.h"
 #include "gfw/core/functions.h"
 
 #include <string.h>
@@ -12,67 +13,81 @@ namespace GFW {
 
     using namespace Common;
 
-    static uint32_t GetShaderType(int32_t stage)
-    {
-        switch (stage)
-        {
-        case SHADER_STAGE_VERTEX:     return GL_VERTEX_SHADER;
-        case SHADER_STAGE_PIXEL:      return GL_FRAGMENT_SHADER;
-        default:                TRACE_FAIL();
-        }
-
-        return 0;
-    }
-
-    Shader::Shader( ShaderStage stage, IDeviceRef device )
+    Shader::Shader( const char * source, ShaderStage stage, IDeviceRef device )
         : ADeviceChild(device)
         , mStage(stage)
-        , mShader(0)
+        , mHandle(0)
         , mHash(0)
     {
-        mShader = TRACE_ASSERT_GL(glCreateShader, GetShaderType(mStage));
-        TRACE_ASSERT(mShader != 0);
-    }
-
-    Shader::~Shader()
-    {
-        TRACE_ASSERT(mShader != 0);
-        TRACE_ASSERT_GL(glDeleteShader, mShader);
-    }
-
-    bool Shader::Compile( const char * source )
-    {
-        TRACE_ASSERT(source != NULL);
-        TRACE_ASSERT(mShader != 0);
+        uint32_t shader = TRACE_ASSERT_GL(glCreateShader, GetOGLShaderType(mStage));
+        TRACE_ASSERT(shader != 0);
 
         const char * strings[] = { source };
-        TRACE_ASSERT_GL(glShaderSource, mShader, 1, strings, NULL);
+        TRACE_ASSERT_GL(glShaderSource, shader, 1, strings, NULL);
 
-        TRACE_ASSERT_GL(glCompileShader, mShader);
+        TRACE_ASSERT_GL(glCompileShader, shader);
 
         int32_t compileStatus = 0;
-        TRACE_ASSERT_GL(glGetShaderiv, mShader, GL_COMPILE_STATUS, &compileStatus);
+        TRACE_ASSERT_GL(glGetShaderiv, shader, GL_COMPILE_STATUS, &compileStatus);
 
         if (compileStatus == GL_FALSE)
         {
             int32_t infoLogLength = 0;
-            TRACE_ASSERT_GL(glGetShaderiv, mShader, GL_INFO_LOG_LENGTH, &infoLogLength);
+            TRACE_ASSERT_GL(glGetShaderiv, shader, GL_INFO_LOG_LENGTH, &infoLogLength);
 
             char * infoLog = new char [infoLogLength + 1];
-            TRACE_ASSERT_GL(glGetShaderInfoLog, mShader, infoLogLength, NULL, infoLog);
+            TRACE_ASSERT_GL(glGetShaderInfoLog, shader, infoLogLength, NULL, infoLog);
 
             infoLog[infoLogLength] = 0;
             TRACE_ERROR_FORMATTED("Cannot compile the shader\n\n%s\n", infoLog);
 
             delete infoLog;
 
-            return false;
+            TRACE_ASSERT_GL(glDeleteShader, shader);
+
+            return;
         }
+
+        uint32_t program = TRACE_ASSERT_GL(glCreateProgram);
+        TRACE_ASSERT(program != 0);
+
+        TRACE_ASSERT_GL(glProgramParameteri, program, GL_PROGRAM_SEPARABLE, GL_TRUE);
+        TRACE_ASSERT_GL(glAttachShader, program, shader);
+        TRACE_ASSERT_GL(glLinkProgram, program);
+
+        int32_t linkStatus = 0;
+        TRACE_ASSERT_GL(glGetProgramiv, program, GL_LINK_STATUS, &linkStatus);
+
+        if (linkStatus == 0)
+        {
+            int32_t infoLogLength = 0;
+            TRACE_ASSERT_GL(glGetProgramiv, program, GL_INFO_LOG_LENGTH, &infoLogLength);
+
+            char * infoLog = new char8_t [infoLogLength + 1];
+            TRACE_ASSERT_GL(glGetProgramInfoLog, program, infoLogLength, NULL, infoLog);
+
+            TRACE_ERROR_FORMATTED("Cannot link the program\n\n%s\n", infoLog);
+
+            delete infoLog;
+
+            TRACE_ASSERT_GL(glDeleteShader, shader);
+            TRACE_ASSERT_GL(glDeleteProgram, program);
+
+            return;
+        }
+
+        mHandle = program;
 
         uint32_t sourceLength = strlen(source);
         mHash = CRC32(0, source, sourceLength);
+    }
 
-        return true;
+    Shader::~Shader()
+    {
+        if (mHandle != 0)
+        {
+            TRACE_ASSERT_GL(glDeleteProgram, mHandle);
+        }
     }
 
 } // namespace GFW

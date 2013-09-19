@@ -13,6 +13,7 @@
 #include "gfw/core/format.h"
 #include "gfw/core/functions.h"
 #include "gfw/core/shader.h"
+#include "gfw/core/shader_stage.h"
 #include "gfw/core/texture.h"
 
 namespace GFW {
@@ -24,32 +25,52 @@ namespace GFW {
         , mDrawingContext(dc)
         , mContextGL(NULL)
         , mScreenQuadBuffer(0)
+        , mProgramPipeline(0)
         , mDelayedClearState(false)
         , mActiveTexturesDirtyMask(0)
         , mNextActiveTextureUnit(0)
     {
         mContextGL = mDrawingContext->CreateContext();
 
-        InitScreenQuad();
+        // Create context specific objects
+
+        RenderingContext currentContext = mDrawingContext->GetCurrentContext();
+        mDrawingContext->MakeCurrent(mContextGL);
+        {
+            TRACE_ASSERT_GL(glGenProgramPipelines, 1, &mProgramPipeline);
+            TRACE_ASSERT(mProgramPipeline != 0);
+            TRACE_ASSERT_GL(glBindProgramPipeline, mProgramPipeline);
+
+            InitScreenQuad();
+        }
+        mDrawingContext->MakeCurrent(currentContext);
 
         ClearState();
     }
 
     Context::~Context()
     {
-        for (tMapProgs::iterator it = mPrograms.begin(); it != mPrograms.end(); ++ it)
+        // Delete context specific objects
+
+        RenderingContext currentContext = mDrawingContext->GetCurrentContext();
+        mDrawingContext->MakeCurrent(mContextGL);
         {
-            if (it->second != 0)
+            if (mProgramPipeline != 0)
             {
-                TRACE_ASSERT_GL(glDeleteProgram, it->second);
+                TRACE_ASSERT_GL(glDeleteProgramPipelines, 1, &mProgramPipeline);
+            }
+
+            if (mScreenQuadBuffer)
+            {
+                TRACE_ASSERT_GL(glDeleteBuffers, 1, &mScreenQuadBuffer);
             }
         }
+        mDrawingContext->MakeCurrent(currentContext);
 
-        TRACE_ASSERT(mContextGL != NULL);
-        mDrawingContext->DeleteContext(mContextGL);
-
-        TRACE_ASSERT(mScreenQuadBuffer != 0);
-        TRACE_ASSERT_GL(glDeleteBuffers, 1, &mScreenQuadBuffer);
+        if (mContextGL != NULL)
+        {
+            mDrawingContext->DeleteContext(mContextGL);
+        }
     }
 
     void Context::InitScreenQuad()
@@ -158,11 +179,12 @@ namespace GFW {
 
         // Detach shaders
 
-        TRACE_ASSERT_GL(glUseProgram, 0);
-
-        for (int i = 0; i < SHADER_STAGE_COUNT; ++ i)
+        for (int stage = 0; stage < SHADER_STAGE_COUNT; ++ stage)
         {
-            mShaders[i].Detach();
+            uint32_t stageBit = GetOGLShaderStageBit(static_cast<ShaderStage>(stage));
+            TRACE_ASSERT_GL(glUseProgramStages, mProgramPipeline, stageBit, 0);
+
+            mShaders[stage].Detach();
         }
 
         // Detach buffers
@@ -205,60 +227,16 @@ namespace GFW {
     {
         // Setup shaders
 
-        uint32_t shaderHashes[SHADER_STAGE_COUNT];
         for (int stage = 0; stage < SHADER_STAGE_COUNT; ++ stage)
         {
-            shaderHashes[stage] = mShaders[stage].IsAttached() ? mShaders[stage]->GetHash() : 0;
+            uint32_t stageBit = GetOGLShaderStageBit(static_cast<ShaderStage>(stage));
+            uint32_t program  = mShaders[stage]->GetHandle();
+            TRACE_ASSERT_GL(glUseProgramStages, mProgramPipeline, stageBit, program);
         }
-
-        uint32_t programHash = CRC32(0, shaderHashes, sizeof(shaderHashes));
-
-        uint32_t program = 0;
-        tMapProgs::iterator it = mPrograms.find(programHash);
-        if (it != mPrograms.end())
-        {
-            program = it->second;
-        }
-        else
-        {
-            program = TRACE_ASSERT_GL(glCreateProgram);
-            TRACE_ASSERT(program != 0);
-
-            for (int stage = 0; stage < SHADER_STAGE_COUNT; ++ stage)
-            {
-                if (mShaders[stage].IsAttached())
-                {
-                    TRACE_ASSERT_GL(glAttachShader, program, mShaders[stage]->GetShaderObject());
-                }
-            }
-
-            TRACE_ASSERT_GL(glLinkProgram, program);
-
-            int32_t linkStatus = 0;
-            TRACE_ASSERT_GL(glGetProgramiv, program, GL_LINK_STATUS, &linkStatus);
-
-            if (linkStatus == 0)
-            {
-                int32_t infoLogLength = 0;
-                TRACE_ASSERT_GL(glGetProgramiv, program, GL_INFO_LOG_LENGTH, &infoLogLength);
-
-                char * infoLog = new char8_t [infoLogLength + 1];
-                TRACE_ASSERT_GL(glGetProgramInfoLog, program, infoLogLength, NULL, infoLog);
-
-                TRACE_ERROR_FORMATTED("Cannot link the program\n\n%s\n", infoLog);
-
-                delete infoLog;
-
-                TRACE_ASSERT_GL(glDeleteProgram, program);
-                program = 0;
-            }
-
-            mPrograms[programHash] = program;
-        }
-
-        TRACE_ASSERT_GL(glUseProgram, program);
 
         // Bind attributes
+
+        uint32_t vertexProgram = mShaders[SHADER_STAGE_VERTEX]->GetHandle();
 
         for (int i = 0; i < MAX_VERTEX_BUFFER_BIND; ++ i)
         {
@@ -273,7 +251,7 @@ namespace GFW {
             {
                 if (mVertexBuffers[attr.bufSlot].IsAttached())
                 {
-                    int32_t attrIndex = TRACE_ASSERT_GL(glGetAttribLocation, program, GetSemanticString(attr.semantic));
+                    int32_t attrIndex = TRACE_ASSERT_GL(glGetAttribLocation, vertexProgram, GetSemanticString(attr.semantic));
                     TRACE_ASSERT(attrIndex != -1);
 
                     if (attrIndex != -1)

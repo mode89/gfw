@@ -111,14 +111,7 @@ namespace GFW {
     {
         AUTO_LOCK_CONTEXT;
 
-        ShaderRef shader = new Shader(stage, this);
-
-        if (shader->Compile(static_cast<const char*>(shaderData)))
-        {
-            return shader.StaticCast<IShader>();
-        }
-
-        return NULL;
+        return new Shader(static_cast<const char*>(shaderData), stage, this);
     }
 
     IBufferRef Device::CreateBuffer( const BufferDesc & desc, const void * initialData )

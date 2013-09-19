@@ -53,6 +53,12 @@
     F(PFNGLUSEPROGRAMPROC,                  glUseProgram) \
     F(PFNGLGETPROGRAMIVPROC,                glGetProgramiv) \
     F(PFNGLGETPROGRAMINFOLOGPROC,           glGetProgramInfoLog) \
+    F(PFNGLPROGRAMPARAMETERIPROC,           glProgramParameteri) \
+    \
+    F(PFNGLGENPROGRAMPIPELINESPROC,         glGenProgramPipelines) \
+    F(PFNGLDELETEPROGRAMPIPELINESPROC,      glDeleteProgramPipelines) \
+    F(PFNGLBINDPROGRAMPIPELINEPROC,         glBindProgramPipeline) \
+    F(PFNGLUSEPROGRAMSTAGESPROC,            glUseProgramStages) \
     \
     F(PFNGLGETATTRIBLOCATIONPROC,           glGetAttribLocation) \
     \

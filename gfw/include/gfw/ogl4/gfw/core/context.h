@@ -79,14 +79,13 @@ namespace GFW {
         uint32_t                    mScreenQuadBuffer;
 
         ShaderRef                   mShaders[SHADER_STAGE_COUNT];
+        uint32_t                    mProgramPipeline;
 
         VertexAttribute             mVertAttrs[MAX_VERTEX_BUFFER_BIND];
 
         BufferRef                   mVertexBuffers[MAX_VERTEX_BUFFER_BIND];
 
         BufferRef                   mIndexBuffer;
-
-        tMapProgs                   mPrograms;
 
         int32_t                     mTextureUnits[SHADER_STAGE_COUNT][MAX_BIND_TEXTURES];
         TextureRef                  mActiveTextures[MAX_BIND_TEXTURES];
