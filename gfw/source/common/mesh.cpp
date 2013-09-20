@@ -2,6 +2,7 @@
 
 #include "gfw/base/buffer.h"
 #include "gfw/base/context.h"
+#include "gfw/base/input_layout.h"
 
 #include "gfw/common/mesh.h"
 
@@ -11,7 +12,6 @@ namespace GFW {
 
     Mesh::Mesh(IDeviceIn device)
         : ADeviceChild(device)
-        , mAttrCnt(0)
         , mBufCnt(0)
     {
 
@@ -27,7 +27,7 @@ namespace GFW {
         IContextRef context = mDevice->GetCurrentContext();
         TRACE_ASSERT(context.IsAttached());
 
-        context->SetVertexAttributes(mAttrCnt, mVertexAttributes);
+        context->SetInputLayout(mInputLayout);
 
         for (uint32_t i = 0; i < mBufCnt; ++ i)
         {
@@ -37,22 +37,6 @@ namespace GFW {
         context->SetIndexBuffer(mIndexBuffer);
 
         context->Draw(mDrawParams);
-    }
-
-    void Mesh::SetVertexAttributes(uint32_t attrCnt, VertexAttribute attrs[])
-    {
-        for (uint32_t i = 0; i < attrCnt; ++ i)
-        {
-            TRACE_ASSERT(attrs[i].semantic != SEMANTIC_UNKNOWN);
-            mVertexAttributes[i] = attrs[i];
-        }
-
-        for (uint32_t i = attrCnt; i < mAttrCnt; ++ i)
-        {
-            mVertexAttributes[i] = VertexAttribute();
-        }
-
-        mAttrCnt = attrCnt;
     }
 
     void Mesh::SetVertexBuffers(uint32_t bufCnt, IBufferRef bufs[])

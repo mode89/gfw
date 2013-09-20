@@ -3,7 +3,6 @@
 
 #include "gfw/base/draw_params.h"
 #include "gfw/base/mesh.h"
-#include "gfw/base/vertex_attribute.h"
 #include "gfw/common/device_child.h"
 #include "gfw/core/limits.h"
 
@@ -16,8 +15,8 @@ namespace GFW {
         Draw();
 
     public:
-        void
-        SetVertexAttributes(uint32_t attrCnt, VertexAttribute[]);
+        void inline
+        SetInputLayout(IInputLayoutIn il) { mInputLayout = il; }
 
         void
         SetVertexBuffers(uint32_t bufCnt, IBufferRef[]);
@@ -33,8 +32,7 @@ namespace GFW {
         ~Mesh();
 
     private:
-        VertexAttribute     mVertexAttributes[MAX_VERTEX_BUFFER_BIND];
-        uint32_t            mAttrCnt;
+        IInputLayoutRef     mInputLayout;
 
         IBufferRef          mVertexBuffers[MAX_VERTEX_BUFFER_BIND];
         uint32_t            mBufCnt;

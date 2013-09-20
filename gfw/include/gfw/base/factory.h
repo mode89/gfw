@@ -14,15 +14,6 @@ namespace GFW {
         virtual IMeshBuilderRef
         CreateMeshBuilder() = 0;
 
-        virtual IMeshRef
-        CreateSurfaceMesh(
-            float xLeft,
-            float yBottom,
-            float xRight,
-            float yTop,
-            uint32_t xSegments,
-            uint32_t ySegments) = 0;
-
         virtual
         ~IFactory() {}
     };

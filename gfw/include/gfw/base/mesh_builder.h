@@ -9,7 +9,7 @@ namespace GFW {
     {
     public:
         virtual void
-        SetVertexAttributes(uint32_t attrCnt, VertexAttribute[]) = 0;
+        SetInputLayout(IInputLayoutIn) = 0;
 
         virtual void
         SetVertexBuffers(uint32_t bufCnt, IBufferRef[]) = 0;

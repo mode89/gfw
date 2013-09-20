@@ -51,6 +51,7 @@ TEST_F(GfwTests, Draw)
     vertexAttribs[1].format   = FORMAT_RGB32_FLOAT;
     vertexAttribs[1].stride   = 20;
     vertexAttribs[1].offset   = 8;
+    IInputLayoutRef inputLayout = mDevice->CreateInputLayout(2, vertexAttribs, effect->GetShader(SHADER_STAGE_VERTEX));
 
     // Define draw params
 
@@ -71,7 +72,7 @@ TEST_F(GfwTests, Draw)
 
             effect->Dispatch();
 
-            mContext->SetVertexAttributes(2, vertexAttribs);
+            mContext->SetInputLayout(inputLayout);
             mContext->SetVertexBuffer(0, vertexBuffer);
 
             mContext->Draw(drawParams);
@@ -125,6 +126,7 @@ TEST_F(GfwTests, DrawIndexed)
     vertexAttribs[1].format   = FORMAT_RGB32_FLOAT;
     vertexAttribs[1].stride   = 20;
     vertexAttribs[1].offset   = 8;
+    IInputLayoutRef inputLayout = mDevice->CreateInputLayout(2, vertexAttribs, effect->GetShader(SHADER_STAGE_VERTEX));
 
     // Define draw params
 
@@ -146,7 +148,7 @@ TEST_F(GfwTests, DrawIndexed)
 
             effect->Dispatch();
 
-            mContext->SetVertexAttributes(2, vertexAttribs);
+            mContext->SetInputLayout(inputLayout);
             mContext->SetVertexBuffer(0, vertexBuffer);
             mContext->SetIndexBuffer(indexBuffer);
 
@@ -181,11 +183,105 @@ TEST_F(GfwTests, DrawScreenQuad)
     }
 }
 
-TEST_F(GfwTests, SurfaceMesh)
+struct Vertex
+{
+    float x;
+    float y;
+    float z;
+};
+
+TEST_F(GfwTests, CreateMesh)
 {
     IEffectRef effect = mFactory->CreateEffect(TESTS_SOURCE_DIR "draw_color_flat.fx");
 
-    IMeshRef plane = mFactory->CreateSurfaceMesh(-1.0f, -1.0f, 1.0f, 1.0f, 16, 12);
+    float    xLeft     = -1.0f;
+    float    yBottom   = -1.0f;
+    float    xRight    = 1.0f;
+    float    yTop      = 1.0f;
+    uint32_t xSegments = 16;
+    uint32_t ySegments = 12;
+
+    uint32_t xVertCnt = xSegments + 1;
+    uint32_t yVertCnt = ySegments + 1;
+    uint32_t vertCnt  = xVertCnt * yVertCnt;
+
+    // Create vertex buffer
+
+    AutoPointer<Vertex> vertices = new Vertex [vertCnt];
+    for (uint32_t j = 0; j < yVertCnt; ++ j)
+    {
+        uint32_t offset = j * xVertCnt;
+        for (uint32_t i = 0; i < xVertCnt; ++ i)
+        {
+            static const float xStep = (xRight - xLeft) / xSegments;
+            static const float yStep = (yTop - yBottom) / ySegments;
+
+            Vertex & vertex = vertices[i + offset];
+            vertex.x = xLeft + xStep * i;
+            vertex.y = yBottom + yStep * j;
+            vertex.z = 0.0f;
+        }
+    }
+
+    BufferDesc vertexBufferDesc;
+    vertexBufferDesc.size  = sizeof(Vertex) * vertCnt;
+    vertexBufferDesc.type  = BUFFER_VERTEX;
+    vertexBufferDesc.usage = USAGE_STATIC;
+    IBufferRef vertexBuffer = mDevice->CreateBuffer(vertexBufferDesc, vertices);
+
+    // Create index buffer
+
+    uint32_t indexCount = xSegments * ySegments * 2 * 3;
+    AutoPointer<uint32_t> indices = new uint32_t [indexCount];
+    for (uint32_t j = 0; j < ySegments; ++ j)
+    {
+        for (uint32_t i = 0; i < xSegments; ++ i)
+        {
+            uint32_t offset = (i + j * xSegments) * 2 * 3;
+            for (uint32_t k = 0; k < 6; ++ k)
+            {
+                static const uint32_t pattern[][2] = {
+                    { 0, 1 },
+                    { 1, 1 },
+                    { 0, 0 },
+                    { 1, 1 },
+                    { 1, 0 },
+                    { 0, 0 }
+                };
+
+                indices[offset + k] = (i + pattern[k][0]) + (j + pattern[k][1]) * xVertCnt;
+            }
+        }
+    }
+
+    BufferDesc indexBufferDesc;
+    indexBufferDesc.size  = sizeof(uint32_t) * xSegments * ySegments * 2 * 3;
+    indexBufferDesc.type  = BUFFER_INDEX;
+    indexBufferDesc.usage = USAGE_STATIC;
+    IBufferRef indexBuffer = mDevice->CreateBuffer(indexBufferDesc, indices);
+
+    // Create input layout
+
+    VertexAttribute vertexAttribute;
+    vertexAttribute.semantic = SEMANTIC_POSITION0;
+    vertexAttribute.format   = FORMAT_RGB32_FLOAT;
+    vertexAttribute.stride   = sizeof(Vertex);
+    IInputLayoutRef inputLayout = mDevice->CreateInputLayout(1, &vertexAttribute, effect->GetShader(SHADER_STAGE_VERTEX));
+
+    // Drawing parameters
+
+    DrawIndexedParams drawParams;
+    drawParams.primTop    = PRIM_TRIANGLES;
+    drawParams.indexType  = TYPE_UINT;
+    drawParams.indexStart = 0;
+    drawParams.indexCount = indexCount;
+
+    IMeshBuilderRef meshBuilder = mFactory->CreateMeshBuilder();
+    meshBuilder->SetInputLayout(inputLayout);
+    meshBuilder->SetVertexBuffers(1, &vertexBuffer);
+    meshBuilder->SetIndexBuffer(indexBuffer);
+    meshBuilder->SetDrawParams(drawParams);
+    IMeshRef mesh = meshBuilder->Build(mDevice);
 
     for (int i = 0; i < 60; ++ i)
     {
@@ -195,7 +291,7 @@ TEST_F(GfwTests, SurfaceMesh)
         {
             mContext->Clear(mClearParams);
             effect->Dispatch();
-            plane->Draw();
+            mesh->Draw();
         }
         mContext->EndScene();
 
@@ -349,6 +445,7 @@ TEST_F(GfwTests, DISABLED_RenderToTexture)
     vertexAttribs[1].format   = FORMAT_RGB32_FLOAT;
     vertexAttribs[1].stride   = 20;
     vertexAttribs[1].offset   = 8;
+    IInputLayoutRef inputLayout = mDevice->CreateInputLayout(2, vertexAttribs, effect->GetShader(SHADER_STAGE_VERTEX));
 
     // Define draw params
 
@@ -381,7 +478,7 @@ TEST_F(GfwTests, DISABLED_RenderToTexture)
 
             effect->Dispatch();
 
-            mContext->SetVertexAttributes(2, vertexAttribs);
+            mContext->SetInputLayout(inputLayout);
             mContext->SetVertexBuffer(0, vertPosBuf);
             mContext->SetVertexBuffer(1, vertColBuf);
             mContext->SetIndexBuffer(indexBuf);

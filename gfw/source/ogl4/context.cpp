@@ -12,6 +12,7 @@
 #include "gfw/core/drawing_context.h"
 #include "gfw/core/format.h"
 #include "gfw/core/functions.h"
+#include "gfw/core/input_layout.h"
 #include "gfw/core/shader.h"
 #include "gfw/core/shader_stage.h"
 #include "gfw/core/texture.h"
@@ -89,15 +90,9 @@ namespace GFW {
         TRACE_ASSERT_GL(glBindBuffer, GL_ARRAY_BUFFER, 0);
     }
 
-    void Context::SetVertexAttributes( uint32_t number, VertexAttribute attr[] )
+    void Context::SetInputLayout(IInputLayoutIn layout)
     {
-        TRACE_ASSERT(number > 0);
-        TRACE_ASSERT(number <= MAX_VERTEX_BUFFER_BIND);
-
-        for (uint32_t i = 0; i < number; ++ i)
-        {
-            mVertAttrs[i] = attr[i];
-        }
+        mInputLayout = layout;
     }
 
     void Context::SetVertexBuffer( uint32_t slot, IBufferIn buf )
@@ -243,6 +238,7 @@ namespace GFW {
             TRACE_ASSERT_GL(glDisableVertexAttribArray, i);
         }
 
+        /*
         for (int i = 0; i < MAX_VERTEX_BUFFER_BIND; ++ i)
         {
             const VertexAttribute & attr = mVertAttrs[i];
@@ -270,6 +266,7 @@ namespace GFW {
                 }
             }
         }
+        */
 
         if (mIndexBuffer.IsAttached())
         {

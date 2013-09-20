@@ -8,6 +8,7 @@
 #include "gfw/core/context.h"
 #include "gfw/core/device.h"
 #include "gfw/core/drawing_context.h"
+#include "gfw/core/input_layout.h"
 #include "gfw/core/shader.h"
 #include "gfw/core/texture.h"
 
@@ -112,6 +113,15 @@ namespace GFW {
         AUTO_LOCK_CONTEXT;
 
         return new Shader(static_cast<const char*>(shaderData), stage, this);
+    }
+
+    IInputLayoutRef Device::CreateInputLayout(uint32_t attrCnt, VertexAttribute attrs[], IShaderIn shader)
+    {
+        TRACE_ASSERT(shader.IsAttached());
+
+        AUTO_LOCK_CONTEXT;
+
+        return new InputLayout(attrCnt, attrs, shader, this);
     }
 
     IBufferRef Device::CreateBuffer( const BufferDesc & desc, const void * initialData )

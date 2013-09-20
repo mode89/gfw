@@ -2,6 +2,7 @@
 
 #include "gfw/base/buffer.h"
 #include "gfw/base/device.h"
+#include "gfw/base/input_layout.h"
 
 #include "gfw/common/mesh.h"
 #include "gfw/common/mesh_builder.h"
@@ -9,8 +10,7 @@
 namespace GFW {
 
     MeshBuilder::MeshBuilder()
-        : mAttrCnt(0)
-        , mBufCnt(0)
+        : mBufCnt(0)
     {
 
     }
@@ -18,21 +18,6 @@ namespace GFW {
     MeshBuilder::~MeshBuilder()
     {
 
-    }
-
-    void MeshBuilder::SetVertexAttributes(uint32_t attrCnt, VertexAttribute attrs[])
-    {
-        for (uint32_t i = 0; i < attrCnt; ++ i)
-        {
-            mVertexAttributes[i] = attrs[i];
-        }
-
-        for (uint32_t i = attrCnt; i < mAttrCnt; ++ i)
-        {
-            mVertexAttributes[i] = VertexAttribute();
-        }
-
-        mAttrCnt = attrCnt;
     }
 
     void MeshBuilder::SetVertexBuffers(uint32_t bufCnt, IBufferRef bufs[])
@@ -54,7 +39,7 @@ namespace GFW {
     {
         Mesh * mesh = new Mesh(device);
 
-        mesh->SetVertexAttributes(mAttrCnt, mVertexAttributes);
+        mesh->SetInputLayout(mInputLayout);
         mesh->SetVertexBuffers(mBufCnt, mVertexBuffers);
         mesh->SetIndexBuffer(mIndexBuffer);
         mesh->SetDrawParams(mDrawParams);

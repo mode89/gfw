@@ -50,6 +50,10 @@ int main()
 
     IFactoryRef factory = CreateFactory(device);
 
+    // Initialize pipeline
+
+    IEffectRef effect = factory->CreateEffect("draw.fx");
+
     // Initialize geometry
 
     AutoPointer<Vertex> u = new Vertex [nodeCnt];
@@ -111,6 +115,7 @@ int main()
     vertexAttribute.semantic = SEMANTIC_POSITION0;
     vertexAttribute.format   = FORMAT_RGB32_FLOAT;
     vertexAttribute.stride   = sizeof(Vertex);
+    IInputLayoutRef inputLayout = device->CreateInputLayout(1, &vertexAttribute, effect->GetShader(SHADER_STAGE_VERTEX));
 
     DrawIndexedParams drawParams;
     drawParams.primTop    = PRIM_TRIANGLES;
@@ -119,15 +124,11 @@ int main()
     drawParams.indexCount = indexCount;
 
     IMeshBuilderRef meshBuilder = factory->CreateMeshBuilder();
-    meshBuilder->SetVertexAttributes(1, &vertexAttribute);
+    meshBuilder->SetInputLayout(inputLayout);
     meshBuilder->SetVertexBuffers(1, &vertexBuffer);
     meshBuilder->SetIndexBuffer(indexBuffer);
     meshBuilder->SetDrawParams(drawParams);
     IMeshRef mesh = meshBuilder->Build(device);
-
-    // Initialize pipeline
-
-    IEffectRef effect = factory->CreateEffect("draw.fx");
 
     ClearParams clearParams;
     clearParams.mask  = CLEAR_COLOR;

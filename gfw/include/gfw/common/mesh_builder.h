@@ -2,7 +2,6 @@
 #define __GFW_COMMON_MESH_BUILDER_H__
 
 #include "gfw/base/mesh_builder.h"
-#include "gfw/base/vertex_attribute.h"
 #include "gfw/core/limits.h"
 
 namespace GFW {
@@ -11,7 +10,7 @@ namespace GFW {
     {
     public:
         virtual void
-        SetVertexAttributes(uint32_t attrCnt, VertexAttribute[]);
+        SetInputLayout(IInputLayoutIn il) { mInputLayout = il; }
 
         virtual void
         SetVertexBuffers(uint32_t bufCnt, IBufferRef[]);
@@ -30,8 +29,7 @@ namespace GFW {
         ~MeshBuilder();
 
     private:
-        VertexAttribute     mVertexAttributes[MAX_VERTEX_BUFFER_BIND];
-        uint32_t            mAttrCnt;
+        IInputLayoutRef     mInputLayout;
 
         IBufferRef          mVertexBuffers[MAX_VERTEX_BUFFER_BIND];
         uint32_t            mBufCnt;

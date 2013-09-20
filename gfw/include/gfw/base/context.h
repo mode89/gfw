@@ -12,7 +12,7 @@ namespace GFW {
         SetShader(int32_t stage, IShaderIn) = 0;
 
         virtual void
-        SetVertexAttributes(uint32_t number, VertexAttribute []) = 0;
+        SetInputLayout(IInputLayoutIn) = 0;
 
         virtual void
         SetVertexBuffer(uint32_t slot, IBufferIn) = 0;

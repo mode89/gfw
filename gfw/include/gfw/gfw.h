@@ -11,6 +11,7 @@
 #include "gfw/base/draw_params.h"
 #include "gfw/base/effect.h"
 #include "gfw/base/factory.h"
+#include "gfw/base/input_layout.h"
 #include "gfw/base/mesh.h"
 #include "gfw/base/mesh_builder.h"
 #include "gfw/base/primitive.h"

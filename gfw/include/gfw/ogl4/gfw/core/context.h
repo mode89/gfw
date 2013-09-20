@@ -21,7 +21,7 @@ namespace GFW {
         SetShader(int32_t stage, IShaderIn);
 
         virtual void
-        SetVertexAttributes(uint32_t number, VertexAttribute []);
+        SetInputLayout(IInputLayoutIn);
 
         virtual void
         SetVertexBuffer(uint32_t slot, IBufferIn);
@@ -81,7 +81,7 @@ namespace GFW {
         ShaderRef                   mShaders[SHADER_STAGE_COUNT];
         uint32_t                    mProgramPipeline;
 
-        VertexAttribute             mVertAttrs[MAX_VERTEX_BUFFER_BIND];
+        InputLayoutRef              mInputLayout;
 
         BufferRef                   mVertexBuffers[MAX_VERTEX_BUFFER_BIND];
 

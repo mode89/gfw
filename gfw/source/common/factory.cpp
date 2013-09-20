@@ -3,11 +3,10 @@
 #include "gfw/base/buffer.h"
 #include "gfw/base/device.h"
 #include "gfw/base/draw_params.h"
-#include "gfw/base/vertex_attribute.h"
+#include "gfw/base/input_layout.h"
 
 #include "gfw/common/effect.h"
 #include "gfw/common/factory.h"
-#include "gfw/common/mesh.h"
 #include "gfw/common/mesh_builder.h"
 #include "gfw/common/shader_stage.h"
 
@@ -87,106 +86,6 @@ namespace GFW {
     IMeshBuilderRef Factory::CreateMeshBuilder()
     {
         return new MeshBuilder();
-    }
-
-    struct Vertex
-    {
-        float x;
-        float y;
-        float z;
-    };
-
-    IMeshRef Factory::CreateSurfaceMesh(
-        float xLeft,
-        float yBottom,
-        float xRight,
-        float yTop,
-        uint32_t xSegments,
-        uint32_t ySegments)
-    {
-        uint32_t xVertCnt = xSegments + 1;
-        uint32_t yVertCnt = ySegments + 1;
-        uint32_t vertCnt  = xVertCnt * yVertCnt;
-
-        // Create vertex buffer
-
-        AutoPointer<Vertex> vertices = new Vertex [vertCnt];
-        for (uint32_t j = 0; j < yVertCnt; ++ j)
-        {
-            uint32_t offset = j * xVertCnt;
-            for (uint32_t i = 0; i < xVertCnt; ++ i)
-            {
-                static const float xStep = (xRight - xLeft) / xSegments;
-                static const float yStep = (yTop - yBottom) / ySegments;
-
-                Vertex & vertex = vertices[i + offset];
-                vertex.x = xLeft + xStep * i;
-                vertex.y = yBottom + yStep * j;
-                vertex.z = 0.0f;
-            }
-        }
-
-        BufferDesc vertexBufferDesc;
-        vertexBufferDesc.size  = sizeof(Vertex) * vertCnt;
-        vertexBufferDesc.type  = BUFFER_VERTEX;
-        vertexBufferDesc.usage = USAGE_STATIC;
-        IBufferRef vertexBuffer = mDevice->CreateBuffer(vertexBufferDesc, vertices);
-
-        // Create index buffer
-
-        uint32_t indexCount = xSegments * ySegments * 2 * 3;
-        AutoPointer<uint32_t> indices = new uint32_t [indexCount];
-        for (uint32_t j = 0; j < ySegments; ++ j)
-        {
-            for (uint32_t i = 0; i < xSegments; ++ i)
-            {
-                uint32_t offset = (i + j * xSegments) * 2 * 3;
-                for (uint32_t k = 0; k < 6; ++ k)
-                {
-                    static const uint32_t pattern[][2] = {
-                        { 0, 1 },
-                        { 1, 1 },
-                        { 0, 0 },
-                        { 1, 1 },
-                        { 1, 0 },
-                        { 0, 0 }
-                    };
-
-                    indices[offset + k] = (i + pattern[k][0]) + (j + pattern[k][1]) * xVertCnt;
-                }
-            }
-        }
-
-        BufferDesc indexBufferDesc;
-        indexBufferDesc.size  = sizeof(uint32_t) * xSegments * ySegments * 2 * 3;
-        indexBufferDesc.type  = BUFFER_INDEX;
-        indexBufferDesc.usage = USAGE_STATIC;
-        IBufferRef indexBuffer = mDevice->CreateBuffer(indexBufferDesc, indices);
-
-        // Vertex attributes
-
-        VertexAttribute vertexAttribute;
-        vertexAttribute.semantic = SEMANTIC_POSITION0;
-        vertexAttribute.format   = FORMAT_RGB32_FLOAT;
-        vertexAttribute.stride   = sizeof(Vertex);
-
-        // Drawing parameters
-
-        DrawIndexedParams drawParams;
-        drawParams.primTop    = PRIM_TRIANGLES;
-        drawParams.indexType  = TYPE_UINT;
-        drawParams.indexStart = 0;
-        drawParams.indexCount = indexCount;
-
-        // Build mesh
-
-        Mesh * mesh = new Mesh(mDevice);
-        mesh->SetVertexBuffers(1, &vertexBuffer);
-        mesh->SetIndexBuffer(indexBuffer);
-        mesh->SetVertexAttributes(1, &vertexAttribute);
-        mesh->SetDrawParams(drawParams);
-
-        return mesh;
     }
 
 } // namespace GFW
