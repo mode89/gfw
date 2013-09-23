@@ -82,6 +82,7 @@ namespace GFW {
         uint32_t                    mProgramPipeline;
 
         InputLayoutRef              mInputLayout;
+        uint32_t                    mEnabledVertexAttributesMask;
 
         BufferRef                   mVertexBuffers[MAX_BIND_VERTEX_BUFFERS];
 

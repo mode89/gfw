@@ -27,6 +27,7 @@ namespace GFW {
         , mContextGL(NULL)
         , mScreenQuadBuffer(0)
         , mProgramPipeline(0)
+        , mEnabledVertexAttributesMask(0)
         , mDelayedClearState(false)
         , mActiveTexturesDirtyMask(0)
         , mNextActiveTextureUnit(0)
@@ -192,6 +193,16 @@ namespace GFW {
         TRACE_ASSERT_GL(glBindBuffer, GL_ELEMENT_ARRAY_BUFFER, 0);
         mIndexBuffer.Detach();
 
+        for (uint32_t attrIndex = 0, mask = mEnabledVertexAttributesMask; mask; ++ attrIndex, mask >>= 1)
+        {
+            if (mask & 1)
+            {
+                TRACE_ASSERT(attrIndex < MAX_INPUT_ATTRIBUTES);
+                TRACE_ASSERT_GL(glDisableVertexAttribArray, attrIndex);
+            }
+        }
+        mEnabledVertexAttributesMask = 0;
+
         // Detach textures
 
         for (uint32_t stage = 0; stage < SHADER_STAGE_COUNT; ++ stage)
@@ -229,48 +240,45 @@ namespace GFW {
             TRACE_ASSERT_GL(glUseProgramStages, mProgramPipeline, stageBit, program);
         }
 
-        // Bind attributes
+        // Bind buffers
 
-        uint32_t vertexProgram = mShaders[SHADER_STAGE_VERTEX]->GetHandle();
-
-        for (int i = 0; i < MAX_BIND_VERTEX_BUFFERS; ++ i)
+        if (mInputLayout.IsAttached())
         {
-            TRACE_ASSERT_GL(glDisableVertexAttribArray, i);
-        }
-
-        /*
-        for (int i = 0; i < MAX_VERTEX_BUFFER_BIND; ++ i)
-        {
-            const VertexAttribute & attr = mVertAttrs[i];
-
-            if (attr.semantic != SEMANTIC_UNKNOWN)
+            for (uint32_t attrIndex = 0, mask = mInputLayout->GetEnabledAttributesMask(); mask; ++ attrIndex, mask >>= 1)
             {
-                if (mVertexBuffers[attr.bufSlot].IsAttached())
+                if (mask & 1)
                 {
-                    int32_t attrIndex = TRACE_ASSERT_GL(glGetAttribLocation, vertexProgram, GetSemanticString(attr.semantic));
-                    TRACE_ASSERT(attrIndex != -1);
+                    TRACE_ASSERT(attrIndex < MAX_INPUT_ATTRIBUTES);
 
-                    if (attrIndex != -1)
-                    {
-                        uint32_t bufObj = mVertexBuffers[attr.bufSlot]->GetHandle();
-                        TRACE_ASSERT_GL(glBindBuffer, GL_ARRAY_BUFFER, bufObj);
+                    const VertexAttribute & attr = mInputLayout->GetAttribute(attrIndex);
+                    TRACE_ASSERT(attr.semantic != SEMANTIC_UNKNOWN);
+                    TRACE_ASSERT(mVertexBuffers[attr.bufSlot].IsAttached());
 
-                        int32_t size = GetFormatElementNumber(attr.format);
-                        Type type    = GetFormatElementType(attr.format);
-                        TRACE_ASSERT_GL(glVertexAttribPointer, attrIndex, size, GetOGLType(type), GL_FALSE, attr.stride, reinterpret_cast<void*>(attr.offset));
+                    TRACE_ASSERT_GL(glBindBuffer, GL_ARRAY_BUFFER, mVertexBuffers[attr.bufSlot]->GetHandle());
 
-                        TRACE_ASSERT_GL(glEnableVertexAttribArray, attrIndex);
+                    int32_t size = GetFormatElementNumber(attr.format);
+                    Type type    = GetFormatElementType(attr.format);
+                    TRACE_ASSERT_GL(glVertexAttribPointer, attrIndex, size, GetOGLType(type), GL_FALSE, attr.stride, reinterpret_cast<void*>(attr.offset));
+                    TRACE_ASSERT_GL(glEnableVertexAttribArray, attrIndex);
 
-                        TRACE_ASSERT_GL(glBindBuffer, GL_ARRAY_BUFFER, 0);
-                    }
+                    TRACE_ASSERT_GL(glBindBuffer, GL_ARRAY_BUFFER, 0);
                 }
             }
-        }
-        */
 
-        if (mIndexBuffer.IsAttached())
-        {
-            TRACE_ASSERT_GL(glBindBuffer, GL_ELEMENT_ARRAY_BUFFER, mIndexBuffer->GetHandle());
+            for (uint32_t attrIndex = 0, mask = (mEnabledVertexAttributesMask & !mInputLayout->GetEnabledAttributesMask()); mask;
+                ++ attrIndex, mask >>= 1)
+            {
+                if (mask & 1)
+                {
+                    TRACE_ASSERT_GL(glDisableVertexAttribArray, attrIndex);
+                }
+            }
+            mEnabledVertexAttributesMask = mInputLayout->GetEnabledAttributesMask();
+
+            if (mIndexBuffer.IsAttached())
+            {
+                TRACE_ASSERT_GL(glBindBuffer, GL_ELEMENT_ARRAY_BUFFER, mIndexBuffer->GetHandle());
+            }
         }
 
         // Bind textures

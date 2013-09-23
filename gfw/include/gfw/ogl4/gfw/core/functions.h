@@ -54,6 +54,7 @@
     F(PFNGLGETPROGRAMIVPROC,                glGetProgramiv) \
     F(PFNGLGETPROGRAMINFOLOGPROC,           glGetProgramInfoLog) \
     F(PFNGLPROGRAMPARAMETERIPROC,           glProgramParameteri) \
+    F(PFNGLGETPROGRAMRESOURCELOCATIONPROC,  glGetProgramResourceLocation) \
     \
     F(PFNGLGENPROGRAMPIPELINESPROC,         glGenProgramPipelines) \
     F(PFNGLDELETEPROGRAMPIPELINESPROC,      glDeleteProgramPipelines) \
