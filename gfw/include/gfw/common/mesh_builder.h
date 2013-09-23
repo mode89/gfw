@@ -31,7 +31,7 @@ namespace GFW {
     private:
         IInputLayoutRef     mInputLayout;
 
-        IBufferRef          mVertexBuffers[MAX_VERTEX_BUFFER_BIND];
+        IBufferRef          mVertexBuffers[MAX_BIND_VERTEX_BUFFERS];
         uint32_t            mBufCnt;
 
         IBufferRef          mIndexBuffer;

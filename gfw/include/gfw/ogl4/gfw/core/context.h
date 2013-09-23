@@ -83,7 +83,7 @@ namespace GFW {
 
         InputLayoutRef              mInputLayout;
 
-        BufferRef                   mVertexBuffers[MAX_VERTEX_BUFFER_BIND];
+        BufferRef                   mVertexBuffers[MAX_BIND_VERTEX_BUFFERS];
 
         BufferRef                   mIndexBuffer;
 

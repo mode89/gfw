@@ -98,7 +98,7 @@ namespace GFW {
     void Context::SetVertexBuffer( uint32_t slot, IBufferIn buf )
     {
         TRACE_ASSERT(slot >= 0);
-        TRACE_ASSERT(slot < MAX_VERTEX_BUFFER_BIND);
+        TRACE_ASSERT(slot < MAX_BIND_VERTEX_BUFFERS);
         TRACE_ASSERT(buf.IsAttached());
 
         mVertexBuffers[slot] = buf.StaticCast<Buffer>();
@@ -184,7 +184,7 @@ namespace GFW {
 
         // Detach buffers
 
-        for (int i = 0; i < MAX_VERTEX_BUFFER_BIND; ++ i)
+        for (int i = 0; i < MAX_BIND_VERTEX_BUFFERS; ++ i)
         {
             mVertexBuffers[i].Detach();
         }
@@ -233,7 +233,7 @@ namespace GFW {
 
         uint32_t vertexProgram = mShaders[SHADER_STAGE_VERTEX]->GetHandle();
 
-        for (int i = 0; i < MAX_VERTEX_BUFFER_BIND; ++ i)
+        for (int i = 0; i < MAX_BIND_VERTEX_BUFFERS; ++ i)
         {
             TRACE_ASSERT_GL(glDisableVertexAttribArray, i);
         }
