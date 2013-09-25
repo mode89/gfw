@@ -20,6 +20,7 @@
 #include "gfw/base/resource.h"
 #include "gfw/base/sampler_state.h"
 #include "gfw/base/shader.h"
+#include "gfw/base/shader_reflect.h"
 #include "gfw/base/texture.h"
 #include "gfw/base/vertex_attribute.h"
 #include "gfw/base/window.h"

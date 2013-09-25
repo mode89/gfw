@@ -21,6 +21,11 @@ namespace GFW {
     AUTOREF_FORWARD_DECLARATION(IResource);
     AUTOREF_FORWARD_DECLARATION(ISamplerState);
     AUTOREF_FORWARD_DECLARATION(IShader);
+    AUTOREF_FORWARD_DECLARATION(IShaderBuffer);
+    AUTOREF_FORWARD_DECLARATION(IShaderParameter);
+    AUTOREF_FORWARD_DECLARATION(IShaderReflection);
+    AUTOREF_FORWARD_DECLARATION(IShaderResource);
+    AUTOREF_FORWARD_DECLARATION(IShaderVariable);
     AUTOREF_FORWARD_DECLARATION(ITexture);
 
     struct BufferDesc;
@@ -29,6 +34,11 @@ namespace GFW {
     struct DrawIndexedParams;
     struct ResourceDesc;
     struct TextureDesc;
+    struct ShaderDesc;
+    struct ShaderBufferDesc;
+    struct ShaderParameterDesc;
+    struct ShaderResourceDesc;
+    struct ShaderVariableDesc;
     struct SubResIdx;
     struct VertexAttribute;
 
