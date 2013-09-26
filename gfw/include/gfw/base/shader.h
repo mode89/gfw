@@ -12,6 +12,9 @@ namespace GFW {
     public:
         virtual ShaderStage
         GetStage() = 0;
+
+        virtual IShaderReflectionRef
+        GetReflection() = 0;
     };
     AUTOREF_REFERENCE_DECLARATION(IShader);
 

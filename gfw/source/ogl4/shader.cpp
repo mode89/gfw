@@ -1,11 +1,12 @@
 #include "common/trace.h"
 #include "common/crc32.h"
 
-#include "gfw/common/device_child.inl"
-
 #include "gfw/core/shader.h"
+#include "gfw/core/shader_reflect.h"
 #include "gfw/core/shader_stage.h"
 #include "gfw/core/functions.h"
+
+#include "gfw/common/device_child.inl"
 
 #include <string.h>
 
@@ -80,6 +81,8 @@ namespace GFW {
 
         uint32_t sourceLength = strlen(source);
         mHash = CRC32(0, source, sourceLength);
+
+        mReflection = new ShaderReflection(mHandle, mDevice);
     }
 
     Shader::~Shader()

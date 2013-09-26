@@ -5,6 +5,7 @@
 #include "gfw/core/functions.h"
 #include "gfw/core/input_layout.h"
 #include "gfw/core/shader.h"
+#include "gfw/core/shader_reflect.h"
 
 #include "gfw/common/device_child.inl"
 

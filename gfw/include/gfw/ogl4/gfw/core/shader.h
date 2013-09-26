@@ -13,6 +13,9 @@ namespace GFW {
         virtual ShaderStage
         GetStage() { return mStage; }
 
+        virtual IShaderReflectionRef
+        GetReflection() { return mReflection; }
+
     public:
         bool
         Compile(const char * source);
@@ -28,9 +31,10 @@ namespace GFW {
         ~Shader();
 
     private:
-        const ShaderStage   mStage;
-        uint32_t            mHandle;
-        uint32_t            mHash;
+        const ShaderStage       mStage;
+        uint32_t                mHandle;
+        uint32_t                mHash;
+        ShaderReflectionRef     mReflection;
     };
     AUTOREF_REFERENCE_DECLARATION(Shader);
 

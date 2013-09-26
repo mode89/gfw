@@ -12,13 +12,13 @@ namespace GFW {
     struct ShaderDesc
     {
         uint32_t    variableCount;
-        uint32_t    cbufferCount;
+        uint32_t    bufferCount;
         uint32_t    resourceCount;
         uint32_t    inputsCount;
 
         ShaderDesc()
             : variableCount(0)
-            , cbufferCount(0)
+            , bufferCount(0)
             , resourceCount(0)
             , inputsCount(0)
         {}
@@ -27,7 +27,7 @@ namespace GFW {
     class IShaderReflection : public IDeviceChild
     {
     public:
-        virtual ShaderDesc &
+        virtual const ShaderDesc &
         GetDesc() = 0;
 
         virtual IShaderVariableRef
@@ -84,7 +84,7 @@ namespace GFW {
     class IShaderVariable : public Common::ARefCounted
     {
     public:
-        virtual ShaderVariableDesc &
+        virtual const ShaderVariableDesc &
         GetDesc() = 0;
 
         virtual const char *
@@ -109,7 +109,7 @@ namespace GFW {
     class IShaderBuffer : public Common::ARefCounted
     {
     public:
-        virtual ShaderBufferDesc &
+        virtual const ShaderBufferDesc &
         GetDesc() = 0;
 
         virtual const char *
@@ -150,7 +150,7 @@ namespace GFW {
     class IShaderResource : public Common::ARefCounted
     {
     public:
-        virtual ShaderResourceDesc &
+        virtual const ShaderResourceDesc &
         GetDesc() = 0;
 
         virtual const char *
@@ -177,7 +177,7 @@ namespace GFW {
     class IShaderParameter : public Common::ARefCounted
     {
     public:
-        virtual ShaderParameterDesc &
+        virtual const ShaderParameterDesc &
         GetDesc() = 0;
 
         virtual const char *
