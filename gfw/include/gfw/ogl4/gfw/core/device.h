@@ -2,6 +2,7 @@
 #define __GFW_CORE_DEVICE_H__
 
 #include "common/mutex.h"
+#include "common/string_table.h"
 
 #include "gfw/base/device.h"
 #include "gfw/core/types_fwd.h"
@@ -54,6 +55,9 @@ namespace GFW {
         void
         UnlockContext(IContextRef);
 
+        inline Common::StringTable &
+        GetStringTable() { return mStringTable; }
+
     private:
         static PLAT_THREAD_LOCAL
         IContext*                   mCurrentContext;
@@ -66,6 +70,8 @@ namespace GFW {
         Common::Mutex               mMutex;
         IContextRef                 mDefaultContext;
         IRenderBufferRef            mDefaultColorBuffer;
+
+        Common::StringTable         mStringTable;
     };
     AUTOREF_REFERENCE_DECLARATION(Device);
 
