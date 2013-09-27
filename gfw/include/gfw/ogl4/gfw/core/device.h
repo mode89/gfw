@@ -2,9 +2,12 @@
 #define __GFW_CORE_DEVICE_H__
 
 #include "common/mutex.h"
+#include "common/platform.h"
 #include "common/string_table.h"
 
+#include "gfw/base/context.h"
 #include "gfw/base/device.h"
+#include "gfw/base/render_buffer.h"
 #include "gfw/core/types_fwd.h"
 
 namespace GFW {

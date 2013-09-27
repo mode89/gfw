@@ -1,7 +1,6 @@
 #include "common/trace.h"
 
 #include "gfw/base/device_child.h"
-#include "gfw/base/render_buffer.h"
 #include "gfw/base/resource.h"
 
 #include "gfw/core/buffer.h"
