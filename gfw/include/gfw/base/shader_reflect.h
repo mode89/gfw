@@ -64,6 +64,19 @@ namespace GFW {
     enum ShaderVariableType
     {
         SHADER_VAR_TYPE_UNKNOWN = 0,
+        SHADER_VAR_TYPE_FLOAT,
+        SHADER_VAR_TYPE_FLOAT2,
+        SHADER_VAR_TYPE_FLOAT3,
+        SHADER_VAR_TYPE_FLOAT4,
+        SHADER_VAR_TYPE_FLOAT44,
+        SHADER_VAR_TYPE_INT,
+        SHADER_VAR_TYPE_INT2,
+        SHADER_VAR_TYPE_INT3,
+        SHADER_VAR_TYPE_INT4,
+        SHADER_VAR_TYPE_BOOL,
+        SHADER_VAR_TYPE_BOOL2,
+        SHADER_VAR_TYPE_BOOL3,
+        SHADER_VAR_TYPE_BOOL4,
     };
 
     struct ShaderVariableDesc
@@ -125,11 +138,16 @@ namespace GFW {
     enum ShaderResourceType
     {
         SHADER_RES_TYPE_UNKNOWN = 0,
+        SHADER_RES_TYPE_CBUFFER,
+        SHADER_RES_TYPE_TEXTURE,
+        SHADER_RES_TYPE_BUFFER
     };
 
     enum ShaderResourceDim
     {
         SHADER_RES_DIM_UNKNOWN = 0,
+        SHADER_RES_DIM_BUFFER,
+        SHADER_RES_DIM_TEX_2D,
     };
 
     struct ShaderResourceDesc
