@@ -1,5 +1,7 @@
 #include "common/string_table.h"
 
+#include <string.h>
+
 namespace Common {
 
     StringTable::StringTable()
