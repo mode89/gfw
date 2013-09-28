@@ -94,7 +94,7 @@ namespace GFW {
 
         AUTO_LOCK_CONTEXT;
 
-        mDefaultContext = new Context(this, mDrawingContext);
+        mDefaultContext = new Context(mDrawingContext, this);
 
         const uint8_t * extensions = glGetString(GL_EXTENSIONS);
 
@@ -105,7 +105,7 @@ namespace GFW {
     {
         AUTO_LOCK_CONTEXT;
 
-        return new Context(this, mDrawingContext);
+        return new Context(mDrawingContext, this);
     }
 
     IShaderRef Device::CreateShader( ShaderStage stage, const void * shaderData )

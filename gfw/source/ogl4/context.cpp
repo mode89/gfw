@@ -22,7 +22,7 @@ namespace GFW {
 
     using namespace Common;
 
-    Context::Context(DeviceIn d, IDrawingContextIn dc)
+    Context::Context(IDrawingContextIn dc, Device * d)
         : mDevice(d)
         , mDrawingContext(dc)
         , mContextGL(NULL)

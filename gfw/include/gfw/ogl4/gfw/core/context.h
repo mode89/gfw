@@ -61,7 +61,7 @@ namespace GFW {
         FlushState();
 
     public:
-        Context(DeviceIn, IDrawingContextIn);
+        Context(IDrawingContextIn, Device *);
         ~Context();
 
     private:
@@ -71,7 +71,7 @@ namespace GFW {
     private:
         typedef std::map < uint32_t, uint32_t > tMapProgs;
 
-        DeviceRef                   mDevice;
+        Device *                    mDevice;
         IDrawingContextRef          mDrawingContext;
 
         RenderingContext            mContextGL;
