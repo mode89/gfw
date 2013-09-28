@@ -41,6 +41,10 @@ void GfwTests::SetUp()
 
 void GfwTests::TearDown()
 {
+    mFactory.Detach();
+    mContext.Detach();
+    mDevice.Detach();
+
     DestroyDefaultWindow(mWindow);
 }
 
