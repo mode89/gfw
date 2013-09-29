@@ -20,11 +20,10 @@ namespace GFW {
         GetDesc() { return mDesc; }
 
     public:
-        ShaderVariable();
-        ~ShaderVariable();
+        ShaderVariable(const char * name, const ShaderVariableDesc & desc) { mName = name; mDesc = desc; }
 
     private:
-        char *              mName;
+        const char *        mName;
         ShaderVariableDesc  mDesc;
     };
     AUTOREF_REFERENCE_DECLARATION(ShaderVariable);
@@ -124,7 +123,7 @@ namespace GFW {
         AShaderReflection(IDeviceIn);
         ~AShaderReflection();
 
-    private:
+    protected:
         typedef std::vector < ShaderVariableRef >   ShaderVariableVec;
         typedef std::vector < ShaderBufferRef >     ShaderBufferVec;
         typedef std::vector < ShaderResourceRef >   ShaderResourceVec;

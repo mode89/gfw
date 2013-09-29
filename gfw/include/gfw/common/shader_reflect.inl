@@ -20,16 +20,6 @@ namespace GFW {
     }
 
     template < class Base >
-    void AShaderReflection<Base>::Initialize(const ShaderDesc & desc)
-    {
-        mDesc = desc;
-        mVariables.resize(mDesc.variableCount);
-        mBuffers.resize(mDesc.bufferCount);
-        mResources.resize(mDesc.resourceCount);
-        mInputs.resize(mDesc.inputsCount);
-    }
-
-    template < class Base >
     IShaderVariableRef AShaderReflection<Base>::GetVariable(uint32_t index)
     {
         TRACE_ASSERT(index < mDesc.variableCount);

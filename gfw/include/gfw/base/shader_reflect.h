@@ -74,9 +74,6 @@ namespace GFW {
         SHADER_VAR_TYPE_INT3,
         SHADER_VAR_TYPE_INT4,
         SHADER_VAR_TYPE_BOOL,
-        SHADER_VAR_TYPE_BOOL2,
-        SHADER_VAR_TYPE_BOOL3,
-        SHADER_VAR_TYPE_BOOL4,
     };
 
     struct ShaderVariableDesc
