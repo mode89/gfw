@@ -38,11 +38,10 @@ namespace GFW {
         GetDesc() { return mDesc; }
 
     public:
-        ShaderBuffer();
-        ~ShaderBuffer();
+        ShaderBuffer(const char * name, const ShaderBufferDesc & desc) { mName = name; mDesc = desc; }
 
     private:
-        char *              mName;
+        const char *        mName;
         ShaderBufferDesc    mDesc;
     };
     AUTOREF_REFERENCE_DECLARATION(ShaderBuffer);
