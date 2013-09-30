@@ -56,11 +56,10 @@ namespace GFW {
         GetDesc() { return mDesc; }
 
     public:
-        ShaderResource();
-        ~ShaderResource();
+        ShaderResource(const char * name, const ShaderResourceDesc & desc) { mName = name; mDesc = desc; }
 
     private:
-        char *              mName;
+        const char *        mName;
         ShaderResourceDesc  mDesc;
     };
     AUTOREF_REFERENCE_DECLARATION(ShaderResource);

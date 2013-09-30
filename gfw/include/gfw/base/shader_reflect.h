@@ -145,6 +145,7 @@ namespace GFW {
         SHADER_RES_DIM_UNKNOWN = 0,
         SHADER_RES_DIM_BUFFER,
         SHADER_RES_DIM_TEX_2D,
+        SHADER_RES_DIM_TEX_2D_MSAA,
     };
 
     struct ShaderResourceDesc

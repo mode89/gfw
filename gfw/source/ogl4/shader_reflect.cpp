@@ -17,6 +17,10 @@ namespace GFW {
     T(GL_INT_VEC4,      SHADER_VAR_TYPE_INT4,       16)     \
     T(GL_BOOL,          SHADER_VAR_TYPE_BOOL,       4)      \
 
+#define SAMPLER_TYPES \
+    T(GL_SAMPLER_2D,                SHADER_RES_DIM_TEX_2D)      \
+    T(GL_SAMPLER_2D_MULTISAMPLE,    SHADER_RES_DIM_TEX_2D_MSAA) \
+
     static bool IsVariableType(uint32_t type)
     {
         switch (type)
@@ -55,6 +59,33 @@ namespace GFW {
         }
 
         return 0;
+    }
+
+    static bool IsSamplerType(uint32_t type)
+    {
+        switch (type)
+        {
+#define T(glType, dim) case glType:
+            SAMPLER_TYPES
+                return true;
+#undef T
+        }
+
+        return false;
+    }
+
+    static ShaderResourceDim GetSamplerDim(uint32_t type)
+    {
+        switch (type)
+        {
+#define T(glType, dim) case glType : return dim;
+            SAMPLER_TYPES
+#undef T
+        default:
+            TRACE_FAIL_MSG("Undefined type of the sampler");
+        }
+
+        return SHADER_RES_DIM_UNKNOWN;
     }
 
     ShaderReflection::ShaderReflection(uint32_t program, IDeviceIn device)
@@ -126,6 +157,21 @@ namespace GFW {
 
                     mVariables.push_back(new ShaderVariable(uniformName, varDesc));
                     mDesc.variableCount ++;
+                }
+                else if (IsSamplerType(params[0]))
+                {
+                    ShaderResourceDesc resDesc;
+                    resDesc.type = SHADER_RES_TYPE_TEXTURE;
+                    resDesc.dim  = GetSamplerDim(params[0]);
+                    resDesc.bindPoint = params[2];
+                    resDesc.bindCount = (params[4] == 0) ? 1 : params[4];
+
+                    mResources.push_back(new ShaderResource(uniformName, resDesc));
+                    mDesc.resourceCount ++;
+                }
+                else
+                {
+                    TRACE_FAIL_MSG("Undefined type of the uniform");
                 }
             }
         }
