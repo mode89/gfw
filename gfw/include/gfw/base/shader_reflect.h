@@ -52,7 +52,7 @@ namespace GFW {
         GetInputParameter(uint32_t index) = 0;
 
         virtual IShaderParameterRef
-        GetInputParameter(const char * name) = 0;
+        GetInputParameter(Semantic) = 0;
 
         virtual
         ~IShaderReflection() {}

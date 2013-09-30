@@ -103,7 +103,6 @@ namespace GFW {
         for (int32_t i = 0; i < inputsCount; ++ i)
         {
             TRACE_ASSERT_GL(glGetProgramResourceName, program, GL_PROGRAM_INPUT, i, sizeof(name), NULL, name);
-            const char * inputName = deviceImpl->GetStringTable().Resolve(name);
 
             uint32_t props[] = {
                 GL_TYPE,
@@ -115,7 +114,7 @@ namespace GFW {
 
             ShaderParameterDesc paramDesc;
             paramDesc.location = params[1];
-            paramDesc.semantic = GetSemantic(inputName);
+            paramDesc.semantic = GetSemantic(name);
 
             mInputs.push_back(new ShaderParameter(paramDesc));
             mDesc.inputsCount ++;
@@ -204,6 +203,8 @@ namespace GFW {
                 TRACE_FAIL_MSG("Undefined type of the uniform");
             }
         }
+
+        AShaderReflection::Initialize();
     }
 
     ShaderReflection::~ShaderReflection()

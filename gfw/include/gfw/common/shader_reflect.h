@@ -107,10 +107,10 @@ namespace GFW {
         GetInputParameter(uint32_t index);
 
         virtual IShaderParameterRef
-        GetInputParameter(const char * name);
+        GetInputParameter(Semantic);
 
     public:
-        void Initialize(const ShaderDesc &);
+        void Initialize();
 
     public:
         AShaderReflection(IDeviceIn);
@@ -122,10 +122,10 @@ namespace GFW {
         typedef std::vector < ShaderResourceRef >   ShaderResourceVec;
         typedef std::vector < ShaderParameterRef >  ShaderParameterVec;
 
-        typedef std::unordered_map < const char *, ShaderVariableRef >   ShaderVariableMap;
-        typedef std::unordered_map < const char *, ShaderBufferRef >     ShaderBufferMap;
-        typedef std::unordered_map < const char *, ShaderResourceRef >   ShaderResourceMap;
-        typedef std::unordered_map < const char *, ShaderParameterRef >  ShaderParameterMap;
+        typedef std::unordered_map < const char *, ShaderVariableRef >  ShaderVariableMap;
+        typedef std::unordered_map < const char *, ShaderBufferRef >    ShaderBufferMap;
+        typedef std::unordered_map < const char *, ShaderResourceRef >  ShaderResourceMap;
+        typedef std::unordered_map < uint32_t, ShaderParameterRef >     ShaderParameterMap;
 
         ShaderVariableVec   mVariables;
         ShaderBufferVec     mBuffers;
