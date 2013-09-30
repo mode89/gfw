@@ -1,6 +1,7 @@
 #ifndef __GFW_BASE_DEVICE_H__
 #define __GFW_BASE_DEVICE_H__
 
+#include "gfw/base/format.h"
 #include "gfw/base/shader_stage.h"
 #include "gfw/base/types_fwd.h"
 
@@ -24,8 +25,8 @@ namespace GFW {
         virtual ITextureRef
         CreateTexture(const TextureDesc &, const void * initialData = 0) = 0;
 
-        virtual IRenderBufferRef
-        CreateRenderBuffer(ITextureIn, const SubResIdx &) = 0;
+        virtual IRenderTargetRef
+        CreateRenderTarget(ITextureIn, const RenderTargetDesc &) = 0;
 
         virtual IContextRef
         GetCurrentContext() = 0;
@@ -33,8 +34,8 @@ namespace GFW {
         virtual IContextRef
         GetDefaultContext() = 0;
 
-        virtual IRenderBufferRef
-        GetDefaultColorBuffer() = 0;
+        virtual IRenderTargetRef
+        GetDefaultRenderTarget() = 0;
 
         virtual void
         Present() = 0;
@@ -47,14 +48,16 @@ namespace GFW {
 
     struct DeviceParams
     {
-        WindowHandle    windowHandle;   // Platform specific window handle
-        uint32_t        width;          // Back buffer width
-        uint32_t        height;         // Back buffer height
+        WindowHandle    windowHandle;       // Platform specific window handle
+        uint32_t        backBufferWidth;
+        uint32_t        backBufferHeight;
+        Format          backBufferFormat;
 
         DeviceParams()
             : windowHandle(NULL)
-            , width(0)
-            , height(0)
+            , backBufferWidth(0)
+            , backBufferHeight(0)
+            , backBufferFormat(FORMAT_UNKNOWN)
         {}
     };
 

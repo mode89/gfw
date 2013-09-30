@@ -7,7 +7,7 @@
 
 #include "gfw/base/context.h"
 #include "gfw/base/device.h"
-#include "gfw/base/render_buffer.h"
+#include "gfw/base/render_target.h"
 #include "gfw/core/types_fwd.h"
 
 namespace GFW {
@@ -30,8 +30,8 @@ namespace GFW {
         virtual ITextureRef
         CreateTexture(const TextureDesc &, const void * initialData = 0);
 
-        virtual IRenderBufferRef
-        CreateRenderBuffer(ITextureIn, const SubResIdx &);
+        virtual IRenderTargetRef
+        CreateRenderTarget(ITextureIn, const RenderTargetDesc &);
 
         inline virtual IContextRef
         GetCurrentContext() { return mCurrentContext; }
@@ -39,8 +39,8 @@ namespace GFW {
         inline virtual IContextRef
         GetDefaultContext() { return mDefaultContext; }
 
-        inline virtual IRenderBufferRef
-        GetDefaultColorBuffer() { return mDefaultColorBuffer; }
+        inline virtual IRenderTargetRef
+        GetDefaultRenderTarget() { return mDefaultRenderTarget; }
 
         virtual void
         Present();
@@ -51,6 +51,9 @@ namespace GFW {
 
         bool
         Initialize();
+
+        void
+        InitializeSwapChain();
 
         void
         LockContext(IContextRef);
@@ -72,7 +75,9 @@ namespace GFW {
 
         Common::Mutex               mMutex;
         IContextRef                 mDefaultContext;
-        IRenderBufferRef            mDefaultColorBuffer;
+
+        IRenderTargetRef            mDefaultRenderTarget;
+        uint32_t                    mResolveFramebuffer;
 
         Common::StringTable         mStringTable;
     };

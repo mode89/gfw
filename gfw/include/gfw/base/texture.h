@@ -25,7 +25,11 @@ namespace GFW {
     class ITexture: public IResource
     {
     public:
-        virtual ~ITexture() {}
+        virtual const TextureDesc &
+        GetDesc() = 0;
+
+        virtual
+        ~ITexture() {}
     };
     AUTOREF_REFERENCE_DECLARATION(ITexture);
 

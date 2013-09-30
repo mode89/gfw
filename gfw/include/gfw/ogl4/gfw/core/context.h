@@ -33,7 +33,7 @@ namespace GFW {
         SetTexture(int32_t stage, uint32_t slot, ITextureIn);
 
         virtual void
-        SetFrameBuffer(uint32_t colorBufferCount, IRenderBufferRef color[], IRenderBufferIn depth);
+        SetRenderTargets(uint32_t cpunt, IRenderTargetRef rt[]);
 
         virtual void
         BeginScene();
@@ -92,6 +92,10 @@ namespace GFW {
         TextureRef                  mActiveTextures[MAX_BIND_TEXTURES];
         uint32_t                    mActiveTexturesDirtyMask;
         uint32_t                    mNextActiveTextureUnit;
+
+        RenderTargetRef             mRenderTargets[MAX_RENDER_TARGETS];
+        uint32_t                    mRenderTargetsCount;
+        uint32_t                    mDrawFramebuffer;
 
         bool                        mDelayedClearState;
     };

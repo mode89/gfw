@@ -17,7 +17,7 @@ namespace GFW {
     AUTOREF_FORWARD_DECLARATION(IMesh);
     AUTOREF_FORWARD_DECLARATION(IMeshBuilder);
     AUTOREF_FORWARD_DECLARATION(IRasterizerState);
-    AUTOREF_FORWARD_DECLARATION(IRenderBuffer);
+    AUTOREF_FORWARD_DECLARATION(IRenderTarget);
     AUTOREF_FORWARD_DECLARATION(IResource);
     AUTOREF_FORWARD_DECLARATION(ISamplerState);
     AUTOREF_FORWARD_DECLARATION(IShader);
@@ -32,6 +32,7 @@ namespace GFW {
     struct ClearParams;
     struct DrawParams;
     struct DrawIndexedParams;
+    struct RenderTargetDesc;
     struct ResourceDesc;
     struct TextureDesc;
     struct ShaderDesc;

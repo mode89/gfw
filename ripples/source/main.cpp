@@ -40,11 +40,14 @@ int main()
     WindowHandle window = CreateDefaultWindow(windowDesc);
 
     DeviceParams deviceParams;
-    deviceParams.width          = kWindowWidth;
-    deviceParams.height         = kWindowHeight;
-    deviceParams.windowHandle   = window;
+    deviceParams.backBufferWidth    = kWindowWidth;
+    deviceParams.backBufferHeight   = kWindowHeight;
+    deviceParams.backBufferFormat   = FORMAT_RGBA8_UNORM;
+    deviceParams.windowHandle       = window;
 
     IDeviceRef device = CreateDevice(deviceParams);
+
+    IRenderTargetRef defaultRenderTarget = device->GetDefaultRenderTarget();
 
     IContextRef context = device->GetDefaultContext();
 
@@ -173,6 +176,7 @@ int main()
 
             // Draw the geometry
 
+            context->SetRenderTargets(1, &defaultRenderTarget);
             context->Clear(clearParams);
 
             effect->Dispatch();

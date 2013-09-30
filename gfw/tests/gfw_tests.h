@@ -17,11 +17,12 @@ public:
     void Wait();
 
 protected:
-    GFW::WindowHandle   mWindow;
-    GFW::IDeviceRef     mDevice;
-    GFW::IContextRef    mContext;
-    GFW::IFactoryRef    mFactory;
-    GFW::ClearParams    mClearParams;
+    GFW::WindowHandle       mWindow;
+    GFW::IDeviceRef         mDevice;
+    GFW::IRenderTargetRef   mDefaultRenderTarget;
+    GFW::IContextRef        mContext;
+    GFW::IFactoryRef        mFactory;
+    GFW::ClearParams        mClearParams;
 };
 
 #endif // __GFW_TESTS_GFW_TESTS_H__

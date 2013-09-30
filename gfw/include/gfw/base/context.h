@@ -24,7 +24,7 @@ namespace GFW {
         SetTexture(int32_t stage, uint32_t slot, ITextureIn) = 0;
 
         virtual void
-        SetFrameBuffer(uint32_t colorBufferCount, IRenderBufferRef color[], IRenderBufferIn depth) = 0;
+        SetRenderTargets(uint32_t rtCount, IRenderTargetRef rt[]) = 0;
 
         virtual void
         BeginScene() = 0;

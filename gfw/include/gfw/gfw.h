@@ -16,7 +16,7 @@
 #include "gfw/base/mesh_builder.h"
 #include "gfw/base/primitive.h"
 #include "gfw/base/rasterizer_state.h"
-#include "gfw/base/render_buffer.h"
+#include "gfw/base/render_target.h"
 #include "gfw/base/resource.h"
 #include "gfw/base/sampler_state.h"
 #include "gfw/base/shader.h"

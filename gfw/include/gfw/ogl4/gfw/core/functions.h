@@ -36,6 +36,9 @@
     \
     F(PFNGLTEXIMAGE2DPROC,                  glTexImage2D) \
     F(PFNGLTEXPARAMETERIPROC,               glTexParameteri) \
+    \
+    F(PFNGLDRAWBUFFERPROC,                  glDrawBuffer) \
+    F(PFNGLREADBUFFERPROC,                  glReadBuffer) \
 
 #define OPENGL_FUNCTIONS_EXT \
     F(PFNGLCREATESHADERPROC,                glCreateShader) \
@@ -111,6 +114,14 @@
     F(PFNGLDELETETEXTURESPROC,              glDeleteTextures) \
     F(PFNGLACTIVETEXTUREPROC,               glActiveTexture) \
     F(PFNGLBINDTEXTUREPROC,                 glBindTexture) \
+    \
+    F(PFNGLGENFRAMEBUFFERSPROC,             glGenFramebuffers) \
+    F(PFNGLDELETEFRAMEBUFFERSPROC,          glDeleteFramebuffers) \
+    F(PFNGLBINDFRAMEBUFFERPROC,             glBindFramebuffer) \
+    F(PFNGLFRAMEBUFFERTEXTUREPROC,          glFramebufferTexture) \
+    F(PFNGLBLITFRAMEBUFFERPROC,             glBlitFramebuffer) \
+    F(PFNGLDRAWBUFFERSPROC,                 glDrawBuffers) \
+    F(PFNGLCHECKFRAMEBUFFERSTATUSPROC,      glCheckFramebufferStatus) \
 
 #ifdef PLAT_WIN32
 

@@ -10,6 +10,9 @@ namespace GFW {
     class Texture : public ADeviceChild<ITexture>
     {
     public:
+        virtual const TextureDesc &
+        GetDesc() { return mDesc; }
+
         virtual void *
         Map(uint32_t mapFlags);
 

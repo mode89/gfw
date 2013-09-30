@@ -1,8 +1,6 @@
 #include "common/trace.h"
 #include "common/crc32.h"
 
-#include "gfw/base/render_buffer.h"
-
 #include "gfw/common/format.h"
 #include "gfw/common/semantic.h"
 
@@ -13,6 +11,7 @@
 #include "gfw/core/format.h"
 #include "gfw/core/functions.h"
 #include "gfw/core/input_layout.h"
+#include "gfw/core/render_target.h"
 #include "gfw/core/shader.h"
 #include "gfw/core/shader_reflect.h"
 #include "gfw/core/shader_stage.h"
@@ -32,6 +31,8 @@ namespace GFW {
         , mDelayedClearState(false)
         , mActiveTexturesDirtyMask(0)
         , mNextActiveTextureUnit(0)
+        , mRenderTargetsCount(0)
+        , mDrawFramebuffer(0)
     {
         mContextGL = mDrawingContext->CreateContext();
 
@@ -43,6 +44,10 @@ namespace GFW {
             TRACE_ASSERT_GL(glGenProgramPipelines, 1, &mProgramPipeline);
             TRACE_ASSERT(mProgramPipeline != 0);
             TRACE_ASSERT_GL(glBindProgramPipeline, mProgramPipeline);
+
+            TRACE_ASSERT_GL(glGenFramebuffers, 1, &mDrawFramebuffer);
+            TRACE_ASSERT(mDrawFramebuffer != -1);
+            TRACE_ASSERT_GL(glBindFramebuffer, GL_DRAW_FRAMEBUFFER, mDrawFramebuffer);
 
             InitScreenQuad();
         }
@@ -61,6 +66,11 @@ namespace GFW {
             if (mProgramPipeline != 0)
             {
                 TRACE_ASSERT_GL(glDeleteProgramPipelines, 1, &mProgramPipeline);
+            }
+
+            if (mDrawFramebuffer != 0)
+            {
+                TRACE_ASSERT_GL(glDeleteFramebuffers, 1, &mDrawFramebuffer);
             }
 
             if (mScreenQuadBuffer)
@@ -131,6 +141,8 @@ namespace GFW {
 			TRACE_ASSERT_GL(glClearDepth, cp.depth);
 			mask |= GL_DEPTH_BUFFER_BIT;
 		}
+
+        FlushState();
 
         TRACE_ASSERT_GL(glClear, mask);
     }
@@ -204,6 +216,8 @@ namespace GFW {
         }
         mEnabledVertexAttributesMask = 0;
 
+        mInputLayout.Detach();
+
         // Detach textures
 
         for (uint32_t stage = 0; stage < SHADER_STAGE_COUNT; ++ stage)
@@ -228,6 +242,16 @@ namespace GFW {
         mNextActiveTextureUnit   = 0;
 
         TRACE_ASSERT_GL(glActiveTexture, GL_TEXTURE0 + MAX_BIND_TEXTURES); // Is used as a temp texture
+
+        // Detach render targets
+
+        for (uint32_t i = 0; i < mRenderTargetsCount; ++ i)
+        {
+            TRACE_ASSERT_GL(glFramebufferTexture, GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, 0, 0);
+            mRenderTargets[i].Detach();
+        }
+        TRACE_ASSERT_GL(glDrawBuffer, GL_NONE);
+        mRenderTargetsCount = 0;
     }
 
     void Context::FlushState()
@@ -236,9 +260,9 @@ namespace GFW {
 
         for (int stage = 0; stage < SHADER_STAGE_COUNT; ++ stage)
         {
+            ShaderRef shader = mShaders[stage];
             uint32_t stageBit = GetOGLShaderStageBit(static_cast<ShaderStage>(stage));
-            uint32_t program  = mShaders[stage]->GetHandle();
-            TRACE_ASSERT_GL(glUseProgramStages, mProgramPipeline, stageBit, program);
+            TRACE_ASSERT_GL(glUseProgramStages, mProgramPipeline, stageBit, shader.IsAttached() ? shader->GetHandle() : 0);
         }
 
         // Bind buffers
@@ -295,6 +319,23 @@ namespace GFW {
         mActiveTexturesDirtyMask = 0;
 
         TRACE_ASSERT_GL(glActiveTexture, GL_TEXTURE0 + MAX_BIND_TEXTURES); // Is used as a temp texture
+
+        // Bind render targets
+
+        uint32_t drawBuffers[MAX_RENDER_TARGETS];
+        for (uint32_t i = 0; i < mRenderTargetsCount; ++ i)
+        {
+            RenderTargetRef rt      = mRenderTargets[i];
+            TextureRef      rtTex   = rt->GetTexture();
+            TRACE_ASSERT_GL(glFramebufferTexture, GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, rtTex->GetHandle(), rt->GetDesc().resourceIndex);
+            drawBuffers[i] = GL_COLOR_ATTACHMENT0 + i;
+        }
+        TRACE_ASSERT_GL(glDrawBuffers, mRenderTargetsCount, drawBuffers);
+
+#ifdef TRACE_ASSERT_ENABLED
+        int32_t status  = TRACE_ASSERT_GL(glCheckFramebufferStatus, GL_DRAW_FRAMEBUFFER);
+        TRACE_ASSERT(status == GL_FRAMEBUFFER_COMPLETE);
+#endif
     }
 
     void Context::SetIndexBuffer( IBufferIn buffer )
@@ -346,9 +387,19 @@ namespace GFW {
         }
     }
 
-    void Context::SetFrameBuffer( uint32_t colorBufferCount, IRenderBufferRef color[], IRenderBufferIn depth )
+    void Context::SetRenderTargets( uint32_t count, IRenderTargetRef rt[] )
     {
-        TRACE_FAIL_MSG("Not yet implemented");
+        for (uint32_t i = 0; i < count; ++ i)
+        {
+            mRenderTargets[i] = rt[i];
+        }
+
+        for (uint32_t i = count; i < mRenderTargetsCount; ++ i)
+        {
+            mRenderTargets[i].Detach();
+        }
+
+        mRenderTargetsCount = count;
     }
 
     void Context::BeginScene()

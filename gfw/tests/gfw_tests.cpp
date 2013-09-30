@@ -18,11 +18,14 @@ void GfwTests::SetUp()
     // Create a graphical mDevice
 
     DeviceParams deviceParams;
-    deviceParams.width        = kWindowWidth;
-    deviceParams.height       = kwindowHeight;
-    deviceParams.windowHandle = mWindow;
+    deviceParams.backBufferWidth    = kWindowWidth;
+    deviceParams.backBufferHeight   = kwindowHeight;
+    deviceParams.backBufferFormat   = FORMAT_RGBA8_UNORM;
+    deviceParams.windowHandle       = mWindow;
 
     mDevice = CreateDevice(deviceParams);
+
+    mDefaultRenderTarget = mDevice->GetDefaultRenderTarget();
 
     mContext = mDevice->GetDefaultContext();
 

@@ -12,7 +12,10 @@ TEST_F(GfwTests, Clear)
         ProcessDefaultWindow(mWindow);
 
         mContext->BeginScene();
-        mContext->Clear(mClearParams);
+        {
+            mContext->SetRenderTargets(1, &mDefaultRenderTarget);
+            mContext->Clear(mClearParams);
+        }
         mContext->EndScene();
 
         mDevice->Present();
@@ -68,6 +71,7 @@ TEST_F(GfwTests, Draw)
 
         mContext->BeginScene();
         {
+            mContext->SetRenderTargets(1, &mDefaultRenderTarget);
             mContext->Clear(mClearParams);
 
             effect->Dispatch();
@@ -144,6 +148,7 @@ TEST_F(GfwTests, DrawIndexed)
 
         mContext->BeginScene();
         {
+            mContext->SetRenderTargets(1, &mDefaultRenderTarget);
             mContext->Clear(mClearParams);
 
             effect->Dispatch();
@@ -164,7 +169,7 @@ TEST_F(GfwTests, DrawIndexed)
 
 TEST_F(GfwTests, DrawScreenQuad)
 {
-    IEffectRef effect = mFactory->CreateEffect(TESTS_SOURCE_DIR "draw_screen_quad.fx");
+    IEffectRef effect = mFactory->CreateEffect(TESTS_SOURCE_DIR "draw_red.fx");
 
     for (int i = 0; i < 60; ++ i)
     {
@@ -172,6 +177,9 @@ TEST_F(GfwTests, DrawScreenQuad)
 
         mContext->BeginScene();
         {
+            mContext->SetRenderTargets(1, &mDefaultRenderTarget);
+            mContext->Clear(mClearParams);
+
             effect->Dispatch();
             mContext->DrawScreenQuad();
         }
@@ -302,7 +310,9 @@ TEST_F(GfwTests, CreateMesh)
 
         mContext->BeginScene();
         {
+            mContext->SetRenderTargets(1, &mDefaultRenderTarget);
             mContext->Clear(mClearParams);
+
             effect->Dispatch();
             mesh->Draw();
         }
@@ -400,23 +410,23 @@ TEST_F(GfwTests, UpdateBuffer)
     }
 }
 
-TEST_F(GfwTests, DISABLED_RenderToTexture)
+TEST_F(GfwTests, RenderTarget)
 {
-    // Get default color buffer
+    // Get default render target
 
-    IRenderBufferRef defaultColorBuffer = mDevice->GetDefaultColorBuffer();
+    IRenderTargetRef defaultRenderTarget = mDevice->GetDefaultRenderTarget();
 
     // Create effect
 
-    IEffectRef effect = mFactory->CreateEffect("render_to_texture.fx");
+    IEffectRef fxRed     = mFactory->CreateEffect(TESTS_SOURCE_DIR "draw_red.fx");
+    IEffectRef fxTexture = mFactory->CreateEffect(TESTS_SOURCE_DIR "draw_texture.fx");
 
     // Create geometry
 
     float vertPosData[] = {
         -1.0f, -1.0f,
         -1.0f,  1.0f,
-         1.0f,  1.0f,
-         1.0f, -1.0f
+         1.0f,  1.0f
     };
 
     BufferDesc vertPosBufDesc;
@@ -425,56 +435,29 @@ TEST_F(GfwTests, DISABLED_RenderToTexture)
     vertPosBufDesc.usage  = USAGE_STATIC;
     IBufferRef vertPosBuf = mDevice->CreateBuffer(vertPosBufDesc, vertPosData);
 
-    float vertColData[] = {
-        1.0f, 0.0f, 0.0f,
-        0.0f, 1.0f, 0.0f,
-        0.0f, 0.0f, 1.0f,
-        1.0f, 1.0f, 0.0f
-    };
-
-    BufferDesc vertColBufDesc;
-    vertColBufDesc.type   = BUFFER_VERTEX;
-    vertColBufDesc.size   = sizeof(vertColData);
-    vertColBufDesc.usage  = USAGE_STATIC;
-    IBufferRef vertColBuf = mDevice->CreateBuffer(vertColBufDesc, vertColData);
-
-    uint16_t indexData[] = {
-        0, 1, 3, 2
-    };
-
-    BufferDesc indexBufDesc;
-    indexBufDesc.type   = BUFFER_INDEX;
-    indexBufDesc.size   = sizeof(indexBufDesc);
-    indexBufDesc.usage  = USAGE_STATIC;
-    IBufferRef indexBuf = mDevice->CreateBuffer(indexBufDesc, indexData);
-
     // Define vertex attributes
 
-    VertexAttribute vertexAttribs[2];
-    vertexAttribs[0].semantic = SEMANTIC_POSITION0;
-    vertexAttribs[0].format   = FORMAT_RG32_FLOAT;
-    vertexAttribs[0].stride   = 20;
-    vertexAttribs[1].semantic = SEMANTIC_COLOR0;
-    vertexAttribs[1].format   = FORMAT_RGB32_FLOAT;
-    vertexAttribs[1].stride   = 20;
-    vertexAttribs[1].offset   = 8;
-    IInputLayoutRef inputLayout = mDevice->CreateInputLayout(2, vertexAttribs, effect->GetShader(SHADER_STAGE_VERTEX));
+    VertexAttribute vertexAttribs;
+    vertexAttribs.semantic = SEMANTIC_POSITION0;
+    vertexAttribs.format   = FORMAT_RG32_FLOAT;
+    vertexAttribs.stride   = 8;
+    IInputLayoutRef inputLayout = mDevice->CreateInputLayout(1, &vertexAttribs, fxRed->GetShader(SHADER_STAGE_VERTEX));
 
     // Define draw params
 
-    DrawIndexedParams drawParams;
-    drawParams.primTop    = PRIM_TRIANGLES_STRIP;
-    drawParams.indexType  = TYPE_USHORT;
-    drawParams.indexStart = 0;
-    drawParams.indexCount = 4;
+    DrawParams drawParams;
+    drawParams.primTop     = PRIM_TRIANGLES;
+    drawParams.vertexStart = 0;
+    drawParams.vertexCount = 3;
 
-    // Create additional color buffer
+    // Create offscreen render target
 
-    TextureDesc textureDesc;
-    defaultColorBuffer->GetDesc(textureDesc);
-    ITextureRef texture = mDevice->CreateTexture(textureDesc);
+    const TextureDesc & rtTexDesc = defaultRenderTarget->GetTexture()->GetDesc();
+    ITextureRef rtTex = mDevice->CreateTexture(rtTexDesc);
 
-    IRenderBufferRef colorBuffer = mDevice->CreateRenderBuffer(texture, SubResIdx(0, 0));
+    RenderTargetDesc rtDesc;
+    rtDesc.format = rtTexDesc.format;
+    IRenderTargetRef renderTarget = mDevice->CreateRenderTarget(rtTex, rtDesc);
 
     // Main loop
 
@@ -486,25 +469,23 @@ TEST_F(GfwTests, DISABLED_RenderToTexture)
         {
             // Draw to texture
 
-            mContext->SetFrameBuffer(1, &colorBuffer, NULL);
+            mContext->SetRenderTargets(1, &renderTarget);
             mContext->Clear(mClearParams);
-
-            effect->Dispatch();
 
             mContext->SetInputLayout(inputLayout);
             mContext->SetVertexBuffer(0, vertPosBuf);
-            mContext->SetVertexBuffer(1, vertColBuf);
-            mContext->SetIndexBuffer(indexBuf);
 
+            fxRed->Dispatch();
             mContext->Draw(drawParams);
 
             // Draw screen quad with texture
 
-            mContext->SetFrameBuffer(1, &defaultColorBuffer, NULL);
+            mContext->SetRenderTargets(1, &defaultRenderTarget);
             mContext->Clear(mClearParams);
 
-            mContext->SetTexture(SHADER_STAGE_PIXEL, 0, texture);
+            mContext->SetTexture(SHADER_STAGE_PIXEL, 0, rtTex);
 
+            fxTexture->Dispatch();
             mContext->DrawScreenQuad();
         }
         mContext->EndScene();
