@@ -96,6 +96,8 @@ namespace GFW {
 
         char name[128];
 
+        // Reflect input parameters
+
         int32_t inputsCount = -1;
         TRACE_ASSERT_GL(glGetProgramInterfaceiv, program, GL_PROGRAM_INPUT, GL_ACTIVE_RESOURCES, &inputsCount);
         TRACE_ASSERT(inputsCount != -1);
@@ -119,6 +121,8 @@ namespace GFW {
             mInputs.push_back(new ShaderParameter(paramDesc));
             mDesc.inputsCount ++;
         }
+
+        // Reflect uniform blocks
 
         int32_t uniformBlocksCount = -1;
         TRACE_ASSERT_GL(glGetProgramInterfaceiv, program, GL_UNIFORM_BLOCK, GL_ACTIVE_RESOURCES, &uniformBlocksCount);
@@ -153,9 +157,12 @@ namespace GFW {
             mDesc.resourceCount ++;
         }
 
+        // Reflect uniforms
+
         int32_t uniformsCount = -1;
         TRACE_ASSERT_GL(glGetProgramInterfaceiv, program, GL_UNIFORM, GL_ACTIVE_RESOURCES, &uniformsCount);
         TRACE_ASSERT(uniformsCount != -1);
+
         for (int32_t i = 0; i < uniformsCount; ++ i)
         {
             TRACE_ASSERT_GL(glGetProgramResourceName, program, GL_UNIFORM, i, sizeof(name), NULL, name);
