@@ -107,17 +107,27 @@ namespace GFW {
                 const char * uniformBlockName = deviceImpl->GetStringTable().Resolve(name);
 
                 uint32_t props[] = {
-                    GL_BUFFER_DATA_SIZE
+                    GL_BUFFER_DATA_SIZE,
+                    GL_BUFFER_BINDING,
                 };
-                int32_t params;
+                int32_t params[2];
                 TRACE_ASSERT_GL(glGetProgramResourceiv, program, GL_UNIFORM_BLOCK, i, sizeof(props) / sizeof(props[0]),
-                    props, sizeof(params), NULL, &params);
+                    props, sizeof(params), NULL, params);
 
                 ShaderBufferDesc bufDesc;
-                bufDesc.size = params;
+                bufDesc.size = params[0];
 
                 mBuffers.push_back(new ShaderBuffer(uniformBlockName, bufDesc));
                 mDesc.bufferCount ++;
+
+                ShaderResourceDesc resDesc;
+                resDesc.bindPoint = params[1];
+                resDesc.bindCount = 1;
+                resDesc.type      = SHADER_RES_TYPE_CBUFFER;
+                resDesc.dim       = SHADER_RES_DIM_BUFFER;
+
+                mResources.push_back(new ShaderResource(uniformBlockName, resDesc));
+                mDesc.resourceCount ++;
             }
         }
 
