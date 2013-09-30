@@ -18,18 +18,16 @@ namespace GFW {
         TRACE_ASSERT(attrCnt <= MAX_INPUT_ATTRIBUTES);
         TRACE_ASSERT(shader.IsAttached());
 
+        IShaderReflectionRef reflection = shader->GetReflection();
+
         for (uint32_t i = 0; i < attrCnt; ++ i)
         {
             VertexAttribute & attr = attrs[i];
 
-            int32_t location = TRACE_ASSERT_GL(glGetProgramResourceLocation,
-                shader.StaticCast<Shader>()->GetHandle(),
-                GL_PROGRAM_INPUT,
-                GetSemanticString(attr.semantic));
-            TRACE_ASSERT(location != -1);
+            const ShaderParameterDesc & paramDesc = reflection->GetInputParameter(attr.semantic)->GetDesc();
 
-            mAttributes[location] = attr;
-            mAttributesMask |= (1 << location);
+            mAttributes[paramDesc.location] = attr;
+            mAttributesMask |= (1 << paramDesc.location);
         }
     }
 
