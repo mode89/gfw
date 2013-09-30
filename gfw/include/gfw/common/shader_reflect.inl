@@ -20,6 +20,34 @@ namespace GFW {
     }
 
     template < class Base >
+    void AShaderReflection<Base>::Initialize()
+    {
+        for (uint32_t i = 0; i < mDesc.inputsCount; ++ i)
+        {
+            const ShaderParameterDesc & paramDesc = mInputs[i]->GetDesc();
+            mInputsMap[paramDesc.semantic] = mInputs[i];
+        }
+
+        for (uint32_t i = 0; i < mDesc.variableCount; ++ i)
+        {
+            ShaderVariableRef var = mVariables[i];
+            mVariablesMap[var->GetName()] = var;
+        }
+
+        for (uint32_t i = 0; i < mDesc.bufferCount; ++ i)
+        {
+            ShaderBufferRef buf = mBuffers[i];
+            mBuffersMap[buf->GetName()] = buf;
+        }
+
+        for (uint32_t i = 0; i < mDesc.resourceCount; ++ i)
+        {
+            ShaderResourceRef res = mResources[i];
+            mResourcesMap[res->GetName()] = res;
+        }
+    }
+
+    template < class Base >
     IShaderVariableRef AShaderReflection<Base>::GetVariable(uint32_t index)
     {
         TRACE_ASSERT(index < mDesc.variableCount);
@@ -72,9 +100,9 @@ namespace GFW {
     }
 
     template < class Base >
-    IShaderParameterRef AShaderReflection<Base>::GetInputParameter(const char * name)
+    IShaderParameterRef AShaderReflection<Base>::GetInputParameter(Semantic semantic)
     {
-        ShaderParameterMap::iterator it = mInputsMap.find(name);
+        ShaderParameterMap::iterator it = mInputsMap.find(semantic);
         TRACE_ASSERT(it != mInputsMap.end());
         return it->second;
     }
