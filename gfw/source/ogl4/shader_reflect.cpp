@@ -62,23 +62,17 @@ namespace GFW {
     {
         DeviceRef deviceImpl = device;
 
-        char *  name          = NULL;
-        int32_t maxNameLength = 0;
+        char name[128];
 
         int32_t uniformBlocksCount = -1;
         TRACE_ASSERT_GL(glGetProgramInterfaceiv, program, GL_UNIFORM_BLOCK, GL_ACTIVE_RESOURCES, &uniformBlocksCount);
         TRACE_ASSERT(uniformBlocksCount != -1);
 
-        TRACE_ASSERT_GL(glGetProgramInterfaceiv, program, GL_UNIFORM_BLOCK, GL_MAX_NAME_LENGTH, &maxNameLength);
-        TRACE_ASSERT(uniformBlocksCount ? (maxNameLength != 0) : 1);
-
         if (uniformBlocksCount)
         {
-            name = new char [maxNameLength + 1];
-
             for (int32_t i = 0; i < uniformBlocksCount; ++ i)
             {
-                TRACE_ASSERT_GL(glGetProgramResourceName, program, GL_UNIFORM_BLOCK, i, maxNameLength + 1, NULL, name);
+                TRACE_ASSERT_GL(glGetProgramResourceName, program, GL_UNIFORM_BLOCK, i, sizeof(name), NULL, name);
                 const char * uniformBlockName = deviceImpl->GetStringTable().Resolve(name);
 
                 uint32_t props[] = {
@@ -94,24 +88,17 @@ namespace GFW {
                 mBuffers.push_back(new ShaderBuffer(uniformBlockName, bufDesc));
                 mDesc.bufferCount ++;
             }
-
-            delete [] name;
         }
 
         int32_t uniformsCount = -1;
         TRACE_ASSERT_GL(glGetProgramInterfaceiv, program, GL_UNIFORM, GL_ACTIVE_RESOURCES, &uniformsCount);
         TRACE_ASSERT(uniformsCount != -1);
 
-        TRACE_ASSERT_GL(glGetProgramInterfaceiv, program, GL_UNIFORM, GL_MAX_NAME_LENGTH, &maxNameLength);
-        TRACE_ASSERT(uniformsCount ? (maxNameLength != 0) : 1);
-
         if (uniformsCount)
         {
-            name = new char [maxNameLength + 1];
-
             for (int32_t i = 0; i < uniformsCount; ++ i)
             {
-                TRACE_ASSERT_GL(glGetProgramResourceName, program, GL_UNIFORM, i, maxNameLength + 1, NULL, name);
+                TRACE_ASSERT_GL(glGetProgramResourceName, program, GL_UNIFORM, i, sizeof(name), NULL, name);
                 const char * uniformName = deviceImpl->GetStringTable().Resolve(name);
 
                 uint32_t props[] = {
@@ -141,8 +128,6 @@ namespace GFW {
                     mDesc.variableCount ++;
                 }
             }
-
-            delete [] name;
         }
     }
 
