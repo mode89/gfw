@@ -5,7 +5,11 @@
 
 namespace GFW {
 
-    const char * GetSemanticString(Semantic);
+    const char *
+    GetSemanticString(Semantic);
+
+    Semantic
+    GetSemantic(const char *);
 
 } // namespace GFW
 
