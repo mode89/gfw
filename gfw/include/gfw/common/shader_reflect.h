@@ -67,18 +67,13 @@ namespace GFW {
     class ShaderParameter : public IShaderParameter
     {
     public:
-        virtual const char *
-        GetName() { return mName; }
-
         virtual const ShaderParameterDesc &
         GetDesc() { return mDesc; }
 
     public:
-        ShaderParameter();
-        ~ShaderParameter();
+        ShaderParameter(const ShaderParameterDesc & desc) { mDesc = desc; }
 
     private:
-        char *              mName;
         ShaderParameterDesc mDesc;
     };
     AUTOREF_REFERENCE_DECLARATION(ShaderParameter);

@@ -196,9 +196,6 @@ namespace GFW {
         virtual const ShaderParameterDesc &
         GetDesc() = 0;
 
-        virtual const char *
-        GetName() = 0;
-
         virtual
         ~IShaderParameter() {}
     };

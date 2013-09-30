@@ -26,7 +26,6 @@ namespace GFW {
         SEMANTICS
 #undef S
 
-        TRACE_FAIL_MSG("Unknown semantic");
         return SEMANTIC_UNKNOWN;
     }
 

@@ -1,3 +1,4 @@
+#include "gfw/common/semantic.h"
 #include "gfw/core/device.h"
 #include "gfw/core/functions.h"
 #include "gfw/core/shader_reflect.h"
@@ -95,94 +96,112 @@ namespace GFW {
 
         char name[128];
 
+        int32_t inputsCount = -1;
+        TRACE_ASSERT_GL(glGetProgramInterfaceiv, program, GL_PROGRAM_INPUT, GL_ACTIVE_RESOURCES, &inputsCount);
+        TRACE_ASSERT(inputsCount != -1);
+
+        for (int32_t i = 0; i < inputsCount; ++ i)
+        {
+            TRACE_ASSERT_GL(glGetProgramResourceName, program, GL_PROGRAM_INPUT, i, sizeof(name), NULL, name);
+            const char * inputName = deviceImpl->GetStringTable().Resolve(name);
+
+            uint32_t props[] = {
+                GL_TYPE,
+                GL_LOCATION,
+            };
+            const uint32_t propsCount = sizeof(props) / sizeof(props[0]);
+            int32_t params[propsCount];
+            TRACE_ASSERT_GL(glGetProgramResourceiv, program, GL_PROGRAM_INPUT, i, propsCount, props, sizeof(params), NULL, params);
+
+            ShaderParameterDesc paramDesc;
+            paramDesc.location = params[1];
+            paramDesc.semantic = GetSemantic(inputName);
+
+            mInputs.push_back(new ShaderParameter(paramDesc));
+            mDesc.inputsCount ++;
+        }
+
         int32_t uniformBlocksCount = -1;
         TRACE_ASSERT_GL(glGetProgramInterfaceiv, program, GL_UNIFORM_BLOCK, GL_ACTIVE_RESOURCES, &uniformBlocksCount);
         TRACE_ASSERT(uniformBlocksCount != -1);
 
-        if (uniformBlocksCount)
+        for (int32_t i = 0; i < uniformBlocksCount; ++ i)
         {
-            for (int32_t i = 0; i < uniformBlocksCount; ++ i)
-            {
-                TRACE_ASSERT_GL(glGetProgramResourceName, program, GL_UNIFORM_BLOCK, i, sizeof(name), NULL, name);
-                const char * uniformBlockName = deviceImpl->GetStringTable().Resolve(name);
+            TRACE_ASSERT_GL(glGetProgramResourceName, program, GL_UNIFORM_BLOCK, i, sizeof(name), NULL, name);
+            const char * uniformBlockName = deviceImpl->GetStringTable().Resolve(name);
 
-                uint32_t props[] = {
-                    GL_BUFFER_DATA_SIZE,
-                    GL_BUFFER_BINDING,
-                };
-                int32_t params[2];
-                TRACE_ASSERT_GL(glGetProgramResourceiv, program, GL_UNIFORM_BLOCK, i, sizeof(props) / sizeof(props[0]),
-                    props, sizeof(params), NULL, params);
+            uint32_t props[] = {
+                GL_BUFFER_DATA_SIZE,
+                GL_BUFFER_BINDING,
+            };
+            const uint32_t propsCount = sizeof(props) / sizeof(props[0]);
+            int32_t params[propsCount];
+            TRACE_ASSERT_GL(glGetProgramResourceiv, program, GL_UNIFORM_BLOCK, i, propsCount, props, sizeof(params), NULL, params);
 
-                ShaderBufferDesc bufDesc;
-                bufDesc.size = params[0];
+            ShaderBufferDesc bufDesc;
+            bufDesc.size = params[0];
 
-                mBuffers.push_back(new ShaderBuffer(uniformBlockName, bufDesc));
-                mDesc.bufferCount ++;
+            mBuffers.push_back(new ShaderBuffer(uniformBlockName, bufDesc));
+            mDesc.bufferCount ++;
 
-                ShaderResourceDesc resDesc;
-                resDesc.bindPoint = params[1];
-                resDesc.bindCount = 1;
-                resDesc.type      = SHADER_RES_TYPE_CBUFFER;
-                resDesc.dim       = SHADER_RES_DIM_BUFFER;
+            ShaderResourceDesc resDesc;
+            resDesc.bindPoint = params[1];
+            resDesc.bindCount = 1;
+            resDesc.type      = SHADER_RES_TYPE_CBUFFER;
+            resDesc.dim       = SHADER_RES_DIM_BUFFER;
 
-                mResources.push_back(new ShaderResource(uniformBlockName, resDesc));
-                mDesc.resourceCount ++;
-            }
+            mResources.push_back(new ShaderResource(uniformBlockName, resDesc));
+            mDesc.resourceCount ++;
         }
 
         int32_t uniformsCount = -1;
         TRACE_ASSERT_GL(glGetProgramInterfaceiv, program, GL_UNIFORM, GL_ACTIVE_RESOURCES, &uniformsCount);
         TRACE_ASSERT(uniformsCount != -1);
-
-        if (uniformsCount)
+        for (int32_t i = 0; i < uniformsCount; ++ i)
         {
-            for (int32_t i = 0; i < uniformsCount; ++ i)
+            TRACE_ASSERT_GL(glGetProgramResourceName, program, GL_UNIFORM, i, sizeof(name), NULL, name);
+            const char * uniformName = deviceImpl->GetStringTable().Resolve(name);
+
+            uint32_t props[] = {
+                GL_TYPE,
+                GL_BLOCK_INDEX,
+                GL_LOCATION,
+                GL_OFFSET,
+                GL_ARRAY_SIZE,
+                GL_ARRAY_STRIDE
+            };
+            const uint32_t propsCount = sizeof(props) / sizeof(props[0]);
+            int32_t params[propsCount];
+            TRACE_ASSERT_GL(glGetProgramResourceiv, program, GL_UNIFORM, i, propsCount, props, sizeof(params), NULL, params);
+
+            if (IsVariableType(params[0]))
             {
-                TRACE_ASSERT_GL(glGetProgramResourceName, program, GL_UNIFORM, i, sizeof(name), NULL, name);
-                const char * uniformName = deviceImpl->GetStringTable().Resolve(name);
+                ShaderVariableDesc varDesc;
+                varDesc.type        = GetVariableType(params[0]);
+                varDesc.bufferIndex = params[1];
+                varDesc.location    = (params[1] != -1) ? params[3] : params[2];
 
-                uint32_t props[] = {
-                    GL_TYPE,
-                    GL_BLOCK_INDEX,
-                    GL_LOCATION,
-                    GL_OFFSET,
-                    GL_ARRAY_SIZE,
-                    GL_ARRAY_STRIDE
-                };
-                int32_t params[6];
-                TRACE_ASSERT_GL(glGetProgramResourceiv, program, GL_UNIFORM, i, sizeof(props) / sizeof(props[0]),
-                    props, sizeof(params), NULL, params);
+                uint32_t typeSize   = GetVariableTypeSize(params[0]);
+                uint32_t stride     = (params[1] != -1) ? params[5] : typeSize;
+                varDesc.size        = (params[4] == 0) ? typeSize : params[4] * stride;
 
-                if (IsVariableType(params[0]))
-                {
-                    ShaderVariableDesc varDesc;
-                    varDesc.type        = GetVariableType(params[0]);
-                    varDesc.bufferIndex = params[1];
-                    varDesc.location    = (params[1] != -1) ? params[3] : params[2];
+                mVariables.push_back(new ShaderVariable(uniformName, varDesc));
+                mDesc.variableCount ++;
+            }
+            else if (IsSamplerType(params[0]))
+            {
+                ShaderResourceDesc resDesc;
+                resDesc.type = SHADER_RES_TYPE_TEXTURE;
+                resDesc.dim  = GetSamplerDim(params[0]);
+                resDesc.bindPoint = params[2];
+                resDesc.bindCount = (params[4] == 0) ? 1 : params[4];
 
-                    uint32_t typeSize   = GetVariableTypeSize(params[0]);
-                    uint32_t stride     = (params[1] != -1) ? params[5] : typeSize;
-                    varDesc.size        = (params[4] == 0) ? typeSize : params[4] * stride;
-
-                    mVariables.push_back(new ShaderVariable(uniformName, varDesc));
-                    mDesc.variableCount ++;
-                }
-                else if (IsSamplerType(params[0]))
-                {
-                    ShaderResourceDesc resDesc;
-                    resDesc.type = SHADER_RES_TYPE_TEXTURE;
-                    resDesc.dim  = GetSamplerDim(params[0]);
-                    resDesc.bindPoint = params[2];
-                    resDesc.bindCount = (params[4] == 0) ? 1 : params[4];
-
-                    mResources.push_back(new ShaderResource(uniformName, resDesc));
-                    mDesc.resourceCount ++;
-                }
-                else
-                {
-                    TRACE_FAIL_MSG("Undefined type of the uniform");
-                }
+                mResources.push_back(new ShaderResource(uniformName, resDesc));
+                mDesc.resourceCount ++;
+            }
+            else
+            {
+                TRACE_FAIL_MSG("Undefined type of the uniform");
             }
         }
     }
