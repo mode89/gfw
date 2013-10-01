@@ -15,7 +15,7 @@ endif()
 # Enable C++11
 
 if (MINGW AND ((GXX_VERSION VERSION_GREATER "4.7.0") OR (GXX_VERSION VERSION_EQUAL "4.7.0")))
-    add_definitions(-std=gnu++11)
+    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11" )
 endif()
 
 # VS2012 doesn't support correctly the tuples yet
@@ -27,7 +27,8 @@ endif()
 # Enable multithreaded compiling
 
 if (MSVC)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
+    set( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} /MP"   )
+    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP" )
 endif()
 
 macro(target_precompiled_header target precHeader precSource)
