@@ -1,0 +1,2 @@
+set(ANTLR_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/include ${CMAKE_CURRENT_LIST_DIR}/include/antlr")
+set(ANTLR_LIBRARIES antlr)

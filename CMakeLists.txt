@@ -7,6 +7,7 @@ include(cmake/common.cmake)
 
 # Add necessary projects to the build tree
 
+add_subdirectory(antlr)
 add_subdirectory(common)
 add_subdirectory(gfw)
 add_subdirectory(gtest)
