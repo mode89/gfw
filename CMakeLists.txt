@@ -5,12 +5,17 @@ cmake_minimum_required(VERSION 2.8)
 
 include(cmake/common.cmake)
 
+# Global configuration
+
+set ( GFW_PLATFORM ogl4 )
+
 # Add necessary projects to the build tree
 
 add_subdirectory(antlr)
 add_subdirectory(common)
 add_subdirectory(gfw)
 add_subdirectory(gfw_fxc)
+add_subdirectory(gfw_pipeline)
 add_subdirectory(gtest)
 add_subdirectory(profiler)
 add_subdirectory(ripples)
