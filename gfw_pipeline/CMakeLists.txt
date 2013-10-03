@@ -43,7 +43,7 @@ include_directories( ${COMMON_INCLUDE_DIRS} )
 
 # Pre-build
 
-add_custom_command( TARGET gfw_pipeline PRE_BUILD COMMAND java ARGS -jar ${ANTLR_TOOL} -make -language C ${CMAKE_CURRENT_LIST_DIR}/data/C.g )
+antlr_prebuild_grammar( gfw_pipeline ${CMAKE_CURRENT_LIST_DIR}/data/C.g )
 
 # Tests
 
