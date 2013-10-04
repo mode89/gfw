@@ -6,10 +6,6 @@ options {
     k=2;
 }
 
-@header
-{
-}
-
 translation_unit
 	: external_declaration+
 	;
