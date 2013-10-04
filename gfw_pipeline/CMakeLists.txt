@@ -43,7 +43,8 @@ include_directories( ${COMMON_INCLUDE_DIRS} )
 
 # Pre-build
 
-antlr_prebuild_grammar( gfw_pipeline ${CMAKE_CURRENT_LIST_DIR}/data/FX.g )
+add_custom_target( fxparser java -jar ${ANTLR_TOOL} -make -language C ${CMAKE_CURRENT_LIST_DIR}/data/FX.g )
+add_dependencies( gfw_pipeline fxparser )
 
 # Tests
 
