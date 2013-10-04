@@ -43,7 +43,7 @@ include_directories( ${COMMON_INCLUDE_DIRS} )
 
 # Pre-build
 
-antlr_prebuild_grammar( gfw_pipeline ${CMAKE_CURRENT_LIST_DIR}/data/C.g )
+antlr_prebuild_grammar( gfw_pipeline ${CMAKE_CURRENT_LIST_DIR}/data/FX.g )
 
 # Tests
 

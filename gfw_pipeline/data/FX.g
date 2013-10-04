@@ -1,4 +1,4 @@
-grammar C;
+grammar FX;
 
 options {
     backtrack=true;
