@@ -404,15 +404,12 @@ HexDigit : ('0'..'9'|'a'..'f'|'A'..'F') ;
 
 fragment
 IntegerTypeSuffix
-	:	('u'|'U')? ('l'|'L')
-	|	('u'|'U')  ('l'|'L')?
+	:	('u'|'U') ('l'|'L')?
 	;
 
 FLOATING_POINT_LITERAL
     :   ('0'..'9')+ '.' ('0'..'9')* Exponent? FloatTypeSuffix?
     |   '.' ('0'..'9')+ Exponent? FloatTypeSuffix?
-    |   ('0'..'9')+ Exponent FloatTypeSuffix?
-    |   ('0'..'9')+ Exponent? FloatTypeSuffix
 	;
 
 fragment
