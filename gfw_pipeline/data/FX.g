@@ -1,9 +1,12 @@
 grammar FX;
 
 options {
-    backtrack=true;
-    memoize=true;
-    k=2;
+    output       = AST;
+    ASTLabelType = pANTLR3_BASE_TREE;
+
+    backtrack    = true;
+    memoize      = true;
+    k            = 2;
 }
 
 translation_unit
