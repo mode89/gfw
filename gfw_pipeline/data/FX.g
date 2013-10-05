@@ -10,416 +10,287 @@ options {
 }
 
 translation_unit
-	: external_declaration+
-	;
-
-external_declaration
-	: ( declaration_specifiers? declarator declaration* '{' )=> function_definition
-	| declaration
-	;
-
-function_definition
-	:	declaration_specifiers? declarator
-		(	declaration+ compound_statement	// K&R style
-		|	compound_statement				// ANSI style
-		)
-	;
-
-declaration
-	: 'typedef' declaration_specifiers?
-	  init_declarator_list ';' // special case, looking for typedef	
-	| declaration_specifiers init_declarator_list? ';'
-	;
-
-declaration_specifiers
-	:   (   storage_class_specifier
-		|   type_specifier
-        |   type_qualifier
-        )+
-	;
-
-init_declarator_list
-	: init_declarator (',' init_declarator)*
-	;
-
-init_declarator
-	: declarator ('=' initializer)?
-	;
-
-storage_class_specifier
-	: 'extern'
-	| 'static'
-	| 'auto'
-	| 'register'
-	;
-
-type_specifier
-	: 'void'
-	| 'char'
-	| 'short'
-	| 'int'
-	| 'long'
-	| 'float'
-	| 'double'
-	| 'signed'
-	| 'unsigned'
-	| struct_or_union_specifier
-	| enum_specifier
-	| type_id
-	;
-
-type_id
-    : IDENTIFIER
+    : external_declaration* EOF
     ;
 
-struct_or_union_specifier
-options {k=3;}
-	: struct_or_union IDENTIFIER? '{' struct_declaration_list '}'
-	| struct_or_union IDENTIFIER
-	;
+external_declaration
+    : function_definition
+    ;
 
-struct_or_union
-	: 'struct'
-	| 'union'
-	;
+function_definition
+    : type_specifier T_ID T_LPAREN arguments_list T_RPAREN compound_statement
+    ;
 
-struct_declaration_list
-	: struct_declaration+
-	;
+arguments_list
+    : ( type_specifier T_ID )*
+    ;
 
-struct_declaration
-	: specifier_qualifier_list struct_declarator_list ';'
-	;
+type_specifier
+    : T_VOID
+    | T_BOOL
+    | T_INT
+    | T_INT2
+    | T_INT3
+    | T_INT4
+    | T_UINT
+    | T_UINT2
+    | T_UINT3
+    | T_UINT4
+    | T_FLOAT
+    | T_FLOAT2
+    | T_FLOAT3
+    | T_FLOAT4
+    | T_FLOAT4X4
+    | type_id
+    ;
 
-specifier_qualifier_list
-	: ( type_qualifier | type_specifier )+
-	;
-
-struct_declarator_list
-	: struct_declarator (',' struct_declarator)*
-	;
-
-struct_declarator
-	: declarator (':' constant_expression)?
-	| ':' constant_expression
-	;
-
-enum_specifier
-options {k=3;}
-	: 'enum' '{' enumerator_list '}'
-	| 'enum' IDENTIFIER '{' enumerator_list '}'
-	| 'enum' IDENTIFIER
-	;
-
-enumerator_list
-	: enumerator (',' enumerator)*
-	;
-
-enumerator
-	: IDENTIFIER ('=' constant_expression)?
-	;
-
-type_qualifier
-	: 'const'
-	| 'volatile'
-	;
-
-declarator
-	: pointer? direct_declarator
-	| pointer
-	;
-
-direct_declarator
-	:   (	IDENTIFIER
-		|	'(' declarator ')'
-		)
-        declarator_suffix*
-	;
-
-declarator_suffix
-	:   '[' constant_expression ']'
-    |   '[' ']'
-    |   '(' parameter_type_list ')'
-    |   '(' identifier_list ')'
-    |   '(' ')'
-	;
-
-pointer
-	: '*' type_qualifier+ pointer?
-	| '*' pointer
-	| '*'
-	;
-
-parameter_type_list
-	: parameter_list (',' '...')?
-	;
-
-parameter_list
-	: parameter_declaration (',' parameter_declaration)*
-	;
-
-parameter_declaration
-	: declaration_specifiers (declarator|abstract_declarator)*
-	;
-
-identifier_list
-	: IDENTIFIER (',' IDENTIFIER)*
-	;
-
-type_name
-	: specifier_qualifier_list abstract_declarator?
-	;
-
-abstract_declarator
-	: pointer direct_abstract_declarator?
-	| direct_abstract_declarator
-	;
-
-direct_abstract_declarator
-	:	( '(' abstract_declarator ')' | abstract_declarator_suffix ) abstract_declarator_suffix*
-	;
-
-abstract_declarator_suffix
-	:	'[' ']'
-	|	'[' constant_expression ']'
-	|	'(' ')'
-	|	'(' parameter_type_list ')'
-	;
-	
-initializer
-	: assignment_expression
-	| '{' initializer_list ','? '}'
-	;
-
-initializer_list
-	: initializer (',' initializer)*
-	;
+type_id
+    : T_ID
+    ;
 
 // E x p r e s s i o n s
 
 argument_expression_list
-	:   assignment_expression (',' assignment_expression)*
-	;
+    :   assignment_expression ( T_COMMA assignment_expression )*
+    ;
 
 additive_expression
-	: (multiplicative_expression) ('+' multiplicative_expression | '-' multiplicative_expression)*
-	;
+    : multiplicative_expression ( T_PLUS multiplicative_expression | T_MINUS multiplicative_expression )*
+    ;
 
 multiplicative_expression
-	: (cast_expression) ('*' cast_expression | '/' cast_expression | '%' cast_expression)*
-	;
+    : cast_expression ( T_MUL cast_expression | T_DIV cast_expression | T_MOD cast_expression )*
+    ;
 
 cast_expression
-	: '(' type_name ')' cast_expression
-	| unary_expression
-	;
+    : T_LPAREN type_specifier T_RPAREN cast_expression
+    | unary_expression
+    ;
 
 unary_expression
-	: postfix_expression
-	| '++' unary_expression
-	| '--' unary_expression
-	| unary_operator cast_expression
-	| 'sizeof' unary_expression
-	| 'sizeof' '(' type_name ')'
-	;
+    : ( T_PLUS | T_MINUS ) unary_expression
+    | postfix_expression
+    ;
 
 postfix_expression
-	:   primary_expression
-        (   '[' expression ']'
-        |   '(' ')'
-        |   '(' argument_expression_list ')'
-        |   '.' IDENTIFIER
-        |   '->' IDENTIFIER
-        |   '++'
-        |   '--'
+    :   primary_expression
+        (   T_LBRACKET expression T_RBRACKET
+        |   T_LPAREN T_RPAREN
+        |   T_LPAREN argument_expression_list T_RPAREN
+        |   T_DOT T_ID
+        |   T_PLUSPLUS
+        |   T_MINUSMINUS
         )*
-	;
-
-unary_operator
-	: '&'
-	| '*'
-	| '+'
-	| '-'
-	| '~'
-	| '!'
-	;
+    ;
 
 primary_expression
-	: IDENTIFIER
-	| constant
-	| '(' expression ')'
-	;
+    : T_ID
+    | constant
+    | T_LPAREN expression T_RPAREN
+    ;
 
 constant
-    :   HEX_LITERAL
-    |   OCTAL_LITERAL
-    |   DECIMAL_LITERAL
-    |	CHARACTER_LITERAL
-	|	STRING_LITERAL
-    |   FLOATING_POINT_LITERAL
+    :   T_HEX_LITERAL
+    |   T_OCTAL_LITERAL
+    |   T_DECIMAL_LITERAL
+    |   T_FLOATING_POINT_LITERAL
     ;
 
 /////
 
 expression
-	: assignment_expression (',' assignment_expression)*
-	;
+    : assignment_expression ( T_COMMA assignment_expression )*
+    ;
 
 constant_expression
-	: conditional_expression
-	;
+    : conditional_expression
+    ;
 
 assignment_expression
-	: lvalue assignment_operator assignment_expression
-	| conditional_expression
-	;
-	
+    : lvalue assignment_operator assignment_expression
+    | conditional_expression
+    ;
+    
 lvalue
-	:	unary_expression
-	;
+    :   unary_expression
+    ;
 
 assignment_operator
-	: '='
-	| '*='
-	| '/='
-	| '%='
-	| '+='
-	| '-='
-	| '<<='
-	| '>>='
-	| '&='
-	| '^='
-	| '|='
-	;
+    : T_ASSIGN
+    | T_MUL_ASSIGN
+    | T_DIV_ASSIGN
+    | T_MOD_ASSIGN
+    | T_ADD_ASSIGN
+    | T_SUB_ASSIGN
+    | T_BW_SHIFTL_ASSIGN
+    | T_BW_SHIFTR_ASSIGN
+    | T_BW_AND_ASSIGN
+    | T_BW_XOR_ASSIGN
+    | T_BW_OR_ASSIGN
+    ;
 
 conditional_expression
-	: logical_or_expression ('?' expression ':' conditional_expression)?
-	;
+    : logical_or_expression ( T_QUESTION expression T_COLON conditional_expression )?
+    ;
 
 logical_or_expression
-	: logical_and_expression ('||' logical_and_expression)*
-	;
+    : logical_and_expression ( T_OR logical_and_expression )*
+    ;
 
 logical_and_expression
-	: inclusive_or_expression ('&&' inclusive_or_expression)*
-	;
+    : inclusive_or_expression ( T_AND inclusive_or_expression )*
+    ;
 
 inclusive_or_expression
-	: exclusive_or_expression ('|' exclusive_or_expression)*
-	;
+    : exclusive_or_expression ( T_BW_OR exclusive_or_expression )*
+    ;
 
 exclusive_or_expression
-	: and_expression ('^' and_expression)*
-	;
+    : and_expression ( T_BW_XOR and_expression )*
+    ;
 
 and_expression
-	: equality_expression ('&' equality_expression)*
-	;
+    : equality_expression ( T_BW_AND equality_expression )*
+    ;
+
 equality_expression
-	: relational_expression (('=='|'!=') relational_expression)*
-	;
+    : relational_expression ( ( T_EQUAL | T_NOT_EQUAL ) relational_expression )*
+    ;
 
 relational_expression
-	: shift_expression (('<'|'>'|'<='|'>=') shift_expression)*
-	;
+    : shift_expression ( ( T_LT | T_GT | T_LTE | T_GTE ) shift_expression )*
+    ;
 
 shift_expression
-	: additive_expression (('<<'|'>>') additive_expression)*
-	;
+    : additive_expression ( ( T_BW_SHIFTL | T_BW_SHIFTR ) additive_expression )*
+    ;
 
 // S t a t e m e n t s
 
 statement
-	: labeled_statement
-	| compound_statement
-	| expression_statement
-	| selection_statement
-	| iteration_statement
-	| jump_statement
-	;
-
-labeled_statement
-	: IDENTIFIER ':' statement
-	| 'case' constant_expression ':' statement
-	| 'default' ':' statement
-	;
+    : compound_statement
+    | expression_statement
+    | selection_statement
+    | iteration_statement
+    | jump_statement
+    ;
 
 compound_statement
-	: '{' declaration* statement_list? '}'
-	;
-
-statement_list
-	: statement+
-	;
+    : T_LCURLY ( statement )* T_RCURLY
+    ;
 
 expression_statement
-	: ';'
-	| expression ';'
-	;
+    : expression? T_SEMI
+    ;
 
 selection_statement
-	: 'if' '(' expression ')' statement (options {k=1; backtrack=false;}:'else' statement)?
-	| 'switch' '(' expression ')' statement
-	;
+    : T_IF T_LPAREN expression T_RPAREN statement (options {k=1; backtrack=false;}: T_ELSE statement)?
+    | T_SWITCH T_LPAREN expression T_RPAREN statement
+    ;
 
 iteration_statement
-	: 'while' '(' expression ')' statement
-	| 'do' statement 'while' '(' expression ')' ';'
-	| 'for' '(' expression_statement expression_statement expression? ')' statement
-	;
+    : T_WHILE T_LPAREN expression T_RPAREN statement
+    | T_DO statement T_WHILE T_LPAREN expression T_RPAREN T_SEMI
+    | T_FOR T_LPAREN expression_statement expression_statement expression? T_RPAREN statement
+    ;
 
 jump_statement
-	: 'goto' IDENTIFIER ';'
-	| 'continue' ';'
-	| 'break' ';'
-	| 'return' ';'
-	| 'return' expression ';'
-	;
+    : T_CONTINUE T_SEMI
+    | T_BREAK T_SEMI
+    | T_RETURN T_SEMI
+    | T_RETURN expression T_SEMI
+    ;
 
-IDENTIFIER
-	:	LETTER (LETTER|'0'..'9')*
-	;
-	
+// K e y w o r d s
+
+T_BREAK                 : 'break';
+T_BUFFER                : 'buffer';
+T_CASE                  : 'case';
+T_CBUFFER               : 'cbuffer';
+T_CONST                 : 'const';
+T_CONTINUE              : 'continue';
+T_DISCARD               : 'discard';
+T_DO                    : 'do';
+T_ELSE                  : 'else';
+T_FOR                   : 'for';
+T_IF                    : 'if';
+T_IN                    : 'in';
+T_INOUT                 : 'inout';
+T_NOINTERPOLATION       : 'nointerpolation';
+T_OUT                   : 'out';
+T_RETURN                : 'return';
+T_REGISTER              : 'register';
+T_SHARED                : 'shared';
+T_STRUCT                : 'struct';
+T_SWITCH                : 'switch';
+T_TEXTURE2D             : 'texture2d';
+T_TYPEDEF               : 'typedef';
+T_VOID                  : 'void';
+T_WHILE                 : 'while';
+
+T_BOOL                  : 'bool';
+T_INT                   : 'int';
+T_INT2                  : 'int2';
+T_INT3                  : 'int3';
+T_INT4                  : 'int4';
+T_UINT                  : 'uint';
+T_UINT2                 : 'uint2';
+T_UINT3                 : 'uint3';
+T_UINT4                 : 'uint4';
+T_HALF                  : 'half';
+T_HALF2                 : 'half2';
+T_HALF3                 : 'half3';
+T_HALF4                 : 'half4';
+T_FLOAT                 : 'float';
+T_FLOAT2                : 'float2';
+T_FLOAT3                : 'float3';
+T_FLOAT4                : 'float4';
+T_FLOAT4X4              : 'float4x4';
+
+// B a s e   t o k e n s
+
+T_ID
+    :   LETTER ( LETTER | '0'..'9' )*
+    ;
+
 fragment
 LETTER
-	:	'$'
-	|	'A'..'Z'
-	|	'a'..'z'
-	|	'_'
-	;
-
-CHARACTER_LITERAL
-    :   '\'' ( EscapeSequence | ~('\''|'\\') ) '\''
+    :   '$'
+    |   'A'..'Z'
+    |   'a'..'z'
+    |   '_'
     ;
 
-STRING_LITERAL
-    :  '"' ( EscapeSequence | ~('\\'|'"') )* '"'
-    ;
+T_HEX_LITERAL
+    : '0' ('x'|'X') HexDigit+ IntegerTypeSuffix? ;
 
-HEX_LITERAL : '0' ('x'|'X') HexDigit+ IntegerTypeSuffix? ;
+T_DECIMAL_LITERAL
+    : ('0' | '1'..'9' '0'..'9'*) IntegerTypeSuffix? ;
 
-DECIMAL_LITERAL : ('0' | '1'..'9' '0'..'9'*) IntegerTypeSuffix? ;
-
-OCTAL_LITERAL : '0' ('0'..'7')+ IntegerTypeSuffix? ;
+T_OCTAL_LITERAL
+    : '0' ('0'..'7')+ IntegerTypeSuffix? ;
 
 fragment
-HexDigit : ('0'..'9'|'a'..'f'|'A'..'F') ;
+HexDigit
+    : ('0'..'9'|'a'..'f'|'A'..'F') ;
 
 fragment
 IntegerTypeSuffix
-	:	('u'|'U') ('l'|'L')?
-	;
+    :   ('u'|'U') ('l'|'L')?
+    ;
 
-FLOATING_POINT_LITERAL
+T_FLOATING_POINT_LITERAL
     :   ('0'..'9')+ '.' ('0'..'9')* Exponent? FloatTypeSuffix?
     |   '.' ('0'..'9')+ Exponent? FloatTypeSuffix?
-	;
+    ;
 
 fragment
-Exponent : ('e'|'E') ('+'|'-')? ('0'..'9')+ ;
+Exponent
+    : ('e'|'E') ('+'|'-')? ('0'..'9')+ ;
 
 fragment
-FloatTypeSuffix : ('f'|'F'|'d'|'D') ;
+FloatTypeSuffix
+    : ('f'|'F'|'d'|'D') ;
 
 fragment
 EscapeSequence
@@ -438,6 +309,51 @@ fragment
 UnicodeEscape
     :   '\\' 'u' HexDigit HexDigit HexDigit HexDigit
     ;
+
+T_NOT               : '!'   ;
+T_NOT_EQUAL         : '!='  ;
+T_AND               : '&&'  ;
+T_MUL               : '*'   ;
+T_MUL_ASSIGN        : '*='  ;
+T_PLUS              : '+'   ;
+T_PLUSPLUS          : '++'  ;
+T_ADD_ASSIGN        : '+='  ;
+T_COMMA             : ','   ;
+T_MINUS             : '-'   ;
+T_MINUSMINUS        : '--'  ;
+T_SUB_ASSIGN        : '-='  ;
+T_DIV               : '/'   ;
+T_DIV_ASSIGN        : '/='  ;
+T_MOD               : '%'   ;
+T_MOD_ASSIGN        : '%='  ;
+T_COLON             : ':'   ;
+T_SEMI              : ';'   ;
+T_LT                : '<'   ;
+T_LTE               : '<='  ;
+T_ASSIGN            : '='   ;
+T_EQUAL             : '=='  ;
+T_GT                : '>'   ;
+T_GTE               : '>='  ;
+T_QUESTION          : '?'   ;
+T_LPAREN            : '('   ;
+T_RPAREN            : ')'   ;
+T_LBRACKET          : '['   ;
+T_RBRACKET          : ']'   ;
+T_LCURLY            : '{'   ;
+T_RCURLY            : '}'   ;
+T_OR                : '||'  ;
+T_DOT               : '.'   ;
+T_BW_NOT            : '~'   ;
+T_BW_SHIFTL         : '<<'  ;
+T_BW_SHIFTR         : '>>'  ;
+T_BW_AND            : '&'   ;
+T_BW_OR             : '|'   ;
+T_BW_XOR            : '^'   ;
+T_BW_SHIFTL_ASSIGN  : '<<=' ;
+T_BW_SHIFTR_ASSIGN  : '>>=' ;
+T_BW_AND_ASSIGN     : '&='  ;
+T_BW_OR_ASSIGN      : '|='  ;
+T_BW_XOR_ASSIGN     : '^='  ;
 
 WS  :  (' '|'\r'|'\t'|'\u000C'|'\n') {$channel=HIDDEN;}
     ;
