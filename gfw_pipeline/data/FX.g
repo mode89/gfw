@@ -2,12 +2,13 @@ grammar FX;
 
 options {
     output       = AST;
-    ASTLabelType = pANTLR3_BASE_TREE;
 
     backtrack    = true;
     memoize      = true;
     k            = 2;
 }
+
+// R u l e s
 
 translation_unit
     : external_declaration* EOF
@@ -18,11 +19,23 @@ external_declaration
     ;
 
 function_definition
-    : type_specifier T_ID T_LPAREN arguments_list T_RPAREN compound_statement
+    : type_specifier T_ID T_LPAREN arguments_list? T_RPAREN semantic? compound_statement
     ;
 
 arguments_list
-    : ( type_specifier T_ID )*
+    : argument ( T_COMMA argument )*
+    ;
+
+argument
+    : type_specifier T_ID semantic?
+    ;
+
+semantic
+    : T_COLON semantic_specifier
+    ;
+
+semantic_specifier
+    : T_ID
     ;
 
 type_specifier
