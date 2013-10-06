@@ -23,14 +23,6 @@ function_definition
     : type_specifier T_ID T_LPAREN arguments_list? T_RPAREN semantic? compound_statement
     ;
 
-technique_definition
-    : T_TECHNIQUE technique_name T_LCURLY T_RCURLY
-    ;
-
-technique_name
-    : T_ID
-    ;
-
 arguments_list
     : argument ( T_COMMA argument )*
     ;
@@ -45,6 +37,35 @@ semantic
 
 semantic_specifier
     : T_ID
+    ;
+
+technique_definition
+    : T_TECHNIQUE T_ID T_LCURLY pass* T_RCURLY
+    ;
+
+pass
+    : T_PASS T_ID T_LCURLY ( set_state T_SEMI )* T_RCURLY
+    ;
+
+set_state
+    : set_shader
+    ;
+
+set_shader
+    :   (
+            T_SET_VERTEX_SHADER |
+            T_SET_PIXEL_SHADER
+        )
+        T_LPAREN compile_shader T_RPAREN
+    ;
+
+compile_shader
+    : 'CompileShader' T_LPAREN shader_profile T_COMMA T_ID T_LPAREN T_RPAREN T_RPAREN
+    ;
+
+shader_profile
+    : T_VS40
+    | T_PS40
     ;
 
 type_specifier
@@ -240,6 +261,7 @@ T_IN                    : 'in';
 T_INOUT                 : 'inout';
 T_NOINTERPOLATION       : 'nointerpolation';
 T_OUT                   : 'out';
+T_PASS                  : 'pass';
 T_RETURN                : 'return';
 T_REGISTER              : 'register';
 T_SHARED                : 'shared';
@@ -250,6 +272,12 @@ T_TEXTURE2D             : 'texture2d';
 T_TYPEDEF               : 'typedef';
 T_VOID                  : 'void';
 T_WHILE                 : 'while';
+
+T_SET_VERTEX_SHADER     : 'SetVertexShader';
+T_SET_PIXEL_SHADER      : 'SetPixelShader';
+
+T_VS40                  : 'vs_4_0';
+T_PS40                  : 'ps_4_0';
 
 T_BOOL                  : 'bool';
 T_INT                   : 'int';
