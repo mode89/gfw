@@ -16,10 +16,19 @@ translation_unit
 
 external_declaration
     : function_definition
+    | technique_definition
     ;
 
 function_definition
     : type_specifier T_ID T_LPAREN arguments_list? T_RPAREN semantic? compound_statement
+    ;
+
+technique_definition
+    : T_TECHNIQUE technique_name T_LCURLY T_RCURLY
+    ;
+
+technique_name
+    : T_ID
     ;
 
 arguments_list
@@ -236,6 +245,7 @@ T_REGISTER              : 'register';
 T_SHARED                : 'shared';
 T_STRUCT                : 'struct';
 T_SWITCH                : 'switch';
+T_TECHNIQUE             : 'technique';
 T_TEXTURE2D             : 'texture2d';
 T_TYPEDEF               : 'typedef';
 T_VOID                  : 'void';
