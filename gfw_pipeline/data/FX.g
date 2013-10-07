@@ -69,22 +69,31 @@ shader_profile
     ;
 
 type_specifier
+    : scalar_type_specifier
+    | vector_type_specifier
+    | T_FLOAT4X4
+    | T_VOID
+    | type_id
+    ;
+
+scalar_type_specifier
     : T_VOID
     | T_BOOL
     | T_INT
-    | T_INT2
+    | T_UINT
+    | T_FLOAT
+    ;
+
+vector_type_specifier
+    : T_INT2
     | T_INT3
     | T_INT4
-    | T_UINT
     | T_UINT2
     | T_UINT3
     | T_UINT4
-    | T_FLOAT
     | T_FLOAT2
     | T_FLOAT3
     | T_FLOAT4
-    | T_FLOAT4X4
-    | type_id
     ;
 
 type_id
@@ -129,6 +138,7 @@ postfix_expression
 primary_expression
     : T_ID
     | constant
+    | constructor
     | T_LPAREN expression T_RPAREN
     ;
 
@@ -137,6 +147,10 @@ constant
     |   T_OCTAL_LITERAL
     |   T_DECIMAL_LITERAL
     |   T_FLOATING_POINT_LITERAL
+    ;
+
+constructor
+    : vector_type_specifier T_LPAREN expression ( T_COMMA expression )* T_RPAREN
     ;
 
 /////
