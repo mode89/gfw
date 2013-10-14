@@ -8,6 +8,11 @@ options {
     k            = 2;
 }
 
+@header {
+    #include "gfw_pipeline/parser.h"
+    using namespace GFW::Pipeline;
+}
+
 // R u l e s
 
 translation_unit
@@ -40,11 +45,17 @@ semantic_specifier
     ;
 
 technique_definition
-    : T_TECHNIQUE T_ID T_LCURLY pass* T_RCURLY
+    : T_TECHNIQUE T_ID
+        T_LCURLY { EnterTechnique($T_ID.text); }
+            pass*
+        T_RCURLY { LeaveTechnique(); }
     ;
 
 pass
-    : T_PASS T_ID T_LCURLY ( set_state T_SEMI )* T_RCURLY
+    : T_PASS T_ID
+        T_LCURLY { EnterPass($T_ID.text); }
+            ( set_state T_SEMI )*
+        T_RCURLY { LeavePass(); }
     ;
 
 set_state
@@ -52,15 +63,19 @@ set_state
     ;
 
 set_shader
+scope { int token; }
     :   (
-            T_SET_VERTEX_SHADER |
-            T_SET_PIXEL_SHADER
+              T_SET_VERTEX_SHADER { $set_shader::token = T_SET_VERTEX_SHADER; }
+            | T_SET_PIXEL_SHADER  { $set_shader::token = T_SET_PIXEL_SHADER; }
         )
-        T_LPAREN compile_shader T_RPAREN
+        T_LPAREN compile_shader T_RPAREN { SetShader( $set_shader::token, $compile_shader.name ); }
     ;
 
-compile_shader
+compile_shader returns [ pANTLR3_STRING name ]
     : 'CompileShader' T_LPAREN shader_profile T_COMMA T_ID T_LPAREN T_RPAREN T_RPAREN
+        {
+            $compile_shader.name = $T_ID.text;
+        }
     ;
 
 shader_profile

@@ -24,7 +24,7 @@ namespace GFW { namespace Pipeline {
         pFXParser psr = FXParserNew(tstream);
         TRACE_ASSERT(psr != NULL);
 
-        FXParser_translation_unit_return langAST = psr->translation_unit(psr);
+        FXParser_translation_unit_return ast = psr->translation_unit(psr);
 
         psr->free(psr);
         tstream->free(tstream);
