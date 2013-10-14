@@ -25,7 +25,13 @@ external_declaration
     ;
 
 function_definition
-    : type_specifier T_ID T_LPAREN arguments_list? T_RPAREN semantic? compound_statement
+    @init {
+        bool withSemantic = false;
+    }
+    : type_specifier T_ID T_LPAREN arguments_list? T_RPAREN ( semantic { withSemantic = true; } )?
+        { EnterFunction( $T_ID.text, $type_specifier.text, withSemantic ? $semantic.value : NULL ); }
+            compound_statement
+        { LeaveFunction(); }
     ;
 
 arguments_list
@@ -33,11 +39,18 @@ arguments_list
     ;
 
 argument
-    : type_specifier T_ID semantic?
+    @init {
+        bool withSemantic = false;
+    }
+    : type_specifier T_ID
+      ( semantic { withSemantic = true; } )?
+        {
+            AddArgument( $T_ID.text, $type_specifier.text, withSemantic ? $semantic.value : NULL );
+        }
     ;
 
-semantic
-    : T_COLON semantic_specifier
+semantic returns [ pANTLR3_STRING value ]
+    : T_COLON semantic_specifier { $semantic.value = $semantic_specifier.text; }
     ;
 
 semantic_specifier

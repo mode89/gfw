@@ -5,10 +5,16 @@
 
 namespace GFW { namespace Pipeline {
 
+    void AddArgument( pANTLR3_STRING name, pANTLR3_STRING type, pANTLR3_STRING semantic );
+
+    void EnterFunction( pANTLR3_STRING name, pANTLR3_STRING type, pANTLR3_STRING semantic );
+    void LeaveFunction();
+
     void EnterTechnique( pANTLR3_STRING name );
     void LeaveTechnique();
     void EnterPass( pANTLR3_STRING name );
     void LeavePass();
+
     void SetShader( int token, pANTLR3_STRING shaderName );
 
 }} // namespace GFW::Pipeline
