@@ -2,6 +2,8 @@
 
 set(CMAKE_PREFIX_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 
+include( cmake/package_utils.cmake )
+
 if (CMAKE_COMPILER_IS_GNUCXX)
     execute_process(COMMAND g++ -dumpversion OUTPUT_VARIABLE GXX_VERSION)
 endif()
