@@ -1,4 +1,5 @@
 #include <list>
+#include <string>
 #include <unordered_map>
 
 #include "common/trace.h"
@@ -11,32 +12,32 @@ namespace GFW { namespace Pipeline {
 
     struct Argument
     {
-        const char *    name;
-        const char *    type;
-        const char *    semantic;
+        std::string name;
+        std::string type;
+        std::string semantic;
     };
     typedef std::list < Argument > ArgumentList;
 
     struct Function
     {
-        ArgumentList    args;
-        const char *    returnType;
-        const char *    returnSemantic;
+        ArgumentList args;
+        std::string  returnType;
+        std::string  returnSemantic;
     };
-    typedef std::unordered_map < const char *, Function > FunctionMap;
+    typedef std::unordered_map < std::string, Function > FunctionMap;
 
     struct Pass
     {
         Function * vertexShader;
         Function * pixelShader;
     };
-    typedef std::unordered_map < const char *, Pass > PassMap;
+    typedef std::unordered_map < std::string, Pass > PassMap;
 
     struct Technique
     {
         PassMap passes;
     };
-    typedef std::unordered_map < const char *, Technique > TechniqueMap;
+    typedef std::unordered_map < std::string, Technique > TechniqueMap;
 
     struct ParserContext
     {
@@ -55,9 +56,9 @@ namespace GFW { namespace Pipeline {
         TRACE_ASSERT( name != 0 );
 
         Argument arg;
-        arg.name     = (const char *) name->chars;
-        arg.type     = (const char *) type->chars;
-        arg.semantic = ( semantic != NULL ) ? (const char *) semantic->chars : NULL;
+        arg.name     = reinterpret_cast< char * >( name->chars );
+        arg.type     = reinterpret_cast< char * >( type->chars );
+        arg.semantic = ( semantic != NULL ) ? reinterpret_cast< char * >( semantic->chars ) : NULL;
 
         gContext.args.push_back( arg );
     }
@@ -66,10 +67,10 @@ namespace GFW { namespace Pipeline {
     {
         TRACE_ASSERT( name != 0 );
         TRACE_ASSERT( gContext.currentFunction == NULL );
-        Function * func = &gContext.functions[ reinterpret_cast<char *>( name->chars ) ];
+        Function * func = &gContext.functions[ reinterpret_cast< char * >( name->chars ) ];
         func->args           = gContext.args;
-        func->returnType     = (const char *) type->chars;
-        func->returnSemantic = ( semantic != NULL ) ? (const char *) semantic->chars : NULL;
+        func->returnType     = reinterpret_cast< char * >( type->chars );
+        func->returnSemantic = ( semantic != NULL ) ? reinterpret_cast< char * >( semantic->chars ) : NULL;
 
         gContext.currentFunction = func;
         gContext.args.clear();
@@ -84,19 +85,20 @@ namespace GFW { namespace Pipeline {
     void EnterTechnique( pANTLR3_STRING name )
     {
         TRACE_ASSERT( gContext.currentTechnique == NULL );
-        gContext.currentTechnique = &gContext.techniques[ reinterpret_cast<char *>( name->chars ) ];
+        gContext.currentTechnique = &gContext.techniques[ reinterpret_cast< char * >( name->chars ) ];
     }
 
     void LeaveTechnique()
     {
         TRACE_ASSERT( gContext.currentTechnique != NULL );
+        ParserContext * ctx = &gContext;
         gContext.currentTechnique = NULL;
     }
 
     void EnterPass( pANTLR3_STRING name )
     {
         TRACE_ASSERT( gContext.currentPass == NULL );
-        gContext.currentPass = &gContext.currentTechnique->passes[ reinterpret_cast<char *>( name->chars ) ];
+        gContext.currentPass = &gContext.currentTechnique->passes[ reinterpret_cast< char * >( name->chars ) ];
     }
 
     void LeavePass()
@@ -108,12 +110,20 @@ namespace GFW { namespace Pipeline {
     void SetShader( int token, pANTLR3_STRING shaderName )
     {
         TRACE_ASSERT( gContext.currentPass != NULL );
+        Pass * pass = gContext.currentPass;
+
+        ParserContext * ctx = &gContext;
+        FunctionMap::iterator it = gContext.functions.find( reinterpret_cast< char * >( shaderName->chars ) );
+        TRACE_ASSERT( it != gContext.functions.end() );
+        Function * shader = &it->second;
 
         switch ( token )
         {
         case T_SET_VERTEX_SHADER:
+            pass->vertexShader = shader;
             break;
         case T_SET_PIXEL_SHADER:
+            pass->pixelShader = shader;
             break;
         default:
             TRACE_FAIL();
