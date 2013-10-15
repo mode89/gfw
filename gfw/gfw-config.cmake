@@ -1,2 +1,1 @@
-set(GFW_INCLUDE_DIRS ${CMAKE_CURRENT_LIST_DIR}/include)
-set(GFW_LIBRARIES gfw)
+package_config( GFW )

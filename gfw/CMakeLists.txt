@@ -1,43 +1,27 @@
-project(GFW)
-cmake_minimum_required(VERSION 2.8)
+package( GFW )
 
 if ( NOT GFW_PLATFORM )
     message( FATAL_ERROR "GFW_PLATFORM is not defined." )
 endif()
 
-file(GLOB TEMP_FILES_LIST source/common/*.cpp)
-list(APPEND GFW_SOURCE_FILES ${TEMP_FILES_LIST})
-source_group("source\\common" FILES ${TEMP_FILES_LIST})
-file(GLOB TEMP_FILES_LIST source/${GFW_PLATFORM}/*.cpp)
-list(APPEND GFW_SOURCE_FILES ${TEMP_FILES_LIST})
-source_group("source\\core" FILES ${TEMP_FILES_LIST})
-file(GLOB TEMP_FILES_LIST source/win/*.cpp)
-list(APPEND GFW_SOURCE_FILES ${TEMP_FILES_LIST})
-source_group("source\\win" FILES ${TEMP_FILES_LIST})
+package_source_groups(
+    source/common   source/common/*.cpp
+    source/core     source/${GFW_PLATFORM}/*.cpp
+    source/win      source/win/*.cpp
+    include         include/gfw/*.h
+    include/base    include/gfw/base/*.h
+    include/common  include/gfw/common/*.h
+    include/core    include/${GFW_PLATFORM}/gfw/core/*.h
+    )
 
-file(GLOB TEMP_FILES_LIST include/gfw/*.h)
-list(APPEND GFW_HEADER_FILES ${TEMP_FILES_LIST})
-source_group("include" FILES ${TEMP_FILES_LIST})
-file(GLOB TEMP_FILES_LIST include/gfw/base/*.h)
-list(APPEND GFW_HEADER_FILES ${TEMP_FILES_LIST})
-source_group("include\\base" FILES ${TEMP_FILES_LIST})
-file(GLOB TEMP_FILES_LIST include/gfw/common/*.h include/gfw/common/*.inl)
-list(APPEND GFW_HEADER_FILES ${TEMP_FILES_LIST})
-source_group("include\\common" FILES ${TEMP_FILES_LIST})
-file(GLOB TEMP_FILES_LIST include/gfw/${GFW_PLATFORM}/gfw/core/*.h)
-list(APPEND GFW_HEADER_FILES ${TEMP_FILES_LIST})
-source_group("include\\core" FILES ${GFW_HEADER_FILES})
+package_include_dirs( include include/gfw/${GFW_PLATFORM} )
 
-add_library(gfw ${GFW_SOURCE_FILES} ${GFW_HEADER_FILES})
-include_directories(include include/gfw/${GFW_PLATFORM})
+package_add_library()
 
-find_package(common CONFIG)
-target_link_libraries(gfw ${COMMON_LIBRARIES})
-include_directories(${COMMON_INCLUDE_DIRS})
-
-find_package(profiler CONFIG)
-target_link_libraries(gfw ${PROFILER_LIBRARIES})
-include_directories(${PROFILER_INCLUDE_DIRS})
+package_dependencies(
+    common
+    profiler
+    )
 
 include(scripts/${GFW_PLATFORM}/build.cmake)
 
