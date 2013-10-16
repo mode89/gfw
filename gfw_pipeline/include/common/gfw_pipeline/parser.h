@@ -1,21 +1,27 @@
 #ifndef __GFW_PIPELINE_COMMON_PARSER_H__
 #define __GFW_PIPELINE_COMMON_PARSER_H__
 
-#include "antlr/antlr3.h"
+#include "common/autoref.h"
 
 namespace GFW { namespace Pipeline {
 
-    void AddArgument( pANTLR3_STRING name, pANTLR3_STRING type, pANTLR3_STRING semantic );
+    AUTOREF_FORWARD_DECLARATION( ParseTree );
 
-    void EnterFunction( pANTLR3_STRING name, pANTLR3_STRING type, pANTLR3_STRING semantic );
-    void LeaveFunction();
+    class Parser : public Common::ARefCounted
+    {
+    public:
+        ParseTreeRef
+        GetTree() { return mTree; }
 
-    void EnterTechnique( pANTLR3_STRING name );
-    void LeaveTechnique();
-    void EnterPass( pANTLR3_STRING name );
-    void LeavePass();
+    public:
+        Parser(const char * fileName);
+        ~Parser();
 
-    void SetShader( int token, pANTLR3_STRING shaderName );
+    private:
+        void *          mImpl;
+        ParseTree *     mTree;
+    };
+    AUTOREF_REFERENCE_DECLARATION( Parser );
 
 }} // namespace GFW::Pipeline
 

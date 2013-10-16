@@ -1,133 +1,57 @@
-#include <list>
-#include <string>
-#include <unordered_map>
-
 #include "common/trace.h"
 
 #include "gfw_pipeline/parser.h"
+#include "gfw_pipeline/parse_tree.h"
 
+#include "FXLexer.h"
 #include "FXParser.h"
 
 namespace GFW { namespace Pipeline {
 
-    struct Argument
+    struct ParserImpl
     {
-        std::string name;
-        std::string type;
-        std::string semantic;
+        pFXLexer                        lexer;
+        pANTLR3_COMMON_TOKEN_STREAM     tokenStream;
+        pFXParser                       parser;
     };
-    typedef std::list < Argument > ArgumentList;
 
-    struct Function
+    Parser::Parser( const char * fileName )
+        : mImpl( NULL )
+        , mTree( NULL )
     {
-        ArgumentList args;
-        std::string  returnType;
-        std::string  returnSemantic;
-    };
-    typedef std::unordered_map < std::string, Function > FunctionMap;
+        ParserImpl * imp = new ParserImpl;
+        mImpl = imp;
 
-    struct Pass
-    {
-        Function * vertexShader;
-        Function * pixelShader;
-    };
-    typedef std::unordered_map < std::string, Pass > PassMap;
+        pANTLR3_UINT8           fName = (pANTLR3_UINT8) fileName;
+        pANTLR3_INPUT_STREAM    input = antlr3FileStreamNew( fName, ANTLR3_ENC_8BIT );
+        TRACE_ASSERT( input != NULL );
 
-    struct Technique
-    {
-        PassMap passes;
-    };
-    typedef std::unordered_map < std::string, Technique > TechniqueMap;
+        imp->lexer = FXLexerNew(input);
+        TRACE_ASSERT( imp->lexer != NULL );
 
-    struct ParserContext
-    {
-        ArgumentList    args;
-        FunctionMap     functions;
-        FunctionMap     shaders;
-        TechniqueMap    techniques;
+        imp->tokenStream = antlr3CommonTokenStreamSourceNew( ANTLR3_SIZE_HINT, TOKENSOURCE( imp->lexer ) );
+        TRACE_ASSERT( imp->tokenStream != NULL);
 
-        Function *      currentFunction;
-        Technique *     currentTechnique;
-        Pass *          currentPass;
-    } gContext;
+        imp->parser = FXParserNew( imp->tokenStream );
+        TRACE_ASSERT( imp->parser != NULL );
 
-    void AddArgument( pANTLR3_STRING name, pANTLR3_STRING type, pANTLR3_STRING semantic )
-    {
-        TRACE_ASSERT( name != 0 );
+        FXParser_translation_unit_return ast = imp->parser->translation_unit( imp->parser );
+        mTree = new ParseTree( ast.tree, this );
 
-        Argument arg;
-        arg.name     = reinterpret_cast< char * >( name->chars );
-        arg.type     = reinterpret_cast< char * >( type->chars );
-        arg.semantic = ( semantic != NULL ) ? reinterpret_cast< char * >( semantic->chars ) : NULL;
-
-        gContext.args.push_back( arg );
+        input->close(input);
     }
 
-    void EnterFunction( pANTLR3_STRING name, pANTLR3_STRING type, pANTLR3_STRING semantic )
+    Parser::~Parser()
     {
-        TRACE_ASSERT( name != 0 );
-        TRACE_ASSERT( gContext.currentFunction == NULL );
-        Function * func = &gContext.functions[ reinterpret_cast< char * >( name->chars ) ];
-        func->args           = gContext.args;
-        func->returnType     = reinterpret_cast< char * >( type->chars );
-        func->returnSemantic = ( semantic != NULL ) ? reinterpret_cast< char * >( semantic->chars ) : NULL;
-
-        gContext.currentFunction = func;
-        gContext.args.clear();
-    }
-
-    void LeaveFunction()
-    {
-        TRACE_ASSERT( gContext.currentFunction != NULL );
-        gContext.currentFunction = NULL;
-    }
-
-    void EnterTechnique( pANTLR3_STRING name )
-    {
-        TRACE_ASSERT( gContext.currentTechnique == NULL );
-        gContext.currentTechnique = &gContext.techniques[ reinterpret_cast< char * >( name->chars ) ];
-    }
-
-    void LeaveTechnique()
-    {
-        TRACE_ASSERT( gContext.currentTechnique != NULL );
-        ParserContext * ctx = &gContext;
-        gContext.currentTechnique = NULL;
-    }
-
-    void EnterPass( pANTLR3_STRING name )
-    {
-        TRACE_ASSERT( gContext.currentPass == NULL );
-        gContext.currentPass = &gContext.currentTechnique->passes[ reinterpret_cast< char * >( name->chars ) ];
-    }
-
-    void LeavePass()
-    {
-        TRACE_ASSERT( gContext.currentPass != NULL );
-        gContext.currentPass = NULL;
-    }
-
-    void SetShader( int token, pANTLR3_STRING shaderName )
-    {
-        TRACE_ASSERT( gContext.currentPass != NULL );
-        Pass * pass = gContext.currentPass;
-
-        ParserContext * ctx = &gContext;
-        FunctionMap::iterator it = gContext.functions.find( reinterpret_cast< char * >( shaderName->chars ) );
-        TRACE_ASSERT( it != gContext.functions.end() );
-        Function * shader = &it->second;
-
-        switch ( token )
+        if ( mImpl != NULL )
         {
-        case T_SET_VERTEX_SHADER:
-            pass->vertexShader = shader;
-            break;
-        case T_SET_PIXEL_SHADER:
-            pass->pixelShader = shader;
-            break;
-        default:
-            TRACE_FAIL();
-            break;
+            ParserImpl * imp = static_cast<ParserImpl*>( mImpl );
+
+            if ( imp->parser ) imp->parser->free( imp->parser );
+            if ( imp->tokenStream ) imp->tokenStream->free( imp->tokenStream );
+            if ( imp->lexer ) imp->lexer->free( imp->lexer );
+
+            delete imp;
         }
     }
 

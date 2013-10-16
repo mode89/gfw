@@ -8,15 +8,24 @@ options {
     k            = 2;
 }
 
-@header {
-    #include "gfw_pipeline/parser.h"
-    using namespace GFW::Pipeline;
+tokens {
+    T_TRANSLATION_UNIT;
+    T_EXTERNAL_DECLARATION;
+    T_FUNCTION_DEFINITION;
+    T_TECHNIQUE_DEFINITION;
+    T_ARGUMENTS_LIST;
+    T_ARGUMENT;
+    T_SEMANTIC;
+    T_SET_SHADER;
 }
 
 // R u l e s
 
 translation_unit
     : external_declaration* EOF
+        -> ^( T_TRANSLATION_UNIT
+                ^( T_EXTERNAL_DECLARATION external_declaration )*
+            )
     ;
 
 external_declaration
@@ -25,32 +34,23 @@ external_declaration
     ;
 
 function_definition
-    @init {
-        bool withSemantic = false;
-    }
-    : type_specifier T_ID T_LPAREN arguments_list? T_RPAREN ( semantic { withSemantic = true; } )?
-        { EnterFunction( $T_ID.text, $type_specifier.text, withSemantic ? $semantic.value : NULL ); }
-            compound_statement
-        { LeaveFunction(); }
+    : type_specifier T_ID T_LPAREN arguments_list? T_RPAREN semantic? compound_statement
+        -> ^( T_FUNCTION_DEFINITION T_ID type_specifier semantic? arguments_list compound_statement )
     ;
 
 arguments_list
     : argument ( T_COMMA argument )*
+        -> ^( T_ARGUMENTS_LIST argument+ )
     ;
 
 argument
-    @init {
-        bool withSemantic = false;
-    }
-    : type_specifier T_ID
-      ( semantic { withSemantic = true; } )?
-        {
-            AddArgument( $T_ID.text, $type_specifier.text, withSemantic ? $semantic.value : NULL );
-        }
+    : type_specifier T_ID semantic?
+        -> ^( T_ARGUMENT type_specifier T_ID semantic? )
     ;
 
-semantic returns [ pANTLR3_STRING value ]
-    : T_COLON semantic_specifier { $semantic.value = $semantic_specifier.text; }
+semantic
+    : T_COLON semantic_specifier
+        -> ^( T_SEMANTIC semantic_specifier )
     ;
 
 semantic_specifier
@@ -58,17 +58,13 @@ semantic_specifier
     ;
 
 technique_definition
-    : T_TECHNIQUE T_ID
-        T_LCURLY { EnterTechnique($T_ID.text); }
-            pass*
-        T_RCURLY { LeaveTechnique(); }
+    : T_TECHNIQUE T_ID T_LCURLY pass* T_RCURLY
+        -> ^( T_TECHNIQUE_DEFINITION T_ID pass* )
     ;
 
 pass
-    : T_PASS T_ID
-        T_LCURLY { EnterPass($T_ID.text); }
-            ( set_state T_SEMI )*
-        T_RCURLY { LeavePass(); }
+    : T_PASS T_ID T_LCURLY ( set_state T_SEMI )* T_RCURLY
+        -> ^( T_PASS T_ID set_state* )
     ;
 
 set_state
@@ -76,19 +72,18 @@ set_state
     ;
 
 set_shader
-scope { int token; }
-    :   (
-              T_SET_VERTEX_SHADER { $set_shader::token = T_SET_VERTEX_SHADER; }
-            | T_SET_PIXEL_SHADER  { $set_shader::token = T_SET_PIXEL_SHADER; }
-        )
-        T_LPAREN compile_shader T_RPAREN { SetShader( $set_shader::token, $compile_shader.name ); }
+    : set_shader_cmd T_LPAREN compile_shader T_RPAREN
+        -> ^( T_SET_SHADER set_shader_cmd compile_shader )
     ;
 
-compile_shader returns [ pANTLR3_STRING name ]
-    : 'CompileShader' T_LPAREN shader_profile T_COMMA T_ID T_LPAREN T_RPAREN T_RPAREN
-        {
-            $compile_shader.name = $T_ID.text;
-        }
+set_shader_cmd
+    : T_SET_VERTEX_SHADER |
+      T_SET_PIXEL_SHADER
+    ;
+
+compile_shader
+    : T_COMPILE_SHADER T_LPAREN shader_profile T_COMMA T_ID T_LPAREN T_RPAREN T_RPAREN
+        -> ^( T_COMPILE_SHADER shader_profile T_ID )
     ;
 
 shader_profile
@@ -171,10 +166,10 @@ primary_expression
     ;
 
 constant
-    :   T_HEX_LITERAL
-    |   T_OCTAL_LITERAL
-    |   T_DECIMAL_LITERAL
-    |   T_FLOATING_POINT_LITERAL
+    : T_HEX_LITERAL
+    | T_OCTAL_LITERAL
+    | T_DECIMAL_LITERAL
+    | T_FLOATING_POINT_LITERAL
     ;
 
 constructor
@@ -317,6 +312,7 @@ T_WHILE                 : 'while';
 
 T_SET_VERTEX_SHADER     : 'SetVertexShader';
 T_SET_PIXEL_SHADER      : 'SetPixelShader';
+T_COMPILE_SHADER        : 'CompileShader';
 
 T_VS40                  : 'vs_4_0';
 T_PS40                  : 'ps_4_0';
