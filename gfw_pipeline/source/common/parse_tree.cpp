@@ -17,24 +17,38 @@ namespace GFW { namespace Pipeline {
         : mImpl( NULL )
         , mParser( parser )
     {
-        ParseTreeImpl * imp = new ParseTreeImpl;
-        mImpl = imp;
+        mImpl = new ParseTreeImpl;
 
-        imp->tree = static_cast<pANTLR3_BASE_TREE>( nativeTree );
+        mImpl->tree = static_cast<pANTLR3_BASE_TREE>( nativeTree );
+
+        mChildCount = mImpl->tree->getChildCount( mImpl->tree );
+        mChildren = new ParseTree * [ mChildCount ];
+        for (uint32_t i = 0; i < mChildCount; ++ i)
+        {
+            mChildren[i] = new ParseTree(mImpl->tree->getChild(mImpl->tree, i), mParser);
+        }
     }
 
     ParseTree::~ParseTree()
     {
+        if ( mChildren != NULL )
+        {
+            for (uint32_t i = 0; i < mChildCount; ++ i)
+            {
+                delete mChildren[i];
+            }
+            delete [] mChildren;
+        }
+
         if ( mImpl != NULL )
         {
-            ParseTreeImpl * imp = static_cast<ParseTreeImpl*>( mImpl );
-            delete imp;
+            delete mImpl;
         }
     }
 
     void ParseTree::TraverseDFS()
     {
-        ParseTreeImpl * imp = static_cast<ParseTreeImpl*>( mImpl );
+
     }
 
 }} // namespace GFW::Pipeline

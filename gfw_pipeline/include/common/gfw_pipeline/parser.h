@@ -5,6 +5,7 @@
 
 namespace GFW { namespace Pipeline {
 
+    struct ParserImpl;
     AUTOREF_FORWARD_DECLARATION( ParseTree );
 
     class Parser : public Common::ARefCounted
@@ -18,7 +19,7 @@ namespace GFW { namespace Pipeline {
         ~Parser();
 
     private:
-        void *          mImpl;
+        ParserImpl *    mImpl;
         ParseTree *     mTree;
     };
     AUTOREF_REFERENCE_DECLARATION( Parser );

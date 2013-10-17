@@ -19,23 +19,22 @@ namespace GFW { namespace Pipeline {
         : mImpl( NULL )
         , mTree( NULL )
     {
-        ParserImpl * imp = new ParserImpl;
-        mImpl = imp;
+        mImpl = new ParserImpl;
 
         pANTLR3_UINT8           fName = (pANTLR3_UINT8) fileName;
         pANTLR3_INPUT_STREAM    input = antlr3FileStreamNew( fName, ANTLR3_ENC_8BIT );
         TRACE_ASSERT( input != NULL );
 
-        imp->lexer = FXLexerNew(input);
-        TRACE_ASSERT( imp->lexer != NULL );
+        mImpl->lexer = FXLexerNew(input);
+        TRACE_ASSERT( mImpl->lexer != NULL );
 
-        imp->tokenStream = antlr3CommonTokenStreamSourceNew( ANTLR3_SIZE_HINT, TOKENSOURCE( imp->lexer ) );
-        TRACE_ASSERT( imp->tokenStream != NULL);
+        mImpl->tokenStream = antlr3CommonTokenStreamSourceNew( ANTLR3_SIZE_HINT, TOKENSOURCE( mImpl->lexer ) );
+        TRACE_ASSERT( mImpl->tokenStream != NULL);
 
-        imp->parser = FXParserNew( imp->tokenStream );
-        TRACE_ASSERT( imp->parser != NULL );
+        mImpl->parser = FXParserNew( mImpl->tokenStream );
+        TRACE_ASSERT( mImpl->parser != NULL );
 
-        FXParser_translation_unit_return ast = imp->parser->translation_unit( imp->parser );
+        FXParser_translation_unit_return ast = mImpl->parser->translation_unit( mImpl->parser );
         mTree = new ParseTree( ast.tree, this );
 
         input->close(input);
@@ -45,13 +44,11 @@ namespace GFW { namespace Pipeline {
     {
         if ( mImpl != NULL )
         {
-            ParserImpl * imp = static_cast<ParserImpl*>( mImpl );
+            if ( mImpl->parser ) mImpl->parser->free( mImpl->parser );
+            if ( mImpl->tokenStream ) mImpl->tokenStream->free( mImpl->tokenStream );
+            if ( mImpl->lexer ) mImpl->lexer->free( mImpl->lexer );
 
-            if ( imp->parser ) imp->parser->free( imp->parser );
-            if ( imp->tokenStream ) imp->tokenStream->free( imp->tokenStream );
-            if ( imp->lexer ) imp->lexer->free( imp->lexer );
-
-            delete imp;
+            delete mImpl;
         }
     }
 
