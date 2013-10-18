@@ -11,8 +11,10 @@ namespace GFW { namespace Pipeline {
     EffectBinaryRef EffectBuilder::Build(const char * fileName)
     {
         ParserRef parser  = new Parser( fileName );
-        ParseTreeRef tree = parser->GetTree();
-        tree->TraverseDFS();
+
+        const ParseTree * tree = parser->GetTree();
+
+        // Collect techniques
 
         return NULL;
     }

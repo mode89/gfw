@@ -3,11 +3,18 @@
 
 #include "common/autoref.h"
 
+#include "gfw_pipeline/effect.h"
+
 namespace GFW { namespace Pipeline {
 
     class EffectBinary : public Common::ARefCounted
     {
+    public:
+        const EffectDesc &
+        GetDesc() { return mDesc; }
 
+    private:
+        EffectDesc  mDesc;
     };
     AUTOREF_REFERENCE_DECLARATION(EffectBinary);
 
