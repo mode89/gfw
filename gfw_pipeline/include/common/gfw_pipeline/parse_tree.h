@@ -5,13 +5,33 @@
 
 namespace GFW { namespace Pipeline {
 
+#define TOKENS \
+    T(TRANSLATION_UNIT) \
+    T(EXTERNAL_DECLARATION) \
+    T(FUNCTION_DEFINITION) \
+    T(TECHNIQUE_DEFINITION) \
+    T(PASS_DEFINITION) \
+    T(ARGUMENTS_LIST) \
+    T(ARGUMENT) \
+    T(SEMANTIC) \
+    T(SET_SHADER) \
+    T(ID) \
+
+    enum Token
+    {
+        TOKEN_UNKNOWN = 0,
+#define T(token) TOKEN_ ## token,
+        TOKENS
+#undef T
+    };
+
     struct ParseTreeImpl;
     AUTOREF_FORWARD_DECLARATION( Parser );
 
-    class ParseTree : public Common::ARefCounted
+    class ParseTree
     {
     public:
-        void
+        bool
         TraverseDFS();
 
     public:
@@ -22,10 +42,11 @@ namespace GFW { namespace Pipeline {
         ParseTreeImpl * mImpl;
         ParserRef       mParser;
 
+        Token           mType;
+
         ParseTree **    mChildren;
         uint32_t        mChildCount;
     };
-    AUTOREF_REFERENCE_DECLARATION( ParseTree );
 
 }} // namespace GFW::Pipeline
 

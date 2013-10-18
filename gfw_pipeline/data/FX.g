@@ -12,6 +12,7 @@ tokens {
     T_EXTERNAL_DECLARATION;
     T_FUNCTION_DEFINITION;
     T_TECHNIQUE_DEFINITION;
+    T_PASS_DEFINITION;
     T_ARGUMENTS_LIST;
     T_ARGUMENT;
     T_SEMANTIC;
@@ -63,7 +64,7 @@ technique_definition
 
 pass
     : T_PASS T_ID T_LCURLY ( set_state T_SEMI )* T_RCURLY
-        -> ^( T_PASS T_ID set_state* )
+        -> ^( T_PASS_DEFINITION T_ID set_state* )
     ;
 
 set_state

@@ -6,12 +6,12 @@
 namespace GFW { namespace Pipeline {
 
     struct ParserImpl;
-    AUTOREF_FORWARD_DECLARATION( ParseTree );
+    class  ParseTree;
 
     class Parser : public Common::ARefCounted
     {
     public:
-        ParseTreeRef
+        const ParseTree *
         GetTree() { return mTree; }
 
     public:

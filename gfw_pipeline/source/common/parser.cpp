@@ -42,6 +42,11 @@ namespace GFW { namespace Pipeline {
 
     Parser::~Parser()
     {
+        if ( mTree != NULL )
+        {
+            delete mTree;
+        }
+
         if ( mImpl != NULL )
         {
             if ( mImpl->parser ) mImpl->parser->free( mImpl->parser );
