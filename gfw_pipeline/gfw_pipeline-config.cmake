@@ -1,2 +1,0 @@
-set( GFW_PIPELINE_INCLUDE_DIRS ${CMAKE_CURRENT_LIST_DIR}/include/common )
-set( GFW_PIPELINE_LIBRARIES gfw_pipeline )
