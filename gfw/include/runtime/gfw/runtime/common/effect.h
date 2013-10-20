@@ -4,7 +4,7 @@
 #include "gfw/base/effect.h"
 #include "gfw/base/shader.h"
 #include "gfw/base/types_fwd.h"
-#include "gfw/common/device_child.h"
+#include "gfw/runtime/common/device_child.h"
 
 namespace GFW {
 

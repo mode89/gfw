@@ -1,6 +1,6 @@
 #include "common/trace.h"
 
-#include "gfw/common/format.h"
+#include "gfw/runtime/common/format.h"
 
 namespace GFW {
 

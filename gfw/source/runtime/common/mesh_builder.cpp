@@ -4,8 +4,8 @@
 #include "gfw/base/device.h"
 #include "gfw/base/input_layout.h"
 
-#include "gfw/common/mesh.h"
-#include "gfw/common/mesh_builder.h"
+#include "gfw/runtime/common/mesh.h"
+#include "gfw/runtime/common/mesh_builder.h"
 
 namespace GFW {
 

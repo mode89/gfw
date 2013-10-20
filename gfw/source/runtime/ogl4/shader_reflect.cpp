@@ -1,8 +1,8 @@
-#include "gfw/common/semantic.h"
-#include "gfw/core/device.h"
-#include "gfw/core/functions.h"
-#include "gfw/core/shader_reflect.h"
-#include "gfw/common/shader_reflect.inl"
+#include "gfw/runtime/common/semantic.h"
+#include "gfw/runtime/core/device.h"
+#include "gfw/runtime/core/functions.h"
+#include "gfw/runtime/core/shader_reflect.h"
+#include "gfw/runtime/common/shader_reflect.inl"
 
 namespace GFW {
 

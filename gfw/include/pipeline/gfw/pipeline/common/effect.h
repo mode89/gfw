@@ -1,7 +1,7 @@
 #ifndef __GFW_PIPELINE_COMMON_EFFECT_H__
 #define __GFW_PIPELINE_COMMON_EFFECT_H__
 
-#include "gfw_pipeline/shader_stage.h"
+#include "gfw/pipeline/common/shader_stage.h"
 
 namespace GFW {
 

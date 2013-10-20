@@ -1,8 +1,8 @@
 #include "common/trace.h"
 
 #include "gfw/base/device_child.h"
-#include "gfw/core/functions.h"
-#include "gfw/core/resource.h"
+#include "gfw/runtime/core/functions.h"
+#include "gfw/runtime/core/resource.h"
 
 namespace GFW {
 

@@ -1,6 +1,6 @@
 #include "common/trace.h"
 
-#include "gfw/common/semantic.h"
+#include "gfw/runtime/common/semantic.h"
 
 #include <string.h>
 

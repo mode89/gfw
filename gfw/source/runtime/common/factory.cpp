@@ -5,10 +5,10 @@
 #include "gfw/base/draw_params.h"
 #include "gfw/base/input_layout.h"
 
-#include "gfw/common/effect.h"
-#include "gfw/common/factory.h"
-#include "gfw/common/mesh_builder.h"
-#include "gfw/common/shader_stage.h"
+#include "gfw/runtime/common/effect.h"
+#include "gfw/runtime/common/factory.h"
+#include "gfw/runtime/common/mesh_builder.h"
+#include "gfw/runtime/common/shader_stage.h"
 
 #include <fstream>
 #include <string>

@@ -5,8 +5,12 @@ add_definitions( -DTESTS_DIR="${GFW_PIPELINE_TESTS_SOURCE_DIR}/" )
 
 file( GLOB GFW_PIPELINE_TESTS_SOURCE_FILES *.cpp )
 add_executable( gfw_pipeline-tests ${GFW_PIPELINE_TESTS_SOURCE_FILES} )
-
 target_link_libraries( gfw_pipeline-tests gfw_pipeline )
+include_directories( ${GFW_ROOT}/include/pipeline )
+
+find_package( common CONFIG )
+target_link_libraries( gfw_pipeline-tests ${COMMON_LIBRARIES} )
+include_directories( ${COMMON_INCLUDE_DIRS} )
 
 find_package( gtest CONFIG )
 target_link_libraries( gfw_pipeline-tests ${GTEST_LIBRARIES} )

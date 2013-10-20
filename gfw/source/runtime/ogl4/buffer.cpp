@@ -2,11 +2,11 @@
 
 #include "gfw/base/context.h"
 
-#include "gfw/common/device_child.inl"
+#include "gfw/runtime/common/device_child.inl"
 
-#include "gfw/core/buffer.h"
-#include "gfw/core/functions.h"
-#include "gfw/core/resource.h"
+#include "gfw/runtime/core/buffer.h"
+#include "gfw/runtime/core/functions.h"
+#include "gfw/runtime/core/resource.h"
 
 namespace GFW {
 

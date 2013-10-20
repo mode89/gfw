@@ -1,10 +1,10 @@
 #include "common/trace.h"
 
-#include "gfw/core/format.h"
-#include "gfw/core/functions.h"
-#include "gfw/core/texture.h"
+#include "gfw/runtime/core/format.h"
+#include "gfw/runtime/core/functions.h"
+#include "gfw/runtime/core/texture.h"
 
-#include "gfw/common/device_child.inl"
+#include "gfw/runtime/common/device_child.inl"
 
 namespace GFW {
 

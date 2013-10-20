@@ -1,13 +1,13 @@
 #include "common/trace.h"
 
 #include "gfw/base/device.h"
-#include "gfw/common/semantic.h"
-#include "gfw/core/functions.h"
-#include "gfw/core/input_layout.h"
-#include "gfw/core/shader.h"
-#include "gfw/core/shader_reflect.h"
+#include "gfw/runtime/common/semantic.h"
+#include "gfw/runtime/core/functions.h"
+#include "gfw/runtime/core/input_layout.h"
+#include "gfw/runtime/core/shader.h"
+#include "gfw/runtime/core/shader_reflect.h"
 
-#include "gfw/common/device_child.inl"
+#include "gfw/runtime/common/device_child.inl"
 
 namespace GFW {
 

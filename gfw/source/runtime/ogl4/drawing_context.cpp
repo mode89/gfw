@@ -1,8 +1,8 @@
 #include "common/trace.h"
 
-#include "gfw/core/drawing_context.h"
-#include "gfw/core/platform.h"
-#include "gfw/core/functions.h"
+#include "gfw/runtime/core/drawing_context.h"
+#include "gfw/runtime/core/platform.h"
+#include "gfw/runtime/core/functions.h"
 
 #include "opengl/wglext.h"
 

@@ -8,7 +8,7 @@
 #include "gfw/base/context.h"
 #include "gfw/base/device.h"
 #include "gfw/base/render_target.h"
-#include "gfw/core/types_fwd.h"
+#include "gfw/runtime/core/types_fwd.h"
 
 namespace GFW {
 

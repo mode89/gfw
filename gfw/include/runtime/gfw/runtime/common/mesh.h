@@ -3,8 +3,8 @@
 
 #include "gfw/base/draw_params.h"
 #include "gfw/base/mesh.h"
-#include "gfw/common/device_child.h"
-#include "gfw/core/limits.h"
+#include "gfw/runtime/common/device_child.h"
+#include "gfw/runtime/core/limits.h"
 
 namespace GFW {
 

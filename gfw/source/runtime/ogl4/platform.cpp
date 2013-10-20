@@ -1,7 +1,7 @@
 #include "common/trace.h"
 
-#include "gfw/core/platform.h"
-#include "gfw/core/functions.h"
+#include "gfw/runtime/core/platform.h"
+#include "gfw/runtime/core/functions.h"
 
 #if defined(PLATFORM_WIN32)
     #include <windows.h>

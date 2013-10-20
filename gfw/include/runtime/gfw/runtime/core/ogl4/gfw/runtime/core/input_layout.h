@@ -3,9 +3,9 @@
 
 #include "gfw/base/input_layout.h"
 #include "gfw/base/vertex_attribute.h"
-#include "gfw/common/device_child.h"
-#include "gfw/core/limits.h"
-#include "gfw/core/types_fwd.h"
+#include "gfw/runtime/common/device_child.h"
+#include "gfw/runtime/core/limits.h"
+#include "gfw/runtime/core/types_fwd.h"
 
 namespace GFW {
 

@@ -7,8 +7,8 @@
 #include "gfw/base/shader.h"
 #include "gfw/base/vertex_attribute.h"
 
-#include "gfw/core/limits.h"
-#include "gfw/core/types_fwd.h"
+#include "gfw/runtime/core/limits.h"
+#include "gfw/runtime/core/types_fwd.h"
 
 #include <map>
 

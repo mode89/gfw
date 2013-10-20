@@ -2,7 +2,7 @@
 #define __GFW_PIPELINE_COMMON_EFFECT_BUILDER_H__
 
 #include "common/autoref.h"
-#include "gfw_pipeline/effect_binary.h"
+#include "gfw/pipeline/common/effect_binary.h"
 
 namespace GFW { namespace Pipeline {
 

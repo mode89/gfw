@@ -1,9 +1,9 @@
 #include "common/trace.h"
 
-#include "gfw/common/device_child.inl"
+#include "gfw/runtime/common/device_child.inl"
 
-#include "gfw/core/rasterizer_state.h"
-#include "gfw/core/functions.h"
+#include "gfw/runtime/core/rasterizer_state.h"
+#include "gfw/runtime/core/functions.h"
 
 namespace GFW {
 

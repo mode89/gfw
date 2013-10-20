@@ -1,9 +1,9 @@
 #include "common/trace.h"
 
-#include "gfw/common/format.h"
+#include "gfw/runtime/common/format.h"
 
-#include "gfw/core/format.h"
-#include "gfw/core/functions.h"
+#include "gfw/runtime/core/format.h"
+#include "gfw/runtime/core/functions.h"
 
 namespace GFW {
 

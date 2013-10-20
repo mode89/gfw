@@ -1,12 +1,12 @@
 #include "common/trace.h"
 #include "common/crc32.h"
 
-#include "gfw/core/shader.h"
-#include "gfw/core/shader_reflect.h"
-#include "gfw/core/shader_stage.h"
-#include "gfw/core/functions.h"
+#include "gfw/runtime/core/shader.h"
+#include "gfw/runtime/core/shader_reflect.h"
+#include "gfw/runtime/core/shader_stage.h"
+#include "gfw/runtime/core/functions.h"
 
-#include "gfw/common/device_child.inl"
+#include "gfw/runtime/common/device_child.inl"
 
 #include <string.h>
 

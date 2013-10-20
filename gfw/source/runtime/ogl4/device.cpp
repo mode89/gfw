@@ -3,16 +3,16 @@
 #include "gfw/base/device_child.h"
 #include "gfw/base/resource.h"
 
-#include "gfw/core/buffer.h"
-#include "gfw/core/context.h"
-#include "gfw/core/device.h"
-#include "gfw/core/drawing_context.h"
-#include "gfw/core/functions.h"
-#include "gfw/core/input_layout.h"
-#include "gfw/core/render_target.h"
-#include "gfw/core/shader.h"
-#include "gfw/core/shader_reflect.h"
-#include "gfw/core/texture.h"
+#include "gfw/runtime/core/buffer.h"
+#include "gfw/runtime/core/context.h"
+#include "gfw/runtime/core/device.h"
+#include "gfw/runtime/core/drawing_context.h"
+#include "gfw/runtime/core/functions.h"
+#include "gfw/runtime/core/input_layout.h"
+#include "gfw/runtime/core/render_target.h"
+#include "gfw/runtime/core/shader.h"
+#include "gfw/runtime/core/shader_reflect.h"
+#include "gfw/runtime/core/texture.h"
 
 #define AUTO_LOCK_CONTEXT   AutoLock __auto_lock_context(mDrawingContext.GetPointer(), &mMutex, mContextGL)
 

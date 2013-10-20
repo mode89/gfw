@@ -2,7 +2,7 @@
 #define __GFW_COMMON_SHADER_REFLECT_INL__
 
 #include "common/trace.h"
-#include "gfw/common/device_child.inl"
+#include "gfw/runtime/common/device_child.inl"
 
 namespace GFW {
 

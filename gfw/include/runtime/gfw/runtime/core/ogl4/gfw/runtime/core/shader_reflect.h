@@ -1,7 +1,7 @@
 #ifndef __GFW_CORE_SHADER_REFLECT_H__
 #define __GFW_CORE_SHADER_REFLECT_H__
 
-#include "gfw/common/shader_reflect.h"
+#include "gfw/runtime/common/shader_reflect.h"
 
 namespace GFW {
 

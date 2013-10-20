@@ -2,8 +2,8 @@
 #define __GFW_CORE_BUFFER_H__
 
 #include "gfw/base/buffer.h"
-#include "gfw/common/device_child.h"
-#include "gfw/core/types_fwd.h"
+#include "gfw/runtime/common/device_child.h"
+#include "gfw/runtime/core/types_fwd.h"
 
 namespace GFW {
 

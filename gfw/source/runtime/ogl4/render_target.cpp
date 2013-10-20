@@ -1,6 +1,7 @@
-#include "gfw/core/render_target.h"
-#include "gfw/core/texture.h"
-#include "gfw/common/device_child.inl"
+#include "gfw/runtime/core/render_target.h"
+#include "gfw/runtime/core/texture.h"
+
+#include "gfw/runtime/common/device_child.inl"
 
 namespace GFW {
 

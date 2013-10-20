@@ -2,7 +2,7 @@
 #define __GFW_COMMON_MESH_BUILDER_H__
 
 #include "gfw/base/mesh_builder.h"
-#include "gfw/core/limits.h"
+#include "gfw/runtime/core/limits.h"
 
 namespace GFW {
 

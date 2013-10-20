@@ -3,7 +3,7 @@
 
 #include "gfw/base/shader_reflect.h"
 #include "gfw/base/types_fwd.h"
-#include "gfw/common/device_child.h"
+#include "gfw/runtime/common/device_child.h"
 
 #include <unordered_map>
 #include <vector>

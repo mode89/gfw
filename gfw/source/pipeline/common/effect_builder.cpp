@@ -2,9 +2,9 @@
 
 #include "common/trace.h"
 
-#include "gfw_pipeline/effect_builder.h"
-#include "gfw_pipeline/parser.h"
-#include "gfw_pipeline/parse_tree.h"
+#include "gfw/pipeline/common/effect_builder.h"
+#include "gfw/pipeline/common/parser.h"
+#include "gfw/pipeline/common/parse_tree.h"
 
 namespace GFW { namespace Pipeline {
 

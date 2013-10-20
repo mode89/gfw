@@ -1,7 +1,7 @@
 #include "common/trace.h"
 
-#include "gfw_pipeline/parser.h"
-#include "gfw_pipeline/parse_tree.h"
+#include "gfw/pipeline/common/parser.h"
+#include "gfw/pipeline/common/parse_tree.h"
 
 #include "FXLexer.h"
 #include "FXParser.h"

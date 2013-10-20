@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 
-#include "gfw_pipeline/effect_builder.h"
+#include "gfw/pipeline/common/effect_builder.h"
 
 using namespace GFW::Pipeline;
 

@@ -2,8 +2,8 @@
 
 #include "gfw/base/context.h"
 
-#include "gfw/common/effect.h"
-#include "gfw/common/device_child.inl"
+#include "gfw/runtime/common/effect.h"
+#include "gfw/runtime/common/device_child.inl"
 
 namespace GFW {
 

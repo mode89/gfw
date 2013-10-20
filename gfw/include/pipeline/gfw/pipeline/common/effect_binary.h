@@ -3,7 +3,7 @@
 
 #include "common/autoref.h"
 
-#include "gfw_pipeline/effect.h"
+#include "gfw/pipeline/common/effect.h"
 
 namespace GFW { namespace Pipeline {
 
