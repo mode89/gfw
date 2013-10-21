@@ -1,6 +1,5 @@
+#include "common/crc32.h"
 #include "common/string_table.h"
-
-#include <string.h>
 
 namespace Common {
 
@@ -17,11 +16,13 @@ namespace Common {
         }
     }
 
-    const char * StringTable::Resolve(const char * name)
+    InternedString StringTable::Resolve( const char * name )
     {
         char * retVal = NULL;
 
-        StringMap::iterator it = mMap.find(name);
+        uint32_t hash = CRC32( name );
+
+        StringMap::iterator it = mMap.find( hash );
         if (it != mMap.end())
         {
             retVal = it->second;
@@ -30,10 +31,10 @@ namespace Common {
         {
             retVal = new char [strlen(name) + 1];
             strcpy(retVal, name);
-            mMap[retVal] = retVal;
+            mMap[ hash ] = retVal;
         }
 
-        return retVal;
+        return InternedString( retVal, hash );
     }
 
 } // namespace Common

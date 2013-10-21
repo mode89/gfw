@@ -131,7 +131,7 @@ namespace GFW {
         for (int32_t i = 0; i < uniformBlocksCount; ++ i)
         {
             TRACE_ASSERT_GL(glGetProgramResourceName, program, GL_UNIFORM_BLOCK, i, sizeof(name), NULL, name);
-            const char * uniformBlockName = deviceImpl->GetStringTable().Resolve(name);
+            Common::InternedString uniformBlockName = deviceImpl->GetStringTable().Resolve(name);
 
             uint32_t props[] = {
                 GL_BUFFER_DATA_SIZE,
@@ -144,7 +144,7 @@ namespace GFW {
             ShaderBufferDesc bufDesc;
             bufDesc.size = params[0];
 
-            mBuffers.push_back(new ShaderBuffer(uniformBlockName, bufDesc));
+            mBuffers.push_back(new ShaderBuffer(uniformBlockName.GetString(), bufDesc));
             mDesc.bufferCount ++;
 
             ShaderResourceDesc resDesc;
@@ -153,7 +153,7 @@ namespace GFW {
             resDesc.type      = SHADER_RES_TYPE_CBUFFER;
             resDesc.dim       = SHADER_RES_DIM_BUFFER;
 
-            mResources.push_back(new ShaderResource(uniformBlockName, resDesc));
+            mResources.push_back(new ShaderResource(uniformBlockName.GetString(), resDesc));
             mDesc.resourceCount ++;
         }
 
@@ -166,7 +166,7 @@ namespace GFW {
         for (int32_t i = 0; i < uniformsCount; ++ i)
         {
             TRACE_ASSERT_GL(glGetProgramResourceName, program, GL_UNIFORM, i, sizeof(name), NULL, name);
-            const char * uniformName = deviceImpl->GetStringTable().Resolve(name);
+            Common::InternedString uniformName = deviceImpl->GetStringTable().Resolve(name);
 
             uint32_t props[] = {
                 GL_TYPE,
@@ -191,7 +191,7 @@ namespace GFW {
                 uint32_t stride     = (params[1] != -1) ? params[5] : typeSize;
                 varDesc.size        = (params[4] == 0) ? typeSize : params[4] * stride;
 
-                mVariables.push_back(new ShaderVariable(uniformName, varDesc));
+                mVariables.push_back(new ShaderVariable(uniformName.GetString(), varDesc));
                 mDesc.variableCount ++;
             }
             else if (IsSamplerType(params[0]))
@@ -202,7 +202,7 @@ namespace GFW {
                 resDesc.bindPoint = params[2];
                 resDesc.bindCount = (params[4] == 0) ? 1 : params[4];
 
-                mResources.push_back(new ShaderResource(uniformName, resDesc));
+                mResources.push_back(new ShaderResource(uniformName.GetString(), resDesc));
                 mDesc.resourceCount ++;
             }
             else

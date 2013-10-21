@@ -6,18 +6,38 @@
 
 namespace Common {
 
-    class StringTable : public Common::ARefCounted
+    class InternedString
     {
     public:
         const char *
-        Resolve(const char * name);
+        GetString() { return mString; }
+
+        uint32_t
+        GetHash() { return mHash; }
+
+    public:
+        InternedString( const char * string, uint32_t hash )
+            : mString( string )
+            , mHash( hash )
+        {}
+
+    private:
+        const char *    mString;
+        uint32_t        mHash;
+    };
+
+    class StringTable : public Common::ARefCounted
+    {
+    public:
+        InternedString
+        Resolve( const char * name );
 
     public:
         StringTable();
         ~StringTable();
 
     private:
-        typedef std::unordered_map < const char *, char * >  StringMap;
+        typedef std::unordered_map < uint32_t, char * >  StringMap;
 
         StringMap   mMap;
     };
