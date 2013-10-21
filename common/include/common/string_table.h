@@ -17,6 +17,11 @@ namespace Common {
         GetHash() { return mHash; }
 
     public:
+        InternedString()
+            : mString( NULL )
+            , mHash( 0 )
+        {}
+
         InternedString( const char * string, uint32_t hash )
             : mString( string )
             , mHash( hash )
