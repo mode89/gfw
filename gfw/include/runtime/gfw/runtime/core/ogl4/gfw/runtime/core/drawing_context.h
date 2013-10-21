@@ -1,5 +1,5 @@
-#ifndef __GFW_CORE_DRAWING_CONTEXT_H__
-#define __GFW_CORE_DRAWING_CONTEXT_H__
+#ifndef __GFW_RUNTIME_CORE_DRAWING_CONTEXT_H__
+#define __GFW_RUNTIME_CORE_DRAWING_CONTEXT_H__
 
 #include "gfw/base/types_fwd.h"
 #include "gfw/runtime/core/types_fwd.h"
@@ -25,4 +25,4 @@ namespace GFW {
 
 } // namespace GFW
 
-#endif // __GFW_CORE_DRAWING_CONTEXT_H__
+#endif // __GFW_RUNTIME_CORE_DRAWING_CONTEXT_H__

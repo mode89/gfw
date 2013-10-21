@@ -1,5 +1,5 @@
-#ifndef __GFW_CORE_DEPTH_STENCIL_STATE_H__
-#define __GFW_CORE_DEPTH_STENCIL_STATE_H__
+#ifndef __GFW_RUNTIME_CORE_DEPTH_STENCIL_STATE_H__
+#define __GFW_RUNTIME_CORE_DEPTH_STENCIL_STATE_H__
 
 #include "gfw/base/depth_stencil_state.h"
 #include "gfw/runtime/common/device_child.h"
@@ -26,4 +26,4 @@ namespace GFW {
 
 } // namespace GFW
 
-#endif // __GFW_CORE_DEPTH_STENCIL_STATE_H__
+#endif // __GFW_RUNTIME_CORE_DEPTH_STENCIL_STATE_H__

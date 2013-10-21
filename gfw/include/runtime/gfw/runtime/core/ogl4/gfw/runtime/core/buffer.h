@@ -1,5 +1,5 @@
-#ifndef __GFW_CORE_BUFFER_H__
-#define __GFW_CORE_BUFFER_H__
+#ifndef __GFW_RUNTIME_CORE_BUFFER_H__
+#define __GFW_RUNTIME_CORE_BUFFER_H__
 
 #include "gfw/base/buffer.h"
 #include "gfw/runtime/common/device_child.h"
@@ -45,4 +45,4 @@ namespace GFW {
 
 } // namespace GFW
 
-#endif // __GFW_CORE_BUFFER_H__
+#endif // __GFW_RUNTIME_CORE_BUFFER_H__

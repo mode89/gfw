@@ -1,5 +1,5 @@
-#ifndef __GFW_COMMON_DEVICE_CHILD_INL__
-#define __GFW_COMMON_DEVICE_CHILD_INL__
+#ifndef __GFW_RUNTIME_COMMON_DEVICE_CHILD_INL__
+#define __GFW_RUNTIME_COMMON_DEVICE_CHILD_INL__
 
 #include "gfw/base/device.h"
 #include "gfw/runtime/common/device_child.h"
@@ -21,4 +21,4 @@ namespace GFW {
 
 } // namespace GFW
 
-#endif // __GFW_COMMON_DEVICE_CHILD_INL__
+#endif // __GFW_RUNTIME_COMMON_DEVICE_CHILD_INL__

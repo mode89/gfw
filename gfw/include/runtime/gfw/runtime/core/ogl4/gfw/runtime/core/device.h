@@ -1,5 +1,5 @@
-#ifndef __GFW_CORE_DEVICE_H__
-#define __GFW_CORE_DEVICE_H__
+#ifndef __GFW_RUNTIME_CORE_DEVICE_H__
+#define __GFW_RUNTIME_CORE_DEVICE_H__
 
 #include "common/mutex.h"
 #include "common/platform.h"
@@ -85,4 +85,4 @@ namespace GFW {
 
 } // namespace GFW
 
-#endif // __GFW_CORE_DEVICE_H__
+#endif // __GFW_RUNTIME_CORE_DEVICE_H__

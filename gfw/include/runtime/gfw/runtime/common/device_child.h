@@ -1,5 +1,5 @@
-#ifndef __GFW_COMMON_DEVICE_CHILD_H__
-#define __GFW_COMMON_DEVICE_CHILD_H__
+#ifndef __GFW_RUNTIME_COMMON_DEVICE_CHILD_H__
+#define __GFW_RUNTIME_COMMON_DEVICE_CHILD_H__
 
 #include "gfw/base/types_fwd.h"
 
@@ -22,4 +22,4 @@ namespace GFW {
 
 } // namespace GFW
 
-#endif // __GFW_COMMON_DEVICE_CHILD_H__
+#endif // __GFW_RUNTIME_COMMON_DEVICE_CHILD_H__

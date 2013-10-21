@@ -1,5 +1,5 @@
-#ifndef __GFW_CORE_SHADER_REFLECT_H__
-#define __GFW_CORE_SHADER_REFLECT_H__
+#ifndef __GFW_RUNTIME_CORE_SHADER_REFLECT_H__
+#define __GFW_RUNTIME_CORE_SHADER_REFLECT_H__
 
 #include "gfw/runtime/common/shader_reflect.h"
 
@@ -15,4 +15,4 @@ namespace GFW {
 
 } // namespace GFW
 
-#endif // __GFW_CORE_SHADER_REFLECT_H__
+#endif // __GFW_RUNTIME_CORE_SHADER_REFLECT_H__

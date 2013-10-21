@@ -1,5 +1,5 @@
-#ifndef __GFW_OGL4_RESOURCE_H__
-#define __GFW_OGL4_RESOURCE_H__
+#ifndef __GFW_RUNTIME_CORE_RESOURCE_H__
+#define __GFW_RUNTIME_CORE_RESOURCE_H__
 
 #include "gfw/base/resource.h"
 
@@ -9,4 +9,4 @@ namespace GFW {
 
 } // namespace GFW
 
-#endif // __GFW_OGL4_RESOURCE_H__
+#endif // __GFW_RUNTIME_CORE_RESOURCE_H__

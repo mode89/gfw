@@ -1,5 +1,5 @@
-#ifndef __GFW_COMMON_FACTORY_H__
-#define __GFW_COMMON_FACTORY_H__
+#ifndef __GFW_RUNTIME_COMMON_FACTORY_H__
+#define __GFW_RUNTIME_COMMON_FACTORY_H__
 
 #include "gfw/base/factory.h"
 #include "gfw/base/types_fwd.h"
@@ -29,4 +29,4 @@ namespace GFW {
 
 } // namespace GFW
 
-#endif // __GFW_COMMON_FACTORY_H__
+#endif // __GFW_RUNTIME_COMMON_FACTORY_H__

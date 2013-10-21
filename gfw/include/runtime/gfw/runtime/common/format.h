@@ -1,5 +1,5 @@
-#ifndef __GFW_COMMON_FORMAT_H__
-#define __GFW_COMMON_FORMAT_H__
+#ifndef __GFW_RUNTIME_COMMON_FORMAT_H__
+#define __GFW_RUNTIME_COMMON_FORMAT_H__
 
 #include "gfw/base/format.h"
 
@@ -13,4 +13,4 @@ namespace GFW {
 
 } // namespace GFW
 
-#endif // __GFW_COMMON_FORMAT_H__
+#endif // __GFW_RUNTIME_COMMON_FORMAT_H__

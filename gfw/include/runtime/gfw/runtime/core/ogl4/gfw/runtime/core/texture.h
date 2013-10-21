@@ -1,5 +1,5 @@
-#ifndef __GFW_CORE_TEXTURE_H__
-#define __GFW_CORE_TEXTURE_H__
+#ifndef __GFW_RUNTIME_CORE_TEXTURE_H__
+#define __GFW_RUNTIME_CORE_TEXTURE_H__
 
 #include "gfw/base/texture.h"
 #include "gfw/runtime/common/device_child.h"
@@ -38,4 +38,4 @@ namespace GFW {
 
 } // namespace GFW
 
-#endif // __GFW_CORE_TEXTURE_H__
+#endif // __GFW_RUNTIME_CORE_TEXTURE_H__

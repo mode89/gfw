@@ -1,5 +1,5 @@
-#ifndef __GFW_COMMON_SHADER_REFLECT_INL__
-#define __GFW_COMMON_SHADER_REFLECT_INL__
+#ifndef __GFW_RUNTIME_COMMON_SHADER_REFLECT_INL__
+#define __GFW_RUNTIME_COMMON_SHADER_REFLECT_INL__
 
 #include "common/trace.h"
 #include "gfw/runtime/common/device_child.inl"
@@ -109,4 +109,4 @@ namespace GFW {
 
 } // namespace GFW
 
-#endif // __GFW_COMMON_SHADER_REFLECT_INL__
+#endif // __GFW_RUNTIME_COMMON_SHADER_REFLECT_INL__

@@ -1,5 +1,5 @@
-#ifndef __GFW_CORE_PLATFORM_H__
-#define __GFW_CORE_PLATFORM_H__
+#ifndef __GFW_RUNTIME_CORE_PLATFORM_H__
+#define __GFW_RUNTIME_CORE_PLATFORM_H__
 
 #include "common/autoref.h"
 
@@ -18,4 +18,4 @@ namespace GFW {
 
 } // namespace GFW
 
-#endif // __GFW_CORE_PLATFORM_H__
+#endif // __GFW_RUNTIME_CORE_PLATFORM_H__

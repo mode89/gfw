@@ -1,5 +1,5 @@
-#ifndef __GFW_CORE_RENDER_TARGET_H__
-#define __GFW_CORE_RENDER_TARGET_H__
+#ifndef __GFW_RUNTIME_CORE_RENDER_TARGET_H__
+#define __GFW_RUNTIME_CORE_RENDER_TARGET_H__
 
 #include "gfw/base/render_target.h"
 #include "gfw/base/types_fwd.h"
@@ -29,4 +29,4 @@ namespace GFW {
 
 } // namespace GFW
 
-#endif // __GFW_CORE_RENDER_TARGET_H__
+#endif // __GFW_RUNTIME_CORE_RENDER_TARGET_H__

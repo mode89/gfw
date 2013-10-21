@@ -1,5 +1,5 @@
-#ifndef __GFW_CORE_BLEND_STATE_H__
-#define __GFW_CORE_BLEND_STATE_H__
+#ifndef __GFW_RUNTIME_CORE_BLEND_STATE_H__
+#define __GFW_RUNTIME_CORE_BLEND_STATE_H__
 
 #include "gfw/base/blend_state.h"
 #include "gfw/runtime/common/device_child.h"
@@ -23,4 +23,4 @@ namespace GFW {
 
 } // namespace GFW
 
-#endif // __GFW_CORE_BLEND_STATE_H__
+#endif // __GFW_RUNTIME_CORE_BLEND_STATE_H__

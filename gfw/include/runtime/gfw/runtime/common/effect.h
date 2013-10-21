@@ -1,5 +1,5 @@
-#ifndef __GFW_COMMON_EFFECT_H__
-#define __GFW_COMMON_EFFECT_H__
+#ifndef __GFW_RUNTIME_COMMON_EFFECT_H__
+#define __GFW_RUNTIME_COMMON_EFFECT_H__
 
 #include "gfw/base/effect.h"
 #include "gfw/base/shader.h"
@@ -28,4 +28,4 @@ namespace GFW {
 
 } // namespace GFW
 
-#endif // __GFW_COMMON_EFFECT_H__
+#endif // __GFW_RUNTIME_COMMON_EFFECT_H__

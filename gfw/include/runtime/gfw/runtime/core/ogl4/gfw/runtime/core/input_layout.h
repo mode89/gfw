@@ -1,5 +1,5 @@
-#ifndef __GFW_CORE_INPUT_LAYOUT_H__
-#define __GFW_CORE_INPUT_LAYOUT_H__
+#ifndef __GFW_RUNTIME_CORE_INPUT_LAYOUT_H__
+#define __GFW_RUNTIME_CORE_INPUT_LAYOUT_H__
 
 #include "gfw/base/input_layout.h"
 #include "gfw/base/vertex_attribute.h"
@@ -30,4 +30,4 @@ namespace GFW {
 
 } // namespace GFW
 
-#endif // __GFW_CORE_INPUT_LAYOUT_H__
+#endif // __GFW_RUNTIME_CORE_INPUT_LAYOUT_H__

@@ -1,5 +1,5 @@
-#ifndef __GFW_COMMON_MESH_BUILDER_H__
-#define __GFW_COMMON_MESH_BUILDER_H__
+#ifndef __GFW_RUNTIME_COMMON_MESH_BUILDER_H__
+#define __GFW_RUNTIME_COMMON_MESH_BUILDER_H__
 
 #include "gfw/base/mesh_builder.h"
 #include "gfw/runtime/core/limits.h"
@@ -41,4 +41,4 @@ namespace GFW {
 
 } // namespace GFW
 
-#endif // __GFW_COMMON_MESH_BUILDER_H__
+#endif // __GFW_RUNTIME_COMMON_MESH_BUILDER_H__
