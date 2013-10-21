@@ -2,6 +2,7 @@
 #define __COMMON_STRING_TABLE_H__
 
 #include "common/autoref.h"
+
 #include <unordered_map>
 
 namespace Common {

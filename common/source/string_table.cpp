@@ -1,6 +1,8 @@
 #include "common/crc32.h"
 #include "common/string_table.h"
 
+#include <cstring>
+
 namespace Common {
 
     StringTable::StringTable()
