@@ -33,6 +33,12 @@ if (MSVC)
     set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP" )
 endif()
 
+# Disable CRT warnings in VS
+
+if ( MSVC )
+    add_definitions( -D_CRT_SECURE_NO_WARNINGS )
+endif()
+
 macro(target_precompiled_header target precHeader precSource)
     if (MSVC_IDE)
         set_target_properties(${target} PROPERTIES COMPILE_FLAGS "/Yu${precHeader}")
