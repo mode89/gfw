@@ -6,9 +6,9 @@
 #include "FXLexer.h"
 #include "FXParser.h"
 
-namespace GFW { namespace Pipeline {
+namespace GFW {
 
-    static Token GetTokenType( uint32_t nativeType )
+    static TokenType GetTokenType( uint32_t nativeType )
     {
         switch ( nativeType )
         {
@@ -30,7 +30,8 @@ namespace GFW { namespace Pipeline {
     ParseTree::ParseTree( void * nativeTree, ParserIn parser )
         : mImpl( NULL )
         , mParser( parser )
-        , mType( TOKEN_UNKNOWN )
+        , mString( NULL )
+        , mTokenType( TOKEN_UNKNOWN )
         , mChildren( NULL )
         , mChildCount( 0 )
     {
@@ -38,7 +39,8 @@ namespace GFW { namespace Pipeline {
 
         mImpl->tree = static_cast<pANTLR3_BASE_TREE>( nativeTree );
 
-        mType = GetTokenType( mImpl->tree->getType( mImpl->tree ) );
+        mString = reinterpret_cast< const char * >( mImpl->tree->toString( mImpl->tree )->chars );
+        mTokenType = GFW::GetTokenType( mImpl->tree->getType( mImpl->tree ) );
 
         mChildCount = mImpl->tree->getChildCount( mImpl->tree );
         mChildren = new ParseTree * [ mChildCount ];
@@ -65,9 +67,4 @@ namespace GFW { namespace Pipeline {
         }
     }
 
-    bool ParseTree::TraverseDFS()
-    {
-        return true;
-    }
-
-}} // namespace GFW::Pipeline
+} // namespace GFW

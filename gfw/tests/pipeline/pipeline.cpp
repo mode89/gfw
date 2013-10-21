@@ -2,7 +2,8 @@
 
 #include "gfw/pipeline/common/effect_builder.h"
 
-using namespace GFW::Pipeline;
+using namespace Common;
+using namespace GFW;
 
 class GfwPipelineTests : public testing::Test
 {
@@ -20,6 +21,7 @@ public:
 
 TEST_F(GfwPipelineTests, Parse)
 {
+    StringTable stringTable;
     EffectBuilderRef effectBuilder = new EffectBuilder();
-    EffectBinaryRef  effectBinary  = effectBuilder->Build(TESTS_DIR "draw.fx");
+    EffectBinaryRef  effectBinary  = effectBuilder->Build(TESTS_DIR "draw.fx", stringTable);
 }

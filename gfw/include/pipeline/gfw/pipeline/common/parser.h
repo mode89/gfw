@@ -3,7 +3,7 @@
 
 #include "common/autoref.h"
 
-namespace GFW { namespace Pipeline {
+namespace GFW {
 
     struct ParserImpl;
     class  ParseTree;
@@ -24,6 +24,6 @@ namespace GFW { namespace Pipeline {
     };
     AUTOREF_REFERENCE_DECLARATION( Parser );
 
-}} // namespace GFW::Pipeline
+} // namespace GFW
 
 #endif // __GFW_PIPELINE_COMMON_PARSER_H__

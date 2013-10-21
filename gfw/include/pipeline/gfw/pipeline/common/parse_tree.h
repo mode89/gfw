@@ -3,7 +3,7 @@
 
 #include "common/autoref.h"
 
-namespace GFW { namespace Pipeline {
+namespace GFW {
 
 #define TOKENS \
     T(TRANSLATION_UNIT) \
@@ -17,7 +17,7 @@ namespace GFW { namespace Pipeline {
     T(SET_SHADER) \
     T(ID) \
 
-    enum Token
+    enum TokenType
     {
         TOKEN_UNKNOWN = 0,
 #define T(token) TOKEN_ ## token,
@@ -31,8 +31,26 @@ namespace GFW { namespace Pipeline {
     class ParseTree
     {
     public:
-        bool
-        TraverseDFS();
+        template < class Visitor > void
+        TraverseDFS( Visitor & visitor ) const
+        {
+            if ( visitor( this ) )
+            {
+                for ( uint32_t i = 0; i < mChildCount; ++ i )
+                {
+                    mChildren[i]->TraverseDFS( visitor );
+                }
+            }
+        }
+
+        TokenType
+        GetTokenType() const { return mTokenType; }
+
+        const ParseTree *
+        GetChild( uint32_t index = 0 ) const { return mChildren[index]; }
+
+        const char *
+        ToString() const { return mString; }
 
     public:
         ParseTree( void * nativeTree, ParserIn );
@@ -42,12 +60,13 @@ namespace GFW { namespace Pipeline {
         ParseTreeImpl * mImpl;
         ParserRef       mParser;
 
-        Token           mType;
+        const char *    mString;
+        TokenType       mTokenType;
 
         ParseTree **    mChildren;
         uint32_t        mChildCount;
     };
 
-}} // namespace GFW::Pipeline
+} // namespace GFW
 
 #endif // __GFW_PIPELINE_COMMON_PARSE_TREE_H__

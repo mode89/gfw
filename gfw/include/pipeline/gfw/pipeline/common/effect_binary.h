@@ -5,7 +5,7 @@
 
 #include "gfw/pipeline/common/effect.h"
 
-namespace GFW { namespace Pipeline {
+namespace GFW {
 
     class EffectBinary : public Common::ARefCounted
     {
@@ -18,6 +18,6 @@ namespace GFW { namespace Pipeline {
     };
     AUTOREF_REFERENCE_DECLARATION(EffectBinary);
 
-}} // namespace GFW::Pipeline
+} // namespace GFW
 
 #endif // __GFW_PIPELINE_COMMON_EFFECT_BINARY_H__
