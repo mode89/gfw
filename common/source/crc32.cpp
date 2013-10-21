@@ -62,4 +62,18 @@ namespace Common {
 	    return crc ^ ~0U;
     }
 
+    uint32_t CRC32( const char * string )
+    {
+        const uint8_t * p = reinterpret_cast< const uint8_t* >( string );
+
+        uint32_t crc = ~0U;
+
+        while ( *p != NULL )
+        {
+            crc = sTable[ ( crc ^ *p++ ) & 0xFF ] ^ ( crc >> 8 );
+        }
+
+        return crc ^ ~0U;
+    }
+
 } // namespace Common
