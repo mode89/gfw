@@ -76,7 +76,7 @@ namespace ThreadPool {
 #ifdef PLAT_DEBUG
             char name[32] = "ThreadPool_Worker_";
             uint32_t nameLen = strlen(name);
-            itoa(i, name + nameLen, 10);
+            _itoa(i, name + nameLen, 10);
             threadName = name;
 #endif // PLAT_DEBUG
 
