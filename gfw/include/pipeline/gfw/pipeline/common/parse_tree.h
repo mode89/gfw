@@ -15,6 +15,9 @@ namespace GFW {
     T(ARGUMENT) \
     T(SEMANTIC) \
     T(SET_SHADER) \
+    T(SET_VERTEX_SHADER) \
+    T(SET_PIXEL_SHADER) \
+    T(COMPILE_SHADER) \
     T(ID) \
 
     enum TokenType

@@ -10,17 +10,77 @@ namespace GFW {
 
     using namespace Common;
 
+    struct ShaderBinary
+    {
+        InternedString  name;
+    };
+    typedef std::unordered_map< uint32_t, ShaderBinary > ShaderBinaryMap;
+
+    class CollectShadersVisitor
+    {
+    public:
+        CollectShadersVisitor( InternedString * passShaders, ShaderBinaryMap & shaders, StringTable & stringTable )
+            : mPassShaders( passShaders )
+            , mShaders( shaders )
+            , mStringTable( stringTable )
+        {}
+
+        bool operator() ( const ParseTree * tree )
+        {
+            if ( tree->GetTokenType() == TOKEN_SET_SHADER )
+            {
+                const ParseTree * shader = tree->GetChild( 1 );
+
+                InternedString name;
+                if ( shader->GetTokenType() == TOKEN_COMPILE_SHADER )
+                {
+                    name = mStringTable.Resolve( shader->GetChild( 1 )->ToString() );
+                }
+                else
+                {
+                    TRACE_FAIL();
+                }
+
+                ShaderBinary & shaderBin = mShaders[ name.GetHash() ];
+                shaderBin.name = name;
+
+                const ParseTree * shaderType = tree->GetChild( 0 );
+                switch ( shaderType->GetTokenType() )
+                {
+                case TOKEN_SET_VERTEX_SHADER:
+                    mPassShaders[ SHADER_STAGE_VERTEX ] = name;
+                    break;
+                case TOKEN_SET_PIXEL_SHADER:
+                    mPassShaders[ SHADER_STAGE_PIXEL ] = name;
+                    break;
+                default:
+                    TRACE_FAIL();
+                    break;
+                }
+                return false;
+            }
+            return true;
+        }
+
+    private:
+        InternedString *    mPassShaders;
+        ShaderBinaryMap &   mShaders;
+        StringTable &       mStringTable;
+    };
+
     struct PassBinary
     {
         InternedString  name;
+        InternedString  shader[SHADER_STAGE_COUNT];
     };
     typedef std::unordered_map< uint32_t, PassBinary > PassBinaryMap;
 
     class CollectPassesVisitor
     {
     public:
-        CollectPassesVisitor( PassBinaryMap & passes, StringTable & stringTable )
-            : mPasses( passes )
+        CollectPassesVisitor( ShaderBinaryMap & shaders, PassBinaryMap & passes, StringTable & stringTable )
+            : mShaders( shaders )
+            , mPasses( passes )
             , mStringTable( stringTable )
         {}
 
@@ -31,14 +91,19 @@ namespace GFW {
                 InternedString name = mStringTable.Resolve( tree->GetChild()->ToString() );
                 PassBinary & passBin = mPasses[ name.GetHash() ];
                 passBin.name = name;
+
+                CollectShadersVisitor collectShaders( passBin.shader, mShaders, mStringTable );
+                tree->TraverseDFS( collectShaders );
+
                 return false;
             }
             return true;
         }
 
     private:
-        PassBinaryMap & mPasses;
-        StringTable &   mStringTable;
+        ShaderBinaryMap &   mShaders;
+        PassBinaryMap &     mPasses;
+        StringTable &       mStringTable;
     };
 
     struct TechniqueBinary
@@ -53,8 +118,9 @@ namespace GFW {
     class CollectTechniquesVisitor
     {
     public:
-        CollectTechniquesVisitor( TechniqueBinaryMap & techniques, StringTable & stringTable )
-            : mTechniques( techniques )
+        CollectTechniquesVisitor( ShaderBinaryMap & shaders, TechniqueBinaryMap & techniques, StringTable & stringTable )
+            : mShaders( shaders )
+            , mTechniques( techniques )
             , mStringTable( stringTable )
         {}
 
@@ -67,8 +133,9 @@ namespace GFW {
                 {
                     InternedString name = mStringTable.Resolve( child->GetChild()->ToString() );
                     TechniqueBinary & techBin = mTechniques[ name.GetHash() ];
+                    techBin.name = name;
 
-                    CollectPassesVisitor collectPasses( techBin.passes, mStringTable );
+                    CollectPassesVisitor collectPasses( mShaders, techBin.passes, mStringTable );
                     child->TraverseDFS( collectPasses );
 
                     techBin.desc.passCount = techBin.passes.size();
@@ -79,6 +146,7 @@ namespace GFW {
         }
 
     private:
+        ShaderBinaryMap &       mShaders;
         TechniqueBinaryMap &    mTechniques;
         StringTable &           mStringTable;
     };
@@ -91,8 +159,9 @@ namespace GFW {
 
         // Collect techniques
 
+        ShaderBinaryMap    shaders;
         TechniqueBinaryMap techniques;
-        CollectTechniquesVisitor collectTechniques( techniques, stringTable );
+        CollectTechniquesVisitor collectTechniques( shaders, techniques, stringTable );
         tree->TraverseDFS( collectTechniques );
 
         return NULL;
