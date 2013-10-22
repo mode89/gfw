@@ -10,10 +10,43 @@ namespace GFW {
 
     using namespace Common;
 
+    struct PassBinary
+    {
+        InternedString  name;
+    };
+    typedef std::unordered_map< uint32_t, PassBinary > PassBinaryMap;
+
+    class CollectPassesVisitor
+    {
+    public:
+        CollectPassesVisitor( PassBinaryMap & passes, StringTable & stringTable )
+            : mPasses( passes )
+            , mStringTable( stringTable )
+        {}
+
+        bool operator() ( const ParseTree * tree )
+        {
+            if ( tree->GetTokenType() == TOKEN_PASS_DEFINITION )
+            {
+                InternedString name = mStringTable.Resolve( tree->GetChild()->ToString() );
+                PassBinary & passBin = mPasses[ name.GetHash() ];
+                passBin.name = name;
+                return false;
+            }
+            return true;
+        }
+
+    private:
+        PassBinaryMap & mPasses;
+        StringTable &   mStringTable;
+    };
+
     struct TechniqueBinary
     {
         TechniqueDesc   desc;
         InternedString  name;
+
+        PassBinaryMap   passes;
     };
     typedef std::unordered_map< uint32_t, TechniqueBinary > TechniqueBinaryMap;
 
@@ -32,9 +65,13 @@ namespace GFW {
                 const ParseTree * child = tree->GetChild();
                 if ( child->GetTokenType() == TOKEN_TECHNIQUE_DEFINITION )
                 {
-                    TechniqueBinary techBin;
-                    techBin.name = mStringTable.Resolve( child->GetChild()->ToString() );
-                    mTechniques[ techBin.name.GetHash() ] = techBin;
+                    InternedString name = mStringTable.Resolve( child->GetChild()->ToString() );
+                    TechniqueBinary & techBin = mTechniques[ name.GetHash() ];
+
+                    CollectPassesVisitor collectPasses( techBin.passes, mStringTable );
+                    child->TraverseDFS( collectPasses );
+
+                    techBin.desc.passCount = techBin.passes.size();
                 }
                 return false;
             }
