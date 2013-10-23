@@ -46,6 +46,18 @@ namespace GFW {
             }
         }
 
+        template < class Delegator > void
+        TraverseDFS( Delegator & delegator, bool (Delegator::*visitor)( const ParseTree * ) ) const
+        {
+            if ( (delegator.*visitor)( this ) )
+            {
+                for ( uint32_t i = 0; i < mChildCount; ++ i )
+                {
+                    mChildren[i]->TraverseDFS( delegator, visitor );
+                }
+            }
+        }
+
         TokenType
         GetTokenType() const { return mTokenType; }
 
