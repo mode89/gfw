@@ -20,6 +20,8 @@ namespace GFW {
 
         const ParseTree * tree = parser->GetTree();
 
+        mShaderBuilder = new ShaderBuilder( tree );
+
         // Process techniques
 
         tree->TraverseDFS( *this, &EffectBuilder::ProcessTechniques );
@@ -75,17 +77,18 @@ namespace GFW {
             const ParseTree * shader = tree->GetChild( 1 );
 
             InternedString name;
+            InternedString profile;
             if ( shader->GetTokenType() == TOKEN_COMPILE_SHADER )
             {
                 name = mStringTable.Resolve( shader->GetChild( 1 )->ToString() );
+                profile = mStringTable.Resolve( shader->GetChild( 0 )->ToString() );
             }
             else
             {
                 TRACE_FAIL();
             }
 
-            ShaderBinary shaderBin;
-            shaderBin.name = name;
+            ShaderBinaryRef shaderBin = mShaderBuilder->Compile( name.GetString(), profile.GetString() );
 
             mShaders.push_back( shaderBin );
 

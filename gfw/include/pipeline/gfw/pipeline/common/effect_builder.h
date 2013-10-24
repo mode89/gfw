@@ -4,6 +4,7 @@
 #include "common/autoref.h"
 #include "common/string_table.h"
 #include "gfw/pipeline/common/effect_binary.h"
+#include "gfw/pipeline/shader_builder.h"
 
 #include <unordered_map>
 #include <vector>
@@ -11,13 +12,6 @@
 namespace GFW {
 
     class ParseTree;
-
-    struct ShaderBinary
-    {
-        Common::InternedString  name;
-    };
-    typedef std::unordered_map< uint32_t, ShaderBinary > ShaderBinaryMap;
-    typedef std::vector< ShaderBinary > ShaderBinaryVec;
 
     struct PassBinary
     {
@@ -57,7 +51,12 @@ namespace GFW {
         ProcessShaders( const ParseTree * );
 
     private:
+        typedef std::vector< ShaderBinaryRef > ShaderBinaryVec;
+
         Common::StringTable &   mStringTable;
+
+        ShaderBuilderRef        mShaderBuilder;
+
         TechniqueBinaryVec      mTechniques;
         ShaderBinaryVec         mShaders;
     };
