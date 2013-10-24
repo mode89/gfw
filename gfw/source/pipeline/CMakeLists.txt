@@ -35,9 +35,11 @@ include_directories( ${COMMON_INCLUDE_DIRS} )
 # Pre-build
 
 set( GFW_PIPELINE_FX_GRAMMAR_FILE ${GFW_ROOT}/source/pipeline/common/FX.g )
-add_custom_target( gfw_pipeline_gen_parser
-    java -jar ${ANTLR_TOOL} -make -language C ${GFW_PIPELINE_FX_GRAMMAR_FILE}
-    DEPENDS ${GFW_PIPELINE_FX_GRAMMAR_FILE}
-    SOURCES ${GFW_PIPELINE_FX_GRAMMAR_FILE}
-    )
-add_dependencies( gfw_pipeline gfw_pipeline_gen_parser )
+add_custom_command(
+    OUTPUT FXLexer.c FXParser.c
+    COMMAND java -jar ${ANTLR_TOOL} -make -language C ${GFW_PIPELINE_FX_GRAMMAR_FILE}
+    DEPENDS ${GFW_PIPELINE_FX_GRAMMAR_FILE} )
+add_custom_target( gfw_pipeline_parser ALL
+    DEPENDS FXLexer.c FXParser.c
+    SOURCES ${GFW_PIPELINE_FX_GRAMMAR_FILE} )
+add_dependencies( gfw_pipeline gfw_pipeline_parser )
