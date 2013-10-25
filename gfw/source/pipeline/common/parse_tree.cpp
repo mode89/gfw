@@ -76,4 +76,20 @@ namespace GFW {
         }
     }
 
+    const ParseTree * ParseTree::GetFirstChildWithType( TokenType type ) const
+    {
+        for ( uint32_t i = 0; i < mChildCount; ++ i )
+        {
+            const ParseTree * child = mChildren[i];
+            if ( child->GetTokenType() == type )
+            {
+                return child;
+            }
+        }
+
+        TRACE_FAIL();
+
+        return NULL;
+    }
+
 } // namespace GFW

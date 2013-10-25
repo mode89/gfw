@@ -70,6 +70,9 @@ namespace GFW {
         const ParseTree *
         GetChild( uint32_t index = 0 ) const { return mChildren[index]; }
 
+        const ParseTree *
+        GetFirstChildWithType( TokenType ) const;
+
         const char *
         ToString() const { return mString; }
 
