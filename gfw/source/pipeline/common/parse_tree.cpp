@@ -32,21 +32,30 @@ namespace GFW {
         , mParser( parser )
         , mString( NULL )
         , mTokenType( TOKEN_UNKNOWN )
+        , mLine( 0 )
+        , mRow( 0 )
         , mChildren( NULL )
         , mChildCount( 0 )
     {
         mImpl = new ParseTreeImpl;
 
         mImpl->tree = static_cast<pANTLR3_BASE_TREE>( nativeTree );
+        pANTLR3_BASE_TREE tree = mImpl->tree;
 
-        mString = reinterpret_cast< const char * >( mImpl->tree->toString( mImpl->tree )->chars );
-        mTokenType = GFW::GetTokenType( mImpl->tree->getType( mImpl->tree ) );
-
-        mChildCount = mImpl->tree->getChildCount( mImpl->tree );
-        mChildren = new ParseTree * [ mChildCount ];
-        for (uint32_t i = 0; i < mChildCount; ++ i)
+        pANTLR3_COMMON_TOKEN token = tree->getToken( tree );
+        mTokenType = GFW::GetTokenType( token->getType( token ) );
+        mLine = token->getLine( token );
+        if ( mLine )
         {
-            mChildren[i] = new ParseTree(mImpl->tree->getChild(mImpl->tree, i), mParser);
+            mString = reinterpret_cast< const char * >( token->getText( token )->chars );
+            mRow = tree->getCharPositionInLine( tree );
+        }
+
+        mChildCount = tree->getChildCount( tree );
+        mChildren = new ParseTree * [ mChildCount ];
+        for ( uint32_t i = 0; i < mChildCount; ++ i )
+        {
+            mChildren[i] = new ParseTree( tree->getChild( tree, i ), mParser );
         }
     }
 

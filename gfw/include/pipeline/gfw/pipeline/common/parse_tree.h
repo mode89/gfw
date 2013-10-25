@@ -61,6 +61,12 @@ namespace GFW {
         TokenType
         GetTokenType() const { return mTokenType; }
 
+        uint32_t
+        GetLine() const { return mLine; }
+
+        uint32_t
+        GetRow() const { return mRow; }
+
         const ParseTree *
         GetChild( uint32_t index = 0 ) const { return mChildren[index]; }
 
@@ -77,6 +83,8 @@ namespace GFW {
 
         const char *    mString;
         TokenType       mTokenType;
+        uint32_t        mLine;
+        uint32_t        mRow;
 
         ParseTree **    mChildren;
         uint32_t        mChildCount;
