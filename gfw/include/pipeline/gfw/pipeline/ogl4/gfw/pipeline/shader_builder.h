@@ -4,6 +4,10 @@
 #include "common/autoref.h"
 #include "gfw/pipeline/common/shader_binary.h"
 
+#include <string>
+#include <unordered_map>
+#include <vector>
+
 namespace GFW {
 
     class ParseTree;
@@ -19,7 +23,24 @@ namespace GFW {
         ~ShaderBuilder();
 
     private:
+        bool
+        CollectFunctions( const ParseTree * );
+
+    private:
+        typedef std::vector< const ParseTree * > ParseTreeMap;
+
+        struct Function
+        {
+            const ParseTree *   tree;
+            const ParseTree *   ret;
+            ParseTreeMap        args;
+        };
+
+        typedef std::unordered_map< std::string, Function > FunctionMap;
+
         const ParseTree *   mParseTree;
+
+        FunctionMap         mFunctions;
     };
     AUTOREF_REFERENCE_DECLARATION( ShaderBuilder );
 

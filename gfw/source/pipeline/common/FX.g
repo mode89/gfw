@@ -35,12 +35,12 @@ external_declaration
 
 function_definition
     : type_specifier T_ID T_LPAREN arguments_list? T_RPAREN semantic? compound_statement
-        -> ^( T_FUNCTION_DEFINITION type_specifier T_ID semantic? arguments_list compound_statement )
+        -> ^( T_FUNCTION_DEFINITION type_specifier T_ID T_LPAREN arguments_list? T_RPAREN semantic? compound_statement )
     ;
 
 arguments_list
     : argument ( T_COMMA argument )*
-        -> ^( T_ARGUMENTS_LIST argument+ )
+        -> ^( T_ARGUMENTS_LIST argument ( T_COMMA argument )* )
     ;
 
 argument
