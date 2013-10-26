@@ -3,6 +3,8 @@
 
 #include "common/autoref.h"
 
+#include <vector>
+
 namespace GFW {
 
 #define TOKENS \
@@ -18,6 +20,7 @@ namespace GFW {
     T(SET_VERTEX_SHADER) \
     T(SET_PIXEL_SHADER) \
     T(COMPILE_SHADER) \
+    T(VOID) \
     T(ID) \
 
     enum TokenType
@@ -70,6 +73,9 @@ namespace GFW {
         const ParseTree *
         GetChild( uint32_t index = 0 ) const { return mChildren[index]; }
 
+        uint32_t
+        GetChildCount() const { return mChildCount; }
+
         const ParseTree *
         GetFirstChildWithType( TokenType ) const;
 
@@ -81,6 +87,7 @@ namespace GFW {
         ~ParseTree();
 
     private:
+        typedef std::vector< ParseTree * > ParseTreeVec;
         ParseTreeImpl * mImpl;
         ParserRef       mParser;
 
@@ -89,7 +96,7 @@ namespace GFW {
         uint32_t        mLine;
         uint32_t        mRow;
 
-        ParseTree **    mChildren;
+        ParseTreeVec    mChildren;
         uint32_t        mChildCount;
     };
 

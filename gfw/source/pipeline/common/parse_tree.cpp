@@ -52,7 +52,7 @@ namespace GFW {
         }
 
         mChildCount = tree->getChildCount( tree );
-        mChildren = new ParseTree * [ mChildCount ];
+        mChildren.resize( mChildCount );
         for ( uint32_t i = 0; i < mChildCount; ++ i )
         {
             mChildren[i] = new ParseTree( tree->getChild( tree, i ), mParser );
@@ -61,13 +61,9 @@ namespace GFW {
 
     ParseTree::~ParseTree()
     {
-        if ( mChildren != NULL )
+        for (uint32_t i = 0; i < mChildCount; ++ i)
         {
-            for (uint32_t i = 0; i < mChildCount; ++ i)
-            {
-                delete mChildren[i];
-            }
-            delete [] mChildren;
+            delete mChildren[i];
         }
 
         if ( mImpl != NULL )
@@ -86,8 +82,6 @@ namespace GFW {
                 return child;
             }
         }
-
-        TRACE_FAIL();
 
         return NULL;
     }
