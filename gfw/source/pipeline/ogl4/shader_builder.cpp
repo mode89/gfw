@@ -2,6 +2,7 @@
 #include "gfw/pipeline/common/parse_tree.h"
 #include "gfw/pipeline/shader_builder.h"
 
+#include <cstring>
 #include <string>
 #include <sstream>
 
@@ -110,6 +111,8 @@ namespace GFW {
 
         source << "void main()\n{\n    ";
         {
+            // Call the shader
+
             if ( entryPoint.ret->GetTokenType() != TOKEN_VOID )
             {
                 source << entryPoint.ret->ToString();
@@ -131,11 +134,13 @@ namespace GFW {
             }
             source << ");\n";
 
+            // Assign outputs
+
             if ( entryPoint.ret->GetTokenType() != TOKEN_VOID )
             {
-                source << "    ";
                 if ( entryPoint.sem != NULL )
                 {
+                    source << "    ";
                     const ParseTree * semantic = entryPoint.sem->GetChild();
                     if ( std::strcmp( "SV_POSITION", semantic->ToString() ) == 0 )
                     {
