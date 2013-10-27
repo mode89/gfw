@@ -1,6 +1,10 @@
 @echo off
 set START_DIR=%CD%
 
+rem Setup Ninja
+
+set PATH=%PATH%;%CD%\ninja\bin
+
 rem Make build directory
 
 if not exist build-test ( mkdir build-test )
@@ -20,8 +24,10 @@ if not exist mingw-release (
 cd mingw-release
 
 set PATH=%PATH%;%MINGW_HOME%\bin
-cmake -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release ../..
-mingw32-make
+set CC=gcc
+set CXX=g++
+cmake -G Ninja -DCMAKE_BUILD_TYPE=Release ../..
+ninja -j 4
 
 cd ..
 
@@ -49,8 +55,10 @@ rem Build release version with Visual Studio
 if not exist msvc-release ( mkdir msvc-release )
 cd msvc-release
 
-cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release ../..
-nmake
+set CC=cl
+set CXX=cl
+cmake -G Ninja -DCMAKE_BUILD_TYPE=Release ../..
+ninja -j 4
 
 :end
 cd %START_DIR%
