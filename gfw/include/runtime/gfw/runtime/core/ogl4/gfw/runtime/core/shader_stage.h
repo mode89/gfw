@@ -2,7 +2,7 @@
 #define __GFW_RUNTIME_CORE_SHADER_STAGE_H__
 
 #include "common/typedefs.h"
-#include "gfw/base/shader_stage.h"
+#include "gfw/shared/shader_stage.h"
 
 namespace GFW {
 

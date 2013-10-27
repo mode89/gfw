@@ -2,7 +2,7 @@
 #define __GFW_PIPELINE_OGL4_SHADER_BUILDER_H__
 
 #include "common/autoref.h"
-#include "gfw/pipeline/common/shader_binary.h"
+#include "gfw/shared/shader_binary.h"
 
 #include <string>
 #include <unordered_map>

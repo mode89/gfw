@@ -5,7 +5,7 @@ add_definitions( -DTESTS_SOURCE_DIR="${GFW_RUNTIME_TESTS_SOURCE_DIR}/" )
 
 file( GLOB GFW_RUNTIME_TESTS_SOURCE_FILES *.cpp )
 add_executable( gfw_runtime-tests ${GFW_RUNTIME_TESTS_SOURCE_FILES} )
-include_directories( ${GFW_ROOT}/include/base )
+include_directories( ${GFW_ROOT}/include/base ${GFW_ROOT}/include/shared )
 
 target_link_libraries( gfw_runtime-tests gfw_runtime )
 

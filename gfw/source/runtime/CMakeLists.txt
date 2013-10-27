@@ -32,11 +32,16 @@ file( GLOB TEMP_LIST ${GFW_ROOT}/include/runtime/gfw/runtime/core/${GFW_PLATFORM
 list( APPEND GFW_RUNTIME_SOURCE_FILES ${TEMP_LIST} )
 source_group( "include\\core" FILES ${TEMP_LIST} )
 
+file( GLOB TEMP_LIST ${GFW_ROOT}/include/shared/gfw/shared/*.h )
+list( APPEND GFW_RUNTIME_SOURCE_FILES ${TEMP_LIST} )
+source_group( "include\\shared" FILES ${TEMP_LIST} )
+
 add_library( gfw_runtime ${GFW_RUNTIME_SOURCE_FILES} )
 include_directories(
     ${GFW_ROOT}/include/base
     ${GFW_ROOT}/include/runtime
     ${GFW_ROOT}/include/runtime/gfw/runtime/core/${GFW_PLATFORM}
+    ${GFW_ROOT}/include/shared
     )
 
 find_package( common CONFIG )

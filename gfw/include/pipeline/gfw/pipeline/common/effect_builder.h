@@ -3,8 +3,8 @@
 
 #include "common/autoref.h"
 #include "common/string_table.h"
-#include "gfw/pipeline/common/effect_binary.h"
 #include "gfw/pipeline/shader_builder.h"
+#include "gfw/shared/effect_binary.h"
 
 #include <unordered_map>
 #include <vector>

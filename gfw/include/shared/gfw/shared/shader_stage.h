@@ -1,5 +1,5 @@
-#ifndef __GFW_PIPELINE_COMMON_SHADER_STAGE_H__
-#define __GFW_PIPELINE_COMMON_SHADER_STAGE_H__
+#ifndef __GFW_SHARED_SHADER_STAGE_H__
+#define __GFW_SHARED_SHADER_STAGE_H__
 
 namespace GFW {
 
@@ -13,4 +13,4 @@ namespace GFW {
 
 } // namespace GFW
 
-#endif // __GFW_PIPELINE_COMMON_SHADER_STAGE_H__
+#endif // __GFW_SHARED_SHADER_STAGE_H__

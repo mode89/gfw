@@ -1,5 +1,5 @@
-#ifndef __GFW_PIPELINE_COMMON_EFFECT_BINARY_H__
-#define __GFW_PIPELINE_COMMON_EFFECT_BINARY_H__
+#ifndef __GFW_SHARED_EFFECT_BINARY_H__
+#define __GFW_SHARED_EFFECT_BINARY_H__
 
 #include "common/autoref.h"
 
@@ -20,4 +20,4 @@ namespace GFW {
 
 } // namespace GFW
 
-#endif // __GFW_PIPELINE_COMMON_EFFECT_BINARY_H__
+#endif // __GFW_SHARED_EFFECT_BINARY_H__

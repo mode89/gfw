@@ -2,8 +2,8 @@
 #define __GFW_BASE_EFFECT_H__
 
 #include "gfw/base/device_child.h"
-#include "gfw/base/shader_stage.h"
 #include "gfw/base/types_fwd.h"
+#include "gfw/shared/shader_stage.h"
 
 namespace GFW {
 

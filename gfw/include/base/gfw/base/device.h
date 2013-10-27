@@ -2,8 +2,8 @@
 #define __GFW_BASE_DEVICE_H__
 
 #include "gfw/base/format.h"
-#include "gfw/base/shader_stage.h"
 #include "gfw/base/types_fwd.h"
+#include "gfw/shared/shader_stage.h"
 
 namespace GFW {
 

@@ -8,7 +8,8 @@ add_executable( gfw_pipeline-tests ${GFW_PIPELINE_TESTS_SOURCE_FILES} )
 target_link_libraries( gfw_pipeline-tests gfw_pipeline )
 include_directories(
     ${GFW_ROOT}/include/pipeline
-    ${GFW_ROOT}/include/pipeline/gfw/pipeline/${GFW_PLATFORM} )
+    ${GFW_ROOT}/include/pipeline/gfw/pipeline/${GFW_PLATFORM}
+    ${GFW_ROOT}/include/shared)
 
 find_package( common CONFIG )
 target_link_libraries( gfw_pipeline-tests ${COMMON_LIBRARIES} )
