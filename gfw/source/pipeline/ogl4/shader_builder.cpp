@@ -3,13 +3,14 @@
 #include "gfw/pipeline/shader_builder.h"
 
 #include <string>
+#include <sstream>
 
 namespace GFW {
 
     class ConstructSourceVisitor
     {
     public:
-        ConstructSourceVisitor( std::string & source )
+        ConstructSourceVisitor( std::stringstream & source )
             : mSource( source )
             , mLine( 1 )
             , mRow( 0 )
@@ -33,17 +34,17 @@ namespace GFW {
 
                 for ( ; mLine < line; ++ mLine )
                 {
-                    mSource += '\n';
+                    mSource << std::endl;
                     mRow = 0;
                 }
 
                 for ( ; mRow < row; ++ mRow )
                 {
-                    mSource += ' ';
+                    mSource << ' ';
                 }
 
                 std::string token = tree->ToString();
-                mSource += token;
+                mSource << token;
                 mRow += token.size();
             }
 
@@ -51,9 +52,9 @@ namespace GFW {
         }
 
     private:
-        std::string &   mSource;
-        uint32_t        mLine;
-        uint32_t        mRow;
+        std::stringstream & mSource;
+        uint32_t            mLine;
+        uint32_t            mRow;
     };
 
     ShaderBuilder::ShaderBuilder( const ParseTree * tree )
@@ -71,11 +72,12 @@ namespace GFW {
     {
         // Construct the shader's code
 
-        std::string source = "#version 430 core\n\n";
+        std::stringstream source;
+        source << "#version 430 core\n\n";
         ConstructSourceVisitor constructSource( source );
         mParseTree->TraverseDFS( constructSource );
 
-        source += "\n\n";
+        source << std::endl << std::endl;
 
         FunctionMap::iterator it = mFunctions.find( shaderName );
         TRACE_ASSERT( it != mFunctions.end() );
@@ -86,50 +88,52 @@ namespace GFW {
         for ( uint32_t i = 0; i < entryPoint.args.size(); ++ i )
         {
             const ParseTree * arg = entryPoint.args[i];
-            source += "in ";
-            source += arg->GetChild( 0 )->ToString();
-            source += " __in";
-            source += std::to_string( i );
-            source += "; // ";
-            source += arg->GetChild( 1 )->ToString();
+            source << "in ";
+            source << arg->GetChild( 0 )->ToString();
+            source << " __in";
+            source << i;
+            source << "; // ";
+            source << arg->GetChild( 1 )->ToString();
 
             const ParseTree * semantic = arg->GetFirstChildWithType( TOKEN_SEMANTIC );
             if ( semantic != NULL )
             {
-                source += " : ";
-                source += semantic->GetChild()->ToString();
+                source << " : ";
+                source << semantic->GetChild()->ToString();
             }
 
-            source += "\n";
+            source << std::endl;
         }
-        source += "\n";
+        source << std::endl;
 
         // main()
 
-        source += "void main()\n{\n    ";
+        source << "void main()\n{\n    ";
         {
             if ( entryPoint.ret->GetTokenType() != TOKEN_VOID )
             {
-                source += entryPoint.ret->ToString();
-                source += " outp = ";
+                source << entryPoint.ret->ToString();
+                source << " outp = ";
             }
 
-            source += shaderName;
-            source += "(";
+            source << shaderName;
+            source << "(";
             if ( entryPoint.args.size() != 0 )
             {
-                source += " ";
+                source << ' ';
                 for ( uint32_t i = 0; i < entryPoint.args.size(); ++ i )
                 {
-                    if ( i != 0 ) source += ", ";
-                    source += "__in";
-                    source += std::to_string( i );
+                    if ( i != 0 ) source << ", ";
+                    source << "__in";
+                    source << i;
                 }
-                source += " ";
+                source << ' ';
             }
-            source += ");\n";
+            source << ");\n";
         }
-        source += "}\n";
+        source << "}\n";
+
+        std::string s = source.str();
 
         return NULL;
     }
