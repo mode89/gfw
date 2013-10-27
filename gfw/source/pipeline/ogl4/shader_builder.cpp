@@ -130,10 +130,25 @@ namespace GFW {
                 source << ' ';
             }
             source << ");\n";
+
+            if ( entryPoint.ret->GetTokenType() != TOKEN_VOID )
+            {
+                source << "    ";
+                if ( entryPoint.sem != NULL )
+                {
+                    const ParseTree * semantic = entryPoint.sem->GetChild();
+                    if ( std::strcmp( "SV_POSITION", semantic->ToString() ) == 0 )
+                    {
+                        source << "gl_Position = outp;\n";
+                    }
+                    else if ( std::strcmp( "SV_TARGET", semantic->ToString() ) == 0 )
+                    {
+                        source << "gl_FragColor = outp;\n";
+                    }
+                }
+            }
         }
         source << "}\n";
-
-        std::string s = source.str();
 
         return NULL;
     }
@@ -151,6 +166,7 @@ namespace GFW {
 
                 func.tree = child;
                 func.ret  = child->GetChild();
+                func.sem  = child->GetFirstChildWithType( TOKEN_SEMANTIC );
 
                 // Collect arguments
 

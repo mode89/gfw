@@ -33,7 +33,14 @@ namespace GFW {
         {
             const ParseTree *   tree;
             const ParseTree *   ret;
+            const ParseTree *   sem;
             ParseTreeMap        args;
+
+            Function()
+                : tree( NULL )
+                , ret( NULL )
+                , sem( NULL )
+            {}
         };
 
         typedef std::unordered_map< std::string, Function > FunctionMap;
