@@ -5,15 +5,6 @@
 
 namespace GFW {
 
-    struct EffectDesc
-    {
-        uint32_t techniqueCount;
-
-        EffectDesc()
-            : techniqueCount( 0 )
-        {}
-    };
-
     struct TechniqueDesc
     {
         uint32_t passCount;

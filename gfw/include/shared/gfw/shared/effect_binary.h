@@ -3,17 +3,23 @@
 
 #include "common/autoref.h"
 
-#include "gfw/pipeline/common/effect.h"
+#include "gfw/shared/technique_binary.h"
 
 namespace GFW {
 
+    struct EffectDesc
+    {
+        uint32_t techniqueCount;
+
+        EffectDesc()
+            : techniqueCount( 0 )
+        {}
+    };
+
     class EffectBinary : public Common::ARefCounted
     {
+        typedef std::vector< TechniqueBinaryRef > TechniqueBinaryVec;
     public:
-        const EffectDesc &
-        GetDesc() { return mDesc; }
-
-    private:
         EffectDesc  mDesc;
     };
     AUTOREF_REFERENCE_DECLARATION(EffectBinary);

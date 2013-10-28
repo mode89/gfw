@@ -5,6 +5,7 @@
 #include "common/string_table.h"
 #include "gfw/pipeline/shader_builder.h"
 #include "gfw/shared/effect_binary.h"
+#include "gfw/shared/shader_stage.h"
 
 #include <unordered_map>
 #include <vector>
