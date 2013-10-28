@@ -1,9 +1,9 @@
-#ifndef __GFW_SHARED_EFFECT_BINARY_H__
-#define __GFW_SHARED_EFFECT_BINARY_H__
+#ifndef __GFW_SHARED_EFFECT_H__
+#define __GFW_SHARED_EFFECT_H__
 
 #include "common/autoref.h"
 
-#include "gfw/shared/technique_binary.h"
+#include "gfw/shared/technique.h"
 
 namespace GFW {
 
@@ -26,4 +26,4 @@ namespace GFW {
 
 } // namespace GFW
 
-#endif // __GFW_SHARED_EFFECT_BINARY_H__
+#endif // __GFW_SHARED_EFFECT_H__

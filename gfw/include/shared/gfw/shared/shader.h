@@ -1,5 +1,5 @@
-#ifndef __GFW_SHARED_SHADER_BINARY_H__
-#define __GFW_SHARED_SHADER_BINARY_H__
+#ifndef __GFW_SHARED_SHADER_H__
+#define __GFW_SHARED_SHADER_H__
 
 #include "common/autoref.h"
 
@@ -40,4 +40,4 @@ namespace GFW {
 
 } // namespace GFW
 
-#endif // __GFW_SHARED_SHADER_BINARY_H__
+#endif // __GFW_SHARED_SHADER_H__

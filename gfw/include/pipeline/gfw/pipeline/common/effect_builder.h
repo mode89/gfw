@@ -4,7 +4,7 @@
 #include "common/autoref.h"
 #include "common/string_table.h"
 #include "gfw/pipeline/shader_builder.h"
-#include "gfw/shared/effect_binary.h"
+#include "gfw/shared/effect.h"
 #include "gfw/shared/shader_stage.h"
 
 #include <unordered_map>
@@ -13,24 +13,6 @@
 namespace GFW {
 
     class ParseTree;
-
-    struct PassBinary
-    {
-        Common::InternedString  name;
-        Common::InternedString  shader[SHADER_STAGE_COUNT];
-    };
-    typedef std::unordered_map< uint32_t, PassBinary > PassBinaryMap;
-    typedef std::vector< PassBinary > PassBinaryVec;
-
-    struct TechniqueBinary
-    {
-        TechniqueDesc           desc;
-        Common::InternedString  name;
-
-        PassBinaryVec           passes;
-    };
-    typedef std::unordered_map< uint32_t, TechniqueBinary > TechniqueBinaryMap;
-    typedef std::vector< TechniqueBinary > TechniqueBinaryVec;
 
     class EffectBuilder : public Common::ARefCounted
     {
@@ -52,7 +34,8 @@ namespace GFW {
         ProcessShaders( const ParseTree * );
 
     private:
-        typedef std::vector< ShaderBinaryRef > ShaderBinaryVec;
+        typedef std::vector< ShaderBinaryRef >    ShaderBinaryVec;
+        typedef std::vector< TechniqueBinaryRef > TechniqueBinaryVec;
 
         Common::StringTable &   mStringTable;
 

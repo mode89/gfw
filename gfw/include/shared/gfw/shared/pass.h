@@ -2,6 +2,8 @@
 #define __GFW_SHARED_PASS_H__
 
 #include "common/autoref.h"
+#include "common/string_table.h"
+#include "gfw/shared/shader_stage.h"
 
 namespace GFW {
 
@@ -12,6 +14,8 @@ namespace GFW {
     class PassBinary : public Common::ARefCounted
     {
     public:
+        Common::InternedString  mName;
+        Common::InternedString  mShaders[ SHADER_STAGE_COUNT ];
     };
     AUTOREF_REFERENCE_DECLARATION( PassBinary );
 
