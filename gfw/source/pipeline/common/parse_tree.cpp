@@ -34,7 +34,6 @@ namespace GFW {
         , mTokenType( TOKEN_UNKNOWN )
         , mLine( 0 )
         , mRow( 0 )
-        , mChildren( NULL )
         , mChildCount( 0 )
     {
         mImpl = new ParseTreeImpl;

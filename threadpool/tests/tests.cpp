@@ -16,7 +16,7 @@ public:
     {
         uint32_t sum = 0;
 
-        for (int i = 0; i < mIterCount; ++ i)
+        for ( uint32_t i = 0; i < mIterCount; ++ i )
         {
             sum += i;
         }
