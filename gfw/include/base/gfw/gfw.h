@@ -25,4 +25,6 @@
 #include "gfw/base/vertex_attribute.h"
 #include "gfw/base/window.h"
 
+#include "gfw/shared/shader_reflect.h"
+
 #endif // __GFW_H__
