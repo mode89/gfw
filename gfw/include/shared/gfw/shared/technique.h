@@ -3,6 +3,8 @@
 
 #include "gfw/shared/pass.h"
 
+#include <vector>
+
 namespace GFW {
 
     struct TechniqueDesc

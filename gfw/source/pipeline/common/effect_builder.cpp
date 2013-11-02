@@ -3,13 +3,13 @@
 #include "gfw/pipeline/common/effect_builder.h"
 #include "gfw/pipeline/common/parser.h"
 #include "gfw/pipeline/common/parse_tree.h"
+#include "gfw/pipeline/shader_builder.h"
 
 namespace GFW {
 
     using namespace Common;
 
-    EffectBuilder::EffectBuilder( Common::StringTable & stringTable )
-        : mStringTable( stringTable )
+    EffectBuilder::EffectBuilder()
     {
 
     }

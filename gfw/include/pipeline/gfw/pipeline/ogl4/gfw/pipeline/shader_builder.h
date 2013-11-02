@@ -1,8 +1,7 @@
 #ifndef __GFW_PIPELINE_OGL4_SHADER_BUILDER_H__
 #define __GFW_PIPELINE_OGL4_SHADER_BUILDER_H__
 
-#include "common/autoref.h"
-#include "gfw/shared/shader.h"
+#include "gfw/pipeline/common/shader_builder.h"
 
 #include <string>
 #include <unordered_map>
@@ -12,7 +11,7 @@ namespace GFW {
 
     class ParseTree;
 
-    class ShaderBuilder : public Common::ARefCounted
+    class ShaderBuilder : public IShaderBuilder
     {
     public:
         ShaderBinaryRef

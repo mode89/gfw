@@ -3,7 +3,7 @@
 
 #include "common/autoref.h"
 #include "common/string_table.h"
-#include "gfw/pipeline/shader_builder.h"
+#include "gfw/pipeline/common/shader_builder.h"
 #include "gfw/shared/effect.h"
 #include "gfw/shared/shader_stage.h"
 
@@ -21,7 +21,7 @@ namespace GFW {
         Build( const char * fileName );
 
     public:
-        EffectBuilder( Common::StringTable & );
+        EffectBuilder();
 
     private:
         bool
@@ -37,9 +37,9 @@ namespace GFW {
         typedef std::vector< ShaderBinaryRef >    ShaderBinaryVec;
         typedef std::vector< TechniqueBinaryRef > TechniqueBinaryVec;
 
-        Common::StringTable &   mStringTable;
+        Common::StringTable     mStringTable;
 
-        ShaderBuilderRef        mShaderBuilder;
+        IShaderBuilderRef       mShaderBuilder;
 
         TechniqueBinaryVec      mTechniques;
         ShaderBinaryVec         mShaders;

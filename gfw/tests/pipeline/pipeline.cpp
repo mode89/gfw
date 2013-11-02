@@ -21,7 +21,6 @@ public:
 
 TEST_F(GfwPipelineTests, Parse)
 {
-    StringTable stringTable;
-    EffectBuilderRef effectBuilder = new EffectBuilder( stringTable );
+    EffectBuilderRef effectBuilder = new EffectBuilder;
     EffectBinaryRef  effectBinary  = effectBuilder->Build(TESTS_DIR "draw.fx" );
 }

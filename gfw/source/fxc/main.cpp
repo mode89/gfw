@@ -1,8 +1,12 @@
 #include "common/trace.h"
 
+#include "gfw/pipeline/common/effect_builder.h"
+
 #include <cstring>
 #include <iostream>
 #include <string>
+
+using namespace GFW;
 
 void PrintHelp()
 {
@@ -65,6 +69,9 @@ int main( int argc, const char * argv[] )
             return -1;
         }
     }
+
+    EffectBuilderRef effectBuilder = new EffectBuilder;
+
 
     return 0;
 }

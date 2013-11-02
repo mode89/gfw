@@ -1,9 +1,9 @@
 #ifndef __GFW_SHARED_EFFECT_H__
 #define __GFW_SHARED_EFFECT_H__
 
-#include "common/autoref.h"
-
 #include "gfw/shared/technique.h"
+
+#include <vector>
 
 namespace GFW {
 
