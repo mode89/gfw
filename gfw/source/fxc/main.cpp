@@ -1,12 +1,14 @@
 #include "common/trace.h"
-
 #include "gfw/pipeline/common/effect_builder.h"
+#include "serialization/output_archive.h"
 
 #include <cstring>
 #include <iostream>
+#include <fstream>
 #include <string>
 
 using namespace GFW;
+using namespace Serialization;
 
 void PrintHelp()
 {
@@ -71,7 +73,14 @@ int main( int argc, const char * argv[] )
     }
 
     EffectBuilderRef effectBuilder = new EffectBuilder;
+    EffectBinaryRef effectBinary = effectBuilder->Build( fxFile.c_str() );
 
+    std::ofstream fileStream( outputFile );
+    {
+        OutputArchive< std::ofstream > archive( fileStream );
+        archive & CreateNamedValue( "effect-binary", effectBinary );
+    }
+    fileStream.close();
 
     return 0;
 }
