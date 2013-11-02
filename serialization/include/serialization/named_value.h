@@ -12,6 +12,12 @@ namespace Serialization {
             , mValue( value )
         {}
 
+        inline const char *
+        GetName() { return mName; }
+
+        inline T &
+        GetValue() { return mValue; }
+
     private:
         const char *    mName;
         T &             mValue;
