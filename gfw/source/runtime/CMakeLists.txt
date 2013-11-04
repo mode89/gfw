@@ -48,4 +48,7 @@ find_package( common CONFIG )
 target_link_libraries( gfw_runtime ${COMMON_LIBRARIES} )
 include_directories( ${COMMON_INCLUDE_DIRS} )
 
+find_package( serialization CONFIG )
+include_directories( ${SERIALIZATION_INCLUDE_DIRS} )
+
 include( ${GFW_ROOT}/scripts/${GFW_PLATFORM}/build.cmake )

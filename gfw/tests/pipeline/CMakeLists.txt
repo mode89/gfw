@@ -18,3 +18,6 @@ include_directories( ${COMMON_INCLUDE_DIRS} )
 find_package( gtest CONFIG )
 target_link_libraries( gfw_pipeline-tests ${GTEST_LIBRARIES} )
 include_directories( ${GTEST_INCLUDE_DIRS} )
+
+find_package( serialization CONFIG )
+include_directories( ${SERIALIZATION_INCLUDE_DIRS} )

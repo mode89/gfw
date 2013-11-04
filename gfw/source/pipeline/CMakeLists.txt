@@ -37,6 +37,9 @@ find_package( common CONFIG )
 target_link_libraries( gfw_pipeline ${COMMON_LIBRARIES} )
 include_directories( ${COMMON_INCLUDE_DIRS} )
 
+find_package( serialization CONFIG )
+include_directories( ${SERIALIZATION_INCLUDE_DIRS} )
+
 # Pre-build
 
 set( GFW_PIPELINE_FX_GRAMMAR_FILE ${GFW_ROOT}/source/pipeline/common/FX.g )
