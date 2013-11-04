@@ -1,6 +1,8 @@
 #ifndef __SERIALIZATION_NAMED_VALUE_H__
 #define __SERIALIZATION_NAMED_VALUE_H__
 
+#define NAMED_VALUE( name, value ) Serialization::CreateNamedValue( name, value )
+
 namespace Serialization {
 
     template < class T >
