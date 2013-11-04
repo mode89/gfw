@@ -2,6 +2,7 @@
 #define __GFW_SHARED_SHADER_H__
 
 #include "common/autoref.h"
+#include "serialization/named_value.h"
 
 namespace GFW {
 
@@ -12,6 +13,12 @@ namespace GFW {
         ShaderDesc()
             : inputCount( 0 )
         {}
+
+        template < class Archive > void
+        Serialize( Archive & archive )
+        {
+            archive & NAMED_VALUE( inputCount );
+        }
     };
 
     template < class Archive >
@@ -27,16 +34,15 @@ namespace GFW {
         ShaderDesc  mDesc;
         uint32_t    mSize;  // Size if the data
         ByteRef     mData;  // Binary data
+
+        template < class Archive > void
+        Serialize( Archive & archive )
+        {
+            archive & NAMED_VALUE( mDesc );
+            archive & NAMED_VALUE( mSize );
+        }
     };
     AUTOREF_REFERENCE_DECLARATION( ShaderBinary );
-
-    template < class Archive >
-    void Serialize( Archive & ar, const char * name, ShaderBinary & bin )
-    {
-        Serialize( ar, "desc", bin.mDesc );
-        Serialize( ar, "size", bin.mSize );
-        Serialize( ar, "data", bin.mData, bin.mSize );
-    }
 
 } // namespace GFW
 
