@@ -2,6 +2,7 @@
 #define __GFW_SHARED_TECHNIQUE_H__
 
 #include "gfw/shared/pass.h"
+#include "serialization/named_value.h"
 
 #include <vector>
 
@@ -14,6 +15,12 @@ namespace GFW {
         TechniqueDesc()
             : passCount( 0 )
         {}
+
+        template < class Archive > void
+        Serialize( Archive & archive )
+        {
+            archive & NAMED_VALUE( passCount );
+        }
     };
 
     class TechniqueBinary : public Common::ARefCounted
@@ -24,6 +31,12 @@ namespace GFW {
         TechniqueDesc           mDesc;
         Common::InternedString  mName;
         PassBinaryVec           mPasses;
+
+        template < class Archive > void
+        Serialize( Archive & archive )
+        {
+            archive & NAMED_VALUE( mDesc );
+        }
     };
     AUTOREF_REFERENCE_DECLARATION( TechniqueBinary );
 
