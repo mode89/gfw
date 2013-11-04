@@ -174,6 +174,11 @@ namespace Common {
     {
     public:
         inline
+        AutoPointer()
+            : AUTOREF()
+        {}
+
+        inline
         AutoPointer(T * object)
             : AUTOREF(new Pointer<T>(object))
         {}
