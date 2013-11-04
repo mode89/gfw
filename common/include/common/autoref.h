@@ -191,6 +191,9 @@ namespace Common {
 
         inline
         operator T* () { return AUTOREF::mObject->mData; }
+
+        inline T*
+        GetPointer() { return AUTOREF::mObject->mData; }
     };
 #undef AUTOREF
 

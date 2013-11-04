@@ -242,8 +242,16 @@ TEST_F(AutoRefTests, AutoPointerBracket)
 
     for (int i = 0; i < 100; ++ i)
     {
-        autoPnt[i] = i;
+        autoPnt[i] = i * 2;
+        ASSERT_TRUE( autoPnt[i] == ( i * 2 ) );
     }
+}
+
+TEST_F( AutoRefTests, AutoPointerGetPointer )
+{
+    uint32_t * data = new uint32_t [100];
+    AutoPointer<uint32_t> ptr = data;
+    ASSERT_TRUE( ptr.GetPointer() == data );
 }
 
 TEST_F(AutoRefTests, ArrayOfRefs)
