@@ -1,7 +1,8 @@
 #ifndef __SERIALIZATION_NAMED_VALUE_H__
 #define __SERIALIZATION_NAMED_VALUE_H__
 
-#define NAMED_VALUE( name, value ) Serialization::CreateNamedValue( name, value )
+#define NAMED_VALUE( value )          Serialization::CreateNamedValue( #value, value )
+#define NAMED_ARRAY( value, size )    Serialization::CreateNamedArray( #value, value, size )
 
 namespace Serialization {
 
@@ -20,7 +21,7 @@ namespace Serialization {
         inline T &
         GetValue() { return mValue; }
 
-    private:
+    protected:
         const char *    mName;
         T &             mValue;
     };
@@ -29,6 +30,31 @@ namespace Serialization {
     NamedValue<T> CreateNamedValue( const char * name, T & value )
     {
         return NamedValue<T>( name, value );
+    }
+
+    template < class T >
+    class NamedArray : public NamedValue<T>
+    {
+    public:
+        NamedArray( const char * name, T * a, uint32_t size )
+            : NamedValue<T>( name, *a )
+            , mSize( size )
+        {}
+
+        inline T *
+        GetValue() { return &NamedValue<T>::GetValue(); }
+
+        inline uint32_t
+        GetSize() { return mSize; }
+
+    private:
+        uint32_t    mSize;
+    };
+
+    template < class T >
+    NamedArray<T> CreateNamedArray( const char * name, T * a, uint32_t size )
+    {
+        return NamedArray<T>( name, a, size );
     }
 
 } // namespace Serialization
