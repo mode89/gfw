@@ -22,11 +22,31 @@ namespace GFW {
 
         mShaderBuilder = new ShaderBuilder( tree );
 
+        EffectBinaryRef fxBin = new EffectBinary;
+
         // Process techniques
 
         tree->TraverseDFS( *this, &EffectBuilder::ProcessTechniques );
 
-        return NULL;
+        // Save techniques to the binary
+
+        fxBin->mDesc.techniqueCount = mTechniques.size();
+        fxBin->mTechniques = new TechniqueBinaryRef [ mTechniques.size() ];
+        for ( uint32_t i = 0; i < mTechniques.size(); ++ i )
+        {
+            fxBin->mTechniques[i] = mTechniques[i];
+        }
+
+        // Save shaders to the binary
+
+        fxBin->mShaderCount = mShaders.size();
+        fxBin->mShaders = new ShaderBinaryRef [ mShaders.size() ];
+        for ( uint32_t i = 0; i < mShaders.size(); ++ i )
+        {
+            fxBin->mShaders[i] = mShaders[i];
+        }
+
+        return fxBin;
     }
 
     bool EffectBuilder::ProcessTechniques( const ParseTree * tree )
