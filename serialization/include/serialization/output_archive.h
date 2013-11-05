@@ -4,9 +4,14 @@
 #include "common/autoref.h"
 #include "serialization/named_value.h"
 
+#include <stdlib.h>
+
 namespace Serialization {
 
     using namespace Common;
+
+    // ***************************************************************
+    // Serialization of a value
 
     template < class Archive, class T > void
     Serialize( Archive & archive, T & value )
@@ -32,12 +37,23 @@ namespace Serialization {
         archive.SerializeSimpleType( value );
     }
 
+    template < class Archive > void
+    Serialize( Archive & archive, uint8_t & value )
+    {
+        archive.SerializeSimpleType( value );
+    }
+
+    // ***************************************************************
+    // Serialization of an array
+
     template < class Archive, class T > void
-    Serialize( Archive & archive, T * ptr, uint32_t size )
+        Serialize( Archive & archive, T * ptr, uint32_t size )
     {
         for ( uint32_t i = 0; i < size; ++ i )
         {
-            Serialize( archive, ptr[i] );
+            char num[16];
+            _itoa( i, num, 10 );
+            archive & CreateNamedValue( num, ptr[i] );
         }
     }
 
