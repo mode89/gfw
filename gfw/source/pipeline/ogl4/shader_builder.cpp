@@ -155,7 +155,19 @@ namespace GFW {
         }
         source << "}\n";
 
-        return NULL;
+        // Construct binary
+
+        ShaderBinaryRef shaderBinary = new ShaderBinary;
+
+        shaderBinary->mDesc.inputCount = entryPoint.args.size();
+
+        uint32_t sourceSize = source.str().size();
+        shaderBinary->mSize = sourceSize;
+        shaderBinary->mData = new uint8_t [ sourceSize + 1 ]; // + 1 for null-terminator
+        std::memcpy( shaderBinary->mData, source.str().c_str(), sourceSize );
+        shaderBinary->mData[ sourceSize ] = 0; // Null-terminator
+
+        return shaderBinary;
     }
 
     bool ShaderBuilder::CollectFunctions( const ParseTree * tree )
