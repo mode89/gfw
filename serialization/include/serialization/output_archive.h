@@ -69,6 +69,12 @@ namespace Serialization {
         }
 
         template < class T > void
+        operator & ( NamedArray<AutoPointer<T>> array )
+        {
+            SerializeArray( array.GetValue().GetPointer(), array.GetSize() );
+        }
+
+        template < class T > void
         SerializeSimpleType( T value )
         {
             mStream.write( reinterpret_cast< const char * >( &value ), sizeof( T ) );

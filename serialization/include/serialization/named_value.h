@@ -36,13 +36,10 @@ namespace Serialization {
     class NamedArray : public NamedValue<T>
     {
     public:
-        NamedArray( const char * name, T * a, uint32_t size )
-            : NamedValue<T>( name, *a )
+        NamedArray( const char * name, T & a, uint32_t size )
+            : NamedValue<T>( name, a )
             , mSize( size )
         {}
-
-        inline T *
-        GetValue() { return &NamedValue<T>::GetValue(); }
 
         inline uint32_t
         GetSize() { return mSize; }
@@ -52,7 +49,7 @@ namespace Serialization {
     };
 
     template < class T >
-    NamedArray<T> CreateNamedArray( const char * name, T * a, uint32_t size )
+    NamedArray<T> CreateNamedArray( const char * name, T & a, uint32_t size )
     {
         return NamedArray<T>( name, a, size );
     }

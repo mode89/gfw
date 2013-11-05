@@ -37,9 +37,9 @@ namespace GFW {
         Serialize( Archive & archive )
         {
             archive & NAMED_VALUE( mDesc );
-            archive & NAMED_ARRAY( mTechniques.GetPointer(), mDesc.techniqueCount );
+            archive & NAMED_ARRAY( mTechniques, mDesc.techniqueCount );
             archive & NAMED_VALUE( mShaderCount );
-            archive & NAMED_ARRAY( mShaders.GetPointer(), mShaderCount );
+            archive & NAMED_ARRAY( mShaders, mShaderCount );
         }
     };
     AUTOREF_REFERENCE_DECLARATION(EffectBinary);
