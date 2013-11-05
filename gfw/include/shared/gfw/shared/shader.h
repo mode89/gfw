@@ -29,17 +29,18 @@ namespace GFW {
 
     class ShaderBinary : public Common::ARefCounted
     {
-        typedef Common::AutoPointer<uint8_t> ByteRef;
+        typedef Common::AutoPointer<uint8_t> ByteArray;
     public:
         ShaderDesc  mDesc;
         uint32_t    mSize;  // Size if the data
-        ByteRef     mData;  // Binary data
+        ByteArray   mData;  // Binary data
 
         template < class Archive > void
         Serialize( Archive & archive )
         {
             archive & NAMED_VALUE( mDesc );
             archive & NAMED_VALUE( mSize );
+            archive & NAMED_ARRAY( mData, mSize );
         }
     };
     AUTOREF_REFERENCE_DECLARATION( ShaderBinary );
