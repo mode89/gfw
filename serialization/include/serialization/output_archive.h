@@ -3,59 +3,14 @@
 
 #include "common/autoref.h"
 #include "serialization/named_value.h"
+#include "serialization/serialize.h"
 
 #include <stdlib.h>
+#include <unordered_map>
 
 namespace Serialization {
 
     using namespace Common;
-
-    // ***************************************************************
-    // Serialization of a value
-
-    template < class Archive, class T > void
-    Serialize( Archive & archive, T & value )
-    {
-        value.Serialize( archive );
-    }
-
-    template < class Archive, class T > void
-    Serialize( Archive & archive, AutoRef<T> & value )
-    {
-        archive.SerializeArray( value.GetPointer(), 1 );
-    }
-
-    template < class Archive > void
-    Serialize( Archive & archive, uint32_t & value )
-    {
-        archive.SerializeSimpleType( value );
-    }
-
-    template < class Archive > void
-    Serialize( Archive & archive, int32_t & value )
-    {
-        archive.SerializeSimpleType( value );
-    }
-
-    template < class Archive > void
-    Serialize( Archive & archive, uint8_t & value )
-    {
-        archive.SerializeSimpleType( value );
-    }
-
-    // ***************************************************************
-    // Serialization of an array
-
-    template < class Archive, class T > void
-        Serialize( Archive & archive, T * ptr, uint32_t size )
-    {
-        for ( uint32_t i = 0; i < size; ++ i )
-        {
-            char num[16];
-            _itoa( i, num, 10 );
-            archive & CreateNamedValue( num, ptr[i] );
-        }
-    }
 
     template < class Stream >
     class OutputArchive
@@ -75,44 +30,51 @@ namespace Serialization {
         template < class T > void
         operator & ( NamedValue<T> value )
         {
-            Serialize( *this, value.GetValue() );
+            Serialize( *this, &value.GetValue(), 1 );
         }
 
         template < class T > void
         operator & ( NamedArray<T> value )
         {
-            SerializeArray( value.GetValue(), value.GetSize() );
+            Serialize( *this, value.GetValue(), value.GetSize() );
         }
 
         template < class T > void
-        operator & ( NamedArray<AutoPointer<T>> array )
+        SerializeSimpleType( T * value, uint32_t size )
         {
-            SerializeArray( array.GetValue().GetPointer(), array.GetSize() );
+            mStream.write( reinterpret_cast< const char * >( value ), size * sizeof( T ) );
         }
 
         template < class T > void
-        SerializeSimpleType( T value )
-        {
-            mStream.write( reinterpret_cast< const char * >( &value ), sizeof( T ) );
-        }
-
-        template < class T > void
-        SerializeArray( T * arrayPtr, uint32_t size )
+        SerializePointer( T * arrayPtr, uint32_t size )
         {
             PointerIndex::iterator it = mPointerIndex.find( arrayPtr );
             if ( it == mPointerIndex.end() )
             {
-                SerializeSimpleType( -1 ); // Indicates a new pointer
+                uint32_t ptrIndex = -1;
+                SerializeSimpleType( &ptrIndex, 1 ); // Indicates a new pointer
 
-                uint32_t ptrIndex = mPointerIndex.size();
+                ptrIndex = mPointerIndex.size();
                 mPointerIndex[ arrayPtr ] = ptrIndex;
 
                 Serialize( *this, arrayPtr, size );
             }
             else
             {
-                SerializeSimpleType( it->second );
+                SerializeSimpleType( &it->second, 1 );
             }
+        }
+
+        template < class T > void
+        SerializeAutoRef( AutoRef<T> & autoRef )
+        {
+            SerializePointer( autoRef.GetPointer(), 1 );
+        }
+
+        template < class T > void
+        SerializeAutoPointer( AutoPointer<T> & autoPtr, uint32_t size )
+        {
+            SerializePointer( autoPtr.GetPointer(), size );
         }
 
     private:
