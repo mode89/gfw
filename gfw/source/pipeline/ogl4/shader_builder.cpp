@@ -161,11 +161,10 @@ namespace GFW {
 
         shaderBinary->mDesc.inputCount = entryPoint.args.size();
 
-        uint32_t sourceSize = source.str().size();
+        uint32_t sourceSize = source.str().size() + 1; // + 1 for null-terminator
         shaderBinary->mSize = sourceSize;
-        shaderBinary->mData = new uint8_t [ sourceSize + 1 ]; // + 1 for null-terminator
+        shaderBinary->mData = new uint8_t [ sourceSize ];
         std::memcpy( shaderBinary->mData, source.str().c_str(), sourceSize );
-        shaderBinary->mData[ sourceSize ] = 0; // Null-terminator
 
         return shaderBinary;
     }
