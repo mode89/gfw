@@ -1,6 +1,7 @@
 #ifndef __GFW_SHARED_EFFECT_H__
 #define __GFW_SHARED_EFFECT_H__
 
+#include "gfw/shared/shader.h"
 #include "gfw/shared/technique.h"
 #include "serialization/named_value.h"
 

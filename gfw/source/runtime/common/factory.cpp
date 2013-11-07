@@ -10,12 +10,17 @@
 #include "gfw/runtime/common/mesh_builder.h"
 #include "gfw/runtime/common/shader_stage.h"
 
+#include "gfw/shared/effect.h"
+
+#include "serialization/input_archive.h"
+
 #include <fstream>
 #include <string>
 
 namespace GFW {
 
     using namespace Common;
+    using namespace Serialization;
 
     IFactoryRef CreateFactory(IDeviceRef device)
     {
@@ -45,42 +50,21 @@ namespace GFW {
         return true;
     }
 
-    IEffectRef Factory::CreateEffect(const char * fileName)
+    IEffectRef Factory::CreateEffect( const char * fileName )
     {
-        TRACE_ASSERT(fileName != NULL);
+        TRACE_ASSERT( fileName != NULL );
 
-        std::ifstream file(fileName, std::ios_base::binary);
-        TRACE_ASSERT(file);
+        std::ifstream fxStream( fileName, std::ios_base::in | std::ios_base::binary );
+        TRACE_ASSERT( fxStream );
 
-        // Determine size
+        InputArchive<std::ifstream> archive( fxStream );
 
-        file.seekg(0, file.end);
-        uint64_t fileSize = file.tellg();
-        file.seekg(0, file.beg);
+        EffectBinaryRef effectBinary;
+        archive & CreateNamedValue( "", effectBinary );
 
-        // Read the effect file
+        TRACE_FAIL_MSG( "Not yet implemented" );
 
-        Common::AutoPointer<char> effectData = new char [static_cast<uint32_t>(fileSize + 1)];
-        file.read(effectData, fileSize);
-        effectData[fileSize] = 0;
-
-        // Create shaders
-
-        IShaderRef shaders[SHADER_STAGE_COUNT];
-
-        for (int stage = 0; stage < SHADER_STAGE_COUNT; ++ stage)
-        {
-            std::string shaderData = "#define GFW_SHADER_STAGE_";
-            shaderData += GetStageString(static_cast<ShaderStage>(stage));
-            shaderData += "\n";
-            shaderData += effectData;
-
-            shaders[stage] = mDevice->CreateShader(static_cast<ShaderStage>(stage), shaderData.c_str());
-            TRACE_ASSERT(shaders[stage].IsAttached());
-        }
-
-        EffectRef effect = new Effect(shaders, mDevice);
-        return effect.StaticCast<IEffect>();
+        return NULL;
     }
 
     IMeshBuilderRef Factory::CreateMeshBuilder()

@@ -21,12 +21,6 @@ namespace GFW {
         }
     };
 
-    template < class Archive >
-    void Serialize( Archive & ar, const char * name, ShaderDesc & desc )
-    {
-        Serialize( ar, "inputCount", desc.inputCount );
-    }
-
     class ShaderBinary : public Common::ARefCounted
     {
         typedef Common::AutoPointer<uint8_t> ByteArray;
