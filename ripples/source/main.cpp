@@ -118,7 +118,7 @@ int main()
     vertexAttribute.semantic = SEMANTIC_POSITION0;
     vertexAttribute.format   = FORMAT_RGB32_FLOAT;
     vertexAttribute.stride   = sizeof(Vertex);
-    IInputLayoutRef inputLayout = device->CreateInputLayout(1, &vertexAttribute, effect->GetShader(SHADER_STAGE_VERTEX));
+    IInputLayoutRef inputLayout = device->CreateInputLayout(1, &vertexAttribute, effect->GetShader( ShaderStage::VERTEX ));
 
     DrawIndexedParams drawParams;
     drawParams.primTop    = PRIM_TRIANGLES;

@@ -26,5 +26,6 @@
 #include "gfw/base/window.h"
 
 #include "gfw/shared/shader_reflect.h"
+#include "gfw/shared/shader_stage.h"
 
 #endif // __GFW_H__

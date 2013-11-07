@@ -16,7 +16,7 @@ namespace GFW {
 
     struct PassDesc
     {
-        uint32_t shaders[SHADER_STAGE_COUNT];
+        uint32_t shaders[ShaderStage::COUNT];
     };
 
 } // namespace GFW::Pipeline

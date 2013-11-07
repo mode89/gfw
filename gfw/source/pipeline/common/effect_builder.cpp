@@ -118,10 +118,10 @@ namespace GFW {
             switch ( shaderType->GetTokenType() )
             {
             case TOKEN_SET_VERTEX_SHADER:
-                pass->mShaders[ SHADER_STAGE_VERTEX ] = name;
+                pass->mShaders[ ShaderStage::VERTEX ] = name;
                 break;
             case TOKEN_SET_PIXEL_SHADER:
-                pass->mShaders[ SHADER_STAGE_PIXEL ] = name;
+                pass->mShaders[ ShaderStage::PIXEL ] = name;
                 break;
             default:
                 TRACE_FAIL();

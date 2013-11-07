@@ -3,12 +3,12 @@
 
 namespace GFW {
 
-    enum ShaderStage
+    enum ShaderStage : int32_t
     {
-        SHADER_STAGE_UNKNOWN = -1,
-        SHADER_STAGE_VERTEX,
-        SHADER_STAGE_PIXEL,
-        SHADER_STAGE_COUNT
+        UNKNOWN = -1,
+        VERTEX,
+        PIXEL,
+        COUNT,
     };
 
 } // namespace GFW

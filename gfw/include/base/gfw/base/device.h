@@ -3,7 +3,7 @@
 
 #include "gfw/base/format.h"
 #include "gfw/base/types_fwd.h"
-#include "gfw/shared/shader_stage.h"
+#include "gfw/shared/types_fwd.h"
 
 namespace GFW {
 

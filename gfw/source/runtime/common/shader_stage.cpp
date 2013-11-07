@@ -1,6 +1,7 @@
 #include "common/trace.h"
 
 #include "gfw/runtime/common/shader_stage.h"
+#include "gfw/shared/shader_stage.h"
 
 namespace GFW {
 
@@ -8,9 +9,9 @@ namespace GFW {
     {
         switch (stage)
         {
-        case SHADER_STAGE_VERTEX:
+        case ShaderStage::VERTEX:
             return "VERTEX";
-        case SHADER_STAGE_PIXEL:
+        case ShaderStage::PIXEL:
             return "PIXEL";
         default:
             TRACE_FAIL_MSG("Unknown stage");

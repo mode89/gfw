@@ -15,7 +15,7 @@ namespace GFW {
     {
     public:
         Common::InternedString  mName;
-        Common::InternedString  mShaders[ SHADER_STAGE_COUNT ];
+        Common::InternedString  mShaders[ ShaderStage::COUNT ];
     };
     AUTOREF_REFERENCE_DECLARATION( PassBinary );
 

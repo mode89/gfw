@@ -5,6 +5,7 @@
 #include "gfw/base/shader.h"
 #include "gfw/base/types_fwd.h"
 #include "gfw/runtime/common/device_child.h"
+#include "gfw/shared/shader_stage.h"
 
 namespace GFW {
 
@@ -15,14 +16,14 @@ namespace GFW {
         Dispatch();
 
         virtual IShaderRef
-        GetShader(ShaderStage stage) { return mShaders[stage]; }
+        GetShader(ShaderStage stage) { return mShaders[ static_cast<uint32_t>( stage ) ]; }
 
     public:
         Effect(IShaderRef[], IDeviceIn);
         ~Effect();
 
     private:
-        IShaderRef  mShaders[SHADER_STAGE_COUNT];
+        IShaderRef  mShaders[ShaderStage::COUNT];
     };
     AUTOREF_REFERENCE_DECLARATION(Effect);
 

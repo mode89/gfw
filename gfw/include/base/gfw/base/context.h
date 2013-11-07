@@ -2,6 +2,7 @@
 #define __GFW_BASE_CONTEXT_H__
 
 #include "gfw/base/types_fwd.h"
+#include "gfw/shared/types_fwd.h"
 
 namespace GFW {
 
@@ -9,7 +10,7 @@ namespace GFW {
     {
     public:
         virtual void
-        SetShader(int32_t stage, IShaderIn) = 0;
+        SetShader( ShaderStage stage, IShaderIn ) = 0;
 
         virtual void
         SetInputLayout(IInputLayoutIn) = 0;

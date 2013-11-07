@@ -2,6 +2,7 @@
 
 #include "gfw/runtime/core/functions.h"
 #include "gfw/runtime/core/shader_stage.h"
+#include "gfw/shared/shader_stage.h"
 
 namespace GFW {
 
@@ -9,9 +10,9 @@ namespace GFW {
     {
         switch (stage)
         {
-        case SHADER_STAGE_VERTEX:
+        case ShaderStage::VERTEX:
             return GL_VERTEX_SHADER;
-        case SHADER_STAGE_PIXEL:
+        case ShaderStage::PIXEL:
             return GL_FRAGMENT_SHADER;
         default:
             TRACE_FAIL();
@@ -24,9 +25,9 @@ namespace GFW {
     {
         switch (stage)
         {
-        case SHADER_STAGE_VERTEX:
+        case ShaderStage::VERTEX:
             return GL_VERTEX_SHADER_BIT;
-        case SHADER_STAGE_PIXEL:
+        case ShaderStage::PIXEL:
             return GL_FRAGMENT_SHADER_BIT;
         default:
             TRACE_FAIL();

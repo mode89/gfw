@@ -54,7 +54,7 @@ TEST_F(GfwTests, Draw)
     vertexAttribs[1].format   = FORMAT_RGB32_FLOAT;
     vertexAttribs[1].stride   = 20;
     vertexAttribs[1].offset   = 8;
-    IInputLayoutRef inputLayout = mDevice->CreateInputLayout(2, vertexAttribs, effect->GetShader(SHADER_STAGE_VERTEX));
+    IInputLayoutRef inputLayout = mDevice->CreateInputLayout( 2, vertexAttribs, effect->GetShader( ShaderStage::VERTEX ) );
 
     // Define draw params
 
@@ -130,7 +130,7 @@ TEST_F(GfwTests, DrawIndexed)
     vertexAttribs[1].format   = FORMAT_RGB32_FLOAT;
     vertexAttribs[1].stride   = 20;
     vertexAttribs[1].offset   = 8;
-    IInputLayoutRef inputLayout = mDevice->CreateInputLayout(2, vertexAttribs, effect->GetShader(SHADER_STAGE_VERTEX));
+    IInputLayoutRef inputLayout = mDevice->CreateInputLayout(2, vertexAttribs, effect->GetShader(ShaderStage::VERTEX));
 
     // Define draw params
 
@@ -279,7 +279,7 @@ TEST_F(GfwTests, CreateMesh)
     vertexAttribute.semantic = SEMANTIC_POSITION0;
     vertexAttribute.format   = FORMAT_RGB32_FLOAT;
     vertexAttribute.stride   = sizeof(Vertex);
-    IInputLayoutRef inputLayout = mDevice->CreateInputLayout(1, &vertexAttribute, effect->GetShader(SHADER_STAGE_VERTEX));
+    IInputLayoutRef inputLayout = mDevice->CreateInputLayout(1, &vertexAttribute, effect->GetShader(ShaderStage::VERTEX));
 
     // Drawing parameters
 
@@ -433,7 +433,7 @@ TEST_F(GfwTests, RenderTarget)
     vertexAttribs.semantic = SEMANTIC_POSITION0;
     vertexAttribs.format   = FORMAT_RG32_FLOAT;
     vertexAttribs.stride   = 8;
-    IInputLayoutRef inputLayout = mDevice->CreateInputLayout(1, &vertexAttribs, fxRed->GetShader(SHADER_STAGE_VERTEX));
+    IInputLayoutRef inputLayout = mDevice->CreateInputLayout(1, &vertexAttribs, fxRed->GetShader(ShaderStage::VERTEX));
 
     // Define draw params
 
@@ -475,7 +475,7 @@ TEST_F(GfwTests, RenderTarget)
             mContext->SetRenderTargets(1, &defaultRenderTarget);
             mContext->Clear(mClearParams);
 
-            mContext->SetTexture(SHADER_STAGE_PIXEL, 0, rtTex);
+            mContext->SetTexture( ShaderStage::PIXEL, 0, rtTex);
 
             fxTexture->Dispatch();
             mContext->DrawScreenQuad();

@@ -10,6 +10,8 @@
 #include "gfw/runtime/core/limits.h"
 #include "gfw/runtime/core/types_fwd.h"
 
+#include "gfw/shared/shader_stage.h"
+
 #include <map>
 
 namespace GFW {
@@ -18,7 +20,7 @@ namespace GFW {
     {
     public:
         virtual void
-        SetShader(int32_t stage, IShaderIn);
+        SetShader( ShaderStage stage, IShaderIn );
 
         virtual void
         SetInputLayout(IInputLayoutIn);
@@ -78,7 +80,7 @@ namespace GFW {
 
         uint32_t                    mScreenQuadBuffer;
 
-        ShaderRef                   mShaders[SHADER_STAGE_COUNT];
+        ShaderRef                   mShaders[ ShaderStage::COUNT ];
         uint32_t                    mProgramPipeline;
 
         InputLayoutRef              mInputLayout;
@@ -88,7 +90,7 @@ namespace GFW {
 
         BufferRef                   mIndexBuffer;
 
-        int32_t                     mTextureUnits[SHADER_STAGE_COUNT][MAX_BIND_TEXTURES];
+        int32_t                     mTextureUnits[ ShaderStage::COUNT ][ MAX_BIND_TEXTURES ];
         TextureRef                  mActiveTextures[MAX_BIND_TEXTURES];
         uint32_t                    mActiveTexturesDirtyMask;
         uint32_t                    mNextActiveTextureUnit;

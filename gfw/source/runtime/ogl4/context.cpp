@@ -116,12 +116,12 @@ namespace GFW {
         mVertexBuffers[slot] = buf.StaticCast<Buffer>();
     }
 
-    void Context::SetShader( int32_t stage, IShaderIn shader )
+    void Context::SetShader( ShaderStage stage, IShaderIn shader )
     {
-        TRACE_ASSERT(stage > SHADER_STAGE_UNKNOWN);
-        TRACE_ASSERT(stage < SHADER_STAGE_COUNT);
-        TRACE_ASSERT(shader.IsAttached());
-        TRACE_ASSERT(stage == shader->GetStage());
+        TRACE_ASSERT( stage > ShaderStage::UNKNOWN );
+        TRACE_ASSERT( stage < ShaderStage::COUNT );
+        TRACE_ASSERT( shader.IsAttached() );
+        TRACE_ASSERT( stage == shader->GetStage() );
 
         mShaders[stage] = shader.StaticCast<Shader>();
     }
@@ -188,7 +188,7 @@ namespace GFW {
 
         // Detach shaders
 
-        for (int stage = 0; stage < SHADER_STAGE_COUNT; ++ stage)
+        for (int stage = 0; stage < ShaderStage::COUNT; ++ stage)
         {
             uint32_t stageBit = GetOGLShaderStageBit(static_cast<ShaderStage>(stage));
             TRACE_ASSERT_GL(glUseProgramStages, mProgramPipeline, stageBit, 0);
@@ -220,7 +220,7 @@ namespace GFW {
 
         // Detach textures
 
-        for (uint32_t stage = 0; stage < SHADER_STAGE_COUNT; ++ stage)
+        for (uint32_t stage = 0; stage < ShaderStage::COUNT; ++ stage)
         {
             for (uint32_t slot = 0; slot < MAX_BIND_TEXTURES; ++ slot)
             {
@@ -258,7 +258,7 @@ namespace GFW {
     {
         // Setup shaders
 
-        for (int stage = 0; stage < SHADER_STAGE_COUNT; ++ stage)
+        for (int stage = 0; stage < ShaderStage::COUNT; ++ stage)
         {
             ShaderRef shader = mShaders[stage];
             uint32_t stageBit = GetOGLShaderStageBit(static_cast<ShaderStage>(stage));
@@ -346,7 +346,7 @@ namespace GFW {
     void Context::SetTexture( int32_t stage, uint32_t slot, ITextureIn texture )
     {
         TRACE_ASSERT(stage >= 0);
-        TRACE_ASSERT(stage < SHADER_STAGE_COUNT);
+        TRACE_ASSERT(stage < ShaderStage::COUNT);
         TRACE_ASSERT(slot < MAX_BIND_TEXTURES);
         TRACE_ASSERT(texture.IsAttached());
 

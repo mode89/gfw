@@ -10,9 +10,9 @@ namespace GFW {
     Effect::Effect(IShaderRef shaders[], IDeviceIn device)
         : ADeviceChild(device)
     {
-        for (int stage = 0; stage < SHADER_STAGE_COUNT; ++ stage)
+        for ( uint32_t stage = 0; stage < ShaderStage::COUNT; ++ stage )
         {
-            TRACE_ASSERT(shaders[stage]->GetStage() == stage);
+            TRACE_ASSERT( shaders[stage]->GetStage() == stage );
             mShaders[stage] = shaders[stage];
         }
     }
@@ -27,9 +27,9 @@ namespace GFW {
         IContextRef context = mDevice->GetCurrentContext();
         TRACE_ASSERT(context.IsAttached());
 
-        for (int stage = 0; stage < SHADER_STAGE_COUNT; ++ stage)
+        for (int stage = 0; stage < ShaderStage::COUNT; ++ stage)
         {
-            context->SetShader(stage, mShaders[stage]);
+            context->SetShader( static_cast<ShaderStage>( stage ), mShaders[stage]);
         }
     }
 
