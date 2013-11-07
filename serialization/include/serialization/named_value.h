@@ -16,10 +16,10 @@ namespace Serialization {
         {}
 
         inline const char *
-        GetName() { return mName; }
+        GetName() const { return mName; }
 
         inline T &
-        GetValue() { return mValue; }
+        GetValue() const { return mValue; }
 
     protected:
         const char *    mName;
@@ -42,7 +42,7 @@ namespace Serialization {
         {}
 
         inline uint32_t
-        GetSize() { return mSize; }
+        GetSize() const { return mSize; }
 
     private:
         uint32_t    mSize;

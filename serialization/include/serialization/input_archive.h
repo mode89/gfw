@@ -15,13 +15,13 @@ namespace Serialization {
         {}
 
         template < class T > void
-        operator & ( NamedValue<T> & value )
+        operator & ( const NamedValue<T> & value )
         {
             Serialize( *this, &value.GetValue(), 1 );
         }
 
         template < class T > void
-        operator & ( NamedArray<T> & array )
+        operator & ( const NamedArray<T> & array )
         {
             Serialize( *this, array.GetValue(), array.GetSize() );
         }
