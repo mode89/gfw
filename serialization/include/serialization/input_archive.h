@@ -1,6 +1,7 @@
 #ifndef __SERIALIZATION_INPUT_ARCHIVE_H__
 #define __SERIALIZATION_INPUT_ARCHIVE_H__
 
+#include "common/trace.h"
 #include "serialization/named_value.h"
 #include "serialization/serialize.h"
 
@@ -48,7 +49,8 @@ namespace Serialization {
             }
             else
             {
-                TRACE_FAIL_MSG( "Not yet implemented" );
+                TRACE_ASSERT( ptrIndex < mPointerIndex.size() );
+                ptr = static_cast<T*>( mPointerIndex[ ptrIndex ] );
             }
         }
 
@@ -69,7 +71,7 @@ namespace Serialization {
         }
 
     private:
-        typedef std::vector< const void * > PointerIndex;
+        typedef std::vector< void * > PointerIndex;
 
         Stream &        mStream;
         PointerIndex    mPointerIndex;
