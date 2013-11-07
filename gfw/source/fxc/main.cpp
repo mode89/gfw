@@ -75,7 +75,7 @@ int main( int argc, const char * argv[] )
     EffectBuilderRef effectBuilder = new EffectBuilder;
     EffectBinaryRef effectBinary = effectBuilder->Build( fxFile.c_str() );
 
-    std::ofstream fileStream( outputFile );
+    std::ofstream fileStream( outputFile, std::ios_base::out | std::ios_base::binary );
     {
         OutputArchive< std::ofstream > archive( fileStream );
         archive & CreateNamedValue( "effect-binary", effectBinary );
