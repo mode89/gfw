@@ -16,3 +16,11 @@ include_directories( ${COMMON_INCLUDE_DIRS} )
 find_package( gtest CONFIG )
 target_link_libraries( gfw_runtime-tests ${GTEST_LIBRARIES} )
 include_directories( ${GTEST_INCLUDE_DIRS} )
+
+# Building effects
+
+add_custom_command(
+    TARGET gfw_runtime-tests
+    POST_BUILD
+    COMMAND gfw_fxc -o "${GFW_RUNTIME_TESTS_BINARY_DIR}/draw.fxc" -fx "${GFW_RUNTIME_TESTS_SOURCE_DIR}/draw.fx"
+    COMMENT Building draw.fx )

@@ -193,15 +193,7 @@ TEST_F(GfwTests, DrawScreenQuad)
 
 TEST_F(GfwTests, Reflect)
 {
-    IEffectRef effect = mFactory->CreateEffect(TESTS_SOURCE_DIR "reflect.fx");
-
-    IShaderReflectionRef vsReflect = effect->GetShader(SHADER_STAGE_VERTEX)->GetReflection();
-    const ShaderDesc & shaderDesc = vsReflect->GetDesc();
-
-    ASSERT_EQ(shaderDesc.variableCount, 8);
-    ASSERT_EQ(shaderDesc.bufferCount, 2);
-    ASSERT_EQ(shaderDesc.resourceCount, 2);
-    ASSERT_EQ(shaderDesc.inputsCount, 3);
+    IEffectRef effect = mFactory->CreateEffect( "draw.fxc" );
 }
 
 struct Vertex

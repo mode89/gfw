@@ -1,25 +1,19 @@
-#version 120
 
-#if defined(GFW_SHADER_STAGE_VERTEX)
+float4 VS( float4 pos : POSITION ) : SV_POSITION
+{
+    return pos;
+}
 
-    attribute vec2 POSITION0;
-    attribute vec3 COLOR0;
+float4 PS() : SV_TARGET
+{
+    return float4(1.0f, 0.0f, 0.0f, 1.0f);
+}
 
-    varying   vec4 out_color;
-
-    void main()
+technique Draw
+{
+    pass P0
     {
-        gl_Position = vec4(POSITION0, 0.0f, 1.0f);
-        out_color   = vec4(COLOR0, 1.0f);
+        SetVertexShader( CompileShader( vs_4_0, VS() ) );
+        SetPixelShader( CompileShader( ps_4_0, PS() ) );
     }
-
-#elif defined(GFW_SHADER_STAGE_PIXEL)
-
-    varying vec4 out_color;
-
-    void main()
-    {
-        gl_FragColor = out_color;
-    }
-
-#endif
+}
