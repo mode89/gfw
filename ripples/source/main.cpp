@@ -59,8 +59,8 @@ int main()
 
     // Initialize geometry
 
-    AutoPointer<Vertex> u = new Vertex [nodeCnt];
-    AutoPointer<float> du_dt = new float [nodeCnt];
+    AutoArray<Vertex> u = new Vertex [nodeCnt];
+    AutoArray<float> du_dt = new float [nodeCnt];
     for (uint32_t j = 0; j < yNodeDim; ++ j)
     {
         uint32_t offset = j * xNodeDim;
@@ -85,7 +85,7 @@ int main()
     IBufferRef vertexBuffer = device->CreateBuffer(vertexBufferDesc, u);
 
     uint32_t indexCount = (xNodeDim - 1) * (yNodeDim - 1) * 2 * 3;
-    AutoPointer<uint16_t> indexBufferData = new uint16_t [indexCount];
+    AutoArray<uint16_t> indexBufferData = new uint16_t [indexCount];
     for (uint32_t j = 0; j < (yNodeDim - 1); ++ j)
     {
         for (uint32_t i = 0; i < (xNodeDim - 1); ++ i)

@@ -144,18 +144,18 @@ namespace Common {
 
     // Encapsulates a pointer with ref counting
     template <typename T>
-    class Pointer : public ARefCounted
+    class ArrayPointer : public ARefCounted
     {
     public:
-        Pointer()
+        ArrayPointer()
             : mData(NULL)
         {}
 
-        Pointer(T * data)
+        ArrayPointer(T * data)
             : mData(data)
         {}
 
-        ~Pointer()
+        ~ArrayPointer()
         {
             delete [] mData;
         }
@@ -164,23 +164,23 @@ namespace Common {
         T * mData;
 
         template < typename Type >
-        friend class AutoPointer;
+        friend class AutoArray;
     };
 
-    // Wrapper for AutoRef<Pointer>
-#define AUTOREF AutoRef< Pointer< T > >
+    // Wrapper for AutoRef<ArrayPointer>
+#define AUTOREF AutoRef< ArrayPointer< T > >
     template < typename T >
-    class AutoPointer : public AUTOREF
+    class AutoArray : public AUTOREF
     {
     public:
         inline
-        AutoPointer()
+        AutoArray()
             : AUTOREF()
         {}
 
         inline
-        AutoPointer(T * object)
-            : AUTOREF(new Pointer<T>(object))
+        AutoArray(T * object)
+            : AUTOREF(new ArrayPointer<T>(object))
         {}
 
         inline T &

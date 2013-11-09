@@ -238,7 +238,7 @@ TEST_F(AutoRefTests, CastCtor)
 
 TEST_F(AutoRefTests, AutoPointerBracket)
 {
-    AutoPointer<uint32_t> autoPnt = new uint32_t [100];
+    AutoArray<uint32_t> autoPnt = new uint32_t [100];
 
     for (int i = 0; i < 100; ++ i)
     {
@@ -250,7 +250,7 @@ TEST_F(AutoRefTests, AutoPointerBracket)
 TEST_F( AutoRefTests, AutoPointerGetPointer )
 {
     uint32_t * data = new uint32_t [100];
-    AutoPointer<uint32_t> ptr = data;
+    AutoArray<uint32_t> ptr = data;
     ASSERT_TRUE( ptr.GetPointer() == data );
 }
 
@@ -259,7 +259,7 @@ TEST_F(AutoRefTests, ArrayOfRefs)
     IObjectRef * objRefArray = new IObjectRef [100];
     delete [] objRefArray;
 
-    AutoPointer<IObjectRef> objRefAutoArray = new IObjectRef [1000];
+    AutoArray<IObjectRef> objRefAutoArray = new IObjectRef [1000];
 }
 
 TEST_F(AutoRefTests, CompareRefs)

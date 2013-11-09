@@ -220,7 +220,7 @@ TEST_F(GfwTests, CreateMesh)
 
     // Create vertex buffer
 
-    AutoPointer<Vertex> vertices = new Vertex [vertCnt];
+    AutoArray<Vertex> vertices = new Vertex [vertCnt];
     for (uint32_t j = 0; j < yVertCnt; ++ j)
     {
         uint32_t offset = j * xVertCnt;
@@ -245,7 +245,7 @@ TEST_F(GfwTests, CreateMesh)
     // Create index buffer
 
     uint32_t indexCount = xSegments * ySegments * 2 * 3;
-    AutoPointer<uint32_t> indices = new uint32_t [indexCount];
+    AutoArray<uint32_t> indices = new uint32_t [indexCount];
     for (uint32_t j = 0; j < ySegments; ++ j)
     {
         for (uint32_t i = 0; i < xSegments; ++ i)
@@ -321,7 +321,7 @@ TEST_F(GfwTests, MapBuffer)
     static const uint32_t kDataCount = 100;
 
     // Allocate system copy of the buffer data
-    AutoPointer<uint32_t> data = new uint32_t [kDataCount];
+    AutoArray<uint32_t> data = new uint32_t [kDataCount];
 
     uint32_t bufferSize = sizeof(uint32_t) * kDataCount;
 
@@ -367,7 +367,7 @@ TEST_F(GfwTests, UpdateBuffer)
     static const uint32_t kDataCount = 100;
 
     // Allocate system copy of the buffer data
-    AutoPointer<uint32_t> data = new uint32_t [kDataCount];
+    AutoArray<uint32_t> data = new uint32_t [kDataCount];
 
     uint32_t bufferSize = sizeof(uint32_t) * kDataCount;
 

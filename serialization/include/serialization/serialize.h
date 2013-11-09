@@ -30,9 +30,9 @@ namespace Serialization {
     }
 
     template < class Archive, class T > void
-    Serialize( Archive & archive, AutoPointer<T> & ptr, uint32_t size )
+    Serialize( Archive & archive, AutoArray<T> & ptr, uint32_t size )
     {
-        archive.SerializeAutoPointer( ptr, size );
+        archive.SerializeAutoArray( ptr, size );
     }
 
     template < class Archive > void

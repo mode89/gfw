@@ -24,8 +24,8 @@ namespace GFW {
 
     class EffectBinary : public Common::ARefCounted
     {
-        typedef Common::AutoPointer< TechniqueBinaryRef > TechniqueBinaryVec;
-        typedef Common::AutoPointer< ShaderBinaryRef > ShaderBinaryVec;
+        typedef Common::AutoArray< TechniqueBinaryRef > TechniqueBinaryVec;
+        typedef Common::AutoArray< ShaderBinaryRef > ShaderBinaryVec;
     public:
         EffectDesc          mDesc;
 

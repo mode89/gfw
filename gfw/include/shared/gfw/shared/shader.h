@@ -23,7 +23,7 @@ namespace GFW {
 
     class ShaderBinary : public Common::ARefCounted
     {
-        typedef Common::AutoPointer<uint8_t> ByteArray;
+        typedef Common::AutoArray<uint8_t> ByteArray;
     public:
         ShaderDesc  mDesc;
         uint32_t    mSize;  // Size if the data

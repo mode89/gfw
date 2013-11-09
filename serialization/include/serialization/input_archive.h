@@ -63,7 +63,7 @@ namespace Serialization {
         }
 
         template < class T > void
-        SerializeAutoPointer( AutoPointer<T> & autoPtr, uint32_t size )
+        SerializeAutoArray( AutoArray<T> & autoPtr, uint32_t size )
         {
             T * ptr = NULL;
             SerializePointer( ptr, size );

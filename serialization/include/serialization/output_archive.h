@@ -72,7 +72,7 @@ namespace Serialization {
         }
 
         template < class T > void
-        SerializeAutoPointer( AutoPointer<T> & autoPtr, uint32_t size )
+        SerializeAutoArray( AutoArray<T> & autoPtr, uint32_t size )
         {
             SerializePointer( autoPtr.GetPointer(), size );
         }
