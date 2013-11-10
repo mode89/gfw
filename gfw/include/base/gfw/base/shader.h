@@ -10,9 +10,6 @@ namespace GFW {
     class IShader: public IDeviceChild
     {
     public:
-        virtual ShaderStage
-        GetStage() = 0;
-
         virtual IShaderReflectionRef
         GetReflection() = 0;
     };

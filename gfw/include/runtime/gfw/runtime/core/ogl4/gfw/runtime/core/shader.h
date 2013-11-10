@@ -10,9 +10,6 @@ namespace GFW {
     class Shader: public ADeviceChild<IShader>
     {
     public:
-        virtual ShaderStage
-        GetStage() { return mStage; }
-
         virtual IShaderReflectionRef
         GetReflection() { return mReflection; }
 
@@ -27,11 +24,10 @@ namespace GFW {
         GetHandle() { return mHandle; }
 
     public:
-        Shader(const char * source, ShaderStage stage, IDeviceRef);
+        Shader( ShaderBinaryRef, IDeviceRef );
         ~Shader();
 
     private:
-        const ShaderStage       mStage;
         uint32_t                mHandle;
         uint32_t                mHash;
         ShaderReflectionRef     mReflection;
