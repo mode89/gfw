@@ -34,18 +34,18 @@ namespace Serialization {
         }
 
         template < class T > void
-        SerializePointer( T* & ptr, uint32_t size )
+        SerializePointer( T* & ptr, uint32_t size = 0 ) // If size > 0 then allocate an array, otherwise - single object
         {
             uint32_t ptrIndex = static_cast<uint32_t>( -1 );
             SerializeSimpleType( &ptrIndex, 1 );
 
             if ( ptrIndex == static_cast<uint32_t>( -1 ) )
             {
-                ptr = new T [size];
+                ptr = size ? new T [size] : new T; // If size > 0 then treat as an array
 
                 mPointerIndex.push_back( ptr );
 
-                Serialize( *this, ptr, size );
+                Serialize( *this, ptr, size ? size : 1 );
             }
             else
             {
@@ -58,7 +58,7 @@ namespace Serialization {
         SerializeAutoRef( AutoRef<T> & autoRef )
         {
             T * ptr = NULL;
-            SerializePointer( ptr, 1 );
+            SerializePointer( ptr );
             autoRef = ptr;
         }
 
