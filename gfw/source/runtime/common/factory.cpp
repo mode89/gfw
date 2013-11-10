@@ -62,9 +62,7 @@ namespace GFW {
         EffectBinaryRef effectBinary;
         archive & CreateNamedValue( "", effectBinary );
 
-        TRACE_FAIL_MSG( "Not yet implemented" );
-
-        return NULL;
+        return new Effect( effectBinary, mDevice );
     }
 
     IMeshBuilderRef Factory::CreateMeshBuilder()

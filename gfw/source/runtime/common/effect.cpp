@@ -4,16 +4,27 @@
 
 #include "gfw/runtime/common/effect.h"
 #include "gfw/runtime/common/device_child.inl"
+#include "gfw/runtime/common/technique.h"
 
 namespace GFW {
 
-    Effect::Effect(IShaderRef shaders[], IDeviceIn device)
+    Effect::Effect( EffectBinaryRef effectBinary, IDeviceIn device)
         : ADeviceChild(device)
+        , mDesc( effectBinary->mDesc )
     {
-        for ( uint32_t stage = 0; stage < ShaderStage::COUNT; ++ stage )
+        mShaders.reserve( effectBinary->mShaderCount );
+        for ( uint32_t i = 0; i < effectBinary->mShaderCount; ++ i )
         {
-            TRACE_ASSERT( shaders[stage]->GetStage() == stage );
-            mShaders[stage] = shaders[stage];
+            ShaderBinaryRef shaderBin = effectBinary->mShaders[i];
+            ShaderStage stage = static_cast<ShaderStage>( shaderBin->mDesc.stage );
+            mShaders.push_back( device->CreateShader( stage, shaderBin ) );
+        }
+
+        mTechniques.reserve( mDesc.techniqueCount );
+        for ( uint32_t i = 0; i < mDesc.techniqueCount; ++ i )
+        {
+            TechniqueBinaryRef techBin = effectBinary->mTechniques[i];
+            mTechniques.push_back( new Technique( techBin ) );
         }
     }
 
@@ -22,15 +33,18 @@ namespace GFW {
 
     }
 
-    void Effect::Dispatch()
+    void Effect::Dispatch( uint32_t tech /* = 0 */, uint32_t pass /* = 0 */ )
     {
         IContextRef context = mDevice->GetCurrentContext();
         TRACE_ASSERT(context.IsAttached());
 
-        for (int stage = 0; stage < ShaderStage::COUNT; ++ stage)
-        {
-            context->SetShader( static_cast<ShaderStage>( stage ), mShaders[stage]);
-        }
+        TRACE_FAIL_MSG( "Not yet implemented" );
+    }
+
+    IShaderRef Effect::GetShader( ShaderStage stage, uint32_t tech /* = 0 */, uint32_t pass /* = 0 */ )
+    {
+        TRACE_FAIL_MSG( "Not yet implmented" );
+        return NULL;
     }
 
 } // namespace GFW

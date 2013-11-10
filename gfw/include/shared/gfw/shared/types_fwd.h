@@ -5,6 +5,14 @@
 
 namespace GFW {
 
+    AUTOREF_FORWARD_DECLARATION( EffectBinary );
+    AUTOREF_FORWARD_DECLARATION( PassBinary );
+    AUTOREF_FORWARD_DECLARATION( ShaderBinary );
+    AUTOREF_FORWARD_DECLARATION( TechniqueBinary );
+
+    struct EffectDesc;
+    struct ShaderDesc;
+
     enum ShaderStage : int32_t;
 
 } // namespace GFW

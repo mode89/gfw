@@ -11,10 +11,10 @@ namespace GFW {
     {
     public:
         virtual void
-        Dispatch() = 0;
+        Dispatch( uint32_t tech = 0, uint32_t pass = 0 ) = 0;
 
         virtual IShaderRef
-        GetShader(ShaderStage) = 0;
+        GetShader( ShaderStage, uint32_t tech = 0, uint32_t pass = 0 ) = 0;
 
         virtual
         ~IEffect() {}
