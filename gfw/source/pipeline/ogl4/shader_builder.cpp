@@ -71,10 +71,33 @@ namespace GFW {
 
     ShaderBinaryRef ShaderBuilder::Compile( const char * shaderName, const char * profile )
     {
+        // Translate the profile
+
+        ShaderStage stage;
+        if ( strcmp( profile, "vs_4_0" ) == 0 )
+        {
+            stage = ShaderStage::VERTEX;
+        }
+        else if ( strcmp( profile, "ps_4_0" ) == 0 )
+        {
+            stage = ShaderStage::PIXEL;
+        }
+        else
+        {
+            stage = ShaderStage::UNKNOWN;
+        }
+
         // Construct the shader's code
 
         std::stringstream source;
-        source << "#version 430 core\n\n";
+
+        source  << "#version 430 core"
+                << std::endl
+                << std::endl
+                << "#define float4  vec4"
+                << std::endl
+                << std::endl;
+
         ConstructSourceVisitor constructSource( source );
         mParseTree->TraverseDFS( constructSource );
 
@@ -91,7 +114,7 @@ namespace GFW {
             const ParseTree * arg = entryPoint.args[i];
             source << "in ";
             source << arg->GetChild( 0 )->ToString();
-            source << " __in";
+            source << " _in_";
             source << i;
             source << "; // ";
             source << arg->GetChild( 1 )->ToString();
@@ -106,6 +129,15 @@ namespace GFW {
             source << std::endl;
         }
         source << std::endl;
+
+        // Output parameters
+
+        if ( stage == ShaderStage::VERTEX )
+        {
+            source  << "out gl_PerVertex {" << std::endl
+                    << "    vec4 gl_Position;" << std::endl
+                    << "};" << std::endl << std::endl;
+        }
 
         // main()
 
@@ -127,7 +159,7 @@ namespace GFW {
                 for ( uint32_t i = 0; i < entryPoint.args.size(); ++ i )
                 {
                     if ( i != 0 ) source << ", ";
-                    source << "__in";
+                    source << "_in_";
                     source << i;
                 }
                 source << ' ';
@@ -159,7 +191,8 @@ namespace GFW {
 
         ShaderBinaryRef shaderBinary = new ShaderBinary;
 
-        shaderBinary->mDesc.inputCount = entryPoint.args.size();
+        shaderBinary->mDesc.stage       = stage;
+        shaderBinary->mDesc.inputsCount = entryPoint.args.size();
 
         uint32_t sourceSize = source.str().size() + 1; // + 1 for null-terminator
         shaderBinary->mSize = sourceSize;

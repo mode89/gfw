@@ -139,11 +139,11 @@ namespace GFW {
         return new Context(mDrawingContext, this);
     }
 
-    IShaderRef Device::CreateShader( ShaderStage stage, const void * shaderData )
+    IShaderRef Device::CreateShader( ShaderStage stage, ShaderBinaryRef binary )
     {
         AUTO_LOCK_CONTEXT;
 
-        return new Shader(static_cast<const char*>(shaderData), stage, this);
+        return new Shader( binary, this );
     }
 
     IInputLayoutRef Device::CreateInputLayout(uint32_t attrCnt, VertexAttribute attrs[], IShaderIn shader)

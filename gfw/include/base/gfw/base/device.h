@@ -14,7 +14,7 @@ namespace GFW {
         CreateContext() = 0;
 
         virtual IShaderRef
-        CreateShader(ShaderStage stage, const void * shaderData) = 0;
+        CreateShader( ShaderStage stage, ShaderBinaryRef ) = 0;
 
         virtual IInputLayoutRef
         CreateInputLayout(uint32_t attrCnt, VertexAttribute[], IShaderIn vertexShader) = 0;

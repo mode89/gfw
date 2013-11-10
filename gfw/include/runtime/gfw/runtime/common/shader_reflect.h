@@ -5,6 +5,7 @@
 #include "gfw/base/types_fwd.h"
 #include "gfw/runtime/common/device_child.h"
 #include "gfw/shared/shader_reflect.h"
+#include "gfw/shared/shader.h"
 
 #include <unordered_map>
 #include <vector>
