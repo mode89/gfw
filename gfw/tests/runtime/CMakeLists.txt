@@ -3,7 +3,14 @@ cmake_minimum_required( VERSION 2.8 )
 
 add_definitions( -DTESTS_SOURCE_DIR="${GFW_RUNTIME_TESTS_SOURCE_DIR}/" )
 
-file( GLOB GFW_RUNTIME_TESTS_SOURCE_FILES *.cpp )
+file( GLOB TEMP_LIST *.fx )
+source_group( "fx" FILES ${TEMP_LIST} )
+list( APPEND GFW_RUNTIME_TESTS_SOURCE_FILES ${TEMP_LIST} )
+
+file( GLOB TEMP_LIST *.cpp )
+source_group( "source" FILES ${TEMP_LIST} )
+list( APPEND GFW_RUNTIME_TESTS_SOURCE_FILES ${TEMP_LIST} )
+
 add_executable( gfw_runtime-tests ${GFW_RUNTIME_TESTS_SOURCE_FILES} )
 include_directories( ${GFW_ROOT}/include/base ${GFW_ROOT}/include/shared )
 
