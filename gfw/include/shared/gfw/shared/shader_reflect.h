@@ -7,21 +7,6 @@
 
 namespace GFW {
 
-    struct ShaderDesc
-    {
-        uint32_t    variableCount;
-        uint32_t    bufferCount;
-        uint32_t    resourceCount;
-        uint32_t    inputsCount;
-
-        ShaderDesc()
-            : variableCount(0)
-            , bufferCount(0)
-            , resourceCount(0)
-            , inputsCount(0)
-        {}
-    };
-
     enum ShaderVariableType
     {
         SHADER_VAR_TYPE_UNKNOWN = 0,

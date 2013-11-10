@@ -2,22 +2,35 @@
 #define __GFW_SHARED_SHADER_H__
 
 #include "common/autoref.h"
+#include "gfw/shared/shader_stage.h"
 #include "serialization/named_value.h"
 
 namespace GFW {
 
     struct ShaderDesc
     {
-        uint32_t    inputCount;
+        uint32_t    stage;
+        uint32_t    variableCount;
+        uint32_t    bufferCount;
+        uint32_t    resourceCount;
+        uint32_t    inputsCount;
 
         ShaderDesc()
-            : inputCount( 0 )
+            : stage( ShaderStage::UNKNOWN )
+            , variableCount(0)
+            , bufferCount(0)
+            , resourceCount(0)
+            , inputsCount(0)
         {}
 
         template < class Archive > void
         Serialize( Archive & archive )
         {
-            archive & NAMED_VALUE( inputCount );
+            archive & NAMED_VALUE( stage );
+            archive & NAMED_VALUE( variableCount );
+            archive & NAMED_VALUE( bufferCount );
+            archive & NAMED_VALUE( resourceCount );
+            archive & NAMED_VALUE( inputsCount );
         }
     };
 
