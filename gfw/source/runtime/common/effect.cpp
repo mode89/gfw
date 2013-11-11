@@ -8,7 +8,7 @@
 
 namespace GFW {
 
-    Effect::Effect( EffectBinaryRef effectBinary, IDeviceIn device)
+    Effect::Effect( EffectBinaryRef effectBinary, IDeviceIn device )
         : ADeviceChild(device)
         , mDesc( effectBinary->mDesc )
     {
@@ -24,7 +24,9 @@ namespace GFW {
         for ( uint32_t i = 0; i < mDesc.techniqueCount; ++ i )
         {
             TechniqueBinaryRef techBin = effectBinary->mTechniques[i];
-            mTechniques.push_back( new Technique( techBin ) );
+            ITechniqueRef tech = new Technique( techBin );
+            mTechniques.push_back( tech );
+            //mTechniqueMap[ techBin->mName.GetString() ] = tech;
         }
     }
 
@@ -39,6 +41,13 @@ namespace GFW {
         TRACE_ASSERT(context.IsAttached());
 
         TRACE_FAIL_MSG( "Not yet implemented" );
+    }
+
+    ITechniqueRef Effect::GetTechnique( const char * techName )
+    {
+        TechniqueMap::iterator it = mTechniqueMap.find( techName );
+        TRACE_ASSERT( it != mTechniqueMap.end() );
+        return it->second;
     }
 
     IShaderRef Effect::GetShader( ShaderStage stage, uint32_t tech /* = 0 */, uint32_t pass /* = 0 */ )

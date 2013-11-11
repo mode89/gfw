@@ -169,7 +169,8 @@ TEST_F(GfwTests, DrawIndexed)
 
 TEST_F(GfwTests, DrawScreenQuad)
 {
-    IEffectRef effect = mFactory->CreateEffect(TESTS_SOURCE_DIR "draw_red.fx");
+    IEffectRef effect = mFactory->CreateEffect( "draw.fxc" );
+    ITechniqueRef tech = effect->GetTechnique( "Draw" );
 
     for (int i = 0; i < 60; ++ i)
     {

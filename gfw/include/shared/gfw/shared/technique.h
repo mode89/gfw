@@ -28,14 +28,15 @@ namespace GFW {
     public:
         typedef std::vector< PassBinaryRef > PassBinaryVec;
 
-        TechniqueDesc           mDesc;
-        Common::InternedString  mName;
-        PassBinaryVec           mPasses;
+        TechniqueDesc                   mDesc;
+        Common::InternedStringBinary    mName;
+        PassBinaryVec                   mPasses;
 
         template < class Archive > void
         Serialize( Archive & archive )
         {
             archive & NAMED_VALUE( mDesc );
+            archive & NAMED_VALUE( mName );
         }
     };
     AUTOREF_REFERENCE_DECLARATION( TechniqueBinary );

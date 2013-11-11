@@ -13,6 +13,9 @@ namespace GFW {
         virtual void
         Dispatch( uint32_t tech = 0, uint32_t pass = 0 ) = 0;
 
+        virtual ITechniqueRef
+        GetTechnique( const char * techName ) = 0;
+
         virtual IShaderRef
         GetShader( ShaderStage, uint32_t tech = 0, uint32_t pass = 0 ) = 0;
 

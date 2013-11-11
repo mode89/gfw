@@ -7,6 +7,8 @@
 #include "gfw/runtime/common/device_child.h"
 #include "gfw/shared/effect.h"
 
+#include <string>
+#include <unordered_map>
 #include <vector>
 
 namespace GFW {
@@ -16,6 +18,9 @@ namespace GFW {
     public:
         virtual void
         Dispatch( uint32_t tech = 0, uint32_t pass = 0 );
+
+        virtual ITechniqueRef
+        GetTechnique( const char * techName );
 
         virtual IShaderRef
         GetShader( ShaderStage stage, uint32_t tech = 0, uint32_t pass = 0 );
@@ -27,10 +32,14 @@ namespace GFW {
     private:
         typedef std::vector< ITechniqueRef > TechniqueVec;
         typedef std::vector< IShaderRef > ShaderVec;
+        typedef std::unordered_map< std::string, ITechniqueRef > TechniqueMap;
 
         EffectDesc      mDesc;
+
         TechniqueVec    mTechniques;
         ShaderVec       mShaders;
+
+        TechniqueMap    mTechniqueMap;
     };
     AUTOREF_REFERENCE_DECLARATION(Effect);
 
