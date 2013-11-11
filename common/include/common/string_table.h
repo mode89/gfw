@@ -2,6 +2,7 @@
 #define __COMMON_STRING_TABLE_H__
 
 #include "common/autoref.h"
+#include "serialization/named_value.h"
 
 #include <unordered_map>
 
@@ -11,10 +12,10 @@ namespace Common {
     {
     public:
         const char *
-        GetString() { return mString; }
+        GetString() const { return mString; }
 
         uint32_t
-        GetHash() { return mHash; }
+        GetHash() const { return mHash; }
 
     public:
         InternedString()
@@ -32,11 +33,39 @@ namespace Common {
         uint32_t        mHash;
     };
 
+    class InternedStringBinary
+    {
+    public:
+        uint32_t
+        GetHash() const { return mHash; }
+
+    public:
+        InternedStringBinary()
+            : mHash( 0 )
+        {}
+
+        InternedStringBinary( const InternedString & string )
+            : mHash( string.GetHash() )
+        {}
+
+        template < class Archive > void
+        Serialize( Archive & archive )
+        {
+            archive & NAMED_VALUE( mHash );
+        }
+
+    private:
+        uint32_t    mHash;
+    };
+
     class StringTable : public Common::ARefCounted
     {
     public:
         InternedString
         Resolve( const char * name );
+
+        InternedString
+        Resolve( const InternedStringBinary & string );
 
     public:
         StringTable();
