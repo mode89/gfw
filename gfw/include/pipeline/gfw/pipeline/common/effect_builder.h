@@ -36,7 +36,7 @@ namespace GFW {
         typedef std::vector< ShaderBinaryRef >    ShaderBinaryVec;
         typedef std::vector< TechniqueBinaryRef > TechniqueBinaryVec;
 
-        Common::StringTable     mStringTable;
+        Common::StringTableRef  mStringTable;
 
         IShaderBuilderRef       mShaderBuilder;
 

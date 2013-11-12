@@ -24,6 +24,8 @@ namespace GFW {
 
         EffectBinaryRef fxBin = new EffectBinary;
 
+        mStringTable = new StringTable;
+
         // Process techniques
 
         tree->TraverseDFS( *this, &EffectBuilder::ProcessTechniques );
@@ -46,6 +48,9 @@ namespace GFW {
             fxBin->mShaders[i] = mShaders[i];
         }
 
+        fxBin->mStringTable = new StringTableBinary( mStringTable );
+        mStringTable.Detach();
+
         return fxBin;
     }
 
@@ -56,7 +61,7 @@ namespace GFW {
             const ParseTree * child = tree->GetChild();
             if ( child->GetTokenType() == TOKEN_TECHNIQUE_DEFINITION )
             {
-                InternedString name = mStringTable.Resolve( child->GetChild()->ToString() );
+                InternedString name = mStringTable->Resolve( child->GetChild()->ToString() );
 
                 TechniqueBinaryRef techBin = new TechniqueBinary;
                 techBin->mName = name;
@@ -76,7 +81,7 @@ namespace GFW {
     {
         if ( tree->GetTokenType() == TOKEN_PASS_DEFINITION )
         {
-            InternedString name = mStringTable.Resolve( tree->GetChild()->ToString() );
+            InternedString name = mStringTable->Resolve( tree->GetChild()->ToString() );
 
             PassBinaryRef passBin = new PassBinary;
             passBin->mName = name;
@@ -100,8 +105,8 @@ namespace GFW {
             InternedString profile;
             if ( shader->GetTokenType() == TOKEN_COMPILE_SHADER )
             {
-                name = mStringTable.Resolve( shader->GetChild( 1 )->ToString() );
-                profile = mStringTable.Resolve( shader->GetChild( 0 )->ToString() );
+                name = mStringTable->Resolve( shader->GetChild( 1 )->ToString() );
+                profile = mStringTable->Resolve( shader->GetChild( 0 )->ToString() );
             }
             else
             {

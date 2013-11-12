@@ -26,13 +26,16 @@ namespace GFW {
     {
         typedef Common::AutoArray< TechniqueBinaryRef > TechniqueBinaryVec;
         typedef Common::AutoArray< ShaderBinaryRef > ShaderBinaryVec;
+
     public:
-        EffectDesc          mDesc;
+        EffectDesc                      mDesc;
 
-        TechniqueBinaryVec  mTechniques;
+        TechniqueBinaryVec              mTechniques;
 
-        uint32_t            mShaderCount;
-        ShaderBinaryVec     mShaders;
+        uint32_t                        mShaderCount;
+        ShaderBinaryVec                 mShaders;
+
+        Common::StringTableBinaryRef    mStringTable;
 
         template < class Archive > void
         Serialize( Archive & archive )
@@ -41,6 +44,7 @@ namespace GFW {
             archive & NAMED_ARRAY( mTechniques, mDesc.techniqueCount );
             archive & NAMED_VALUE( mShaderCount );
             archive & NAMED_ARRAY( mShaders, mShaderCount );
+            archive & NAMED_VALUE( mStringTable );
         }
     };
     AUTOREF_REFERENCE_DECLARATION(EffectBinary);

@@ -78,7 +78,7 @@ int main( int argc, const char * argv[] )
     std::ofstream fileStream( outputFile, std::ios_base::out | std::ios_base::binary );
     {
         OutputArchive< std::ofstream > archive( fileStream );
-        archive & CreateNamedValue( "effect-binary", effectBinary );
+        archive & CreateNamedValue( "EffectBinary", effectBinary );
     }
     fileStream.close();
 
