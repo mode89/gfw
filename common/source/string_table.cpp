@@ -55,4 +55,32 @@ namespace Common {
         return InternedString( retVal, hash );
     }
 
+    StringTableBinary::StringTableBinary()
+        : mStringListSize( 0 )
+        , mStringList( NULL )
+    {}
+
+    StringTableBinary::StringTableBinary( StringTableRef stringTable )
+        : mStringListSize( 0 )
+        , mStringList( NULL )
+    {
+        StringTable::StringMap & map = stringTable->mMap;
+
+        // Calculate string list size
+        mStringListSize = 0;
+        for ( StringTable::StringMap::iterator it = map.begin(); it != map.end(); ++ it )
+        {
+            mStringListSize += ( strlen( it->second ) + 1 );
+        }
+
+        // Construct the string list
+        mStringList = new uint8_t [ mStringListSize ];
+        uint8_t * ptr = mStringList;
+        for ( StringTable::StringMap::iterator it = map.begin(); it != map.end(); ++ it )
+        {
+            strcpy( reinterpret_cast<char*>( ptr ), it->second );
+            ptr += ( strlen( it->second ) + 1 );
+        }
+    }
+
 } // namespace Common

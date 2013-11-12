@@ -75,8 +75,31 @@ namespace Common {
         typedef std::unordered_map < uint32_t, char * >  StringMap;
 
         StringMap   mMap;
+
+        friend class StringTableBinary;
     };
-    AUTOREF_REFERENCE_DECLARATION(StringTable);
+    AUTOREF_REFERENCE_DECLARATION( StringTable );
+
+    class StringTableBinary : public Common::ARefCounted
+    {
+    public:
+        StringTableBinary();
+        StringTableBinary( StringTableRef );
+
+        template < class Archive > void
+        Serialize( Archive & archive )
+        {
+            archive & NAMED_VALUE( mStringListSize );
+            archive & NAMED_ARRAY( mStringList, mStringListSize );
+        }
+
+    private:
+        typedef Common::AutoArray< uint8_t > ByteArray;
+
+        ByteArray   mStringList;
+        uint32_t    mStringListSize;
+    };
+    AUTOREF_REFERENCE_DECLARATION( StringTableBinary );
 
 } // namespace Common
 
