@@ -19,7 +19,8 @@ namespace Serialization {
         OutputArchive( Stream & stream )
             : mStream( stream )
         {
-
+            // Define a NULL pointer
+            mPointerIndex[ NULL ] = 0;
         }
 
         ~OutputArchive()

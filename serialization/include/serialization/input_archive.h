@@ -13,7 +13,10 @@ namespace Serialization {
     public:
         InputArchive( Stream & stream )
             : mStream( stream )
-        {}
+        {
+            // Define a NULL pointer
+            mPointerIndex.push_back( NULL );
+        }
 
         template < class T > void
         operator & ( const NamedValue<T> & value )
