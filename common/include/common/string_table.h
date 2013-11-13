@@ -58,6 +58,8 @@ namespace Common {
         uint32_t    mHash;
     };
 
+    AUTOREF_FORWARD_DECLARATION( StringTableBinary );
+
     class StringTable : public Common::ARefCounted
     {
     public:
@@ -66,6 +68,11 @@ namespace Common {
 
         InternedString
         Resolve( const InternedStringBinary & string );
+
+        void
+        Resolve( StringTableBinaryRef );
+
+        operator StringTableBinaryRef();
 
     public:
         StringTable();
@@ -83,8 +90,10 @@ namespace Common {
     class StringTableBinary : public Common::ARefCounted
     {
     public:
-        StringTableBinary();
-        StringTableBinary( StringTableRef );
+        typedef Common::AutoArray< uint8_t > ByteArray;
+
+        ByteArray   mStringList;
+        uint32_t    mStringListSize;
 
         template < class Archive > void
         Serialize( Archive & archive )
@@ -92,12 +101,6 @@ namespace Common {
             archive & NAMED_VALUE( mStringListSize );
             archive & NAMED_ARRAY( mStringList, mStringListSize );
         }
-
-    private:
-        typedef Common::AutoArray< uint8_t > ByteArray;
-
-        ByteArray   mStringList;
-        uint32_t    mStringListSize;
     };
     AUTOREF_REFERENCE_DECLARATION( StringTableBinary );
 

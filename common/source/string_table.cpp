@@ -55,32 +55,43 @@ namespace Common {
         return InternedString( retVal, hash );
     }
 
-    StringTableBinary::StringTableBinary()
-        : mStringListSize( 0 )
-        , mStringList( NULL )
-    {}
-
-    StringTableBinary::StringTableBinary( StringTableRef stringTable )
-        : mStringListSize( 0 )
-        , mStringList( NULL )
+    void StringTable::Resolve( StringTableBinaryRef bin )
     {
-        StringTable::StringMap & map = stringTable->mMap;
-
-        // Calculate string list size
-        mStringListSize = 0;
-        for ( StringTable::StringMap::iterator it = map.begin(); it != map.end(); ++ it )
+        const uint8_t * stringListEnd = bin->mStringList + bin->mStringListSize;
+        const uint8_t * string = bin->mStringList;
+        while ( string != stringListEnd )
         {
-            mStringListSize += ( strlen( it->second ) + 1 );
+            Resolve( reinterpret_cast<const char*>( string ) );
+
+            // Advance to the next string
+            while ( *string ) string ++;
+            string ++;
+        }
+    }
+
+    StringTable::operator StringTableBinaryRef()
+    {
+        // Calculate string list size
+        uint32_t stringListSize = 0;
+        for ( StringTable::StringMap::iterator it = mMap.begin(); it != mMap.end(); ++ it )
+        {
+            stringListSize += ( strlen( it->second ) + 1 );
         }
 
         // Construct the string list
-        mStringList = new uint8_t [ mStringListSize ];
-        uint8_t * ptr = mStringList;
-        for ( StringTable::StringMap::iterator it = map.begin(); it != map.end(); ++ it )
+        uint8_t * stringList = new uint8_t [ stringListSize ];
+        uint8_t * ptr = stringList;
+        for ( StringTable::StringMap::iterator it = mMap.begin(); it != mMap.end(); ++ it )
         {
             strcpy( reinterpret_cast<char*>( ptr ), it->second );
             ptr += ( strlen( it->second ) + 1 );
         }
+
+        StringTableBinaryRef bin = new StringTableBinary;
+        bin->mStringList     = stringList;
+        bin->mStringListSize = stringListSize;
+
+        return bin;
     }
 
 } // namespace Common

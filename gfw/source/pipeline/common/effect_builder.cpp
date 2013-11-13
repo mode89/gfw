@@ -48,7 +48,7 @@ namespace GFW {
             fxBin->mShaders[i] = mShaders[i];
         }
 
-        fxBin->mStringTable = new StringTableBinary( mStringTable );
+        fxBin->mStringTable = *mStringTable;
         mStringTable.Detach();
 
         return fxBin;
