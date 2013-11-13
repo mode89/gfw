@@ -5,13 +5,19 @@
 #include "gfw/runtime/common/effect.h"
 #include "gfw/runtime/common/device_child.inl"
 #include "gfw/runtime/common/technique.h"
+#include "gfw/runtime/core/device.h"
 
 namespace GFW {
+
+    using namespace Common;
 
     Effect::Effect( EffectBinaryRef effectBinary, IDeviceIn device )
         : ADeviceChild(device)
         , mDesc( effectBinary->mDesc )
     {
+        StringTable & stringTable = device.StaticCast<Device>()->GetStringTable();
+        stringTable.Resolve( effectBinary->mStringTable );
+
         mShaders.reserve( effectBinary->mShaderCount );
         for ( uint32_t i = 0; i < effectBinary->mShaderCount; ++ i )
         {
@@ -25,8 +31,10 @@ namespace GFW {
         {
             TechniqueBinaryRef techBin = effectBinary->mTechniques[i];
             ITechniqueRef tech = new Technique( techBin );
+            InternedString name = stringTable.Resolve( techBin->mName );
+
             mTechniques.push_back( tech );
-            //mTechniqueMap[ techBin->mName.GetString() ] = tech;
+            mTechniqueMap[ name.GetString() ] = tech;
         }
     }
 
@@ -40,7 +48,7 @@ namespace GFW {
         IContextRef context = mDevice->GetCurrentContext();
         TRACE_ASSERT(context.IsAttached());
 
-        TRACE_FAIL_MSG( "Not yet implemented" );
+        mTechniques[ tech ]->Dispatch( pass );
     }
 
     ITechniqueRef Effect::GetTechnique( const char * techName )

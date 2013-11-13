@@ -35,11 +35,13 @@ namespace GFW {
     private:
         typedef std::vector< ShaderBinaryRef >    ShaderBinaryVec;
         typedef std::vector< TechniqueBinaryRef > TechniqueBinaryVec;
+        typedef std::vector< PassBinaryRef >      PassBinaryVec;
 
         Common::StringTableRef  mStringTable;
 
         IShaderBuilderRef       mShaderBuilder;
 
+        PassBinaryVec           mPasses;
         TechniqueBinaryVec      mTechniques;
         ShaderBinaryVec         mShaders;
     };

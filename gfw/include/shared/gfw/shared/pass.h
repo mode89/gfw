@@ -14,8 +14,15 @@ namespace GFW {
     class PassBinary : public Common::ARefCounted
     {
     public:
-        Common::InternedString  mName;
-        Common::InternedString  mShaders[ ShaderStage::COUNT ];
+        Common::InternedStringBinary    mName;
+        uint32_t                        mShaders[ ShaderStage::COUNT ];
+
+        template < class Archive > void
+        Serialize( Archive & archive )
+        {
+            archive & NAMED_VALUE( mName );
+            archive & NAMED_ARRAY( mShaders, ShaderStage::COUNT );
+        }
     };
     AUTOREF_REFERENCE_DECLARATION( PassBinary );
 

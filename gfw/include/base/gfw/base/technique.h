@@ -8,6 +8,9 @@ namespace GFW {
     class ITechnique : public Common::ARefCounted
     {
     public:
+        virtual void
+        Dispatch( uint32_t pass = 0 ) = 0;
+
         virtual
         ~ITechnique() {}
     };

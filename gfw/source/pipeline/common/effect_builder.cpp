@@ -68,9 +68,15 @@ namespace GFW {
 
                 mTechniques.push_back( techBin );
 
+                mPasses.clear();
                 child->TraverseDFS( *this, &EffectBuilder::ProcessPasses );
 
-                techBin->mDesc.passCount = techBin->mPasses.size();
+                techBin->mDesc.passCount = mPasses.size();
+                techBin->mPasses = new PassBinaryRef [ mPasses.size() ];
+                for ( PassBinaryVec::size_type i = 0; i < mPasses.size(); ++ i )
+                {
+                    techBin->mPasses[i] = mPasses[i];
+                }
             }
             return false;
         }
@@ -86,7 +92,7 @@ namespace GFW {
             PassBinaryRef passBin = new PassBinary;
             passBin->mName = name;
 
-            mTechniques.back()->mPasses.push_back( passBin );
+            mPasses.push_back( passBin );
 
             tree->TraverseDFS( *this, &EffectBuilder::ProcessShaders );
 
@@ -115,18 +121,19 @@ namespace GFW {
 
             ShaderBinaryRef shaderBin = mShaderBuilder->Compile( name.GetString(), profile.GetString() );
 
+            uint32_t shaderIndex = mShaders.size();
             mShaders.push_back( shaderBin );
 
-            PassBinaryRef pass = mTechniques.back()->mPasses.back();
+            PassBinaryRef pass = mPasses.back();
 
             const ParseTree * shaderType = tree->GetChild( 0 );
             switch ( shaderType->GetTokenType() )
             {
             case TOKEN_SET_VERTEX_SHADER:
-                pass->mShaders[ ShaderStage::VERTEX ] = name;
+                pass->mShaders[ ShaderStage::VERTEX ] = shaderIndex;
                 break;
             case TOKEN_SET_PIXEL_SHADER:
-                pass->mShaders[ ShaderStage::PIXEL ] = name;
+                pass->mShaders[ ShaderStage::PIXEL ] = shaderIndex;
                 break;
             default:
                 TRACE_FAIL();

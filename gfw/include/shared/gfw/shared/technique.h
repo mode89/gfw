@@ -26,7 +26,7 @@ namespace GFW {
     class TechniqueBinary : public Common::ARefCounted
     {
     public:
-        typedef std::vector< PassBinaryRef > PassBinaryVec;
+        typedef Common::AutoArray< PassBinaryRef > PassBinaryVec;
 
         TechniqueDesc                   mDesc;
         Common::InternedStringBinary    mName;
@@ -37,6 +37,7 @@ namespace GFW {
         {
             archive & NAMED_VALUE( mDesc );
             archive & NAMED_VALUE( mName );
+            archive & NAMED_ARRAY( mPasses, mDesc.passCount );
         }
     };
     AUTOREF_REFERENCE_DECLARATION( TechniqueBinary );
