@@ -10,8 +10,14 @@ namespace GFW {
     class IShader: public IDeviceChild
     {
     public:
+        virtual ShaderStage
+        GetStage() const = 0;
+
         virtual IShaderReflectionRef
         GetReflection() = 0;
+
+        virtual
+        ~IShader() {}
     };
     AUTOREF_REFERENCE_DECLARATION(IShader);
 

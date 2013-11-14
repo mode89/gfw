@@ -121,7 +121,7 @@ namespace GFW {
         TRACE_ASSERT( stage > ShaderStage::UNKNOWN );
         TRACE_ASSERT( stage < ShaderStage::COUNT );
         TRACE_ASSERT( shader.IsAttached() );
-        TRACE_ASSERT( stage == shader->GetReflection()->GetDesc().stage );
+        TRACE_ASSERT( stage == shader->GetStage() );
 
         mShaders[stage] = shader.StaticCast<Shader>();
     }

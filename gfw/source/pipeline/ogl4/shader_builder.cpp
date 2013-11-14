@@ -191,8 +191,8 @@ namespace GFW {
 
         ShaderBinaryRef shaderBinary = new ShaderBinary;
 
-        shaderBinary->mDesc.stage       = stage;
         shaderBinary->mDesc.inputsCount = entryPoint.args.size();
+        shaderBinary->mStage = stage;
 
         uint32_t sourceSize = source.str().size() + 1; // + 1 for null-terminator
         shaderBinary->mSize = sourceSize;

@@ -143,7 +143,7 @@ namespace GFW {
     {
         AUTO_LOCK_CONTEXT;
 
-        return new Shader( binary, this );
+        return new Shader( binary, stage, this );
     }
 
     IInputLayoutRef Device::CreateInputLayout(uint32_t attrCnt, VertexAttribute attrs[], IShaderIn shader)

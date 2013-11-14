@@ -14,12 +14,12 @@ namespace GFW {
 
     using namespace Common;
 
-    Shader::Shader( ShaderBinaryRef binary, IDeviceRef device )
+    Shader::Shader( ShaderBinaryRef binary, ShaderStage stage, IDeviceRef device )
         : ADeviceChild(device)
+        , mStage( stage )
         , mHandle(0)
         , mHash(0)
     {
-        ShaderStage stage = static_cast<ShaderStage>( binary->mDesc.stage );
         uint32_t shader = TRACE_ASSERT_GL( glCreateShader, GetOGLShaderType( stage ) );
         TRACE_ASSERT( shader != 0 );
 
