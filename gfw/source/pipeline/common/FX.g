@@ -31,6 +31,17 @@ translation_unit
 external_declaration
     : function_definition
     | technique_definition
+    | struct_definition
+    ;
+
+struct_definition
+    : T_STRUCT T_ID T_LCURLY struct_declaration_list T_RCURLY T_SEMI
+    ;
+
+struct_declaration_list
+    : (
+        ( scalar_type_specifier | vector_type_specifier ) T_ID semantic? T_SEMI
+      )+
     ;
 
 function_definition
