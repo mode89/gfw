@@ -16,12 +16,13 @@ namespace GFW {
         Dispatch( uint32_t pass = 0 );
 
     public:
-        Technique( TechniqueBinaryRef );
+        Technique( TechniqueBinaryRef, const Effect * );
         ~Technique();
 
     private:
         typedef std::vector< IPassRef > PassVec;
 
+        const Effect *  mEffect;
         TechniqueDesc   mDesc;
         PassVec         mPasses;
     };

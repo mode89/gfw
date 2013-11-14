@@ -8,6 +8,9 @@ namespace GFW {
     class IPass : public Common::ARefCounted
     {
     public:
+        virtual void
+        Dispatch() = 0;
+
         virtual
         ~IPass() {}
     };

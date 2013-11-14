@@ -4,14 +4,15 @@
 
 namespace GFW {
 
-    Technique::Technique( TechniqueBinaryRef binary )
-        : mDesc( binary->mDesc )
+    Technique::Technique( TechniqueBinaryRef binary, const Effect * effect )
+        : mEffect( effect )
+        , mDesc( binary->mDesc )
     {
         mPasses.reserve( mDesc.passCount );
         for ( uint32_t i = 0; i < mDesc.passCount; ++ i )
         {
             PassBinaryRef passBin = binary->mPasses[i];
-            PassRef pass = new Pass( passBin );
+            mPasses.push_back( new Pass( passBin, effect ) );
         }
     }
 
@@ -22,7 +23,7 @@ namespace GFW {
 
     void Technique::Dispatch( uint32_t pass /* = 0 */ )
     {
-
+        mPasses[ pass ]->Dispatch();
     }
 
 } // namespace GFW

@@ -40,6 +40,8 @@ namespace GFW {
         ShaderVec       mShaders;
 
         TechniqueMap    mTechniqueMap;
+
+        friend class Pass;
     };
     AUTOREF_REFERENCE_DECLARATION(Effect);
 

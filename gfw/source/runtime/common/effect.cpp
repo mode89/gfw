@@ -22,7 +22,7 @@ namespace GFW {
         for ( uint32_t i = 0; i < effectBinary->mShaderCount; ++ i )
         {
             ShaderBinaryRef shaderBin = effectBinary->mShaders[i];
-            ShaderStage stage = static_cast<ShaderStage>( shaderBin->mDesc.stage );
+            ShaderStage stage = static_cast<ShaderStage>( shaderBin->mStage );
             mShaders.push_back( device->CreateShader( stage, shaderBin ) );
         }
 
@@ -30,7 +30,7 @@ namespace GFW {
         for ( uint32_t i = 0; i < mDesc.techniqueCount; ++ i )
         {
             TechniqueBinaryRef techBin = effectBinary->mTechniques[i];
-            ITechniqueRef tech = new Technique( techBin );
+            ITechniqueRef tech = new Technique( techBin, this );
             InternedString name = stringTable.Resolve( techBin->mName );
 
             mTechniques.push_back( tech );
