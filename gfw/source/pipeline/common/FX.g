@@ -32,6 +32,22 @@ external_declaration
     : function_definition
     | technique_definition
     | struct_definition
+    | cbuffer_definition
+    ;
+
+cbuffer_definition
+    : T_CBUFFER T_ID register_binding? T_LCURLY cbuffer_member_list T_RCURLY T_SEMI
+    ;
+
+cbuffer_member_list
+    : (
+        ( scalar_type_specifier | vector_type_specifier | matrix_type_specifier )
+        T_ID T_SEMI
+      )+
+    ;
+
+register_binding
+    : T_COLON T_REGISTER T_LPAREN T_ID T_RPAREN
     ;
 
 struct_definition
@@ -105,7 +121,7 @@ shader_profile
 type_specifier
     : scalar_type_specifier
     | vector_type_specifier
-    | T_FLOAT4X4
+    | matrix_type_specifier
     | T_VOID
     | type_id
     ;
@@ -128,6 +144,25 @@ vector_type_specifier
     | T_FLOAT2
     | T_FLOAT3
     | T_FLOAT4
+    ;
+
+matrix_type_specifier
+    : T_FLOAT11
+    | T_FLOAT12
+    | T_FLOAT13
+    | T_FLOAT14
+    | T_FLOAT21
+    | T_FLOAT22
+    | T_FLOAT23
+    | T_FLOAT24
+    | T_FLOAT31
+    | T_FLOAT32
+    | T_FLOAT33
+    | T_FLOAT34
+    | T_FLOAT41
+    | T_FLOAT42
+    | T_FLOAT43
+    | T_FLOAT44
     ;
 
 type_id
@@ -328,24 +363,39 @@ T_COMPILE_SHADER        : 'CompileShader';
 T_VS40                  : 'vs_4_0';
 T_PS40                  : 'ps_4_0';
 
-T_BOOL                  : 'bool';
-T_INT                   : 'int';
-T_INT2                  : 'int2';
-T_INT3                  : 'int3';
-T_INT4                  : 'int4';
-T_UINT                  : 'uint';
-T_UINT2                 : 'uint2';
-T_UINT3                 : 'uint3';
-T_UINT4                 : 'uint4';
-T_HALF                  : 'half';
-T_HALF2                 : 'half2';
-T_HALF3                 : 'half3';
-T_HALF4                 : 'half4';
-T_FLOAT                 : 'float';
-T_FLOAT2                : 'float2';
-T_FLOAT3                : 'float3';
-T_FLOAT4                : 'float4';
-T_FLOAT4X4              : 'float4x4';
+T_BOOL                  : 'bool'     ;
+T_INT                   : 'int'      ;
+T_INT2                  : 'int2'     ;
+T_INT3                  : 'int3'     ;
+T_INT4                  : 'int4'     ;
+T_UINT                  : 'uint'     ;
+T_UINT2                 : 'uint2'    ;
+T_UINT3                 : 'uint3'    ;
+T_UINT4                 : 'uint4'    ;
+T_HALF                  : 'half'     ;
+T_HALF2                 : 'half2'    ;
+T_HALF3                 : 'half3'    ;
+T_HALF4                 : 'half4'    ;
+T_FLOAT                 : 'float'    ;
+T_FLOAT2                : 'float2'   ;
+T_FLOAT3                : 'float3'   ;
+T_FLOAT4                : 'float4'   ;
+T_FLOAT11               : 'float1x1' ;
+T_FLOAT12               : 'float1x2' ;
+T_FLOAT13               : 'float1x3' ;
+T_FLOAT14               : 'float1x4' ;
+T_FLOAT21               : 'float2x1' ;
+T_FLOAT22               : 'float2x2' ;
+T_FLOAT23               : 'float2x3' ;
+T_FLOAT24               : 'float2x4' ;
+T_FLOAT31               : 'float3x1' ;
+T_FLOAT32               : 'float3x2' ;
+T_FLOAT33               : 'float3x3' ;
+T_FLOAT34               : 'float3x4' ;
+T_FLOAT41               : 'float4x1' ;
+T_FLOAT42               : 'float4x2' ;
+T_FLOAT43               : 'float4x3' ;
+T_FLOAT44               : 'float4x4' ;
 
 // B a s e   t o k e n s
 
