@@ -2,6 +2,7 @@
 #define __GFW_BASE_PASS_H__
 
 #include "common/autoref.h"
+#include "gfw/base/shader.h"
 
 namespace GFW {
 
@@ -10,6 +11,9 @@ namespace GFW {
     public:
         virtual void
         Dispatch() = 0;
+
+        virtual IShaderRef
+        GetShader( ShaderStage ) const = 0;
 
         virtual
         ~IPass() {}

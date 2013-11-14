@@ -26,4 +26,9 @@ namespace GFW {
         mPasses[ pass ]->Dispatch();
     }
 
+    IShaderRef Technique::GetShader( ShaderStage stage, uint32_t pass /* = 0 */ ) const
+    {
+        return mPasses[pass]->GetShader( stage );
+    }
+
 } // namespace GFW

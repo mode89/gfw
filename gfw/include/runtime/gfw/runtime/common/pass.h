@@ -15,6 +15,9 @@ namespace GFW {
         virtual void
         Dispatch();
 
+        virtual IShaderRef
+        GetShader( ShaderStage stage ) const { return mShaders[stage]; }
+
     public:
         Pass( PassBinaryRef, const Effect * );
         ~Pass();

@@ -15,6 +15,9 @@ namespace GFW {
         virtual void
         Dispatch( uint32_t pass = 0 );
 
+        virtual IShaderRef
+        GetShader( ShaderStage, uint32_t pass = 0 ) const;
+
     public:
         Technique( TechniqueBinaryRef, const Effect * );
         ~Technique();
