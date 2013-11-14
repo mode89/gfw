@@ -9,7 +9,7 @@ namespace GFW {
     {
     public:
         virtual IDeviceRef
-        GetDevice() = 0;
+        GetDevice() const = 0;
 
         virtual
         ~IDeviceChild() {}

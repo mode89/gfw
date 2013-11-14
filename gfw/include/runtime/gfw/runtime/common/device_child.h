@@ -10,7 +10,7 @@ namespace GFW {
     {
     public:
         inline virtual IDeviceRef
-        GetDevice() { return mDevice; }
+        GetDevice() const { return mDevice; }
 
     public:
         ADeviceChild(IDeviceRef device);
