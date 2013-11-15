@@ -253,7 +253,10 @@ constant
     ;
 
 constructor
-    : vector_type_specifier T_LPAREN expression ( T_COMMA expression )* T_RPAREN
+    : ( vector_type_specifier | matrix_type_specifier)
+        T_LPAREN expression
+            ( T_COMMA expression )*
+        T_RPAREN
     ;
 
 /////
@@ -329,6 +332,7 @@ shift_expression
 
 statement
     : compound_statement
+    | declaration_statement
     | expression_statement
     | selection_statement
     | iteration_statement
@@ -337,6 +341,10 @@ statement
 
 compound_statement
     : T_LCURLY ( statement )* T_RCURLY
+    ;
+
+declaration_statement
+    : type_specifier T_ID ( T_ASSIGN constant_expression )? T_SEMI
     ;
 
 expression_statement
