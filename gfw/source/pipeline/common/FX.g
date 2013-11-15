@@ -106,7 +106,7 @@ semantic_specifier
     ;
 
 technique_definition
-    : T_TECHNIQUE T_ID T_LCURLY pass* T_RCURLY
+    : ( T_TECHNIQUE | T_TECHNIQUE10 | T_TECHNIQUE11 ) T_ID T_LCURLY pass* T_RCURLY
         -> ^( T_TECHNIQUE_DEFINITION T_ID pass* )
     ;
 
@@ -393,6 +393,8 @@ T_SHARED                : 'shared'          ;
 T_STRUCT                : 'struct'          ;
 T_SWITCH                : 'switch'          ;
 T_TECHNIQUE             : 'technique'       ;
+T_TECHNIQUE10           : 'technique10'     ;
+T_TECHNIQUE11           : 'technique11'     ;
 T_TEXTURE1D             : 'Texture1D'       ;
 T_TEXTURE2D             : 'Texture2D'       ;
 T_TEXTURE3D             : 'Texture3D'       ;
