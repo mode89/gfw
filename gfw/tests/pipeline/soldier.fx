@@ -66,15 +66,15 @@ cbuffer cbUserChange : register( b1 )
 
 cbuffer cbImmutable 
 {
-    float4 m_vDirectional = float4(1.0,1.0,1.0,1.0);
-    float4 m_vAmbient = float4(0.1,0.1,0.1,0.0);
-    float4 m_vSpecular = float4(1.0,1.0,1.0,1.0);
+    float4 m_vDirectional;// = float4(1.0,1.0,1.0,1.0);
+    float4 m_vAmbient;// = float4(0.1,0.1,0.1,0.0);
+    float4 m_vSpecular;// = float4(1.0,1.0,1.0,1.0);
 };
 
 // Constant buffer for bone matrices
 cbuffer cbAnimMatrices : register( b2 )
 {
-    matrix m_matConstBoneWorld[255];
+    float4x4 m_matConstBoneWorld[255];
 };
 
 
@@ -142,10 +142,10 @@ struct SkinnedInfo
 //            The shader will index into the constant buffer to grab the correct
 //            transformation matrices for each vertex.
 //--------------------------------------------------------------------------------------
-matrix FetchBoneTransform( uint iBone )
+float4x4 FetchBoneTransform( uint iBone )
 {
-    matrix mret;
-       mret = m_matConstBoneWorld[ iBone ];    
+    float4x4 mret;
+       mret = m_matConstBoneWorld[ iBone ];
     return mret;
 }
 
@@ -159,7 +159,7 @@ SkinnedInfo SkinVert( VSSkinnedIn Input)
     float4 Pos = float4(Input.Pos,1);
     float3 Norm = Input.Norm;
     float3 Tan = Input.Tan;
-    Matrix m = 
+    float4x4 m = 
         FetchBoneTransform (Input.Bones.x) * Input.Weights.x
         + FetchBoneTransform (Input.Bones.y) * Input.Weights.y
         + FetchBoneTransform (Input.Bones.z) * Input.Weights.z

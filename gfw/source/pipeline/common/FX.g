@@ -33,6 +33,27 @@ external_declaration
     | technique_definition
     | struct_definition
     | cbuffer_definition
+    | variable_definition
+    | state_block_definition
+    ;
+
+state_block_definition
+    : state_block_type T_ID T_LCURLY state_list T_RCURLY T_SEMI
+    ;
+
+state_list
+    : ( T_ID T_ASSIGN ( T_ID | T_HEX_LITERAL | T_DECIMAL_LITERAL ) T_SEMI )+
+    ;
+
+state_block_type
+    : T_BLENDSTATE
+    | T_DEPTHSTENCILSTATE
+    | T_RASTERIZERSTATE
+    | T_SAMPLERSTATE
+    ;
+
+variable_definition
+    : type_specifier T_ID register_binding? T_SEMI
     ;
 
 cbuffer_definition
@@ -42,7 +63,7 @@ cbuffer_definition
 cbuffer_member_list
     : (
         ( scalar_type_specifier | vector_type_specifier | matrix_type_specifier )
-        T_ID T_SEMI
+        T_ID ( T_LBRACKET constant T_RBRACKET )? T_SEMI
       )+
     ;
 
@@ -122,6 +143,8 @@ type_specifier
     : scalar_type_specifier
     | vector_type_specifier
     | matrix_type_specifier
+    | texture_type_specifier
+    | buffer_type_specifier
     | T_VOID
     | type_id
     ;
@@ -163,6 +186,17 @@ matrix_type_specifier
     | T_FLOAT42
     | T_FLOAT43
     | T_FLOAT44
+    ;
+
+texture_type_specifier
+    : T_TEXTURE1D
+    | T_TEXTURE2D
+    | T_TEXTURE3D
+    | T_TEXTURECUBE
+    ;
+
+buffer_type_specifier
+    : T_BUFFER T_LT ( scalar_type_specifier | vector_type_specifier | matrix_type_specifier ) T_GT
     ;
 
 type_id
@@ -329,39 +363,47 @@ jump_statement
 
 // K e y w o r d s
 
-T_BREAK                 : 'break';
-T_BUFFER                : 'buffer';
-T_CASE                  : 'case';
-T_CBUFFER               : 'cbuffer';
-T_CONST                 : 'const';
-T_CONTINUE              : 'continue';
-T_DISCARD               : 'discard';
-T_DO                    : 'do';
-T_ELSE                  : 'else';
-T_FOR                   : 'for';
-T_IF                    : 'if';
-T_IN                    : 'in';
-T_INOUT                 : 'inout';
-T_NOINTERPOLATION       : 'nointerpolation';
-T_OUT                   : 'out';
-T_PASS                  : 'pass';
-T_RETURN                : 'return';
-T_REGISTER              : 'register';
-T_SHARED                : 'shared';
-T_STRUCT                : 'struct';
-T_SWITCH                : 'switch';
-T_TECHNIQUE             : 'technique';
-T_TEXTURE2D             : 'texture2d';
-T_TYPEDEF               : 'typedef';
-T_VOID                  : 'void';
-T_WHILE                 : 'while';
+T_BREAK                 : 'break'           ;
+T_BUFFER                : 'Buffer'          ;
+T_CASE                  : 'case'            ;
+T_CBUFFER               : 'cbuffer'         ;
+T_CONST                 : 'const'           ;
+T_CONTINUE              : 'continue'        ;
+T_DISCARD               : 'discard'         ;
+T_DO                    : 'do'              ;
+T_ELSE                  : 'else'            ;
+T_FOR                   : 'for'             ;
+T_IF                    : 'if'              ;
+T_IN                    : 'in'              ;
+T_INOUT                 : 'inout'           ;
+T_NOINTERPOLATION       : 'nointerpolation' ;
+T_OUT                   : 'out'             ;
+T_PASS                  : 'pass'            ;
+T_RETURN                : 'return'          ;
+T_REGISTER              : 'register'        ;
+T_SHARED                : 'shared'          ;
+T_STRUCT                : 'struct'          ;
+T_SWITCH                : 'switch'          ;
+T_TECHNIQUE             : 'technique'       ;
+T_TEXTURE1D             : 'Texture1D'       ;
+T_TEXTURE2D             : 'Texture2D'       ;
+T_TEXTURE3D             : 'Texture3D'       ;
+T_TEXTURECUBE           : 'TextureCube'     ;
+T_TYPEDEF               : 'typedef'         ;
+T_VOID                  : 'void'            ;
+T_WHILE                 : 'while'           ;
 
-T_SET_VERTEX_SHADER     : 'SetVertexShader';
-T_SET_PIXEL_SHADER      : 'SetPixelShader';
-T_COMPILE_SHADER        : 'CompileShader';
+T_SET_VERTEX_SHADER     : 'SetVertexShader' ;
+T_SET_PIXEL_SHADER      : 'SetPixelShader'  ;
+T_COMPILE_SHADER        : 'CompileShader'   ;
 
-T_VS40                  : 'vs_4_0';
-T_PS40                  : 'ps_4_0';
+T_BLENDSTATE            : 'BlendState'        ;
+T_DEPTHSTENCILSTATE     : 'DepthStencilState' ;
+T_RASTERIZERSTATE       : 'RasterizerState'   ;
+T_SAMPLERSTATE          : 'SamplerState'      ;
+
+T_VS40                  : 'vs_4_0' ;
+T_PS40                  : 'ps_4_0' ;
 
 T_BOOL                  : 'bool'     ;
 T_INT                   : 'int'      ;
