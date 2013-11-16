@@ -51,3 +51,7 @@ add_custom_target( gfw_pipeline_parser ALL
     DEPENDS FXLexer.c FXParser.c
     SOURCES ${GFW_PIPELINE_FX_GRAMMAR_FILE} )
 add_dependencies( gfw_pipeline gfw_pipeline_parser )
+
+# Allow to platform override build process
+
+include( ${GFW_ROOT}/scripts/${GFW_PLATFORM}/build.cmake )
