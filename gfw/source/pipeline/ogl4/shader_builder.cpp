@@ -1,6 +1,7 @@
 #include "common/trace.h"
 #include "gfw/pipeline/common/parse_tree.h"
 #include "gfw/pipeline/shader_builder.h"
+#include "gfw/pipeline/validator.h"
 
 #include <cstring>
 #include <string>
@@ -61,12 +62,14 @@ namespace GFW {
     ShaderBuilder::ShaderBuilder( const ParseTree * tree )
         : mParseTree( tree )
     {
+        AcquireValidator();
+
         mParseTree->TraverseDFS( *this, &ShaderBuilder::CollectFunctions );
     }
 
     ShaderBuilder::~ShaderBuilder()
     {
-
+        ReleaseValidator();
     }
 
     ShaderBinaryRef ShaderBuilder::Compile( const char * shaderName, const char * profile )
@@ -186,6 +189,8 @@ namespace GFW {
             }
         }
         source << "}\n";
+
+        Validate( source.str().c_str() );
 
         // Construct binary
 
