@@ -190,7 +190,8 @@ namespace GFW {
         }
         source << "}\n";
 
-        Validate( source.str().c_str() );
+        std::string validationErrors;
+        Validate( stage, source.str().c_str(), validationErrors );
 
         // Construct binary
 

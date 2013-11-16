@@ -1,17 +1,30 @@
 #include "common/trace.h"
 #include "gfw/pipeline/validator.h"
+#include "gfw/shared/shader_stage.h"
 #include "opengl/glcorearb.h"
 
 #include "opengl/wglext.h"
 #include <windows.h>
 
+#define TRACE_GL( func, ... )   \
+    func( __VA_ARGS__ );        \
+    if ( glGetError() )         \
+    {                           \
+        TRACE_FAIL();           \
+    }                           \
+
 namespace GFW {
 
 #define OPENGL_FUNCTIONS_CORE \
-    F( PFNGLGETERRORPROC,       glGetError ) \
+    F( PFNGLGETERRORPROC,           glGetError )            \
 
 #define OPENGL_FUNCTIONS_EXT \
-    F( PFNGLCREATESHADERPROC,   glCreateShader ) \
+    F( PFNGLCREATESHADERPROC,       glCreateShader )        \
+    F( PFNGLDELETESHADERPROC,       glDeleteShader )        \
+    F( PFNGLSHADERSOURCEPROC,       glShaderSource )        \
+    F( PFNGLCOMPILESHADERPROC,      glCompileShader )       \
+    F( PFNGLGETSHADERIVPROC,        glGetShaderiv )         \
+    F( PFNGLGETSHADERINFOLOGPROC,   glGetShaderInfoLog )    \
 
     typedef PROC  (WINAPI *  PFNWGLGETPROCADDRESS)(LPCSTR);
     typedef HGLRC (WINAPI *  PFNWGLCREATECONTEXT)(HDC);
@@ -121,10 +134,51 @@ namespace GFW {
         }
     }
 
-    void Validate( const char * source )
+    void Validate( ShaderStage stage, const char * source, std::string & errors )
     {
         TRACE_ASSERT( source != NULL );
-        TRACE_FAIL_MSG( "Not yet implemented" );
+
+        wglMakeCurrent( sHdc, sHrc );
+        {
+            uint32_t shaderType = 0;
+            switch ( stage )
+            {
+            case ShaderStage::VERTEX:
+                shaderType = GL_VERTEX_SHADER;
+                break;
+            case ShaderStage::PIXEL:
+                shaderType = GL_FRAGMENT_SHADER;
+                break;
+            default:
+                TRACE_FAIL();
+            }
+
+            uint32_t shader = TRACE_GL( glCreateShader, shaderType );
+            TRACE_GL( glShaderSource, shader, 1, &source, NULL );
+            TRACE_GL( glCompileShader, shader );
+
+            int32_t compileStatus = 0;
+            TRACE_GL( glGetShaderiv, shader, GL_COMPILE_STATUS, &compileStatus );
+
+            if ( compileStatus == GL_FALSE )
+            {
+                int32_t infoLogLength = 0;
+                TRACE_GL( glGetShaderiv, shader, GL_INFO_LOG_LENGTH, &infoLogLength );
+
+                char * infoLog = new char [infoLogLength + 1];
+                TRACE_GL( glGetShaderInfoLog, shader, infoLogLength, NULL, infoLog );
+
+                infoLog[infoLogLength] = 0;
+                errors = infoLog;
+
+                TRACE_FAIL();
+
+                delete infoLog;
+            }
+
+            TRACE_GL( glDeleteShader, shader );
+        }
+        wglMakeCurrent( sHdc, NULL );
     }
 
 } // namespace GFW

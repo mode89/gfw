@@ -1,6 +1,9 @@
 #ifndef __GFW_PIPELINE_OGL4_VALIDATOR_H__
 #define __GFW_PIPELINE_OGL4_VALIDATOR_H__
 
+#include "gfw/shared/types_fwd.h"
+#include <string>
+
 namespace GFW {
 
     void
@@ -10,7 +13,7 @@ namespace GFW {
     ReleaseValidator();
 
     void
-    Validate( const char * source );
+    Validate( ShaderStage stage, const char * source, std::string & errors );
 
 } // namespace GFW
 
