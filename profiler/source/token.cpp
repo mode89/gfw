@@ -7,7 +7,7 @@ namespace Profiler {
         , mFileName(fileName)
         , mLineNumber(lineNumber)
     {
-        mHash = reinterpret_cast<uint32_t>(this);
+        mHash = reinterpret_cast<uint64_t>(this);
     }
 
 } // namespace Profiler

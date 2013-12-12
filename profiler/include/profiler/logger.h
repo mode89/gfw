@@ -25,7 +25,7 @@ namespace Profiler {
         void Dump();
 
     private:
-        typedef std::map< uint32_t, Region > RegionMap;
+        typedef std::map< uint64_t, Region > RegionMap;
 
         EventBucket *           mFirstBucket;
         EventBucket *           mLastBucket;
