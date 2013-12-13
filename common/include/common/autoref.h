@@ -4,15 +4,15 @@
 #include "common\typedefs.h"
 #include "common\atomic.h"
 
-#define AUTOREF_REFERENCE_DECLARATION(typeName) \
+#define AUTOREF_REFERENCE_DECLARATION( typeName ) \
     typedef       Common::AutoRef <       typeName >            typeName ## Ref; \
 	typedef       Common::AutoRef < const typeName >   Const ## typeName ## Ref; \
 	typedef const Common::AutoRef <       typeName > &          typeName ## In; \
 	typedef const Common::AutoRef < const typeName > & Const ## typeName ## In  \
 
-#define AUTOREF_FORWARD_DECLARATION(typeName) \
+#define AUTOREF_FORWARD_DECLARATION( typeName ) \
 	class typeName; \
-	AUTOREF_REFERENCE_DECLARATION(typeName) \
+	AUTOREF_REFERENCE_DECLARATION( typeName ) \
 
 namespace Common {
 
@@ -20,15 +20,23 @@ namespace Common {
     class ARefCounted
     {
     public:
+        inline
         ARefCounted()
-            : mRefCounter(0)
+            : mRefCounter( 0 )
         {}
 
-        inline
-        int GetRefCounter() const { return mRefCounter; }
+        inline int
+        GetRefCounter() const { return mRefCounter; }
 
     protected:
-        int mRefCounter;
+        mutable int mRefCounter;
+
+    private:
+        inline void
+        AddRef() const { AtomicIncrement( mRefCounter ); }
+
+        inline void
+        Release() const { AtomicDecrement( mRefCounter ); }
 
         template < class ObjectClass > friend class AutoRef;
     };
@@ -38,55 +46,59 @@ namespace Common {
     class AutoRef
     {
     public:
+        inline ObjectClass *
+        GetPointer() const { return mObject; }
 
-        inline ObjectClass * GetPointer() const { return mObject; }
+        inline bool
+        IsAttached() const { return ( mObject == NULL ) ? 0 : 1; }
 
-        inline bool IsAttached() const { return (mObject == NULL) ? 0 : 1; }
+        inline bool
+        IsNull() const { return ( mObject == NULL ) ? 1 : 0; }
 
-        inline bool IsNull() const { return (mObject == NULL) ? 1 : 0; }
+        inline void
+        Detach() { ReleaseObject(); mObject = NULL; }
 
-        inline void Detach()
-        {
-            ReleaseObject();
-            mObject = NULL;
-        }
-
+        inline
         AutoRef()
-            : mObject(NULL)
-        {
+            : mObject( NULL )
+        {}
 
-        }
-
-        AutoRef(ObjectClass * object)
-            : mObject(object)
-        {
-            AddRefObject();
-        }
-
-        template < class SourceClass >
-        inline AutoRef(const AutoRef< SourceClass > & ref)
-            : mObject(static_cast< ObjectClass* >(ref.GetPointer()))
+        inline
+        AutoRef( ObjectClass * object )
+            : mObject( object )
         {
             AddRefObject();
         }
 
-        inline AutoRef(const AutoRef & ref)
-            : mObject(ref.mObject)
+        template < class SourceClass > inline
+        AutoRef( const AutoRef< SourceClass > & ref )
+            : mObject( static_cast< ObjectClass* >( ref.GetPointer() ) )
         {
             AddRefObject();
         }
 
+        inline
+        AutoRef( const AutoRef & ref )
+            : mObject( ref.mObject )
+        {
+            AddRefObject();
+        }
+
+        inline
         ~AutoRef()
         {
             ReleaseObject();
             mObject = NULL;
         }
 
-        inline ObjectClass & operator * () const { return *mObject; }
+        inline ObjectClass &
+        operator * () const { return *mObject; }
 
-        inline ObjectClass * operator-> () const { return mObject; }
+        inline ObjectClass *
+        operator-> () const { return mObject; }
 
-        inline const AutoRef & operator= (const AutoRef & ref)
+        inline const AutoRef &
+        operator= ( const AutoRef & ref )
         {
             if (this != &ref)
             {
@@ -98,43 +110,44 @@ namespace Common {
             return *this;
         }
 
-        template < typename OtherClass >
-        inline bool operator != (const AutoRef<OtherClass> & other)
+        template < typename OtherClass > inline bool
+        operator != ( const AutoRef<OtherClass> & other )
         {
             return mObject != other.GetPointer();
         }
 
-        template < typename OtherClass >
-        inline bool operator == (const AutoRef<OtherClass> & other)
+        template < typename OtherClass > inline bool
+        operator == ( const AutoRef<OtherClass> & other )
         {
             return mObject == other.GetPointer();
         }
 
-        template < class CastClass >
-        inline AutoRef<CastClass> StaticCast() const
+        template < class CastClass > inline
+        AutoRef<CastClass> StaticCast() const
         {
-            return static_cast<CastClass*>(mObject);
+            return static_cast<CastClass*>( mObject );
         }
 
     private:
-
-        inline void ReleaseObject()
+        inline void
+        ReleaseObject()
         {
-            if (mObject != NULL)
+            if ( mObject != NULL )
             {
-                AtomicDecrement(mObject->mRefCounter);
-                if (mObject->mRefCounter == 0)
+                mObject->Release();
+                if ( mObject->mRefCounter == 0 )
                 {
                     delete mObject;
                 }
             }
         }
 
-        inline void AddRefObject()
+        inline void
+        AddRefObject()
         {
-            if (mObject != NULL)
+            if ( mObject != NULL )
             {
-                AtomicIncrement(mObject->mRefCounter);
+                mObject->AddRef();
             }
         }
 

@@ -87,13 +87,13 @@ protected:
 };
 
 // After setting up the test there is only one reference to the factory object
-TEST_F(AutoRefTests, FactoryReference)
+TEST_F( AutoRefTests, FactoryReference )
 {
     ASSERT_TRUE(mFactory->GetRefCounter() == 1);
 }
 
 // Interface class of the object must have a virtual ctor to successfully destruct the instance of the object
-TEST_F(AutoRefTests, IfaceVirtualCtor)
+TEST_F( AutoRefTests, IfaceVirtualCtor )
 {
     ASSERT_TRUE(mFactory->GetRefCounter() == 1);
     {
@@ -105,7 +105,7 @@ TEST_F(AutoRefTests, IfaceVirtualCtor)
 }
 
 // Test IsAttached() method
-TEST_F(AutoRefTests, IsAttached)
+TEST_F( AutoRefTests, IsAttached )
 {
     IObjectRef object;
     ASSERT_TRUE(!object.IsAttached());
@@ -115,7 +115,7 @@ TEST_F(AutoRefTests, IsAttached)
 }
 
 // Test IsNull() method
-TEST_F(AutoRefTests, IsNull)
+TEST_F( AutoRefTests, IsNull )
 {
     IObjectRef object;
     ASSERT_TRUE(object.IsNull());
@@ -125,14 +125,14 @@ TEST_F(AutoRefTests, IsNull)
 }
 
 // Construct from a null pointer
-TEST_F(AutoRefTests, ConstructFromNullPointer)
+TEST_F( AutoRefTests, ConstructFromNullPointer )
 {
     IObjectRef ref(NULL);
     ASSERT_TRUE(ref.IsNull());
 }
 
 // Construct from a pointer
-TEST_F(AutoRefTests, ConstructFromPointer)
+TEST_F( AutoRefTests, ConstructFromPointer )
 {
     IObject * pnt = new Object(NULL);
     IObjectRef ref = pnt;
@@ -141,7 +141,7 @@ TEST_F(AutoRefTests, ConstructFromPointer)
 }
 
 // Construct from a reference
-TEST_F(AutoRefTests, ConstructFromReference)
+TEST_F( AutoRefTests, ConstructFromReference )
 {
     IObjectRef ref1 = mFactory->CreateObject();
     ASSERT_TRUE(ref1->GetRefCounter() == 1);
@@ -153,7 +153,7 @@ TEST_F(AutoRefTests, ConstructFromReference)
 }
 
 // Assignment operator
-TEST_F(AutoRefTests, AssignmentOperator)
+TEST_F( AutoRefTests, AssignmentOperator )
 {
     IObjectRef ref1 = mFactory->CreateObject();
     IObjectRef ref2 = mFactory->CreateObject();
@@ -175,7 +175,7 @@ TEST_F(AutoRefTests, AssignmentOperator)
 }
 
 // Self-assignment
-TEST_F(AutoRefTests, SelfAssignment)
+TEST_F( AutoRefTests, SelfAssignment )
 {
     IObjectRef ref = mFactory->CreateObject();
     ASSERT_TRUE(ref->GetRefCounter() == 1);
@@ -184,7 +184,7 @@ TEST_F(AutoRefTests, SelfAssignment)
 }
 
 // Assignment result
-TEST_F(AutoRefTests, AssignmentResult)
+TEST_F( AutoRefTests, AssignmentResult )
 {
     IObjectRef ref1 = mFactory->CreateObject();
     IObjectRef ref2, ref3;
@@ -204,7 +204,7 @@ uint32_t AutoRefTests_In(IObjectIn ref)
 }
 
 // Test *In reference
-TEST_F(AutoRefTests, In)
+TEST_F( AutoRefTests, In )
 {
     IObjectRef ref = mFactory->CreateObject();
     ASSERT_TRUE(ref->GetRefCounter() == 1);
@@ -213,7 +213,7 @@ TEST_F(AutoRefTests, In)
 }
 
 // Static casting
-TEST_F(AutoRefTests, StaticCast)
+TEST_F( AutoRefTests, StaticCast )
 {
     IObjectRef ref1 = mFactory->CreateObject();
     ASSERT_TRUE(ref1->GetRefCounter() == 1);
@@ -228,7 +228,7 @@ TEST_F(AutoRefTests, StaticCast)
     ASSERT_TRUE(ref2->GetData() == data);
 }
 
-TEST_F(AutoRefTests, CastCtor)
+TEST_F( AutoRefTests, CastCtor )
 {
     ObjectRef ref = mFactory->CreateObject();
     ASSERT_TRUE(ref->GetRefCounter() == 1);
@@ -236,7 +236,7 @@ TEST_F(AutoRefTests, CastCtor)
     ASSERT_TRUE(ref->GetRefCounter() == 1);
 }
 
-TEST_F(AutoRefTests, AutoPointerBracket)
+TEST_F( AutoRefTests, AutoPointerBracket )
 {
     AutoArray<uint32_t> autoPnt = new uint32_t [100];
 
@@ -254,7 +254,7 @@ TEST_F( AutoRefTests, AutoPointerGetPointer )
     ASSERT_TRUE( ptr.GetPointer() == data );
 }
 
-TEST_F(AutoRefTests, ArrayOfRefs)
+TEST_F( AutoRefTests, ArrayOfRefs )
 {
     IObjectRef * objRefArray = new IObjectRef [100];
     delete [] objRefArray;
@@ -262,7 +262,7 @@ TEST_F(AutoRefTests, ArrayOfRefs)
     AutoArray<IObjectRef> objRefAutoArray = new IObjectRef [1000];
 }
 
-TEST_F(AutoRefTests, CompareRefs)
+TEST_F( AutoRefTests, CompareRefs )
 {
     IObjectRef ref1 = mFactory->CreateObject();
     IObjectRef ref2 = mFactory->CreateObject();
@@ -276,4 +276,13 @@ TEST_F(AutoRefTests, CompareRefs)
 
     ref1 = ref3;
     ASSERT_TRUE(ref1 == ref3);
+}
+
+TEST_F( AutoRefTests, ConstRef )
+{
+    ObjectRef ref = mFactory->CreateObject();
+    ConstObjectRef constRef = ref;
+    ASSERT_TRUE( constRef == ref );
+    ASSERT_TRUE( ref->GetRefCounter() == 2 );
+    ASSERT_TRUE( ref->GetRefCounter() == 2 );
 }
