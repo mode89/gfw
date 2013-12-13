@@ -18,21 +18,21 @@ namespace GFW {
         Compile( const char * shaderName, const char * profile );
 
     public:
-        ShaderBuilder( const ParseTree * );
+        ShaderBuilder( ConstParseTreeIn );
         ~ShaderBuilder();
 
     private:
         bool
-        CollectFunctions( const ParseTree * );
+        CollectFunctions( ConstParseTreeIn );
 
     private:
-        typedef std::vector< const ParseTree * > ParseTreeMap;
+        typedef std::vector< ConstParseTreeRef > ParseTreeMap;
 
         struct Function
         {
-            const ParseTree *   tree;
-            const ParseTree *   ret;
-            const ParseTree *   sem;
+            ConstParseTreeRef   tree;
+            ConstParseTreeRef   ret;
+            ConstParseTreeRef   sem;
             ParseTreeMap        args;
 
             Function()
@@ -44,7 +44,7 @@ namespace GFW {
 
         typedef std::unordered_map< std::string, Function > FunctionMap;
 
-        const ParseTree *   mParseTree;
+        ConstParseTreeRef   mParseTree;
 
         FunctionMap         mFunctions;
     };

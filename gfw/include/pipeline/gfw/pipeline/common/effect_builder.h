@@ -11,7 +11,7 @@
 
 namespace GFW {
 
-    class ParseTree;
+    AUTOREF_FORWARD_DECLARATION( ParseTree );
 
     class EffectBuilder : public Common::ARefCounted
     {
@@ -24,13 +24,13 @@ namespace GFW {
 
     private:
         bool
-        ProcessTechniques( const ParseTree * );
+        ProcessTechniques( ConstParseTreeIn );
 
         bool
-        ProcessPasses( const ParseTree * );
+        ProcessPasses( ConstParseTreeIn );
 
         bool
-        ProcessShaders( const ParseTree * );
+        ProcessShaders( ConstParseTreeIn );
 
     private:
         typedef std::vector< ShaderBinaryRef >    ShaderBinaryVec;

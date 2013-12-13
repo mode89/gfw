@@ -18,7 +18,7 @@ namespace GFW {
             , mRow( 0 )
         {}
 
-        bool operator() ( const ParseTree * tree )
+        bool operator() ( ConstParseTreeRef tree )
         {
             TokenType tokenType = tree->GetTokenType();
 
@@ -59,7 +59,7 @@ namespace GFW {
         uint32_t            mRow;
     };
 
-    ShaderBuilder::ShaderBuilder( const ParseTree * tree )
+    ShaderBuilder::ShaderBuilder( ConstParseTreeIn tree )
         : mParseTree( tree )
     {
         AcquireValidator();
@@ -114,7 +114,7 @@ namespace GFW {
 
         for ( uint32_t i = 0; i < entryPoint.args.size(); ++ i )
         {
-            const ParseTree * arg = entryPoint.args[i];
+            ConstParseTreeRef arg = entryPoint.args[i];
             source << "in ";
             source << arg->GetChild( 0 )->ToString();
             source << " _in_";
@@ -122,8 +122,8 @@ namespace GFW {
             source << "; // ";
             source << arg->GetChild( 1 )->ToString();
 
-            const ParseTree * semantic = arg->GetFirstChildWithType( TOKEN_SEMANTIC );
-            if ( semantic != NULL )
+            ConstParseTreeRef semantic = arg->GetFirstChildWithType( TOKEN_SEMANTIC );
+            if ( semantic.IsAttached() )
             {
                 source << " : ";
                 source << semantic->GetChild()->ToString();
@@ -173,10 +173,10 @@ namespace GFW {
 
             if ( entryPoint.ret->GetTokenType() != TOKEN_VOID )
             {
-                if ( entryPoint.sem != NULL )
+                if ( entryPoint.sem.IsAttached() )
                 {
                     source << "    ";
-                    const ParseTree * semantic = entryPoint.sem->GetChild();
+                    ConstParseTreeRef semantic = entryPoint.sem->GetChild();
                     if ( std::strcmp( "SV_POSITION", semantic->ToString() ) == 0 )
                     {
                         source << "gl_Position = outp;\n";
@@ -208,14 +208,14 @@ namespace GFW {
         return shaderBinary;
     }
 
-    bool ShaderBuilder::CollectFunctions( const ParseTree * tree )
+    bool ShaderBuilder::CollectFunctions( ConstParseTreeIn tree )
     {
         if ( tree->GetTokenType() == TOKEN_EXTERNAL_DECLARATION )
         {
-            const ParseTree * child = tree->GetChild();
+            ConstParseTreeRef child = tree->GetChild();
             if ( child->GetTokenType() == TOKEN_FUNCTION_DEFINITION )
             {
-                const ParseTree * name = child->GetFirstChildWithType( TOKEN_ID );
+                ConstParseTreeRef name = child->GetFirstChildWithType( TOKEN_ID );
 
                 Function & func = mFunctions[ name->ToString() ];
 
@@ -225,8 +225,8 @@ namespace GFW {
 
                 // Collect arguments
 
-                const ParseTree * args = child->GetFirstChildWithType( TOKEN_ARGUMENTS_LIST );
-                if ( args != NULL )
+                ConstParseTreeRef args = child->GetFirstChildWithType( TOKEN_ARGUMENTS_LIST );
+                if ( args.IsAttached() )
                 {
                     for ( uint32_t i = 0; i < args->GetChildCount(); ++ i )
                     {

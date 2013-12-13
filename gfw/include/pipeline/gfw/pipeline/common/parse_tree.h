@@ -4,6 +4,7 @@
 #include "common/autoref.h"
 
 #include <vector>
+#include <string>
 
 namespace GFW {
 
@@ -31,10 +32,8 @@ namespace GFW {
 #undef T
     };
 
-    struct ParseTreeImpl;
-    AUTOREF_FORWARD_DECLARATION( Parser );
-
-    class ParseTree
+    AUTOREF_FORWARD_DECLARATION( ParseTree );
+    class ParseTree : public Common::ARefCounted
     {
     public:
         template < class Visitor > void
@@ -50,7 +49,7 @@ namespace GFW {
         }
 
         template < class Delegator > void
-        TraverseDFS( Delegator & delegator, bool (Delegator::*visitor)( const ParseTree * ) ) const
+        TraverseDFS( Delegator & delegator, bool (Delegator::*visitor)( ConstParseTreeIn ) ) const
         {
             if ( (delegator.*visitor)( this ) )
             {
@@ -70,28 +69,25 @@ namespace GFW {
         uint32_t
         GetRow() const { return mRow; }
 
-        const ParseTree *
+        ConstParseTreeRef
         GetChild( uint32_t index = 0 ) const { return mChildren[index]; }
 
         uint32_t
         GetChildCount() const { return mChildCount; }
 
-        const ParseTree *
+        ConstParseTreeRef
         GetFirstChildWithType( TokenType ) const;
 
         const char *
-        ToString() const { return mString; }
+        ToString() const { return mString.c_str(); }
 
     public:
-        ParseTree( void * nativeTree, ParserIn );
-        ~ParseTree();
+        ParseTree( void * nativeTree );
 
     private:
-        typedef std::vector< ParseTree * > ParseTreeVec;
-        ParseTreeImpl * mImpl;
-        ParserRef       mParser;
+        typedef std::vector< ParseTreeRef > ParseTreeVec;
 
-        const char *    mString;
+        std::string     mString;
         TokenType       mTokenType;
         uint32_t        mLine;
         uint32_t        mRow;
@@ -99,6 +95,9 @@ namespace GFW {
         ParseTreeVec    mChildren;
         uint32_t        mChildCount;
     };
+
+    ConstParseTreeRef
+    CreateParseTree( const char * fileName );
 
 } // namespace GFW
 

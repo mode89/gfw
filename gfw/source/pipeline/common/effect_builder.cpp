@@ -1,7 +1,6 @@
 #include "common/trace.h"
 
 #include "gfw/pipeline/common/effect_builder.h"
-#include "gfw/pipeline/common/parser.h"
 #include "gfw/pipeline/common/parse_tree.h"
 #include "gfw/pipeline/shader_builder.h"
 
@@ -16,9 +15,7 @@ namespace GFW {
 
     EffectBinaryRef EffectBuilder::Build( const char * fileName )
     {
-        ParserRef parser  = new Parser( fileName );
-
-        const ParseTree * tree = parser->GetTree();
+        ConstParseTreeRef tree = CreateParseTree( fileName );
 
         mShaderBuilder = new ShaderBuilder( tree );
 
@@ -54,11 +51,11 @@ namespace GFW {
         return fxBin;
     }
 
-    bool EffectBuilder::ProcessTechniques( const ParseTree * tree )
+    bool EffectBuilder::ProcessTechniques( ConstParseTreeIn tree )
     {
         if ( tree->GetTokenType() == TOKEN_EXTERNAL_DECLARATION )
         {
-            const ParseTree * child = tree->GetChild();
+            ConstParseTreeRef child = tree->GetChild();
             if ( child->GetTokenType() == TOKEN_TECHNIQUE_DEFINITION )
             {
                 InternedString name = mStringTable->Resolve( child->GetChild()->ToString() );
@@ -83,7 +80,7 @@ namespace GFW {
         return true;
     }
 
-    bool EffectBuilder::ProcessPasses( const ParseTree * tree )
+    bool EffectBuilder::ProcessPasses( ConstParseTreeIn tree )
     {
         if ( tree->GetTokenType() == TOKEN_PASS_DEFINITION )
         {
@@ -101,11 +98,11 @@ namespace GFW {
         return true;
     }
 
-    bool EffectBuilder::ProcessShaders( const ParseTree * tree )
+    bool EffectBuilder::ProcessShaders( ConstParseTreeIn tree )
     {
         if ( tree->GetTokenType() == TOKEN_SET_SHADER )
         {
-            const ParseTree * shader = tree->GetChild( 1 );
+            ConstParseTreeRef shader = tree->GetChild( 1 );
 
             InternedString name;
             InternedString profile;
@@ -126,7 +123,7 @@ namespace GFW {
 
             PassBinaryRef pass = mPasses.back();
 
-            const ParseTree * shaderType = tree->GetChild( 0 );
+            ConstParseTreeRef shaderType = tree->GetChild( 0 );
             switch ( shaderType->GetTokenType() )
             {
             case TOKEN_SET_VERTEX_SHADER:

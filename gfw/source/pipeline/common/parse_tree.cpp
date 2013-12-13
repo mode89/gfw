@@ -1,6 +1,5 @@
 #include "common/trace.h"
 
-#include "gfw/pipeline/common/parser.h"
 #include "gfw/pipeline/common/parse_tree.h"
 
 #include "FXLexer.h"
@@ -22,24 +21,53 @@ namespace GFW {
         return TOKEN_UNKNOWN;
     }
 
-    struct ParseTreeImpl
+    ConstParseTreeRef CreateParseTree(  const char * fileName )
     {
-        pANTLR3_BASE_TREE   tree;
-    };
+        pANTLR3_UINT8 fName = (pANTLR3_UINT8) fileName;
+        pANTLR3_INPUT_STREAM inputStream = antlr3FileStreamNew( fName, ANTLR3_ENC_8BIT );
+        TRACE_ASSERT( inputStream != NULL );
 
-    ParseTree::ParseTree( void * nativeTree, ParserIn parser )
-        : mImpl( NULL )
-        , mParser( parser )
-        , mString( NULL )
-        , mTokenType( TOKEN_UNKNOWN )
+        pFXLexer lexer = FXLexerNew( inputStream );
+        TRACE_ASSERT( lexer != NULL );
+
+        pANTLR3_COMMON_TOKEN_STREAM tokenStream = antlr3CommonTokenStreamSourceNew( ANTLR3_SIZE_HINT, TOKENSOURCE( lexer ) );
+        TRACE_ASSERT( tokenStream != NULL);
+
+        pFXParser parser = FXParserNew( tokenStream );
+        TRACE_ASSERT( parser != NULL );
+
+        FXParser_translation_unit_return ast = parser->translation_unit( parser );
+        if ( parser->pParser->rec->state->errorCount > 0 )
+        {
+            TRACE_FAIL();
+
+            // Free resources
+            if ( parser ) parser->free( parser );
+            if ( tokenStream ) tokenStream->free( tokenStream );
+            if ( lexer ) lexer->free( lexer );
+            if ( inputStream ) inputStream->close( inputStream );
+
+            return NULL;
+        }
+
+        const ParseTree * tree = new ParseTree( ast.tree );
+
+        // Free resources
+        if ( parser ) parser->free( parser );
+        if ( tokenStream ) tokenStream->free( tokenStream );
+        if ( lexer ) lexer->free( lexer );
+        if ( inputStream ) inputStream->close( inputStream );
+
+        return tree;
+    }
+
+    ParseTree::ParseTree( void * nativeTree )
+        : mTokenType( TOKEN_UNKNOWN )
         , mLine( 0 )
         , mRow( 0 )
         , mChildCount( 0 )
     {
-        mImpl = new ParseTreeImpl;
-
-        mImpl->tree = static_cast<pANTLR3_BASE_TREE>( nativeTree );
-        pANTLR3_BASE_TREE tree = mImpl->tree;
+        pANTLR3_BASE_TREE tree = static_cast<pANTLR3_BASE_TREE>( nativeTree );
 
         pANTLR3_COMMON_TOKEN token = tree->getToken( tree );
         mTokenType = GFW::GetTokenType( token->getType( token ) );
@@ -54,28 +82,15 @@ namespace GFW {
         mChildren.resize( mChildCount );
         for ( uint32_t i = 0; i < mChildCount; ++ i )
         {
-            mChildren[i] = new ParseTree( tree->getChild( tree, i ), mParser );
+            mChildren[i] = new ParseTree( tree->getChild( tree, i ) );
         }
     }
 
-    ParseTree::~ParseTree()
-    {
-        for (uint32_t i = 0; i < mChildCount; ++ i)
-        {
-            delete mChildren[i];
-        }
-
-        if ( mImpl != NULL )
-        {
-            delete mImpl;
-        }
-    }
-
-    const ParseTree * ParseTree::GetFirstChildWithType( TokenType type ) const
+    ConstParseTreeRef ParseTree::GetFirstChildWithType( TokenType type ) const
     {
         for ( uint32_t i = 0; i < mChildCount; ++ i )
         {
-            const ParseTree * child = mChildren[i];
+            const ParseTreeRef child = mChildren[i];
             if ( child->GetTokenType() == type )
             {
                 return child;
