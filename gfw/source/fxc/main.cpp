@@ -13,14 +13,15 @@ using namespace Serialization;
 void PrintHelp()
 {
     std::cout
-        << "Usage:" << std::endl
         << std::endl
-        << "gfw_fxc [options]" << std::endl
+        << "  Usage:" << std::endl
         << std::endl
-        << "Options:" << std::endl
+        << "    gfw_fxc [options]" << std::endl
         << std::endl
-        << "-fx <filename>      Path to the FX file" << std::endl
-        << "-o <filename>       Path to the compiled effect" << std::endl
+        << "  Options:" << std::endl
+        << std::endl
+        << "    -fx <filename>      Path to the FX file" << std::endl
+        << "    -o <filename>       Path to the compiled effect" << std::endl
         << std::endl;
 }
 
