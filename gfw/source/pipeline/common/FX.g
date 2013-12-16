@@ -53,7 +53,7 @@ state_block_type
     ;
 
 variable_definition
-    : type_specifier T_ID register_binding? T_SEMI
+    : type_specifier T_ID semantic? register_binding? T_SEMI
     ;
 
 cbuffer_definition
