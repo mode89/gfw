@@ -8,15 +8,16 @@ options {
 }
 
 tokens {
-    T_TRANSLATION_UNIT;
+    T_ARGUMENT;
+    T_ARGUMENTS_LIST;
     T_EXTERNAL_DECLARATION;
     T_FUNCTION_DEFINITION;
-    T_TECHNIQUE_DEFINITION;
     T_PASS_DEFINITION;
-    T_ARGUMENTS_LIST;
-    T_ARGUMENT;
+    T_POSTFIX_EXPRESSION;
     T_SEMANTIC;
     T_SET_SHADER;
+    T_TECHNIQUE_DEFINITION;
+    T_TRANSLATION_UNIT;
 }
 
 // R u l e s
@@ -229,7 +230,7 @@ cast_expression
 
 unary_expression
     : ( T_PLUS | T_MINUS ) unary_expression
-    | postfix_expression
+    | ( postfix_expression -> ^( T_POSTFIX_EXPRESSION postfix_expression ) )
     ;
 
 postfix_expression
