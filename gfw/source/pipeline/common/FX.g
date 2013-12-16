@@ -34,18 +34,23 @@ external_declaration
     | struct_definition
     | cbuffer_definition
     | variable_definition
-    | state_block_definition
+    | state_definition
+    | state_declaration
     ;
 
-state_block_definition
-    : state_block_type T_ID T_LCURLY state_list T_RCURLY T_SEMI
+state_declaration
+    : state_type T_ID T_SEMI
+    ;
+
+state_definition
+    : state_type T_ID T_LCURLY state_list T_RCURLY T_SEMI
     ;
 
 state_list
     : ( T_ID T_ASSIGN ( T_ID | T_HEX_LITERAL | T_DECIMAL_LITERAL ) T_SEMI )+
     ;
 
-state_block_type
+state_type
     : T_BLENDSTATE
     | T_DEPTHSTENCILSTATE
     | T_RASTERIZERSTATE
