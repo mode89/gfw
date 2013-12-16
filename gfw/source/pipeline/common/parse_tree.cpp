@@ -23,40 +23,43 @@ namespace GFW {
 
     ConstParseTreeRef CreateParseTree(  const char * fileName )
     {
-        pANTLR3_UINT8 fName = (pANTLR3_UINT8) fileName;
-        pANTLR3_INPUT_STREAM inputStream = antlr3FileStreamNew( fName, ANTLR3_ENC_8BIT );
-        TRACE_ASSERT( inputStream != NULL );
+        pANTLR3_UINT8               fName       = (pANTLR3_UINT8) fileName;
+        pANTLR3_INPUT_STREAM        inputStream = NULL;
+        pFXLexer                    lexer       = NULL;
+        pANTLR3_COMMON_TOKEN_STREAM tokenStream = NULL;
+        pFXParser                   parser      = NULL;
+        const ParseTree *           tree        = NULL;
 
-        pFXLexer lexer = FXLexerNew( inputStream );
-        TRACE_ASSERT( lexer != NULL );
-
-        pANTLR3_COMMON_TOKEN_STREAM tokenStream = antlr3CommonTokenStreamSourceNew( ANTLR3_SIZE_HINT, TOKENSOURCE( lexer ) );
-        TRACE_ASSERT( tokenStream != NULL);
-
-        pFXParser parser = FXParserNew( tokenStream );
-        TRACE_ASSERT( parser != NULL );
-
-        FXParser_translation_unit_return ast = parser->translation_unit( parser );
-        if ( parser->pParser->rec->state->errorCount > 0 )
+        inputStream = antlr3FileStreamNew( fName, ANTLR3_ENC_8BIT );
+        if ( inputStream != NULL )
         {
-            TRACE_FAIL();
-
-            // Free resources
-            if ( parser ) parser->free( parser );
-            if ( tokenStream ) tokenStream->free( tokenStream );
-            if ( lexer ) lexer->free( lexer );
-            if ( inputStream ) inputStream->close( inputStream );
-
-            return NULL;
+            lexer = FXLexerNew( inputStream );
+            if ( lexer != NULL )
+            {
+                tokenStream = antlr3CommonTokenStreamSourceNew( ANTLR3_SIZE_HINT, TOKENSOURCE( lexer ) );
+                if ( tokenStream != NULL)
+                {
+                    parser = FXParserNew( tokenStream );
+                    if ( parser != NULL )
+                    {
+                        FXParser_translation_unit_return ast = parser->translation_unit( parser );
+                        if ( parser->pParser->rec->state->errorCount == 0 )
+                        {
+                            tree = new ParseTree( ast.tree );
+                        }
+                    }
+                    parser->free( parser );
+                }
+                lexer->free( lexer );
+            }
+            inputStream->close( inputStream );
         }
 
-        const ParseTree * tree = new ParseTree( ast.tree );
-
-        // Free resources
-        if ( parser ) parser->free( parser );
-        if ( tokenStream ) tokenStream->free( tokenStream );
-        if ( lexer ) lexer->free( lexer );
-        if ( inputStream ) inputStream->close( inputStream );
+        TRACE_ASSERT( inputStream != NULL );
+        TRACE_ASSERT( lexer != NULL );
+        TRACE_ASSERT( tokenStream != NULL );
+        TRACE_ASSERT( parser != NULL );
+        TRACE_ASSERT( tree != NULL );
 
         return tree;
     }
