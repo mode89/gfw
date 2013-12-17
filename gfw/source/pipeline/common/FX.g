@@ -10,13 +10,14 @@ options {
 tokens {
     T_ARGUMENT;
     T_ARGUMENTS_LIST;
+    T_ASSIGNMENT_EXPRESSION;
     T_EXTERNAL_DECLARATION;
     T_FUNCTION_DEFINITION;
     T_PASS_DEFINITION;
-    T_POSTFIX_EXPRESSION;
     T_SEMANTIC;
     T_SET_SHADER;
     T_TECHNIQUE_DEFINITION;
+    T_TEXTURE_SAMPLE_EXPRESSION;
     T_TRANSLATION_UNIT;
 }
 
@@ -212,7 +213,7 @@ type_id
 // E x p r e s s i o n s
 
 argument_expression_list
-    :   assignment_expression ( T_COMMA assignment_expression )*
+    : assignment_expression ( T_COMMA assignment_expression )*
     ;
 
 additive_expression
@@ -230,18 +231,40 @@ cast_expression
 
 unary_expression
     : ( T_PLUS | T_MINUS ) unary_expression
-    | ( postfix_expression -> ^( T_POSTFIX_EXPRESSION postfix_expression ) )
+    | primary_expression postfix_operator*
+    | ( texture_sample_expression -> ^( T_TEXTURE_SAMPLE_EXPRESSION texture_sample_expression ) ) postfix_operator*
     ;
 
-postfix_expression
-    :   primary_expression
-        (   T_LBRACKET expression T_RBRACKET
-        |   T_LPAREN T_RPAREN
-        |   T_LPAREN argument_expression_list T_RPAREN
-        |   T_DOT T_ID
-        |   T_PLUSPLUS
-        |   T_MINUSMINUS
-        )*
+postfix_operator
+    : subscript_operator
+    | function_call_operator
+    | T_DOT T_ID
+    | T_PLUSPLUS
+    | T_MINUSMINUS
+    ;
+
+subscript_operator
+    : T_LBRACKET expression T_RBRACKET
+    ;
+
+function_call_operator
+    : T_LPAREN argument_expression_list? T_RPAREN
+    ;
+
+texture_sample_expression
+    : texture_object subscript_operator? T_DOT T_SAMPLE
+        T_LPAREN
+            sampler_object T_COMMA
+            argument_expression_list
+        T_RPAREN
+    ;
+
+texture_object
+    : T_ID
+    ;
+
+sampler_object
+    : T_ID
     ;
 
 primary_expression
@@ -276,8 +299,8 @@ constant_expression
     ;
 
 assignment_expression
-    : lvalue assignment_operator assignment_expression
-    | conditional_expression
+    : lvalue assignment_operator assignment_expression -> ^( T_ASSIGNMENT_EXPRESSION lvalue assignment_operator assignment_expression )
+    | conditional_expression -> ^( T_ASSIGNMENT_EXPRESSION conditional_expression )
     ;
     
 lvalue
@@ -395,6 +418,7 @@ T_OUT                   : 'out'             ;
 T_PASS                  : 'pass'            ;
 T_RETURN                : 'return'          ;
 T_REGISTER              : 'register'        ;
+T_SAMPLE                : 'Sample'          ;
 T_SHARED                : 'shared'          ;
 T_STRUCT                : 'struct'          ;
 T_SWITCH                : 'switch'          ;

@@ -9,20 +9,21 @@
 namespace GFW {
 
 #define TOKENS \
-    T(TRANSLATION_UNIT) \
-    T(EXTERNAL_DECLARATION) \
-    T(FUNCTION_DEFINITION) \
-    T(TECHNIQUE_DEFINITION) \
-    T(PASS_DEFINITION) \
-    T(ARGUMENTS_LIST) \
-    T(ARGUMENT) \
-    T(SEMANTIC) \
-    T(SET_SHADER) \
-    T(SET_VERTEX_SHADER) \
-    T(SET_PIXEL_SHADER) \
-    T(COMPILE_SHADER) \
-    T(VOID) \
-    T(ID) \
+    T( ARGUMENT ) \
+    T( ARGUMENTS_LIST ) \
+    T( COMPILE_SHADER ) \
+    T( EXTERNAL_DECLARATION ) \
+    T( FUNCTION_DEFINITION ) \
+    T( ID ) \
+    T( PASS_DEFINITION ) \
+    T( TECHNIQUE_DEFINITION ) \
+    T( TEXTURE_SAMPLE_EXPRESSION ) \
+    T( TRANSLATION_UNIT ) \
+    T( SEMANTIC ) \
+    T( SET_PIXEL_SHADER ) \
+    T( SET_SHADER ) \
+    T( SET_VERTEX_SHADER ) \
+    T( VOID ) \
 
     enum TokenType
     {
