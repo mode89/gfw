@@ -68,17 +68,30 @@ namespace GFW {
         : mTokenType( TOKEN_UNKNOWN )
         , mLine( 0 )
         , mRow( 0 )
+        , mEndLine( 0 )
+        , mEndRow( 0 )
         , mChildCount( 0 )
     {
         pANTLR3_BASE_TREE tree = static_cast<pANTLR3_BASE_TREE>( nativeTree );
 
         pANTLR3_COMMON_TOKEN token = tree->getToken( tree );
         mTokenType = GFW::GetTokenType( token->getType( token ) );
-        mLine = token->getLine( token );
-        if ( mLine )
+        if ( token->getLine( token ) )
         {
             mString = reinterpret_cast< const char * >( token->getText( token )->chars );
+
+            mLine = token->getLine( token );
+            mEndLine = mLine;
+
             mRow = tree->getCharPositionInLine( tree );
+
+            // FIXME Strange behavior of ANTLR
+            if ( mLine == 1 && mRow > 0 )
+            {
+                mRow ++;
+            }
+
+            mEndRow = mRow + mString.size();
         }
 
         mChildCount = tree->getChildCount( tree );
@@ -86,6 +99,15 @@ namespace GFW {
         for ( uint32_t i = 0; i < mChildCount; ++ i )
         {
             mChildren[i] = new ParseTree( tree->getChild( tree, i ) );
+        }
+
+        if ( mChildCount > 0 )
+        {
+            mLine = mChildren[0]->GetLine();
+            mRow  = mChildren[0]->GetRow();
+
+            mEndLine = mChildren.back()->GetEndLine();
+            mEndRow  = mChildren.back()->GetEndRow();
         }
     }
 

@@ -1,4 +1,3 @@
-
 float4x4        g_WVP : WORLDVIEWPROJ;
 float4          g_Color;
 Texture2D       g_Texture;

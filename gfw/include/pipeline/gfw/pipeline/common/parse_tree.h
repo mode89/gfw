@@ -26,7 +26,37 @@ namespace GFW {
     T( SET_PIXEL_SHADER ) \
     T( SET_SHADER ) \
     T( SET_VERTEX_SHADER ) \
+    \
     T( VOID ) \
+    T( BOOL ) \
+    T( INT ) \
+    T( INT2 ) \
+    T( INT3 ) \
+    T( INT4 ) \
+    T( UINT ) \
+    T( UINT2 ) \
+    T( UINT3 ) \
+    T( UINT4 ) \
+    T( HALF ) \
+    T( HALF2 ) \
+    T( HALF3 ) \
+    T( HALF4 ) \
+    T( FLOAT ) \
+    T( FLOAT2 ) \
+    T( FLOAT3 ) \
+    T( FLOAT4 ) \
+    T( FLOAT21 ) \
+    T( FLOAT22 ) \
+    T( FLOAT23 ) \
+    T( FLOAT24 ) \
+    T( FLOAT31 ) \
+    T( FLOAT32 ) \
+    T( FLOAT33 ) \
+    T( FLOAT34 ) \
+    T( FLOAT41 ) \
+    T( FLOAT42 ) \
+    T( FLOAT43 ) \
+    T( FLOAT44 ) \
 
     enum TokenType
     {
@@ -73,6 +103,12 @@ namespace GFW {
         uint32_t
         GetRow() const { return mRow; }
 
+        uint32_t
+        GetEndLine() const { return mEndLine; }
+
+        uint32_t
+        GetEndRow() const { return mEndRow; }
+
         ConstParseTreeRef
         GetChild( uint32_t index = 0 ) const { return mChildren[index]; }
 
@@ -95,6 +131,8 @@ namespace GFW {
         TokenType       mTokenType;
         uint32_t        mLine;
         uint32_t        mRow;
+        uint32_t        mEndLine;
+        uint32_t        mEndRow;
 
         ParseTreeVec    mChildren;
         uint32_t        mChildCount;

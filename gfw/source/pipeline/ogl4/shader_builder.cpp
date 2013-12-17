@@ -21,15 +21,9 @@ namespace GFW {
         bool operator() ( ConstParseTreeRef tree )
         {
             TokenType tokenType = tree->GetTokenType();
+            std::string token = tree->ToString();
 
-            // Skip FX-specific stuff
-            if ( tokenType == TOKEN_TECHNIQUE_DEFINITION ||
-                 tokenType == TOKEN_SEMANTIC )
-            {
-                return false;
-            }
-
-            if ( tree->ToString() )
+            // Prepend the token with necessary whitespaces
             {
                 uint32_t line = tree->GetLine();
                 uint32_t row  = tree->GetRow();
@@ -44,13 +38,66 @@ namespace GFW {
                 {
                     mSource << ' ';
                 }
+            }
 
-                std::string token = tree->ToString();
+            // Skip FX-specific stuff
+            if ( tokenType == TOKEN_TECHNIQUE_DEFINITION ||
+                 tokenType == TOKEN_SEMANTIC )
+            {
+                // Move output position to the end of the token
+                {
+                    mLine = tree->GetEndLine();
+                    mRow = tree->GetEndRow();
+                }
+                return false;
+            }
+
+            TranslateIntrinsicType( token, tokenType );
+
+            // Output token if has symbolic representation
+            if ( !token.empty() )
+            {
                 mSource << token;
-                mRow += token.size();
+
+                // Move output position to the end of the token
+                {
+                    mLine = tree->GetEndLine();
+                    mRow = tree->GetEndRow();
+                }
             }
 
             return true;
+        }
+
+    private:
+
+        void TranslateIntrinsicType( std::string & token, TokenType tokenType )
+        {
+#define TYPES \
+    T( INT2, ivec2 ) \
+    T( INT3, ivec3 ) \
+    T( INT4, ivec4 ) \
+    T( UINT2, uvec2 ) \
+    T( UINT3, uvec3 ) \
+    T( UINT4, uvec4 ) \
+    T( HALF2, hvec2 ) \
+    T( HALF3, hvec3 ) \
+    T( HALF4, hvec4 ) \
+    T( FLOAT2, vec2 ) \
+    T( FLOAT3, vec3 ) \
+    T( FLOAT4, vec4 ) \
+    T( FLOAT22, mat2 ) \
+    T( FLOAT33, mat3 ) \
+    T( FLOAT44, mat4 ) \
+
+            switch ( tokenType )
+            {
+                #define T( type, gltype ) case TOKEN_ ## type : token = #gltype; return;
+                    TYPES
+                #undef T
+            }
+
+#undef TYPES
         }
 
     private:
