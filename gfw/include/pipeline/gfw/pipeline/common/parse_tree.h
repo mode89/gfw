@@ -18,8 +18,10 @@ namespace GFW {
     T( ID ) \
     T( PASS_DEFINITION ) \
     T( TECHNIQUE_DEFINITION ) \
+    T( TEXTURE_OBJECT ) \
     T( TEXTURE_SAMPLE_EXPRESSION ) \
     T( TRANSLATION_UNIT ) \
+    T( SAMPLER_OBJECT ) \
     T( SEMANTIC ) \
     T( SET_PIXEL_SHADER ) \
     T( SET_SHADER ) \

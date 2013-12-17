@@ -15,9 +15,11 @@ tokens {
     T_EXTERNAL_DECLARATION;
     T_FUNCTION_DEFINITION;
     T_PASS_DEFINITION;
+    T_SAMPLER_OBJECT;
     T_SEMANTIC;
     T_SET_SHADER;
     T_TECHNIQUE_DEFINITION;
+    T_TEXTURE_OBJECT;
     T_TEXTURE_SAMPLE_EXPRESSION;
     T_TRANSLATION_UNIT;
 }
@@ -262,11 +264,11 @@ texture_sample_expression
     ;
 
 texture_object
-    : T_ID
+    : T_ID -> ^( T_TEXTURE_OBJECT T_ID )
     ;
 
 sampler_object
-    : T_ID
+    : T_ID -> ^( T_SAMPLER_OBJECT T_ID )
     ;
 
 primary_expression
