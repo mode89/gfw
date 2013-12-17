@@ -10,6 +10,7 @@ options {
 tokens {
     T_ARGUMENT;
     T_ARGUMENTS_LIST;
+    T_ARGUMENT_EXPRESSION_LIST;
     T_ASSIGNMENT_EXPRESSION;
     T_EXTERNAL_DECLARATION;
     T_FUNCTION_DEFINITION;
@@ -213,7 +214,8 @@ type_id
 // E x p r e s s i o n s
 
 argument_expression_list
-    : assignment_expression ( T_COMMA assignment_expression )*
+    : assignment_expression ( T_COMMA assignment_expression )* ->
+        ^( T_ARGUMENT_EXPRESSION_LIST assignment_expression ( T_COMMA assignment_expression )* )
     ;
 
 additive_expression
