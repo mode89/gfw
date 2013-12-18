@@ -3,17 +3,26 @@
 #include "gfw/pipeline/shader_builder.h"
 #include "gfw/pipeline/validator.h"
 
+#include <algorithm>
 #include <cstring>
 #include <string>
 #include <sstream>
 
 namespace GFW {
 
+    typedef std::vector< ConstParseTreeRef > ParseTreeVec;
+
+    inline static bool CompareTreesByRef( const ConstParseTreeRef & t1, const ConstParseTreeRef & t2 )
+    {
+        return t1.GetPointer() < t2.GetPointer();
+    }
+
     class ConstructSourceVisitor
     {
     public:
-        ConstructSourceVisitor( std::stringstream & source )
+        ConstructSourceVisitor( std::stringstream & source, const ParseTreeVec & skipNodes )
             : mSource( source )
+            , mSkipNodes( skipNodes )
             , mLine( 1 )
             , mRow( 0 )
         {}
@@ -40,15 +49,9 @@ namespace GFW {
                 }
             }
 
-            // Skip FX-specific stuff
-            if ( tokenType == TOKEN_TECHNIQUE_DEFINITION ||
-                 tokenType == TOKEN_SEMANTIC )
+            // Skip node
+            if ( std::binary_search( mSkipNodes.begin(), mSkipNodes.end(), tree, CompareTreesByRef ) )
             {
-                // Move output position to the end of the token
-                {
-                    mLine = tree->GetEndLine();
-                    mRow = tree->GetEndRow();
-                }
                 return false;
             }
 
@@ -101,9 +104,10 @@ namespace GFW {
         }
 
     private:
-        std::stringstream & mSource;
-        uint32_t            mLine;
-        uint32_t            mRow;
+        std::stringstream &     mSource;
+        const ParseTreeVec &    mSkipNodes;
+        uint32_t                mLine;
+        uint32_t                mRow;
     };
 
     ShaderBuilder::ShaderBuilder( ConstParseTreeIn tree )
@@ -112,6 +116,9 @@ namespace GFW {
         AcquireValidator();
 
         mParseTree->TraverseDFS( *this, &ShaderBuilder::CollectFunctions );
+
+        mParseTree->TraverseDFS( *this, &ShaderBuilder::CollectFXNodes );
+        std::sort( mFXNodes.begin(), mFXNodes.end(), CompareTreesByRef );
     }
 
     ShaderBuilder::~ShaderBuilder()
@@ -148,7 +155,8 @@ namespace GFW {
                 << std::endl
                 << std::endl;
 
-        ConstructSourceVisitor constructSource( source );
+        ParseTreeVec skipNodes = mFXNodes;
+        ConstructSourceVisitor constructSource( source, skipNodes );
         mParseTree->TraverseDFS( constructSource );
 
         source << std::endl << std::endl;
@@ -284,6 +292,18 @@ namespace GFW {
                     }
                 }
             }
+            return false;
+        }
+
+        return true;
+    }
+
+    bool ShaderBuilder::CollectFXNodes( ConstParseTreeIn tree )
+    {
+        if ( tree->GetTokenType() == TOKEN_TECHNIQUE_DEFINITION ||
+             tree->GetTokenType() == TOKEN_SEMANTIC )
+        {
+            mFXNodes.push_back( tree );
             return false;
         }
 

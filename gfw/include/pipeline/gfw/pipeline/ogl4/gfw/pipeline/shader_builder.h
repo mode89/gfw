@@ -25,6 +25,9 @@ namespace GFW {
         bool
         CollectFunctions( ConstParseTreeIn );
 
+        bool
+        CollectFXNodes( ConstParseTreeIn );
+
     private:
         typedef std::vector< ConstParseTreeRef > ParseTreeMap;
 
@@ -47,6 +50,7 @@ namespace GFW {
         ConstParseTreeRef   mParseTree;
 
         FunctionMap         mFunctions;
+        ParseTreeMap        mFXNodes;
     };
     AUTOREF_REFERENCE_DECLARATION( ShaderBuilder );
 
