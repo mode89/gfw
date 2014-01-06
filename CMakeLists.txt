@@ -13,6 +13,7 @@ set( GFW_PLATFORM ogl4 )
 
 add_subdirectory( antlr )
 add_subdirectory( common )
+add_subdirectory( ga )
 add_subdirectory( gfw )
 add_subdirectory( gtest )
 add_subdirectory( profiler )
