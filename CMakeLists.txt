@@ -11,6 +11,7 @@ set( GFW_PLATFORM ogl4 )
 
 # Add necessary projects to the build tree
 
+add_subdirectory( ann )
 add_subdirectory( antlr )
 add_subdirectory( common )
 add_subdirectory( ga )
