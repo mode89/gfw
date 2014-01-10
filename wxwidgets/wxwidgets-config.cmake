@@ -1,0 +1,20 @@
+if("$ENV{WXWIN}" STREQUAL "")
+    message(WARNING "Failed to find wxWidgets path. Please, define environment variable WXWIN.")
+endif()
+
+add_library( wxbase IMPORTED )
+if ( MSVC )
+    set_property( TARGET wxbase PROPERTY IMPORTED_IMPLIB $ENV{WXWIN}/lib/vc_lib/wxbase30u.lib )
+elseif( MINGW )
+    set_property( TARGET wxbase PROPERTY IMPORTED_IMPLIB $ENV{WXWIN}/lib/gcc_lib/libwxbase30u.a )
+endif()
+
+add_library( wxcore IMPORTED )
+if ( MSVC )
+    set_property( TARGET wxcore PROPERTY IMPORTED_IMPLIB $ENV{WXWIN}/lib/vc_lib/wxmsw30u_core.lib )
+elseif( MINGW )
+    set_property( TARGET wxcore PROPERTY IMPORTED_IMPLIB $ENV{WXWIN}/lib/gcc_lib/libwxmsw30u_core.a )
+endif()
+
+set( WXWIDGETS_LIBRARIES wxbase wxcore )
+set( WXWIDGETS_INCLUDE_DIRS $ENV{WXWIN}/include )
