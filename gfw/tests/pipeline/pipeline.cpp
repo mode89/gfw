@@ -19,14 +19,8 @@ public:
     }
 };
 
-TEST_F(GfwPipelineTests, Parse)
+TEST_F(GfwPipelineTests, Draw)
 {
     EffectBuilderRef effectBuilder = new EffectBuilder;
-    EffectBinaryRef  effectBinary  = effectBuilder->Build(TESTS_DIR "draw.fx" );
-}
-
-TEST_F( GfwPipelineTests, Soldier )
-{
-    EffectBuilderRef effectBuilder = new EffectBuilder;
-    EffectBinaryRef  effectBinary  = effectBuilder->Build( TESTS_DIR "soldier.fx" );
+    EffectBinaryRef  effectBinary  = effectBuilder->Build( TESTS_DATA_DIR "draw.fx" );
 }

@@ -8,6 +8,11 @@ float4 VS( float4 pos : POSITION ) : SV_POSITION
     return mul( pos, g_WVP );
 }
 
+float4 PS_Red() : SV_TARGET
+{
+    return float4(1.0f, 0.0f, 0.0f, 1.0f);
+}
+
 float4 PS_Colored() : SV_TARGET
 {
     return g_Color;
@@ -40,7 +45,16 @@ float4 PS_Textured( VS_TEXTURED_OUTPUT inputs ) : SV_TARGET
     return g_Texture.Sample( g_Sampler, inputs.uv );
 }
 
-technique10 RenderColored
+technique10 DrawRed
+{
+    pass p0
+    {
+        SetVertexShader( CompileShader( vs_4_0, VS() ) );
+        SetPixelShader( CompileShader( ps_4_0, PS_Red() ) );
+    }
+}
+
+technique10 DrawColored
 {
     pass p0
     {
@@ -49,7 +63,7 @@ technique10 RenderColored
     }
 }
 
-technique10 RenderTextured
+technique10 DrawTextured
 {
     pass p0
     {

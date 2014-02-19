@@ -28,7 +28,7 @@ TEST_F(GfwTests, Draw)
 {
     // Create effect
 
-    IEffectRef effect = mFactory->CreateEffect(TESTS_SOURCE_DIR "draw.fx");
+    IEffectRef effect = mFactory->CreateEffect(TESTS_DATA_DIR "draw.fx");
 
     // Create geometry
 
@@ -93,7 +93,7 @@ TEST_F(GfwTests, DrawIndexed)
 {
     // Create effect
 
-    IEffectRef effect = mFactory->CreateEffect(TESTS_SOURCE_DIR "draw.fx");
+    IEffectRef effect = mFactory->CreateEffect(TESTS_DATA_DIR "draw.fx");
 
     // Create geometry
 
@@ -206,7 +206,7 @@ struct Vertex
 
 TEST_F(GfwTests, CreateMesh)
 {
-    IEffectRef effect = mFactory->CreateEffect(TESTS_SOURCE_DIR "draw_color_flat.fx");
+    IEffectRef effect = mFactory->CreateEffect(TESTS_DATA_DIR "draw_color_flat.fx");
 
     float    xLeft     = -1.0f;
     float    yBottom   = -1.0f;
@@ -411,8 +411,8 @@ TEST_F(GfwTests, RenderTarget)
 
     // Create effect
 
-    IEffectRef fxRed     = mFactory->CreateEffect(TESTS_SOURCE_DIR "draw_red.fx");
-    IEffectRef fxTexture = mFactory->CreateEffect(TESTS_SOURCE_DIR "draw_texture.fx");
+    IEffectRef fxRed     = mFactory->CreateEffect(TESTS_DATA_DIR "draw_red.fx");
+    IEffectRef fxTexture = mFactory->CreateEffect(TESTS_DATA_DIR "draw_texture.fx");
 
     // Create geometry
 

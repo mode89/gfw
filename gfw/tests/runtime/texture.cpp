@@ -4,7 +4,7 @@ using namespace GFW;
 
 TEST_F(GfwTests, Texture)
 {
-    IEffectRef effect = mFactory->CreateEffect(TESTS_SOURCE_DIR "draw_texture.fx");
+    IEffectRef effect = mFactory->CreateEffect(TESTS_DATA_DIR "draw_texture.fx");
 
     const uint32_t width  = 32;
     const uint32_t cells  = 4;
