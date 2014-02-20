@@ -53,10 +53,10 @@ namespace GFW {
 
     bool EffectBuilder::ProcessTechniques( ConstParseTreeIn tree )
     {
-        if ( tree->GetTokenType() == TOKEN_EXTERNAL_DECLARATION )
+        if ( tree->GetTokenType() == T_EXTERNAL_DECLARATION )
         {
             ConstParseTreeRef child = tree->GetChild();
-            if ( child->GetTokenType() == TOKEN_TECHNIQUE_DEFINITION )
+            if ( child->GetTokenType() == T_TECHNIQUE_DEFINITION )
             {
                 InternedString name = mStringTable->Resolve( child->GetChild()->ToString() );
 
@@ -82,7 +82,7 @@ namespace GFW {
 
     bool EffectBuilder::ProcessPasses( ConstParseTreeIn tree )
     {
-        if ( tree->GetTokenType() == TOKEN_PASS_DEFINITION )
+        if ( tree->GetTokenType() == T_PASS_DEFINITION )
         {
             InternedString name = mStringTable->Resolve( tree->GetChild()->ToString() );
 
@@ -100,13 +100,13 @@ namespace GFW {
 
     bool EffectBuilder::ProcessShaders( ConstParseTreeIn tree )
     {
-        if ( tree->GetTokenType() == TOKEN_SET_SHADER )
+        if ( tree->GetTokenType() == T_SET_SHADER )
         {
             ConstParseTreeRef shader = tree->GetChild( 1 );
 
             InternedString name;
             InternedString profile;
-            if ( shader->GetTokenType() == TOKEN_COMPILE_SHADER )
+            if ( shader->GetTokenType() == T_COMPILE_SHADER )
             {
                 name = mStringTable->Resolve( shader->GetChild( 1 )->ToString() );
                 profile = mStringTable->Resolve( shader->GetChild( 0 )->ToString() );
@@ -126,10 +126,10 @@ namespace GFW {
             ConstParseTreeRef shaderType = tree->GetChild( 0 );
             switch ( shaderType->GetTokenType() )
             {
-            case TOKEN_SET_VERTEX_SHADER:
+            case T_SET_VERTEX_SHADER:
                 pass->mShaders[ ShaderStage::VERTEX ] = shaderIndex;
                 break;
-            case TOKEN_SET_PIXEL_SHADER:
+            case T_SET_PIXEL_SHADER:
                 pass->mShaders[ ShaderStage::PIXEL ] = shaderIndex;
                 break;
             default:

@@ -7,20 +7,6 @@
 
 namespace GFW {
 
-    static TokenType GetTokenType( uint32_t nativeType )
-    {
-        switch ( nativeType )
-        {
-#define T(token) case T_ ## token : return TOKEN_ ## token;
-            TOKENS
-#undef T
-        default:
-            break;
-        }
-
-        return TOKEN_UNKNOWN;
-    }
-
     ConstParseTreeRef CreateParseTree(  const char * fileName )
     {
         pANTLR3_UINT8               fName       = (pANTLR3_UINT8) fileName;
@@ -65,7 +51,7 @@ namespace GFW {
     }
 
     ParseTree::ParseTree( void * nativeTree )
-        : mTokenType( TOKEN_UNKNOWN )
+        : mTokenType( T_UNKNOWN )
         , mLine( 0 )
         , mRow( 0 )
         , mEndLine( 0 )
@@ -75,7 +61,7 @@ namespace GFW {
         pANTLR3_BASE_TREE tree = static_cast<pANTLR3_BASE_TREE>( nativeTree );
 
         pANTLR3_COMMON_TOKEN token = tree->getToken( tree );
-        mTokenType = GFW::GetTokenType( token->getType( token ) );
+        mTokenType = static_cast<TokenType>( token->getType( token ) );
         if ( token->getLine( token ) )
         {
             mString = reinterpret_cast< const char * >( token->getText( token )->chars );
