@@ -6,11 +6,15 @@
 
 // Software breakpoint
 
-#if PLAT_COMPILER_MSVC
-#define TRACE_DEBUG_BREAK()     Trace::DebugBreak();
-#elif PLAT_COMPILER_MINGW
-#define TRACE_DEBUG_BREAK()     asm("int $3")
-#endif // Determine the compiler
+#if PLAT_DEBUG
+    #if PLAT_COMPILER_MSVC
+        #define TRACE_DEBUG_BREAK()     Trace::DebugBreak();
+    #elif PLAT_COMPILER_MINGW
+        #define TRACE_DEBUG_BREAK()     asm("int $3")
+    #endif // Determine the compiler
+#else
+    #define TRACE_DEBUG_BREAK()
+#endif
 
 // Failing
 
