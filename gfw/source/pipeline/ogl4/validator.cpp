@@ -165,7 +165,7 @@ namespace GFW {
             {
                 char infoLog[1024] = { 0 };
                 TRACE_GL( glGetShaderInfoLog, shader, sizeof( infoLog ), NULL, infoLog );
-                TRACE_DEBUG_BREAK();
+                TRACE_MESSAGE_FORMATTED( "Shader compilation log:\n%s", infoLog );
             }
 
             TRACE_GL( glDeleteShader, shader );
