@@ -7,7 +7,7 @@
 // Software breakpoint
 
 #if PLAT_COMPILER_MSVC
-#define TRACE_DEBUG_BREAK()     __debugbreak()
+#define TRACE_DEBUG_BREAK()     Trace::DebugBreak();
 #elif PLAT_COMPILER_MINGW
 #define TRACE_DEBUG_BREAK()     asm("int $3")
 #endif // Determine the compiler
@@ -92,6 +92,10 @@ namespace Trace {
     // Subroutine to show a formatted message
 
     void Message(const char8_t * format, ...);
+
+#if PLAT_COMPILER_MSVC
+    void DebugBreak();
+#endif
 
 } // namespace Trace
 
