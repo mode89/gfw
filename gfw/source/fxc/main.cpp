@@ -36,45 +36,56 @@ int main( int argc, const char * argv[] )
     std::string fxFile;
     std::string outputFile;
 
-    for ( int i = 1; i < argc; ++ i )
+    try
     {
-        const char * arg = argv[i];
-        if ( std::strcmp( "-fx", arg ) == 0 )
+        for ( int i = 1; i < argc; ++ i )
         {
-            if ( ++i < argc )
+            const char * arg = argv[i];
+            if ( std::strcmp( "-fx", arg ) == 0 )
             {
-                fxFile = argv[i];
+                if ( ++i < argc )
+                {
+                    fxFile = argv[i];
+                }
+                else
+                {
+                    TRACE_ERROR( "Missed filename after -fx option" );
+                }
+            }
+            else if ( std::strcmp( "-o", arg ) == 0 )
+            {
+                if ( ++i < argc )
+                {
+                    outputFile = argv[i];
+                }
+                else
+                {
+                    TRACE_ERROR( "Missed filename after -o option" );
+                }
             }
             else
             {
-                TRACE_ERROR( "Missed filename after -fx option" );
-                PrintHelp();
-                return -1;
+                TRACE_ERROR_FORMATTED( "Unknown command line argument '%s'", arg );
             }
-        }
-        else if ( std::strcmp( "-o", arg ) == 0 )
-        {
-            if ( ++i < argc )
-            {
-                outputFile = argv[i];
-            }
-            else
-            {
-                TRACE_ERROR( "Missed filename after -o option" );
-                PrintHelp();
-                return -1;
-            }
-        }
-        else
-        {
-            TRACE_ERROR_FORMATTED( "Unknown command line argument '%s'", arg );
-            PrintHelp();
-            return -1;
         }
     }
+    catch (...)
+    {
+        return -1;
+    }
 
-    EffectBuilderRef effectBuilder = new EffectBuilder;
-    EffectBinaryRef effectBinary = effectBuilder->Build( fxFile.c_str() );
+    EffectBuilderRef effectBuilder;
+    EffectBinaryRef effectBinary;
+
+    try
+    {
+        effectBuilder = new EffectBuilder;
+        effectBinary = effectBuilder->Build( fxFile.c_str() );
+    }
+    catch (...)
+    {
+        return -1;
+    }
 
     std::ofstream fileStream( outputFile, std::ios_base::out | std::ios_base::binary );
     {

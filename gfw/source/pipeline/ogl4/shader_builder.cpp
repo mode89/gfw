@@ -245,8 +245,7 @@ namespace GFW {
         }
         source << "}\n";
 
-        std::string validationErrors;
-        Validate( stage, source.str().c_str(), validationErrors );
+        Validate( stage, source.str().c_str() );
 
         // Construct binary
 

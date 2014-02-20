@@ -13,7 +13,7 @@ namespace GFW {
     ReleaseValidator();
 
     void
-    Validate( ShaderStage stage, const char * source, std::string & errors );
+    Validate( ShaderStage stage, const char * source );
 
 } // namespace GFW
 

@@ -134,9 +134,11 @@ namespace GFW {
         }
     }
 
-    void Validate( ShaderStage stage, const char * source, std::string & errors )
+    void Validate( ShaderStage stage, const char * source )
     {
         TRACE_ASSERT( source != NULL );
+
+        int32_t compileStatus = GL_FALSE;
 
         wglMakeCurrent( sHdc, sHrc );
         {
@@ -157,28 +159,23 @@ namespace GFW {
             TRACE_GL( glShaderSource, shader, 1, &source, NULL );
             TRACE_GL( glCompileShader, shader );
 
-            int32_t compileStatus = 0;
             TRACE_GL( glGetShaderiv, shader, GL_COMPILE_STATUS, &compileStatus );
 
             if ( compileStatus == GL_FALSE )
             {
-                int32_t infoLogLength = 0;
-                TRACE_GL( glGetShaderiv, shader, GL_INFO_LOG_LENGTH, &infoLogLength );
-
-                char * infoLog = new char [infoLogLength + 1];
-                TRACE_GL( glGetShaderInfoLog, shader, infoLogLength, NULL, infoLog );
-
-                infoLog[infoLogLength] = 0;
-                errors = infoLog;
-
-                TRACE_FAIL();
-
-                delete infoLog;
+                char infoLog[1024] = { 0 };
+                TRACE_GL( glGetShaderInfoLog, shader, sizeof( infoLog ), NULL, infoLog );
+                TRACE_DEBUG_BREAK();
             }
 
             TRACE_GL( glDeleteShader, shader );
         }
         wglMakeCurrent( sHdc, NULL );
+
+        if ( compileStatus == GL_FALSE )
+        {
+            TRACE_ERROR( "Failed to validate the shader." );
+        }
     }
 
 } // namespace GFW
