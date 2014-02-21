@@ -28,15 +28,22 @@ namespace GFW {
         bool
         CollectFXNodes( ConstParseTreeIn );
 
+        bool
+        CollectVariables( ConstParseTreeIn );
+
     private:
-        typedef std::vector< ConstParseTreeRef > ParseTreeMap;
+        struct Function;
+
+        typedef std::vector< ConstParseTreeRef > ParseTreeVec;
+        typedef std::unordered_map< std::string, ConstParseTreeRef > ParseTreeMap;
+        typedef std::unordered_map< std::string, Function > FunctionMap;
 
         struct Function
         {
             ConstParseTreeRef   tree;
             ConstParseTreeRef   ret;
             ConstParseTreeRef   sem;
-            ParseTreeMap        args;
+            ParseTreeVec        args;
 
             Function()
                 : tree( NULL )
@@ -45,12 +52,11 @@ namespace GFW {
             {}
         };
 
-        typedef std::unordered_map< std::string, Function > FunctionMap;
-
         ConstParseTreeRef   mParseTree;
 
         FunctionMap         mFunctions;
-        ParseTreeMap        mFXNodes;
+        ParseTreeVec        mFXNodes;
+        ParseTreeMap        mVariables;
     };
     AUTOREF_REFERENCE_DECLARATION( ShaderBuilder );
 

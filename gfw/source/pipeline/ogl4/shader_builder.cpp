@@ -119,6 +119,8 @@ namespace GFW {
 
         mParseTree->TraverseDFS( *this, &ShaderBuilder::CollectFXNodes );
         std::sort( mFXNodes.begin(), mFXNodes.end(), CompareTreesByRef );
+
+        mParseTree->TraverseDFS( *this, &ShaderBuilder::CollectVariables );
     }
 
     ShaderBuilder::~ShaderBuilder()
@@ -293,7 +295,6 @@ namespace GFW {
             }
             return false;
         }
-
         return true;
     }
 
@@ -305,7 +306,21 @@ namespace GFW {
             mFXNodes.push_back( tree );
             return false;
         }
+        return true;
+    }
 
+    bool ShaderBuilder::CollectVariables( ConstParseTreeIn tree )
+    {
+        if ( tree->GetTokenType() == T_EXTERNAL_DECLARATION )
+        {
+            ConstParseTreeRef child = tree->GetChild();
+            if ( child->GetTokenType() == T_VARIABLE_DEFINITION )
+            {
+                ConstParseTreeRef name = child->GetFirstChildWithType( T_ID );
+                mVariables[name->ToString()] = child;
+            }
+            return false;
+        }
         return true;
     }
 
