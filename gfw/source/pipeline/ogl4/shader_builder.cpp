@@ -271,7 +271,7 @@ namespace GFW {
             ConstParseTreeRef child = tree->GetChild();
             if ( child->GetTokenType() == TOKEN_FUNCTION_DEFINITION )
             {
-                ConstParseTreeRef name = child->GetFirstChildWithType( TOKEN_ID );
+                ConstParseTreeRef name = child->GetFirstChildWithType( TOKEN_SYMBOL_NAME )->GetChild();
 
                 Function & func = mFunctions[ name->ToString() ];
 
@@ -317,7 +317,7 @@ namespace GFW {
             if ( child->GetTokenType() == TOKEN_VARIABLE_DEFINITION ||
                  child->GetTokenType() == TOKEN_STATE_OBJECT_DEFINITION )
             {
-                ConstParseTreeRef name = child->GetFirstChildWithType( TOKEN_ID );
+                ConstParseTreeRef name = child->GetFirstChildWithType( TOKEN_SYMBOL_NAME )->GetChild();
                 mVariables[name->ToString()] = child;
             }
             return false;

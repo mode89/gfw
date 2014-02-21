@@ -19,6 +19,7 @@ tokens {
     T_SEMANTIC;
     T_SET_SHADER;
     T_STATE_OBJECT_DEFINITION;
+    T_SYMBOL_NAME;
     T_TECHNIQUE_DEFINITION;
     T_TEXTURE_OBJECT;
     T_TEXTURE_SAMPLE_EXPRESSION;
@@ -45,8 +46,8 @@ external_declaration
     ;
 
 state_object_definition
-    : state_object_type T_ID ( T_LCURLY state_list T_RCURLY )? T_SEMI
-        -> ^( T_STATE_OBJECT_DEFINITION state_object_type T_ID ( T_LCURLY state_list T_RCURLY )? T_SEMI )
+    : state_object_type symbol_name ( T_LCURLY state_list T_RCURLY )? T_SEMI
+        -> ^( T_STATE_OBJECT_DEFINITION state_object_type symbol_name ( T_LCURLY state_list T_RCURLY )? T_SEMI )
     ;
 
 state_list
@@ -61,8 +62,8 @@ state_object_type
     ;
 
 variable_definition
-    : type_specifier T_ID semantic? register_binding? T_SEMI
-        -> ^( T_VARIABLE_DEFINITION type_specifier T_ID semantic? register_binding? T_SEMI )
+    : type_specifier symbol_name semantic? register_binding? T_SEMI
+        -> ^( T_VARIABLE_DEFINITION type_specifier symbol_name semantic? register_binding? T_SEMI )
     ;
 
 cbuffer_definition
@@ -91,8 +92,8 @@ struct_declaration_list
     ;
 
 function_definition
-    : type_specifier T_ID T_LPAREN arguments_list? T_RPAREN semantic? compound_statement
-        -> ^( T_FUNCTION_DEFINITION type_specifier T_ID T_LPAREN arguments_list? T_RPAREN semantic? compound_statement )
+    : type_specifier symbol_name T_LPAREN arguments_list? T_RPAREN semantic? compound_statement
+        -> ^( T_FUNCTION_DEFINITION type_specifier symbol_name T_LPAREN arguments_list? T_RPAREN semantic? compound_statement )
     ;
 
 arguments_list
@@ -206,6 +207,11 @@ texture_type_specifier
 
 buffer_type_specifier
     : T_BUFFER T_LT ( scalar_type_specifier | vector_type_specifier | matrix_type_specifier ) T_GT
+    ;
+
+symbol_name
+    : T_ID
+        -> ^( T_SYMBOL_NAME T_ID )
     ;
 
 type_id
