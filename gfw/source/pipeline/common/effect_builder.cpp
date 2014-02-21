@@ -23,6 +23,10 @@ namespace GFW {
 
         mStringTable = new StringTable;
 
+        // Collect symbols
+
+        tree->TraverseDFS( *mSymbolTable, &SymbolTable::CollectSymbol );
+
         // Process techniques
 
         tree->TraverseDFS( *this, &EffectBuilder::ProcessTechniques );

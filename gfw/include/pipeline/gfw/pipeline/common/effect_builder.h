@@ -4,6 +4,7 @@
 #include "common/autoref.h"
 #include "common/string_table.h"
 #include "gfw/pipeline/common/shader_builder.h"
+#include "gfw/pipeline/common/symbol_table.h"
 #include "gfw/shared/effect.h"
 
 #include <unordered_map>
@@ -44,6 +45,7 @@ namespace GFW {
         PassBinaryVec           mPasses;
         TechniqueBinaryVec      mTechniques;
         ShaderBinaryVec         mShaders;
+        SymbolTableRef          mSymbolTable;
     };
     AUTOREF_REFERENCE_DECLARATION(EffectBuilder);
 
