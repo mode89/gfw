@@ -22,6 +22,7 @@ tokens {
     T_TEXTURE_OBJECT;
     T_TEXTURE_SAMPLE_EXPRESSION;
     T_TRANSLATION_UNIT;
+    T_VARIABLE_DEFINITION;
 }
 
 // R u l e s
@@ -64,6 +65,7 @@ state_type
 
 variable_definition
     : type_specifier T_ID semantic? register_binding? T_SEMI
+        -> ^( T_VARIABLE_DEFINITION type_specifier T_ID semantic? register_binding? T_SEMI )
     ;
 
 cbuffer_definition
