@@ -95,7 +95,7 @@ namespace GFW {
 
             switch ( tokenType )
             {
-                #define T( type, gltype ) case T_ ## type : token = #gltype; return;
+                #define T( type, gltype ) case TOKEN_ ## type : token = #gltype; return;
                     TYPES
                 #undef T
             }
@@ -179,7 +179,7 @@ namespace GFW {
             source << "; // ";
             source << arg->GetChild( 1 )->ToString();
 
-            ConstParseTreeRef semantic = arg->GetFirstChildWithType( T_SEMANTIC );
+            ConstParseTreeRef semantic = arg->GetFirstChildWithType( TOKEN_SEMANTIC );
             if ( semantic.IsAttached() )
             {
                 source << " : ";
@@ -205,7 +205,7 @@ namespace GFW {
         {
             // Call the shader
 
-            if ( entryPoint.ret->GetTokenType() != T_VOID )
+            if ( entryPoint.ret->GetTokenType() != TOKEN_VOID )
             {
                 source << entryPoint.ret->ToString();
                 source << " outp = ";
@@ -228,7 +228,7 @@ namespace GFW {
 
             // Assign outputs
 
-            if ( entryPoint.ret->GetTokenType() != T_VOID )
+            if ( entryPoint.ret->GetTokenType() != TOKEN_VOID )
             {
                 if ( entryPoint.sem.IsAttached() )
                 {
@@ -266,27 +266,27 @@ namespace GFW {
 
     bool ShaderBuilder::CollectFunctions( ConstParseTreeIn tree )
     {
-        if ( tree->GetTokenType() == T_EXTERNAL_DECLARATION )
+        if ( tree->GetTokenType() == TOKEN_EXTERNAL_DECLARATION )
         {
             ConstParseTreeRef child = tree->GetChild();
-            if ( child->GetTokenType() == T_FUNCTION_DEFINITION )
+            if ( child->GetTokenType() == TOKEN_FUNCTION_DEFINITION )
             {
-                ConstParseTreeRef name = child->GetFirstChildWithType( T_ID );
+                ConstParseTreeRef name = child->GetFirstChildWithType( TOKEN_ID );
 
                 Function & func = mFunctions[ name->ToString() ];
 
                 func.tree = child;
                 func.ret  = child->GetChild();
-                func.sem  = child->GetFirstChildWithType( T_SEMANTIC );
+                func.sem  = child->GetFirstChildWithType( TOKEN_SEMANTIC );
 
                 // Collect arguments
 
-                ConstParseTreeRef args = child->GetFirstChildWithType( T_ARGUMENTS_LIST );
+                ConstParseTreeRef args = child->GetFirstChildWithType( TOKEN_ARGUMENTS_LIST );
                 if ( args.IsAttached() )
                 {
                     for ( uint32_t i = 0; i < args->GetChildCount(); ++ i )
                     {
-                        if ( args->GetChild(i)->GetTokenType() == T_ARGUMENT )
+                        if ( args->GetChild(i)->GetTokenType() == TOKEN_ARGUMENT )
                         {
                             func.args.push_back( args->GetChild(i) );
                         }
@@ -300,8 +300,8 @@ namespace GFW {
 
     bool ShaderBuilder::CollectFXNodes( ConstParseTreeIn tree )
     {
-        if ( tree->GetTokenType() == T_TECHNIQUE_DEFINITION ||
-             tree->GetTokenType() == T_SEMANTIC )
+        if ( tree->GetTokenType() == TOKEN_TECHNIQUE_DEFINITION ||
+             tree->GetTokenType() == TOKEN_SEMANTIC )
         {
             mFXNodes.push_back( tree );
             return false;
@@ -311,13 +311,13 @@ namespace GFW {
 
     bool ShaderBuilder::CollectVariables( ConstParseTreeIn tree )
     {
-        if ( tree->GetTokenType() == T_EXTERNAL_DECLARATION )
+        if ( tree->GetTokenType() == TOKEN_EXTERNAL_DECLARATION )
         {
             ConstParseTreeRef child = tree->GetChild();
-            if ( child->GetTokenType() == T_VARIABLE_DEFINITION ||
-                 child->GetTokenType() == T_STATE_OBJECT_DEFINITION )
+            if ( child->GetTokenType() == TOKEN_VARIABLE_DEFINITION ||
+                 child->GetTokenType() == TOKEN_STATE_OBJECT_DEFINITION )
             {
-                ConstParseTreeRef name = child->GetFirstChildWithType( T_ID );
+                ConstParseTreeRef name = child->GetFirstChildWithType( TOKEN_ID );
                 mVariables[name->ToString()] = child;
             }
             return false;

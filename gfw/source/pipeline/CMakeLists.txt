@@ -44,15 +44,11 @@ include_directories( ${SERIALIZATION_INCLUDE_DIRS} )
 
 set( GFW_PIPELINE_FX_GRAMMAR_FILE ${GFW_PIPELINE_SOURCE_DIR}/common/FX.g )
 add_custom_command(
-    OUTPUT FXLexer.c FXParser.c FX.tokens
+    OUTPUT FXLexer.c FXParser.c
     COMMAND java -jar ${ANTLR_TOOL} -make -language C ${GFW_PIPELINE_FX_GRAMMAR_FILE}
     DEPENDS ${GFW_PIPELINE_FX_GRAMMAR_FILE} )
-add_custom_command(
-    OUTPUT FXTokens.h
-    COMMAND ${ANTLR_TOK2DEF} FX.tokens FXTokens.h
-    DEPENDS FX.tokens )
 add_custom_target( gfw_pipeline_parser ALL
-    DEPENDS FXLexer.c FXParser.c FXTokens.h
+    DEPENDS FXLexer.c FXParser.c
     SOURCES ${GFW_PIPELINE_FX_GRAMMAR_FILE} )
 add_dependencies( gfw_pipeline gfw_pipeline_parser )
 

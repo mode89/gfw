@@ -8,12 +8,62 @@
 
 namespace GFW {
 
-    #include "FXTokens.h"
+#define TOKENS \
+    T( ARGUMENT ) \
+    T( ARGUMENTS_LIST ) \
+    T( ARGUMENT_EXPRESSION_LIST ) \
+    T( COMPILE_SHADER ) \
+    T( EXTERNAL_DECLARATION ) \
+    T( FUNCTION_DEFINITION ) \
+    T( ID ) \
+    T( PASS_DEFINITION ) \
+    T( SAMPLER_OBJECT ) \
+    T( SEMANTIC ) \
+    T( SET_PIXEL_SHADER ) \
+    T( SET_SHADER ) \
+    T( SET_VERTEX_SHADER ) \
+    T( STATE_OBJECT_DEFINITION ) \
+    T( TECHNIQUE_DEFINITION ) \
+    T( TEXTURE_OBJECT ) \
+    T( TEXTURE_SAMPLE_EXPRESSION ) \
+    T( TRANSLATION_UNIT ) \
+    T( VARIABLE_DEFINITION ) \
+    \
+    T( VOID ) \
+    T( BOOL ) \
+    T( INT ) \
+    T( INT2 ) \
+    T( INT3 ) \
+    T( INT4 ) \
+    T( UINT ) \
+    T( UINT2 ) \
+    T( UINT3 ) \
+    T( UINT4 ) \
+    T( HALF ) \
+    T( HALF2 ) \
+    T( HALF3 ) \
+    T( HALF4 ) \
+    T( FLOAT ) \
+    T( FLOAT2 ) \
+    T( FLOAT3 ) \
+    T( FLOAT4 ) \
+    T( FLOAT21 ) \
+    T( FLOAT22 ) \
+    T( FLOAT23 ) \
+    T( FLOAT24 ) \
+    T( FLOAT31 ) \
+    T( FLOAT32 ) \
+    T( FLOAT33 ) \
+    T( FLOAT34 ) \
+    T( FLOAT41 ) \
+    T( FLOAT42 ) \
+    T( FLOAT43 ) \
+    T( FLOAT44 ) \
 
     enum TokenType
     {
-        T_UNKNOWN = 0,
-#define T(token, num) token = num,
+        TOKEN_UNKNOWN = 0,
+#define T(token) TOKEN_ ## token,
         TOKENS
 #undef T
     };
