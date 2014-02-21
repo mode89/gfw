@@ -314,7 +314,8 @@ namespace GFW {
         if ( tree->GetTokenType() == T_EXTERNAL_DECLARATION )
         {
             ConstParseTreeRef child = tree->GetChild();
-            if ( child->GetTokenType() == T_VARIABLE_DEFINITION )
+            if ( child->GetTokenType() == T_VARIABLE_DEFINITION ||
+                 child->GetTokenType() == T_STATE_OBJECT_DEFINITION )
             {
                 ConstParseTreeRef name = child->GetFirstChildWithType( T_ID );
                 mVariables[name->ToString()] = child;

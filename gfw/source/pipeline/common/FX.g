@@ -18,6 +18,7 @@ tokens {
     T_SAMPLER_OBJECT;
     T_SEMANTIC;
     T_SET_SHADER;
+    T_STATE_OBJECT_DEFINITION;
     T_TECHNIQUE_DEFINITION;
     T_TEXTURE_OBJECT;
     T_TEXTURE_SAMPLE_EXPRESSION;
@@ -40,23 +41,19 @@ external_declaration
     | struct_definition
     | cbuffer_definition
     | variable_definition
-    | state_definition
-    | state_declaration
+    | state_object_definition
     ;
 
-state_declaration
-    : state_type T_ID T_SEMI
-    ;
-
-state_definition
-    : state_type T_ID T_LCURLY state_list T_RCURLY T_SEMI
+state_object_definition
+    : state_object_type T_ID ( T_LCURLY state_list T_RCURLY )? T_SEMI
+        -> ^( T_STATE_OBJECT_DEFINITION state_object_type T_ID ( T_LCURLY state_list T_RCURLY )? T_SEMI )
     ;
 
 state_list
     : ( T_ID T_ASSIGN ( T_ID | T_HEX_LITERAL | T_DECIMAL_LITERAL ) T_SEMI )+
     ;
 
-state_type
+state_object_type
     : T_BLENDSTATE
     | T_DEPTHSTENCILSTATE
     | T_RASTERIZERSTATE
