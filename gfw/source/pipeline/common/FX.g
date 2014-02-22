@@ -12,6 +12,7 @@ tokens {
     T_ARGUMENTS_LIST;
     T_ARGUMENT_EXPRESSION_LIST;
     T_ASSIGNMENT_EXPRESSION;
+    T_COMPOUND_STATEMENT;
     T_EXTERNAL_DECLARATION;
     T_FUNCTION_DEFINITION;
     T_PASS_DEFINITION;
@@ -379,6 +380,7 @@ statement
 
 compound_statement
     : T_LCURLY ( statement )* T_RCURLY
+        -> ^( T_COMPOUND_STATEMENT T_LCURLY ( statement )* T_RCURLY )
     ;
 
 declaration_statement
