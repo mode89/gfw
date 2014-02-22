@@ -13,6 +13,8 @@ namespace GFW {
     class Symbol
     {
     public:
+        typedef std::vector< const Symbol * > References;
+
         Symbol()
             : mName( NULL )
             , mFlags( 0 )
@@ -29,6 +31,15 @@ namespace GFW {
 
         const char *
         GetName() const { return mName; }
+
+        TokenType
+        GetTokenType() const { return mTree->GetTokenType(); }
+
+        ConstParseTreeRef
+        GetTree() const { return mTree; }
+
+        const References &
+        GetReferences() const { return mReferences; }
 
 #define F( name ) bool Is ## name () const { return ( mFlags & ( 1 << name ) ) != 0; }
         SYMBOL_FLAGS
@@ -49,9 +60,10 @@ namespace GFW {
 #undef F
         };
 
-        ConstParseTreeRef mTree;
-        const char *      mName;
-        uint32_t          mFlags;
+        ConstParseTreeRef   mTree;
+        const char *        mName;
+        uint32_t            mFlags;
+        References          mReferences;
 
         friend class SymbolTable;
     };
@@ -59,11 +71,13 @@ namespace GFW {
     class SymbolTable : public Common::ARefCounted
     {
     public:
+        SymbolTable( ConstParseTreeIn );
+
         bool
         CollectSymbol( ConstParseTreeIn );
 
-        const Symbol *
-        LookupSymbol( const char * name ) const;
+        void
+        LookupSymbol( const char * name, Symbol::References & result ) const;
 
     private:
         void

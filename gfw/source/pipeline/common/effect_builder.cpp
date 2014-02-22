@@ -25,8 +25,7 @@ namespace GFW {
 
         // Collect symbols
 
-        mSymbolTable = new SymbolTable;
-        tree->TraverseDFS( *mSymbolTable, &SymbolTable::CollectSymbol );
+        mSymbolTable = new SymbolTable( tree );
 
         // Process techniques
 
