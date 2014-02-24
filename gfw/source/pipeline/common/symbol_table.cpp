@@ -127,7 +127,7 @@ namespace GFW {
         return true;
     }
 
-    void SymbolTable::LookupSymbol( const char * name, Symbol::References & result ) const
+    bool SymbolTable::LookupSymbol( const char * name, Symbol::References & result ) const
     {
         Symbol symbol;
         symbol.mName = name;
@@ -139,7 +139,9 @@ namespace GFW {
             {
                 result.push_back( &(*it) );
             }
+            return true;
         }
+        return false;
     }
 
     void SymbolTable::AddSymbol( const Symbol & symbol )
