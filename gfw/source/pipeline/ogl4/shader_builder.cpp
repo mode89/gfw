@@ -110,8 +110,51 @@ namespace GFW {
         uint32_t                mRow;
     };
 
-    ShaderBuilder::ShaderBuilder( ConstParseTreeIn tree )
+    class CollectTextureSampleExpressionsVisitor
+    {
+    public:
+        CollectTextureSampleExpressionsVisitor(
+            ConstSymbolTableIn symbolTable,
+            ShaderBuilder::TextureSamplerPairSet & textureSamplerPairSet )
+            : mSymbolTable( symbolTable )
+            , mTextureSamplerPairSet( textureSamplerPairSet )
+        {}
+
+        bool operator() ( ConstParseTreeIn tree )
+        {
+            if ( tree->GetTokenType() == TOKEN_TEXTURE_SAMPLE_EXPRESSION )
+            {
+                ConstParseTreeRef textureObjectId = tree->GetFirstChildWithType( TOKEN_TEXTURE_OBJECT_ID )->GetChild();
+                ConstParseTreeRef samplerObjectId = tree->GetFirstChildWithType( TOKEN_SAMPLER_OBJECT_ID )->GetChild();
+
+                Symbol::References textureSymbol;
+                if ( !mSymbolTable->LookupSymbol( textureObjectId->ToString(), textureSymbol ) )
+                {
+                    TRACE_ERROR_FORMATTED( "Failed to find texture object '%s' in the global scope.", textureObjectId->ToString() );
+                }
+
+                Symbol::References samplerSymbol;
+                if ( !mSymbolTable->LookupSymbol( samplerObjectId->ToString(), samplerSymbol ) )
+                {
+                    TRACE_ERROR_FORMATTED( "Failed to find sampler object '%s' in the global scope.", samplerObjectId->ToString() );
+                }
+
+                ShaderBuilder::TextureSamplerPair textureSamplerPair( textureSymbol[0], samplerSymbol[0] );
+                mTextureSamplerPairSet.insert( textureSamplerPair );
+
+                return false;
+            }
+            return true;
+        }
+
+    private:
+        ConstSymbolTableRef                     mSymbolTable;
+        ShaderBuilder::TextureSamplerPairSet &  mTextureSamplerPairSet;
+    };
+
+    ShaderBuilder::ShaderBuilder( ConstParseTreeIn tree, ConstSymbolTableIn symbolTable )
         : mParseTree( tree )
+        , mSymbolTable( symbolTable )
     {
         AcquireValidator();
 
@@ -121,6 +164,17 @@ namespace GFW {
         std::sort( mFXNodes.begin(), mFXNodes.end(), CompareTreesByRef );
 
         mParseTree->TraverseDFS( *this, &ShaderBuilder::CollectVariables );
+
+        for ( SymbolTable::const_iterator it = mSymbolTable->begin(); it != mSymbolTable->end(); ++ it )
+        {
+            if ( it->IsFunction() )
+            {
+                const Symbol * functionSymbol = &(*it);
+                TextureSamplerPairSet & textureSamplerPairSet = mFunctionTextureSamplerMap[functionSymbol];
+                CollectTextureSampleExpressionsVisitor collectTextureSampleExpressions( mSymbolTable, textureSamplerPairSet );
+                it->GetTree()->TraverseDFS( collectTextureSampleExpressions );
+            }
+        }
     }
 
     ShaderBuilder::~ShaderBuilder()

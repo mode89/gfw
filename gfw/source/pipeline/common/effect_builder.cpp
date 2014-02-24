@@ -17,15 +17,17 @@ namespace GFW {
     {
         ConstParseTreeRef tree = CreateParseTree( fileName );
 
-        mShaderBuilder = new ShaderBuilder( tree );
+        // Collect symbols
+
+        mSymbolTable = new SymbolTable( tree );
+
+        // Construct shader builder
+
+        mShaderBuilder = new ShaderBuilder( tree, mSymbolTable );
 
         EffectBinaryRef fxBin = new EffectBinary;
 
         mStringTable = new StringTable;
-
-        // Collect symbols
-
-        mSymbolTable = new SymbolTable( tree );
 
         // Process techniques
 
