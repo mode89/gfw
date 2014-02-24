@@ -18,7 +18,7 @@ namespace GFW {
     T( FUNCTION_DEFINITION ) \
     T( ID ) \
     T( PASS_DEFINITION ) \
-    T( SAMPLER_OBJECT ) \
+    T( SAMPLER_OBJECT_ID ) \
     T( SEMANTIC ) \
     T( SET_PIXEL_SHADER ) \
     T( SET_SHADER ) \
@@ -26,7 +26,7 @@ namespace GFW {
     T( STATE_OBJECT_DEFINITION ) \
     T( SYMBOL_NAME ) \
     T( TECHNIQUE_DEFINITION ) \
-    T( TEXTURE_OBJECT ) \
+    T( TEXTURE_OBJECT_ID ) \
     T( TEXTURE_SAMPLE_EXPRESSION ) \
     T( TRANSLATION_UNIT ) \
     T( VARIABLE_DEFINITION ) \

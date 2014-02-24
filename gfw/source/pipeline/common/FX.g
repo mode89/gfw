@@ -16,13 +16,13 @@ tokens {
     T_EXTERNAL_DECLARATION;
     T_FUNCTION_DEFINITION;
     T_PASS_DEFINITION;
-    T_SAMPLER_OBJECT;
+    T_SAMPLER_OBJECT_ID;
     T_SEMANTIC;
     T_SET_SHADER;
     T_STATE_OBJECT_DEFINITION;
     T_SYMBOL_NAME;
     T_TECHNIQUE_DEFINITION;
-    T_TEXTURE_OBJECT;
+    T_TEXTURE_OBJECT_ID;
     T_TEXTURE_SAMPLE_EXPRESSION;
     T_TRANSLATION_UNIT;
     T_VARIABLE_DEFINITION;
@@ -262,19 +262,19 @@ function_call_operator
     ;
 
 texture_sample_expression
-    : texture_object subscript_operator? T_DOT T_SAMPLE
+    : texture_object_id subscript_operator? T_DOT T_SAMPLE
         T_LPAREN
-            sampler_object T_COMMA
+            sampler_object_id T_COMMA
             argument_expression_list
         T_RPAREN
     ;
 
-texture_object
-    : T_ID -> ^( T_TEXTURE_OBJECT T_ID )
+texture_object_id
+    : T_ID -> ^( T_TEXTURE_OBJECT_ID T_ID )
     ;
 
-sampler_object
-    : T_ID -> ^( T_SAMPLER_OBJECT T_ID )
+sampler_object_id
+    : T_ID -> ^( T_SAMPLER_OBJECT_ID T_ID )
     ;
 
 primary_expression
