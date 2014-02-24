@@ -70,22 +70,28 @@ namespace GFW {
 
     class SymbolTable : public Common::ARefCounted
     {
+        typedef std::vector< Symbol > SymbolVec;
+
     public:
+        typedef SymbolVec::const_iterator const_iterator;
+
         SymbolTable( ConstParseTreeIn );
 
         bool
         CollectSymbol( ConstParseTreeIn );
 
-        void
+        bool
         LookupSymbol( const char * name, Symbol::References & result ) const;
+
+        const_iterator begin() const { return mSymbols.begin(); }
+
+        const_iterator end() const { return mSymbols.end(); }
 
     private:
         void
         AddSymbol( const Symbol & );
 
     private:
-        typedef std::vector< Symbol > SymbolVec;
-
         SymbolVec mSymbols;
     };
     AUTOREF_REFERENCE_DECLARATION( SymbolTable );
