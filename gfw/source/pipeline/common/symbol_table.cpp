@@ -139,9 +139,9 @@ namespace GFW {
             {
                 result.push_back( &(*it) );
             }
-            return true;
         }
-        return false;
+
+        return !result.empty();
     }
 
     void SymbolTable::AddSymbol( const Symbol & symbol )
