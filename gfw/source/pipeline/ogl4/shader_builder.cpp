@@ -165,6 +165,8 @@ namespace GFW {
 
         mParseTree->TraverseDFS( *this, &ShaderBuilder::CollectVariables );
 
+        // Collect immediate references to sampling expressions
+
         for ( SymbolTable::const_iterator it = mSymbolTable->begin(); it != mSymbolTable->end(); ++ it )
         {
             if ( it->IsFunction() )
@@ -173,6 +175,29 @@ namespace GFW {
                 TextureSamplerPairSet & textureSamplerPairSet = mFunctionTextureSamplerMap[functionSymbol];
                 CollectTextureSampleExpressionsVisitor collectTextureSampleExpressions( mSymbolTable, textureSamplerPairSet );
                 it->GetTree()->TraverseDFS( collectTextureSampleExpressions );
+            }
+        }
+
+        // Collect indirect references to sampling expressions
+
+        for ( SymbolTable::const_iterator it = mSymbolTable->begin(); it != mSymbolTable->end(); ++ it )
+        {
+            if ( it->IsFunction() )
+            {
+                const Symbol * functionSymbol = &(*it);
+                TextureSamplerPairSet & functionTextureSamplerPairSet = mFunctionTextureSamplerMap[functionSymbol];
+                for ( Symbol::References::const_iterator refIt = functionSymbol->GetReferences().begin();
+                      refIt != functionSymbol->GetReferences().end(); ++ refIt )
+                {
+                    const Symbol * referencedFunctionSymbol = *refIt;
+                    if ( referencedFunctionSymbol->IsFunction() && referencedFunctionSymbol != functionSymbol )
+                    {
+                        TextureSamplerPairSet & referencedFunctionTextureSamplerPairSet =
+                            mFunctionTextureSamplerMap[referencedFunctionSymbol];
+                        functionTextureSamplerPairSet.insert( referencedFunctionTextureSamplerPairSet.begin(),
+                            referencedFunctionTextureSamplerPairSet.end() );
+                    }
+                }
             }
         }
     }
