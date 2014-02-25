@@ -6,9 +6,14 @@
 
 namespace GFW {
 
-    static bool LessByName( const Symbol & l, const Symbol & r )
+    static bool SymbolLessByName( const Symbol * l, const Symbol * r )
     {
-        return std::strcmp( l.GetName(), r.GetName() ) < 0;
+        return std::strcmp( l->GetName(), r->GetName() ) < 0;
+    }
+
+    static bool SymbolLessByTreeAddress( const Symbol * l, const Symbol * r )
+    {
+        return l->GetTree().GetPointer() < r->GetTree().GetPointer();
     }
 
     class CollectReferencedSymbolsVisitor
@@ -23,7 +28,7 @@ namespace GFW {
         {
             if ( tree->GetTokenType() == TOKEN_ID )
             {
-                mSymbolTable->LookupSymbol( tree->ToString(), mReferences );
+                mSymbolTable->LookupSymbolByName( tree->ToString(), mReferences );
             }
             return true;
         }
@@ -36,6 +41,22 @@ namespace GFW {
     SymbolTable::SymbolTable( ConstParseTreeIn tree )
     {
         tree->TraverseDFS( *this, &SymbolTable::CollectSymbol );
+
+        // Mapping by name
+
+        for ( SymbolVec::iterator it = mSymbols.begin(); it != mSymbols.end(); ++ it )
+        {
+            mSymbolsByName.push_back( &(*it) );
+        }
+        std::sort( mSymbolsByName.begin(), mSymbolsByName.end(), SymbolLessByName );
+
+        // Mapping by tree address
+
+        for ( SymbolVec::iterator it = mSymbols.begin(); it != mSymbols.end(); ++ it )
+        {
+            mSymbolsByTreeAddress.push_back( &(*it) );
+        }
+        std::sort( mSymbolsByTreeAddress.begin(), mSymbolsByTreeAddress.end(), SymbolLessByName );
 
         // Collect immediate references (variable by function, function by function, etc)
 
@@ -127,27 +148,37 @@ namespace GFW {
         return true;
     }
 
-    bool SymbolTable::LookupSymbol( const char * name, Symbol::References & result ) const
+    bool SymbolTable::LookupSymbolByName( const char * name, Symbol::References & result ) const
     {
         Symbol symbol;
         symbol.mName = name;
 
-        SymbolVec::const_iterator it = lower_bound( mSymbols.begin(), mSymbols.end(), symbol, LessByName );
-        if ( it != mSymbols.end() )
+        Symbol::References::const_iterator it = lower_bound( mSymbolsByName.begin(), mSymbolsByName.end(), &symbol, SymbolLessByName );
+        if ( it != mSymbolsByName.end() )
         {
-            for (; it != mSymbols.end() && std::strcmp( it->GetName(), name ) == 0 ; ++ it )
+            for (; it != mSymbolsByName.end() && std::strcmp( (*it)->GetName(), name ) == 0 ; ++ it )
             {
-                result.push_back( &(*it) );
+                result.push_back( *it );
             }
         }
 
         return !result.empty();
     }
 
+    const Symbol * SymbolTable::LookupSymbolByTree( ConstParseTreeIn tree ) const
+    {
+        Symbol symbol;
+        symbol.mTree = tree;
+
+        Symbol::References::const_iterator it = lower_bound( mSymbolsByTreeAddress.begin(), mSymbolsByTreeAddress.end(),
+            &symbol, SymbolLessByTreeAddress );
+
+        return ( it != mSymbolsByTreeAddress.end() ) ? *it : NULL;
+    }
+
     void SymbolTable::AddSymbol( const Symbol & symbol )
     {
         mSymbols.push_back( symbol );
-        std::sort( mSymbols.begin(), mSymbols.end(), LessByName );
     }
 
 } // namesspace GFW

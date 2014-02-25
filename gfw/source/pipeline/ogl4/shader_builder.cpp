@@ -128,13 +128,13 @@ namespace GFW {
                 ConstParseTreeRef samplerObjectId = tree->GetFirstChildWithType( TOKEN_SAMPLER_OBJECT_ID )->GetChild();
 
                 Symbol::References textureSymbol;
-                if ( !mSymbolTable->LookupSymbol( textureObjectId->ToString(), textureSymbol ) )
+                if ( !mSymbolTable->LookupSymbolByName( textureObjectId->ToString(), textureSymbol ) )
                 {
                     TRACE_ERROR_FORMATTED( "Failed to find texture object '%s' in the global scope.", textureObjectId->ToString() );
                 }
 
                 Symbol::References samplerSymbol;
-                if ( !mSymbolTable->LookupSymbol( samplerObjectId->ToString(), samplerSymbol ) )
+                if ( !mSymbolTable->LookupSymbolByName( samplerObjectId->ToString(), samplerSymbol ) )
                 {
                     TRACE_ERROR_FORMATTED( "Failed to find sampler object '%s' in the global scope.", samplerObjectId->ToString() );
                 }
