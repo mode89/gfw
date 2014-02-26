@@ -133,6 +133,33 @@ namespace GFW {
             {
                 Symbol symbol( tree );
                 symbol.SetFunction();
+
+                // Remember a return type
+
+                symbol.mType = tree->GetChild();
+
+                // Remember arguments
+
+                ConstParseTreeRef args = tree->GetFirstChildWithType( TOKEN_ARGUMENTS_LIST );
+                if ( args.IsAttached() )
+                {
+                    for ( uint32_t i = 0; i < args->GetChildCount(); ++ i )
+                    {
+                        if ( args->GetChild(i)->GetTokenType() == TOKEN_ARGUMENT )
+                        {
+                            symbol.mArgs.push_back( args->GetChild(i) );
+                        }
+                    }
+                }
+
+                // Remember an output semantic
+
+                ConstParseTreeRef semantic = tree->GetFirstChildWithType( TOKEN_SEMANTIC );
+                if ( semantic.IsAttached() )
+                {
+                    symbol.mSemantic = semantic->GetChild()->ToString();
+                }
+
                 AddSymbol( symbol );
             }
             return false;

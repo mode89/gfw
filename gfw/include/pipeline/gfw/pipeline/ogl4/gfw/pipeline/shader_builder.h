@@ -29,40 +29,18 @@ namespace GFW {
 
     private:
         bool
-        CollectFunctions( ConstParseTreeIn );
-
-        bool
         CollectFXNodes( ConstParseTreeIn );
 
         bool
         CollectVariables( ConstParseTreeIn );
 
     private:
-        struct Function;
-
-        typedef std::vector< ConstParseTreeRef > ParseTreeVec;
         typedef std::unordered_map< std::string, ConstParseTreeRef > ParseTreeMap;
-        typedef std::unordered_map< std::string, Function > FunctionMap;
         typedef std::unordered_map< const Symbol *, TextureSamplerPairSet > FunctionTextureSamplerMap;
 
-        struct Function
-        {
-            ConstParseTreeRef   tree;
-            ConstParseTreeRef   ret;
-            ConstParseTreeRef   sem;
-            ParseTreeVec        args;
-
-            Function()
-                : tree( NULL )
-                , ret( NULL )
-                , sem( NULL )
-            {}
-        };
-
         ConstParseTreeRef           mParseTree;
-        ConstSymbolTableIn          mSymbolTable;
+        ConstSymbolTableRef         mSymbolTable;
 
-        FunctionMap                 mFunctions;
         ParseTreeVec                mFXNodes;
         ParseTreeMap                mVariables;
         FunctionTextureSamplerMap   mFunctionTextureSamplerMap;

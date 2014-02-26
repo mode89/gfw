@@ -10,8 +10,6 @@
 
 namespace GFW {
 
-    typedef std::vector< ConstParseTreeRef > ParseTreeVec;
-
     inline static bool CompareTreesByRef( const ConstParseTreeRef & t1, const ConstParseTreeRef & t2 )
     {
         return t1.GetPointer() < t2.GetPointer();
@@ -158,8 +156,6 @@ namespace GFW {
     {
         AcquireValidator();
 
-        mParseTree->TraverseDFS( *this, &ShaderBuilder::CollectFunctions );
-
         mParseTree->TraverseDFS( *this, &ShaderBuilder::CollectFXNodes );
         std::sort( mFXNodes.begin(), mFXNodes.end(), CompareTreesByRef );
 
@@ -209,6 +205,15 @@ namespace GFW {
 
     ShaderBinaryRef ShaderBuilder::Compile( const char * shaderName, const char * profile )
     {
+        // Query entry point's symbol
+
+        SymbolReferenceVec entryPointReference;
+        if ( !mSymbolTable->LookupSymbolByName(shaderName, entryPointReference) )
+        {
+            TRACE_ERROR_FORMATTED( "Failed to find shader entry point '%s'.", shaderName );
+        }
+        const Symbol * entryPoint = entryPointReference[0];
+
         // Translate the profile
 
         ShaderStage stage;
@@ -242,15 +247,11 @@ namespace GFW {
 
         source << std::endl << std::endl;
 
-        FunctionMap::iterator it = mFunctions.find( shaderName );
-        TRACE_ASSERT( it != mFunctions.end() );
-        Function & entryPoint = it->second;
-
         // Input parameters
 
-        for ( uint32_t i = 0; i < entryPoint.args.size(); ++ i )
+        for ( uint32_t i = 0; i < entryPoint->GetArgs().size(); ++ i )
         {
-            ConstParseTreeRef arg = entryPoint.args[i];
+            ConstParseTreeRef arg = entryPoint->GetArgs()[i];
             source << "in ";
             source << arg->GetChild( 0 )->ToString();
             source << " _in_";
@@ -284,18 +285,18 @@ namespace GFW {
         {
             // Call the shader
 
-            if ( entryPoint.ret->GetTokenType() != TOKEN_VOID )
+            if ( entryPoint->GetType()->GetTokenType() != TOKEN_VOID )
             {
-                source << entryPoint.ret->ToString();
+                source << entryPoint->GetType()->ToString();
                 source << " outp = ";
             }
 
             source << shaderName;
             source << "(";
-            if ( entryPoint.args.size() != 0 )
+            if ( entryPoint->GetArgs().size() != 0 )
             {
                 source << ' ';
-                for ( uint32_t i = 0; i < entryPoint.args.size(); ++ i )
+                for ( uint32_t i = 0; i < entryPoint->GetArgs().size(); ++ i )
                 {
                     if ( i != 0 ) source << ", ";
                     source << "_in_";
@@ -307,17 +308,17 @@ namespace GFW {
 
             // Assign outputs
 
-            if ( entryPoint.ret->GetTokenType() != TOKEN_VOID )
+            if ( entryPoint->GetType()->GetTokenType() != TOKEN_VOID )
             {
-                if ( entryPoint.sem.IsAttached() )
+                if ( entryPoint->GetSemantic() )
                 {
                     source << "    ";
-                    ConstParseTreeRef semantic = entryPoint.sem->GetChild();
-                    if ( std::strcmp( "SV_POSITION", semantic->ToString() ) == 0 )
+                    const char * semantic = entryPoint->GetSemantic();
+                    if ( std::strcmp( "SV_POSITION", semantic ) == 0 )
                     {
                         source << "gl_Position = outp;\n";
                     }
-                    else if ( std::strcmp( "SV_TARGET", semantic->ToString() ) == 0 )
+                    else if ( std::strcmp( "SV_TARGET", semantic ) == 0 )
                     {
                         source << "gl_FragColor = outp;\n";
                     }
@@ -332,7 +333,7 @@ namespace GFW {
 
         ShaderBinaryRef shaderBinary = new ShaderBinary;
 
-        shaderBinary->mDesc.inputsCount = entryPoint.args.size();
+        shaderBinary->mDesc.inputsCount = entryPoint->GetArgs().size();
         shaderBinary->mStage = stage;
 
         uint32_t sourceSize = source.str().size() + 1; // + 1 for null-terminator
@@ -341,40 +342,6 @@ namespace GFW {
         std::memcpy( shaderBinary->mData, source.str().c_str(), sourceSize );
 
         return shaderBinary;
-    }
-
-    bool ShaderBuilder::CollectFunctions( ConstParseTreeIn tree )
-    {
-        if ( tree->GetTokenType() == TOKEN_EXTERNAL_DECLARATION )
-        {
-            ConstParseTreeRef child = tree->GetChild();
-            if ( child->GetTokenType() == TOKEN_FUNCTION_DEFINITION )
-            {
-                ConstParseTreeRef name = child->GetFirstChildWithType( TOKEN_SYMBOL_NAME )->GetChild();
-
-                Function & func = mFunctions[ name->ToString() ];
-
-                func.tree = child;
-                func.ret  = child->GetChild();
-                func.sem  = child->GetFirstChildWithType( TOKEN_SEMANTIC );
-
-                // Collect arguments
-
-                ConstParseTreeRef args = child->GetFirstChildWithType( TOKEN_ARGUMENTS_LIST );
-                if ( args.IsAttached() )
-                {
-                    for ( uint32_t i = 0; i < args->GetChildCount(); ++ i )
-                    {
-                        if ( args->GetChild(i)->GetTokenType() == TOKEN_ARGUMENT )
-                        {
-                            func.args.push_back( args->GetChild(i) );
-                        }
-                    }
-                }
-            }
-            return false;
-        }
-        return true;
     }
 
     bool ShaderBuilder::CollectFXNodes( ConstParseTreeIn tree )

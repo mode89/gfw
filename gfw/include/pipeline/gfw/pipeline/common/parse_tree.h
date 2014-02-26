@@ -71,6 +71,8 @@ namespace GFW {
     };
 
     AUTOREF_FORWARD_DECLARATION( ParseTree );
+    typedef std::vector< ConstParseTreeRef > ParseTreeVec;
+
     class ParseTree : public Common::ARefCounted
     {
     public:

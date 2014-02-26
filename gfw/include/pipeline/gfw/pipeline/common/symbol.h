@@ -21,12 +21,14 @@ namespace GFW {
         Symbol()
             : mName( NULL )
             , mFlags( 0 )
+            , mSemantic( NULL )
         {}
 
         Symbol( ConstParseTreeIn tree )
             : mName( NULL )
             , mTree( tree )
             , mFlags( 0 )
+            , mSemantic( NULL )
         {
             ConstParseTreeRef symbolName = tree->GetFirstChildWithType( TOKEN_SYMBOL_NAME );
             mName = symbolName->GetChild()->ToString();
@@ -43,6 +45,15 @@ namespace GFW {
 
         const SymbolReferenceVec &
         GetReferences() const { return mReferences; }
+
+        ConstParseTreeRef
+        GetType() const { return mType; }
+
+        const ParseTreeVec &
+        GetArgs() const { return mArgs; }
+
+        const char *
+        GetSemantic() const { return mSemantic; }
 
 #define F( name ) bool Is ## name () const { return ( mFlags & ( 1 << name ) ) != 0; }
         SYMBOL_FLAGS
@@ -66,7 +77,10 @@ namespace GFW {
         ConstParseTreeRef   mTree;
         const char *        mName;
         uint32_t            mFlags;
-        SymbolReferenceVec  mReferences;
+        SymbolReferenceVec  mReferences;    // Symbols referenced by this symbol (i.e. global variables by a function)
+        ConstParseTreeRef   mType;          // Object type or function return type
+        ParseTreeVec        mArgs;          // Function arguments
+        const char *        mSemantic;
 
         friend class SymbolTable;
     };
