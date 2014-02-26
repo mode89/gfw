@@ -12,11 +12,12 @@
 
 namespace GFW {
 
+    class Symbol;
+    typedef std::vector< const Symbol * > SymbolReferenceVec;
+
     class Symbol
     {
     public:
-        typedef std::vector< const Symbol * > References;
-
         Symbol()
             : mName( NULL )
             , mFlags( 0 )
@@ -40,7 +41,7 @@ namespace GFW {
         ConstParseTreeRef
         GetTree() const { return mTree; }
 
-        const References &
+        const SymbolReferenceVec &
         GetReferences() const { return mReferences; }
 
 #define F( name ) bool Is ## name () const { return ( mFlags & ( 1 << name ) ) != 0; }
@@ -65,7 +66,7 @@ namespace GFW {
         ConstParseTreeRef   mTree;
         const char *        mName;
         uint32_t            mFlags;
-        References          mReferences;
+        SymbolReferenceVec  mReferences;
 
         friend class SymbolTable;
     };

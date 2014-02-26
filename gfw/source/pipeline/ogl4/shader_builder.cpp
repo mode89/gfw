@@ -127,13 +127,13 @@ namespace GFW {
                 ConstParseTreeRef textureObjectId = tree->GetFirstChildWithType( TOKEN_TEXTURE_OBJECT_ID )->GetChild();
                 ConstParseTreeRef samplerObjectId = tree->GetFirstChildWithType( TOKEN_SAMPLER_OBJECT_ID )->GetChild();
 
-                Symbol::References textureSymbol;
+                SymbolReferenceVec textureSymbol;
                 if ( !mSymbolTable->LookupSymbolByName( textureObjectId->ToString(), textureSymbol ) )
                 {
                     TRACE_ERROR_FORMATTED( "Failed to find texture object '%s' in the global scope.", textureObjectId->ToString() );
                 }
 
-                Symbol::References samplerSymbol;
+                SymbolReferenceVec samplerSymbol;
                 if ( !mSymbolTable->LookupSymbolByName( samplerObjectId->ToString(), samplerSymbol ) )
                 {
                     TRACE_ERROR_FORMATTED( "Failed to find sampler object '%s' in the global scope.", samplerObjectId->ToString() );
@@ -186,7 +186,7 @@ namespace GFW {
             {
                 const Symbol * functionSymbol = &(*it);
                 TextureSamplerPairSet & functionTextureSamplerPairSet = mFunctionTextureSamplerMap[functionSymbol];
-                for ( Symbol::References::const_iterator refIt = functionSymbol->GetReferences().begin();
+                for ( SymbolReferenceVec::const_iterator refIt = functionSymbol->GetReferences().begin();
                       refIt != functionSymbol->GetReferences().end(); ++ refIt )
                 {
                     const Symbol * referencedFunctionSymbol = *refIt;

@@ -18,7 +18,7 @@ namespace GFW {
         CollectSymbol( ConstParseTreeIn );
 
         bool
-        LookupSymbolByName( const char * name, Symbol::References & result ) const;
+        LookupSymbolByName( const char * name, SymbolReferenceVec & result ) const;
 
         const Symbol *
         LookupSymbolByTree( ConstParseTreeIn ) const;
@@ -33,8 +33,8 @@ namespace GFW {
 
     private:
         SymbolVec           mSymbols;
-        Symbol::References  mSymbolsByName;
-        Symbol::References  mSymbolsByTreeAddress;
+        SymbolReferenceVec  mSymbolsByName;
+        SymbolReferenceVec  mSymbolsByTreeAddress;
     };
     AUTOREF_REFERENCE_DECLARATION( SymbolTable );
 

@@ -19,7 +19,7 @@ namespace GFW {
     class CollectReferencedSymbolsVisitor
     {
     public:
-        CollectReferencedSymbolsVisitor( const SymbolTable * symbolTable, Symbol::References & references )
+        CollectReferencedSymbolsVisitor( const SymbolTable * symbolTable, SymbolReferenceVec & references )
             : mSymbolTable( symbolTable )
             , mReferences( references )
         {}
@@ -35,7 +35,7 @@ namespace GFW {
 
     private:
         const SymbolTable *  mSymbolTable;
-        Symbol::References & mReferences;
+        SymbolReferenceVec & mReferences;
     };
 
     SymbolTable::SymbolTable( ConstParseTreeIn tree )
@@ -89,19 +89,19 @@ namespace GFW {
             Symbol & symbol = *it;
 
             // Start with immediate references
-            Symbol::References newReferences = symbol.mReferences;
+            SymbolReferenceVec newReferences = symbol.mReferences;
             while (!newReferences.empty())
             {
                 // Sort known references to be able to search through them
                 std::sort( symbol.mReferences.begin(), symbol.mReferences.end() );
 
                 // Enumerate through new references
-                Symbol::References nextNewReferences;
-                for ( Symbol::References::iterator processingIt = newReferences.begin(); processingIt != newReferences.end(); ++ processingIt )
+                SymbolReferenceVec nextNewReferences;
+                for ( SymbolReferenceVec::iterator processingIt = newReferences.begin(); processingIt != newReferences.end(); ++ processingIt )
                 {
                     // Enumerate through immediate references of the new references
-                    Symbol::References indirectReferences = (*processingIt)->mReferences;
-                    for ( Symbol::References::iterator indirectIt = indirectReferences.begin(); indirectIt != indirectReferences.end(); ++ indirectIt )
+                    SymbolReferenceVec indirectReferences = (*processingIt)->mReferences;
+                    for ( SymbolReferenceVec::iterator indirectIt = indirectReferences.begin(); indirectIt != indirectReferences.end(); ++ indirectIt )
                     {
                         // If the reference is not known then we will process it during the next iteration
                         if ( !std::binary_search(symbol.mReferences.begin(), symbol.mReferences.end(), *indirectIt) )
@@ -148,12 +148,12 @@ namespace GFW {
         return true;
     }
 
-    bool SymbolTable::LookupSymbolByName( const char * name, Symbol::References & result ) const
+    bool SymbolTable::LookupSymbolByName( const char * name, SymbolReferenceVec & result ) const
     {
         Symbol symbol;
         symbol.mName = name;
 
-        Symbol::References::const_iterator it = lower_bound( mSymbolsByName.begin(), mSymbolsByName.end(), &symbol, SymbolLessByName );
+        SymbolReferenceVec::const_iterator it = lower_bound( mSymbolsByName.begin(), mSymbolsByName.end(), &symbol, SymbolLessByName );
         if ( it != mSymbolsByName.end() )
         {
             for (; it != mSymbolsByName.end() && std::strcmp( (*it)->GetName(), name ) == 0 ; ++ it )
@@ -170,7 +170,7 @@ namespace GFW {
         Symbol symbol;
         symbol.mTree = tree;
 
-        Symbol::References::const_iterator it = lower_bound( mSymbolsByTreeAddress.begin(), mSymbolsByTreeAddress.end(),
+        SymbolReferenceVec::const_iterator it = lower_bound( mSymbolsByTreeAddress.begin(), mSymbolsByTreeAddress.end(),
             &symbol, SymbolLessByTreeAddress );
 
         return ( it != mSymbolsByTreeAddress.end() ) ? *it : NULL;
