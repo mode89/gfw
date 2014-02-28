@@ -18,10 +18,11 @@ namespace GFW {
     class ConstructSourceVisitor
     {
     public:
-        ConstructSourceVisitor( std::stringstream & source )
+        ConstructSourceVisitor( std::stringstream & source, const TextureSamplerPairSet & textureSamplerPairSet )
             : mSource( source )
             , mLine( 1 )
             , mRow( 0 )
+            , mTextureSamplerPairSet( textureSamplerPairSet )
         {}
 
         bool operator() ( ConstParseTreeRef tree )
@@ -46,13 +47,48 @@ namespace GFW {
                 }
             }
 
-            // Skip node
-            if ( IsSkipable( tree ) )
+            switch ( tokenType )
             {
+            case TOKEN_VARIABLE_DEFINITION:
+                if ( tree->GetChild()->GetTokenType() == TOKEN_TEXTURE2D )
+                {
+                    for ( TextureSamplerPairSet::iterator it = mTextureSamplerPairSet.begin(); it != mTextureSamplerPairSet.end(); ++ it )
+                    {
+                        if ( it->first->GetTree() == tree )
+                        {
+                            mSource << "sampler2D _sampler_" << it->first->GetName() << "_" << it->second->GetName() << std::endl;
+                        }
+                    }
+                    return false;
+                }
+                break;
+            case TOKEN_TECHNIQUE_DEFINITION:
+            case TOKEN_SEMANTIC:
+            case TOKEN_STATE_OBJECT_DEFINITION:
                 return false;
-            }
 
-            TranslateIntrinsicType( token, tokenType );
+            #define TYPES \
+                T( INT2, ivec2 ) \
+                T( INT3, ivec3 ) \
+                T( INT4, ivec4 ) \
+                T( UINT2, uvec2 ) \
+                T( UINT3, uvec3 ) \
+                T( UINT4, uvec4 ) \
+                T( HALF2, hvec2 ) \
+                T( HALF3, hvec3 ) \
+                T( HALF4, hvec4 ) \
+                T( FLOAT2, vec2 ) \
+                T( FLOAT3, vec3 ) \
+                T( FLOAT4, vec4 ) \
+                T( FLOAT22, mat2 ) \
+                T( FLOAT33, mat3 ) \
+                T( FLOAT44, mat4 ) \
+
+                #define T( type, gltype ) case TOKEN_ ## type : token = #gltype; break;
+                                TYPES
+                #undef T
+            #undef TYPES
+            }
 
             // Output token if has symbolic representation
             if ( !token.empty() )
@@ -70,51 +106,11 @@ namespace GFW {
         }
 
     private:
-        bool IsSkipable( ConstParseTreeIn tree )
-        {
-            TokenType tokenType = tree->GetTokenType();
-            if ( tokenType == TOKEN_TECHNIQUE_DEFINITION ||
-                 tokenType == TOKEN_SEMANTIC ||
-                 tokenType == TOKEN_STATE_OBJECT_DEFINITION )
-            {
-                return true;
-            }
-            return false;
-        }
+        std::stringstream &             mSource;
+        uint32_t                        mLine;
+        uint32_t                        mRow;
 
-        void TranslateIntrinsicType( std::string & token, TokenType tokenType )
-        {
-#define TYPES \
-    T( INT2, ivec2 ) \
-    T( INT3, ivec3 ) \
-    T( INT4, ivec4 ) \
-    T( UINT2, uvec2 ) \
-    T( UINT3, uvec3 ) \
-    T( UINT4, uvec4 ) \
-    T( HALF2, hvec2 ) \
-    T( HALF3, hvec3 ) \
-    T( HALF4, hvec4 ) \
-    T( FLOAT2, vec2 ) \
-    T( FLOAT3, vec3 ) \
-    T( FLOAT4, vec4 ) \
-    T( FLOAT22, mat2 ) \
-    T( FLOAT33, mat3 ) \
-    T( FLOAT44, mat4 ) \
-
-            switch ( tokenType )
-            {
-                #define T( type, gltype ) case TOKEN_ ## type : token = #gltype; return;
-                    TYPES
-                #undef T
-            }
-
-#undef TYPES
-        }
-
-    private:
-        std::stringstream &     mSource;
-        uint32_t                mLine;
-        uint32_t                mRow;
+        const TextureSamplerPairSet &   mTextureSamplerPairSet;
     };
 
     class CollectTextureSampleExpressionsVisitor
@@ -122,7 +118,7 @@ namespace GFW {
     public:
         CollectTextureSampleExpressionsVisitor(
             ConstSymbolTableIn symbolTable,
-            ShaderBuilder::TextureSamplerPairSet & textureSamplerPairSet )
+            TextureSamplerPairSet & textureSamplerPairSet )
             : mSymbolTable( symbolTable )
             , mTextureSamplerPairSet( textureSamplerPairSet )
         {}
@@ -146,7 +142,7 @@ namespace GFW {
                     TRACE_ERROR_FORMATTED( "Failed to find sampler object '%s' in the global scope.", samplerObjectId->ToString() );
                 }
 
-                ShaderBuilder::TextureSamplerPair textureSamplerPair( textureSymbol[0], samplerSymbol[0] );
+                TextureSamplerPair textureSamplerPair( textureSymbol[0], samplerSymbol[0] );
                 mTextureSamplerPairSet.insert( textureSamplerPair );
 
                 return false;
@@ -155,8 +151,8 @@ namespace GFW {
         }
 
     private:
-        ConstSymbolTableRef                     mSymbolTable;
-        ShaderBuilder::TextureSamplerPairSet &  mTextureSamplerPairSet;
+        ConstSymbolTableRef     mSymbolTable;
+        TextureSamplerPairSet & mTextureSamplerPairSet;
     };
 
     ShaderBuilder::ShaderBuilder( ConstParseTreeIn tree, ConstSymbolTableIn symbolTable )
@@ -247,7 +243,8 @@ namespace GFW {
                 << std::endl
                 << std::endl;
 
-        ConstructSourceVisitor constructSource( source );
+        const TextureSamplerPairSet & textureSamplerPairSet = mFunctionTextureSamplerMap[entryPoint];
+        ConstructSourceVisitor constructSource( source, textureSamplerPairSet );
         mParseTree->TraverseDFS( constructSource );
 
         source << std::endl << std::endl;

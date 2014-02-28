@@ -11,14 +11,11 @@
 
 namespace GFW {
 
-    class ParseTree;
+    typedef std::pair< const Symbol *, const Symbol * > TextureSamplerPair;
+    typedef std::set< TextureSamplerPair > TextureSamplerPairSet;
 
     class ShaderBuilder : public IShaderBuilder
     {
-    public:
-        typedef std::pair< const Symbol *, const Symbol * > TextureSamplerPair;
-        typedef std::set< TextureSamplerPair > TextureSamplerPairSet;
-
     public:
         ShaderBinaryRef
         Compile( const char * shaderName, const char * profile );
