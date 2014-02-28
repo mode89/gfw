@@ -241,6 +241,9 @@ namespace GFW {
                 << std::endl
                 << "#define float4  vec4"
                 << std::endl
+                << std::endl
+                << "#define mul(a, b) ((a) * (b))"
+                << std::endl
                 << std::endl;
 
         const TextureSamplerPairSet & textureSamplerPairSet = mFunctionTextureSamplerMap[entryPoint];
