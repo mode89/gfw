@@ -29,9 +29,6 @@ namespace GFW {
 
     private:
         bool
-        CollectFXNodes( ConstParseTreeIn );
-
-        bool
         CollectVariables( ConstParseTreeIn );
 
     private:
@@ -41,7 +38,6 @@ namespace GFW {
         ConstParseTreeRef           mParseTree;
         ConstSymbolTableRef         mSymbolTable;
 
-        ParseTreeVec                mFXNodes;
         ParseTreeMap                mVariables;
         FunctionTextureSamplerMap   mFunctionTextureSamplerMap;
     };

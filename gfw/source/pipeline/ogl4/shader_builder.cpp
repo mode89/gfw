@@ -18,9 +18,8 @@ namespace GFW {
     class ConstructSourceVisitor
     {
     public:
-        ConstructSourceVisitor( std::stringstream & source, const ParseTreeVec & skipNodes )
+        ConstructSourceVisitor( std::stringstream & source )
             : mSource( source )
-            , mSkipNodes( skipNodes )
             , mLine( 1 )
             , mRow( 0 )
         {}
@@ -48,7 +47,7 @@ namespace GFW {
             }
 
             // Skip node
-            if ( std::binary_search( mSkipNodes.begin(), mSkipNodes.end(), tree, CompareTreesByRef ) )
+            if ( IsSkipable( tree ) )
             {
                 return false;
             }
@@ -71,6 +70,17 @@ namespace GFW {
         }
 
     private:
+        bool IsSkipable( ConstParseTreeIn tree )
+        {
+            TokenType tokenType = tree->GetTokenType();
+            if ( tokenType == TOKEN_TECHNIQUE_DEFINITION ||
+                 tokenType == TOKEN_SEMANTIC ||
+                 tokenType == TOKEN_STATE_OBJECT_DEFINITION )
+            {
+                return true;
+            }
+            return false;
+        }
 
         void TranslateIntrinsicType( std::string & token, TokenType tokenType )
         {
@@ -103,7 +113,6 @@ namespace GFW {
 
     private:
         std::stringstream &     mSource;
-        const ParseTreeVec &    mSkipNodes;
         uint32_t                mLine;
         uint32_t                mRow;
     };
@@ -155,9 +164,6 @@ namespace GFW {
         , mSymbolTable( symbolTable )
     {
         AcquireValidator();
-
-        mParseTree->TraverseDFS( *this, &ShaderBuilder::CollectFXNodes );
-        std::sort( mFXNodes.begin(), mFXNodes.end(), CompareTreesByRef );
 
         mParseTree->TraverseDFS( *this, &ShaderBuilder::CollectVariables );
 
@@ -241,8 +247,7 @@ namespace GFW {
                 << std::endl
                 << std::endl;
 
-        ParseTreeVec skipNodes = mFXNodes;
-        ConstructSourceVisitor constructSource( source, skipNodes );
+        ConstructSourceVisitor constructSource( source );
         mParseTree->TraverseDFS( constructSource );
 
         source << std::endl << std::endl;
@@ -342,17 +347,6 @@ namespace GFW {
         std::memcpy( shaderBinary->mData, source.str().c_str(), sourceSize );
 
         return shaderBinary;
-    }
-
-    bool ShaderBuilder::CollectFXNodes( ConstParseTreeIn tree )
-    {
-        if ( tree->GetTokenType() == TOKEN_TECHNIQUE_DEFINITION ||
-             tree->GetTokenType() == TOKEN_SEMANTIC )
-        {
-            mFXNodes.push_back( tree );
-            return false;
-        }
-        return true;
     }
 
     bool ShaderBuilder::CollectVariables( ConstParseTreeIn tree )
