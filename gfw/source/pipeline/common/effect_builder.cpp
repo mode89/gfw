@@ -122,26 +122,34 @@ namespace GFW {
                 TRACE_FAIL();
             }
 
-            ShaderBinaryRef shaderBin = mShaderBuilder->Compile( name.GetString(), profile.GetString() );
-
-            uint32_t shaderIndex = mShaders.size();
-            mShaders.push_back( shaderBin );
-
-            PassBinaryRef pass = mPasses.back();
-
-            ConstParseTreeRef shaderType = tree->GetChild( 0 );
-            switch ( shaderType->GetTokenType() )
+            try
             {
-            case TOKEN_SET_VERTEX_SHADER:
-                pass->mShaders[ ShaderStage::VERTEX ] = shaderIndex;
-                break;
-            case TOKEN_SET_PIXEL_SHADER:
-                pass->mShaders[ ShaderStage::PIXEL ] = shaderIndex;
-                break;
-            default:
-                TRACE_FAIL();
-                break;
+                ShaderBinaryRef shaderBin = mShaderBuilder->Compile( name.GetString(), profile.GetString() );
+
+                uint32_t shaderIndex = mShaders.size();
+                mShaders.push_back( shaderBin );
+
+                PassBinaryRef pass = mPasses.back();
+
+                ConstParseTreeRef shaderType = tree->GetChild( 0 );
+                switch ( shaderType->GetTokenType() )
+                {
+                case TOKEN_SET_VERTEX_SHADER:
+                    pass->mShaders[ ShaderStage::VERTEX ] = shaderIndex;
+                    break;
+                case TOKEN_SET_PIXEL_SHADER:
+                    pass->mShaders[ ShaderStage::PIXEL ] = shaderIndex;
+                    break;
+                default:
+                    TRACE_FAIL();
+                    break;
+                }
             }
+            catch (...)
+            {
+                TRACE_ERROR_FORMATTED( "Failed to build the shader '%s'.", name.GetString() );
+            }
+
             return false;
         }
         return true;
