@@ -6,15 +6,15 @@
 #include "opengl/glcorearb.h"
 
 #if TRACE_ASSERT_ENABLED
-    #define TRACE_ASSERT_GL(func, ...) \
-        (func != NULL) ? func(__VA_ARGS__) : NULL ; \
+    #define TRACE_ASSERT_GL( func, ... ) \
+        ( func != NULL ) ? func( __VA_ARGS__ ) : ( throw -1 ) ; \
         { \
-            TRACE_ASSERT_MESSAGE_FORMATED(func != NULL, "Function %s() is not supported by the hardware", #func); \
+            TRACE_ASSERT_MESSAGE_FORMATED( func != NULL, "Function %s() is not supported by the hardware", #func ); \
             \
             unsigned int errorCode = glGetError(); \
-            if (errorCode != 0) \
+            if ( errorCode != 0 ) \
             { \
-                TRACE_ASSERT_MESSAGE_FORMATED(errorCode != 0, "Function %s() failed with code %x", #func, errorCode); \
+                TRACE_ASSERT_MESSAGE_FORMATED( errorCode != 0, "Function %s() failed with code %x", #func, errorCode ); \
             } \
         }
 #else
