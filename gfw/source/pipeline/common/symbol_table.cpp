@@ -38,6 +38,11 @@ namespace GFW {
         SymbolReferenceVec & mReferences;
     };
 
+    bool Symbol::RefersTo( const Symbol * symbol ) const
+    {
+        return std::binary_search( mReferences.begin(), mReferences.end(), symbol );
+    }
+
     SymbolTable::SymbolTable( ConstParseTreeIn tree )
     {
         tree->TraverseDFS( *this, &SymbolTable::CollectSymbol );
@@ -115,6 +120,9 @@ namespace GFW {
                 // Add new references to the known references
                 symbol.mReferences.insert( symbol.mReferences.end(), nextNewReferences.begin(), nextNewReferences.end() );
             }
+
+            // Sort references to be able to search through them
+            std::sort( symbol.mReferences.begin(), symbol.mReferences.end() );
         }
     }
 

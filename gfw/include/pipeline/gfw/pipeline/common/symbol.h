@@ -55,6 +55,9 @@ namespace GFW {
         const char *
         GetSemantic() const { return mSemantic; }
 
+        bool
+        RefersTo( const Symbol * ) const;
+
 #define F( name ) bool Is ## name () const { return ( mFlags & ( 1 << name ) ) != 0; }
         SYMBOL_FLAGS
 #undef F
