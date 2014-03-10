@@ -159,7 +159,7 @@ namespace GFW {
 
         bool operator() ( ConstParseTreeIn tree )
         {
-            if ( tree->GetTokenType() == TOKEN_TEXTURE_SAMPLE_EXPRESSION )
+            if ( tree->GetTokenType() == TOKEN_TEXTURE_SAMPLE_EXPRESSION_HEAD )
             {
                 ConstParseTreeRef textureObjectId = tree->GetFirstChildWithType( TOKEN_TEXTURE_OBJECT_ID )->GetChild();
                 ConstParseTreeRef samplerObjectId = tree->GetFirstChildWithType( TOKEN_SAMPLER_OBJECT_ID )->GetChild();

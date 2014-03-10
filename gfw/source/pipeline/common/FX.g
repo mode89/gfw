@@ -24,6 +24,7 @@ tokens {
     T_TECHNIQUE_DEFINITION;
     T_TEXTURE_OBJECT_ID;
     T_TEXTURE_SAMPLE_EXPRESSION;
+    T_TEXTURE_SAMPLE_EXPRESSION_HEAD;
     T_TRANSLATION_UNIT;
     T_VARIABLE_DEFINITION;
 }
@@ -266,7 +267,10 @@ texture_sample_expression
         T_LPAREN
             sampler_object_id T_COMMA
             argument_expression_list
-        T_RPAREN
+        T_RPAREN ->
+      ^( T_TEXTURE_SAMPLE_EXPRESSION_HEAD
+            texture_object_id subscript_operator? T_DOT T_SAMPLE T_LPAREN sampler_object_id )
+        T_COMMA argument_expression_list T_RPAREN
     ;
 
 texture_object_id
