@@ -84,7 +84,12 @@ namespace GFW {
                     {
                         if ( it->first->GetTree() == tree )
                         {
-                            mSource << "sampler2D _sampler_" << it->first->GetName() << "_" << it->second->GetName() << std::endl;
+                            mSource << "uniform sampler2D _sampler_"
+                                    << it->first->GetName()
+                                    << "_"
+                                    << it->second->GetName()
+                                    << ";"
+                                    << std::endl;
                         }
                     }
                     return false;
