@@ -13,12 +13,10 @@
     #define PLAT_COMPILER_MSVC	1
 #endif // defined(_MSC_VER)
 
-#if defined(_DEBUG)
-    #define PLAT_DEBUG  1
-#endif // defined(_DEBUG)
-
 #if defined(NDEBUG)
     #define PLAT_NDEBUG 1
+#else
+    #define PLAT_DEBUG 1
 #endif // defined(NDEBUG)
 
 // Thread local storage
