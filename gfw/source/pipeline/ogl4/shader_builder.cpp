@@ -95,6 +95,17 @@ namespace GFW {
                     return false;
                 }
                 break;
+            case TOKEN_TEXTURE_SAMPLE_EXPRESSION_HEAD:
+                {
+                    const char * textureName = tree->GetFirstChildWithType( TOKEN_TEXTURE_OBJECT_ID )->GetChild()->ToString();
+                    const char * samplerName = tree->GetFirstChildWithType( TOKEN_SAMPLER_OBJECT_ID )->GetChild()->ToString();
+                    mSource << "texture( "
+                            << "_sampler_"
+                            << textureName
+                            << "_"
+                            << samplerName;
+                }
+                return false;
             case TOKEN_TECHNIQUE_DEFINITION:
             case TOKEN_SEMANTIC:
             case TOKEN_STATE_OBJECT_DEFINITION:
