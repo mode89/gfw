@@ -15,15 +15,34 @@ namespace GFW {
         return t1.GetPointer() < t2.GetPointer();
     }
 
+    inline static bool LessByTreeRef( const Symbol * ls, const Symbol * rs )
+    {
+        return ls->GetTree().GetPointer() < rs->GetTree().GetPointer();
+    }
+
     class ConstructSourceVisitor
     {
     public:
-        ConstructSourceVisitor( std::stringstream & source, const TextureSamplerPairSet & textureSamplerPairSet )
+        ConstructSourceVisitor(
+            std::stringstream & source,
+            const TextureSamplerPairSet & textureSamplerPairSet,
+            ConstSymbolTableIn symbolTable,
+            const Symbol * entryPoint )
             : mSource( source )
             , mLine( 1 )
             , mRow( 0 )
             , mTextureSamplerPairSet( textureSamplerPairSet )
-        {}
+        {
+            for ( SymbolTable::const_iterator it = symbolTable->begin(); it != symbolTable->end(); ++ it )
+            {
+                const Symbol & symbol = *it;
+                if ( !entryPoint->RefersTo( &symbol ) )
+                {
+                    mSkipSymbols.push_back( &symbol );
+                }
+            }
+            std::sort( mSkipSymbols.begin(), mSkipSymbols.end(), LessByTreeRef );
+        }
 
         bool operator() ( ConstParseTreeRef tree )
         {
@@ -44,6 +63,15 @@ namespace GFW {
                 for ( ; mRow < row; ++ mRow )
                 {
                     mSource << ' ';
+                }
+            }
+
+            // If an unused symbol
+            {
+                const Symbol symbol( tree );
+                if ( std::binary_search( mSkipSymbols.begin(), mSkipSymbols.end(), &symbol, LessByTreeRef ) )
+                {
+                    return false;
                 }
             }
 
@@ -111,6 +139,7 @@ namespace GFW {
         uint32_t                        mRow;
 
         const TextureSamplerPairSet &   mTextureSamplerPairSet;
+        SymbolReferenceVec              mSkipSymbols;
     };
 
     class CollectTextureSampleExpressionsVisitor
@@ -247,7 +276,7 @@ namespace GFW {
                 << std::endl;
 
         const TextureSamplerPairSet & textureSamplerPairSet = mFunctionTextureSamplerMap[entryPoint];
-        ConstructSourceVisitor constructSource( source, textureSamplerPairSet );
+        ConstructSourceVisitor constructSource( source, textureSamplerPairSet, mSymbolTable, entryPoint );
         mParseTree->TraverseDFS( constructSource );
 
         source << std::endl << std::endl;

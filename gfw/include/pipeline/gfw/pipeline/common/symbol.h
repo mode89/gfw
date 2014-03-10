@@ -31,7 +31,7 @@ namespace GFW {
             , mSemantic( NULL )
         {
             ConstParseTreeRef symbolName = tree->GetFirstChildWithType( TOKEN_SYMBOL_NAME );
-            mName = symbolName->GetChild()->ToString();
+            mName = symbolName.IsAttached() ? symbolName->GetChild()->ToString() : NULL;
         }
 
         const char *
