@@ -46,40 +46,22 @@ namespace GFW {
 
         bool operator() ( ConstParseTreeRef tree )
         {
-            TokenType tokenType = tree->GetTokenType();
-            std::string token = tree->ToString();
-
-            // Prepend the token with necessary whitespaces
-            {
-                uint32_t line = tree->GetLine();
-                uint32_t row  = tree->GetRow();
-
-                for ( ; mLine < line; ++ mLine )
-                {
-                    mSource << std::endl;
-                    mRow = 0;
-                }
-
-                for ( ; mRow < row; ++ mRow )
-                {
-                    mSource << ' ';
-                }
-            }
-
             // If an unused symbol
             {
                 const Symbol symbol( tree );
                 if ( std::binary_search( mSkipSymbols.begin(), mSkipSymbols.end(), &symbol, LessByTreeRef ) )
                 {
+                    AdvancePosition( tree );
                     return false;
                 }
             }
 
-            switch ( tokenType )
+            switch ( tree->GetTokenType() )
             {
             case TOKEN_VARIABLE_DEFINITION:
                 if ( tree->GetChild()->GetTokenType() == TOKEN_TEXTURE2D )
                 {
+                    PutLeadingWhitespaces( tree );
                     for ( TextureSamplerPairSet::iterator it = mTextureSamplerPairSet.begin(); it != mTextureSamplerPairSet.end(); ++ it )
                     {
                         if ( it->first->GetTree() == tree )
@@ -88,15 +70,16 @@ namespace GFW {
                                     << it->first->GetName()
                                     << "_"
                                     << it->second->GetName()
-                                    << ";"
-                                    << std::endl;
+                                    << ";";
                         }
                     }
+                    AdvancePosition( tree );
                     return false;
                 }
                 break;
             case TOKEN_TEXTURE_SAMPLE_EXPRESSION_HEAD:
                 {
+                    PutLeadingWhitespaces( tree );
                     const char * textureName = tree->GetFirstChildWithType( TOKEN_TEXTURE_OBJECT_ID )->GetChild()->ToString();
                     const char * samplerName = tree->GetFirstChildWithType( TOKEN_SAMPLER_OBJECT_ID )->GetChild()->ToString();
                     mSource << "texture( "
@@ -104,49 +87,52 @@ namespace GFW {
                             << textureName
                             << "_"
                             << samplerName;
+                    AdvancePosition( tree );
                 }
                 return false;
             case TOKEN_TECHNIQUE_DEFINITION:
             case TOKEN_SEMANTIC:
             case TOKEN_STATE_OBJECT_DEFINITION:
+                AdvancePosition( tree );
                 return false;
-
-            #define TYPES \
-                T( INT2, ivec2 ) \
-                T( INT3, ivec3 ) \
-                T( INT4, ivec4 ) \
-                T( UINT2, uvec2 ) \
-                T( UINT3, uvec3 ) \
-                T( UINT4, uvec4 ) \
-                T( HALF2, hvec2 ) \
-                T( HALF3, hvec3 ) \
-                T( HALF4, hvec4 ) \
-                T( FLOAT2, vec2 ) \
-                T( FLOAT3, vec3 ) \
-                T( FLOAT4, vec4 ) \
-                T( FLOAT22, mat2 ) \
-                T( FLOAT33, mat3 ) \
-                T( FLOAT44, mat4 ) \
-
-                #define T( type, gltype ) case TOKEN_ ## type : token = #gltype; break;
-                                TYPES
-                #undef T
-            #undef TYPES
-            }
-
-            // Output token if has symbolic representation
-            if ( !token.empty() )
-            {
-                mSource << token;
-
-                // Move output position to the end of the token
+            default:
                 {
-                    mLine = tree->GetEndLine();
-                    mRow = tree->GetEndRow();
+                    std::string token = tree->ToString();
+                    if ( !token.empty() )
+                    {
+                        PutLeadingWhitespaces( tree );
+                        mSource << token;
+                        AdvancePosition( tree );
+                    }
                 }
+                return true;
             }
 
             return true;
+        }
+
+    private:
+        void PutLeadingWhitespaces( ConstParseTreeIn tree )
+        {
+            uint32_t line = tree->GetLine();
+            uint32_t row  = tree->GetRow();
+
+            for ( ; mLine < line; ++ mLine )
+            {
+                mSource << std::endl;
+                mRow = 0;
+            }
+
+            for ( ; mRow < row; ++ mRow )
+            {
+                mSource << ' ';
+            }
+        }
+
+        void AdvancePosition( ConstParseTreeIn tree )
+        {
+            mLine = tree->GetEndLine();
+            mRow = tree->GetEndRow();
         }
 
     private:
@@ -281,14 +267,25 @@ namespace GFW {
 
         std::stringstream source;
 
-        source  << "#version 430 core"
+        source  << "#version 430 core" << std::endl
                 << std::endl
+                << "#define int2        ivec2" << std::endl
+                << "#define int3        ivec3" << std::endl
+                << "#define int4        ivec4" << std::endl
+                << "#define uint2       uvec2" << std::endl
+                << "#define uint3       uvec3" << std::endl
+                << "#define uint4       uvec4" << std::endl
+                << "#define half2       hvec2" << std::endl
+                << "#define half3       hvec3" << std::endl
+                << "#define half4       hvec4" << std::endl
+                << "#define float2      vec2" << std::endl
+                << "#define float3      vec3" << std::endl
+                << "#define float4      vec4" << std::endl
+                << "#define float2x2    mat2" << std::endl
+                << "#define float3x3    mat3" << std::endl
+                << "#define float4x4    mat4" << std::endl
                 << std::endl
-                << "#define float4  vec4"
-                << std::endl
-                << std::endl
-                << "#define mul(a, b) ((a) * (b))"
-                << std::endl
+                << "#define mul(a, b) ((a) * (b))" << std::endl
                 << std::endl;
 
         const TextureSamplerPairSet & textureSamplerPairSet = mFunctionTextureSamplerMap[entryPoint];
