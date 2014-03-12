@@ -186,6 +186,110 @@ namespace GFW {
         TextureSamplerPairSet & mTextureSamplerPairSet;
     };
 
+    template <typename Handler>
+    void EnumInputsOutputs( const Symbol * entryPoint, const Handler & handler )
+    {
+        // Process return value
+
+        if ( entryPoint->GetType()->GetTokenType() != TOKEN_VOID )
+        {
+            handler( false, entryPoint->GetType()->ToString(), "retval", entryPoint->GetSemantic() );
+        }
+
+        // Process arguments
+
+        const ParseTreeVec & args = entryPoint->GetArgs();
+        for ( ParseTreeVec::const_iterator it = args.begin(); it != args.end(); ++ it )
+        {
+            ConstParseTreeRef arg = *it;
+
+            ConstParseTreeRef type     = arg->GetFirstChildWithType( TOKEN_TYPE_SPECIFIER );
+            ConstParseTreeRef name     = arg->GetFirstChildWithType( TOKEN_ID );
+            ConstParseTreeRef semantic = arg->GetFirstChildWithType( TOKEN_SEMANTIC );
+
+            handler( true, type->GetChild()->ToString(), name->ToString(), semantic.IsAttached() ? semantic->ToString() : nullptr );
+        }
+    }
+
+    class ExpandInputsOutputs
+    {
+    public:
+        ExpandInputsOutputs( std::ostream & stream, ConstSymbolTableIn symbolTable )
+            : mStream( stream )
+            , mSymbolTable( symbolTable )
+        {}
+
+        void operator() ( bool isInput, const char * type, const char * name, const char * semantic ) const
+        {
+            mNames.push_back( name );
+
+            SymbolReferenceVec typeSymbol;
+            if ( mSymbolTable->LookupSymbolByName( type, typeSymbol ) && typeSymbol[0]->IsStruct() )
+            {
+                const ParseTreeVec & members = typeSymbol[0]->GetMembers();
+                for ( ParseTreeVec::const_iterator it = members.begin(); it != members.end(); ++ it )
+                {
+                    ConstParseTreeRef m = *it;
+
+                    ConstParseTreeRef type = m->GetFirstChildWithType( TOKEN_TYPE_SPECIFIER );
+                    ConstParseTreeRef name = m->GetFirstChildWithType( TOKEN_ID );
+                    ConstParseTreeRef semantic = m->GetFirstChildWithType( TOKEN_SEMANTIC );
+
+                    (*this)( isInput, type->GetChild()->ToString(), name->ToString(),
+                        semantic.IsAttached() ? semantic->ToString() : nullptr );
+                }
+            }
+            else
+            {
+                Handler( mStream, isInput, type, mNames, semantic );
+            }
+
+            mNames.pop_back();
+        }
+
+    protected:
+        typedef std::vector<const char *> Names;
+
+        virtual void
+        Handler( std::ostream &, bool isInput, const char * type, const Names &, const char * semantic ) const = 0;
+
+    private:
+        std::ostream &      mStream;
+        ConstSymbolTableRef mSymbolTable;
+        mutable Names       mNames;
+    };
+
+    class ExpandInputsOutputsAsGlobalVariables : public ExpandInputsOutputs
+    {
+    public:
+        ExpandInputsOutputsAsGlobalVariables( std::ostream & stream, ConstSymbolTableIn symboTable )
+            : ExpandInputsOutputs( stream, symboTable )
+        {}
+
+        void Handler(
+            std::ostream & stream,
+            bool isInput,
+            const char * typeName,
+            const Names & names,
+            const char * semantic) const
+        {
+            if ( std::strcmp( semantic, "SV_POSITION" ) == 0 )
+            {
+                stream << "out gl_PerVertex { vec4 gl_Position; }";
+            }
+            else
+            {
+                stream << ( isInput ? "in " : "out " ) << typeName << " _in";
+                for ( uint32_t i = 0; i < names.size(); ++ i )
+                {
+                    stream << '_' << names[i];
+                }
+            }
+
+            stream << ';' << std::endl;
+        }
+    };
+
     ShaderBuilder::ShaderBuilder( ConstParseTreeIn tree, ConstSymbolTableIn symbolTable )
         : mParseTree( tree )
         , mSymbolTable( symbolTable )
@@ -296,35 +400,8 @@ namespace GFW {
 
         // Input parameters
 
-        for ( uint32_t i = 0; i < entryPoint->GetArgs().size(); ++ i )
-        {
-            ConstParseTreeRef arg = entryPoint->GetArgs()[i];
-            source << "in ";
-            source << arg->GetChild( 0 )->ToString();
-            source << " _in_";
-            source << i;
-            source << "; // ";
-            source << arg->GetChild( 1 )->ToString();
-
-            ConstParseTreeRef semantic = arg->GetFirstChildWithType( TOKEN_SEMANTIC );
-            if ( semantic.IsAttached() )
-            {
-                source << " : ";
-                source << semantic->GetChild()->ToString();
-            }
-
-            source << std::endl;
-        }
+        EnumInputsOutputs( entryPoint, ExpandInputsOutputsAsGlobalVariables( source, mSymbolTable ) );
         source << std::endl;
-
-        // Output parameters
-
-        if ( stage == ShaderStage::VERTEX )
-        {
-            source  << "out gl_PerVertex {" << std::endl
-                    << "    vec4 gl_Position;" << std::endl
-                    << "};" << std::endl << std::endl;
-        }
 
         // main()
 
