@@ -179,6 +179,25 @@ namespace GFW {
                 AddSymbol( symbol );
             }
             return false;
+        case TOKEN_STRUCT_DEFINITION:
+            {
+                Symbol symbol( tree );
+                symbol.SetStruct();
+
+                // Remember members
+
+                for ( uint32_t i = 0; i < tree->GetChildCount(); ++ i )
+                {
+                    ConstParseTreeRef child = tree->GetChild(i);
+                    if ( child->GetTokenType() == TOKEN_STRUCT_MEMBER_DECLARATION )
+                    {
+                        symbol.mMembers.push_back( child );
+                    }
+                }
+
+                AddSymbol( symbol );
+            }
+            return false;
         }
         return true;
     }

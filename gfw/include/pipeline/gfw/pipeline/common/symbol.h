@@ -8,6 +8,7 @@
 #define SYMBOL_FLAGS \
     F( Function ) \
     F( StateObject ) \
+    F( Struct ) \
     F( Variable ) \
 
 namespace GFW {
@@ -43,14 +44,21 @@ namespace GFW {
         ConstParseTreeRef
         GetTree() const { return mTree; }
 
+        // Symbols referenced by this symbol (i.e. global variables by a function)
         const SymbolReferenceVec &
         GetReferences() const { return mReferences; }
 
+        // Object type or function return type
         ConstParseTreeRef
         GetType() const { return mType; }
 
+        // Function arguments
         const ParseTreeVec &
         GetArgs() const { return mArgs; }
+
+        // Members of a struct
+        const ParseTreeVec &
+        GetMembers() const { return mMembers; }
 
         const char *
         GetSemantic() const { return mSemantic; }
@@ -83,6 +91,7 @@ namespace GFW {
         SymbolReferenceVec  mReferences;    // Symbols referenced by this symbol (i.e. global variables by a function)
         ConstParseTreeRef   mType;          // Object type or function return type
         ParseTreeVec        mArgs;          // Function arguments
+        ParseTreeVec        mMembers;       // Members of a struct
         const char *        mSemantic;
 
         friend class SymbolTable;

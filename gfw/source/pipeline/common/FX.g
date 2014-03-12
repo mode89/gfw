@@ -20,6 +20,8 @@ tokens {
     T_SEMANTIC;
     T_SET_SHADER;
     T_STATE_OBJECT_DEFINITION;
+    T_STRUCT_DEFINITION;
+    T_STRUCT_MEMBER_DECLARATION;
     T_SYMBOL_NAME;
     T_TECHNIQUE_DEFINITION;
     T_TEXTURE_OBJECT_ID;
@@ -84,13 +86,13 @@ register_binding
     ;
 
 struct_definition
-    : T_STRUCT T_ID T_LCURLY struct_declaration_list T_RCURLY T_SEMI
+    : T_STRUCT T_ID T_LCURLY struct_member_declaration+ T_RCURLY T_SEMI
+        -> ^( T_STRUCT_DEFINITION T_STRUCT ^( T_SYMBOL_NAME T_ID ) T_LCURLY struct_member_declaration+ T_RCURLY T_SEMI )
     ;
 
-struct_declaration_list
-    : (
-        ( scalar_type_specifier | vector_type_specifier ) T_ID semantic? T_SEMI
-      )+
+struct_member_declaration
+    : type_specifier T_ID semantic? T_SEMI
+        -> ^( T_STRUCT_MEMBER_DECLARATION type_specifier T_ID semantic? T_SEMI )
     ;
 
 function_definition
