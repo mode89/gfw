@@ -211,10 +211,10 @@ namespace GFW {
         }
     }
 
-    class ExpandInputsOutputs
+    class ExpandInputOutput
     {
     public:
-        ExpandInputsOutputs( std::ostream & stream, ConstSymbolTableIn symbolTable )
+        ExpandInputOutput( std::ostream & stream, ConstSymbolTableIn symbolTable )
             : mStream( stream )
             , mSymbolTable( symbolTable )
         {}
@@ -259,11 +259,11 @@ namespace GFW {
         mutable Names       mNames;
     };
 
-    class ExpandInputsOutputsAsGlobalVariables : public ExpandInputsOutputs
+    class ExpandInputOutputAsGlobalDeclaration : public ExpandInputOutput
     {
     public:
-        ExpandInputsOutputsAsGlobalVariables( std::ostream & stream, ConstSymbolTableIn symboTable )
-            : ExpandInputsOutputs( stream, symboTable )
+        ExpandInputOutputAsGlobalDeclaration( std::ostream & stream, ConstSymbolTableIn symboTable )
+            : ExpandInputOutput( stream, symboTable )
         {}
 
         void Handler(
@@ -288,6 +288,22 @@ namespace GFW {
 
             stream << ';' << std::endl;
         }
+    };
+
+    class ExpandInputOutputAsLocalDeclaration
+    {
+    public:
+        ExpandInputOutputAsLocalDeclaration( std::ostream & stream )
+            : mStream( stream )
+        {}
+
+        void operator() ( bool isInput, const char * type, const char * name, const char * semantic ) const
+        {
+            mStream << "    " << type << ' ' << name << ';' << std::endl;
+        }
+
+    private:
+        std::ostream & mStream;
     };
 
     ShaderBuilder::ShaderBuilder( ConstParseTreeIn tree, ConstSymbolTableIn symbolTable )
@@ -398,15 +414,20 @@ namespace GFW {
 
         source << std::endl << std::endl;
 
-        // Input parameters
+        // Declare inputs and outputs
 
-        EnumInputsOutputs( entryPoint, ExpandInputsOutputsAsGlobalVariables( source, mSymbolTable ) );
+        EnumInputsOutputs( entryPoint, ExpandInputOutputAsGlobalDeclaration( source, mSymbolTable ) );
         source << std::endl;
 
         // main()
 
-        source << "void main()\n{\n    ";
+        source << "void main()\n{\n";
         {
+            // Declare local copies of inputs and outputs
+
+            EnumInputsOutputs( entryPoint, ExpandInputOutputAsLocalDeclaration( source ) );
+            source << std::endl;
+
             // Call the shader
 
             if ( entryPoint->GetType()->GetTokenType() != TOKEN_VOID )
