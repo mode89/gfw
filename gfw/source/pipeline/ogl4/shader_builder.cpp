@@ -342,6 +342,48 @@ namespace GFW {
         }
     };
 
+    class ExpandInputOutputAsEntryPointArgument
+    {
+    public:
+        ExpandInputOutputAsEntryPointArgument( std::ostream & stream, const Symbol * entryPoint )
+            : mStream( stream )
+            , mIsVoid( entryPoint->GetType()->GetTokenType() == TOKEN_VOID )
+            , mEntryName( entryPoint->GetName() )
+            , mInputsOutputsNumber( entryPoint->GetArgs().size() + ( mIsVoid ? 0 : 1 ) )
+            , mInputsOutputsCounter( 0 )
+        {}
+
+        void operator() ( bool isInput, const char * type, const char * name, const char * semantic ) const
+        {
+            if ( ( mInputsOutputsCounter ++ ) == 0 )
+            {
+                if ( mIsVoid )
+                {
+                    mStream << "    ";
+                    mStream << mEntryName << "( " << name;
+                    mStream << ( ( mInputsOutputsCounter != mInputsOutputsNumber ) ? ", " : " );\n" );
+                }
+                else
+                {
+                    mStream << "    ";
+                    mStream << name << " = " << mEntryName << "( ";
+                }
+            }
+            else
+            {
+                mStream << name;
+                mStream << ( ( mInputsOutputsCounter != mInputsOutputsNumber ) ? ", " : " );\n" );
+            }
+        }
+
+    private:
+        std::ostream &      mStream;
+        bool                mIsVoid;
+        const char *        mEntryName;
+        uint32_t            mInputsOutputsNumber;
+        mutable uint32_t    mInputsOutputsCounter;
+    };
+
     ShaderBuilder::ShaderBuilder( ConstParseTreeIn tree, ConstSymbolTableIn symbolTable )
         : mParseTree( tree )
         , mSymbolTable( symbolTable )
@@ -469,28 +511,10 @@ namespace GFW {
             EnumInputsOutputs( entryPoint, AssignInput( source, mSymbolTable ) );
             source << std::endl;
 
-            // Call the shader
+            // Call the entry point
 
-            if ( entryPoint->GetType()->GetTokenType() != TOKEN_VOID )
-            {
-                source << entryPoint->GetType()->ToString();
-                source << " outp = ";
-            }
-
-            source << shaderName;
-            source << "(";
-            if ( entryPoint->GetArgs().size() != 0 )
-            {
-                source << ' ';
-                for ( uint32_t i = 0; i < entryPoint->GetArgs().size(); ++ i )
-                {
-                    if ( i != 0 ) source << ", ";
-                    source << "_in_";
-                    source << i;
-                }
-                source << ' ';
-            }
-            source << ");\n";
+            EnumInputsOutputs( entryPoint, ExpandInputOutputAsEntryPointArgument( source, entryPoint ) );
+            source << std::endl;
 
             // Assign outputs
 
