@@ -306,6 +306,42 @@ namespace GFW {
         std::ostream & mStream;
     };
 
+    class AssignInput : public ExpandInputOutput
+    {
+    public:
+        AssignInput( std::ostream & stream, ConstSymbolTableIn symbolTable )
+            : ExpandInputOutput( stream, symbolTable )
+        {}
+
+        void Handler(
+            std::ostream & stream,
+            bool isInput,
+            const char * typeName,
+            const Names & names,
+            const char * semantic) const
+        {
+            if ( isInput )
+            {
+                stream << "    ";
+
+                stream << names[0];
+                for ( Names::size_type i = 1; i < names.size(); ++ i )
+                {
+                    stream << "." << names[i];
+                }
+
+                stream << " = ";
+                stream << "_in";
+                for ( Names::size_type i = 0; i < names.size(); ++ i )
+                {
+                    stream << "_" << names[i];
+                }
+
+                stream << ";" << std::endl;
+            }
+        }
+    };
+
     ShaderBuilder::ShaderBuilder( ConstParseTreeIn tree, ConstSymbolTableIn symbolTable )
         : mParseTree( tree )
         , mSymbolTable( symbolTable )
@@ -426,6 +462,11 @@ namespace GFW {
             // Declare local copies of inputs and outputs
 
             EnumInputsOutputs( entryPoint, ExpandInputOutputAsLocalDeclaration( source ) );
+            source << std::endl;
+
+            // Assign the inputs
+
+            EnumInputsOutputs( entryPoint, AssignInput( source, mSymbolTable ) );
             source << std::endl;
 
             // Call the shader
