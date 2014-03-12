@@ -28,6 +28,7 @@ tokens {
     T_TEXTURE_SAMPLE_EXPRESSION;
     T_TEXTURE_SAMPLE_EXPRESSION_HEAD;
     T_TRANSLATION_UNIT;
+    T_TYPE_SPECIFIER;
     T_VARIABLE_DEFINITION;
 }
 
@@ -107,7 +108,7 @@ arguments_list
 
 argument
     : type_specifier T_ID semantic?
-        -> ^( T_ARGUMENT type_specifier T_ID semantic? )
+        -> ^( T_ARGUMENT ^( T_TYPE_SPECIFIER type_specifier ) T_ID semantic? )
     ;
 
 semantic
