@@ -277,6 +277,10 @@ namespace GFW {
             {
                 stream << "out gl_PerVertex { vec4 gl_Position; }";
             }
+            else if ( !isInput && std::strcmp( semantic, "SV_TARGET" ) == 0 )
+            {
+                stream << "out vec4 gl_FragColor";
+            }
             else
             {
                 stream << ( isInput ? "in " : "out " ) << typeName << " _inout";
