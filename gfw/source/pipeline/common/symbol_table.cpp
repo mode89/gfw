@@ -73,9 +73,8 @@ namespace GFW {
             {
             case TOKEN_FUNCTION_DEFINITION:
                 {
-                    ConstParseTreeRef functionBody = symbol.GetTree()->GetFirstChildWithType( TOKEN_COMPOUND_STATEMENT );
                     CollectReferencedSymbolsVisitor collectReferencedSymbolsVisitor( this, symbol.mReferences );
-                    functionBody->TraverseDFS( collectReferencedSymbolsVisitor );
+                    symbol.GetTree()->TraverseDFS( collectReferencedSymbolsVisitor );
                 }
                 break;
             }
