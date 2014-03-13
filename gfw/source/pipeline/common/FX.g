@@ -93,7 +93,7 @@ struct_definition
 
 struct_member_declaration
     : type_specifier T_ID semantic? T_SEMI
-        -> ^( T_STRUCT_MEMBER_DECLARATION type_specifier T_ID semantic? T_SEMI )
+        -> ^( T_STRUCT_MEMBER_DECLARATION ^( T_TYPE_SPECIFIER type_specifier ) T_ID semantic? T_SEMI )
     ;
 
 function_definition
