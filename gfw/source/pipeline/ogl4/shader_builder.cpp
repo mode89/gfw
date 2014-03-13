@@ -279,7 +279,7 @@ namespace GFW {
             }
             else
             {
-                stream << ( isInput ? "in " : "out " ) << typeName << " _in";
+                stream << ( isInput ? "in " : "out " ) << typeName << " _inout";
                 for ( uint32_t i = 0; i < names.size(); ++ i )
                 {
                     stream << '_' << names[i];
@@ -331,7 +331,7 @@ namespace GFW {
                 }
 
                 stream << " = ";
-                stream << "_in";
+                stream << "_inout";
                 for ( Names::size_type i = 0; i < names.size(); ++ i )
                 {
                     stream << "_" << names[i];
