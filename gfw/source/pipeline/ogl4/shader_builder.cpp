@@ -370,7 +370,8 @@ namespace GFW {
                 else
                 {
                     mStream << "    ";
-                    mStream << name << " = " << mEntryName << "( ";
+                    mStream << name << " = " << mEntryName << "(";
+                    mStream << ( ( mInputsOutputsCounter != mInputsOutputsNumber ) ? " " : ");\n" );
                 }
             }
             else
