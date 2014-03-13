@@ -266,12 +266,7 @@ namespace GFW {
             : ExpandInputOutput( stream, symboTable )
         {}
 
-        void Handler(
-            std::ostream & stream,
-            bool isInput,
-            const char * typeName,
-            const Names & names,
-            const char * semantic) const
+        void Handler( std::ostream & stream, bool isInput, const char * typeName, const Names & names, const char * semantic ) const
         {
             if ( !isInput && std::strcmp( semantic, "SV_POSITION" ) == 0 )
             {
@@ -317,12 +312,7 @@ namespace GFW {
             : ExpandInputOutput( stream, symbolTable )
         {}
 
-        void Handler(
-            std::ostream & stream,
-            bool isInput,
-            const char * typeName,
-            const Names & names,
-            const char * semantic) const
+        void Handler( std::ostream & stream, bool isInput, const char * typeName, const Names & names, const char * semantic ) const
         {
             if ( isInput )
             {
@@ -387,6 +377,48 @@ namespace GFW {
         const char *        mEntryName;
         uint32_t            mInputsOutputsNumber;
         mutable uint32_t    mInputsOutputsCounter;
+    };
+
+    class AssignOutput : public ExpandInputOutput
+    {
+    public:
+        AssignOutput( std::ostream & stream, ConstSymbolTableIn symbolTable )
+            : ExpandInputOutput( stream, symbolTable )
+        {}
+
+        void Handler( std::ostream & stream, bool isInput, const char * typeName, const Names & names, const char * semantic ) const
+        {
+            if ( !isInput )
+            {
+                stream << "    ";
+
+                if ( std::strcmp( semantic, "SV_POSITION" ) == 0 )
+                {
+                    stream << "gl_Position";
+                }
+                else if ( std::strcmp( semantic, "SV_TARGET" ) == 0 )
+                {
+                    stream << "gl_FragColor";
+                }
+                else
+                {
+                    stream << "_inout";
+                    for ( Names::size_type i = 0; i < names.size(); ++ i )
+                    {
+                        stream << "_" << names[i];
+                    }
+                }
+
+                stream << " = ";
+                stream << names[0];
+                for ( Names::size_type i = 1; i < names.size(); ++ i )
+                {
+                    stream << "." << names[i];
+                }
+
+                stream << ";" << std::endl;
+            }
+        }
     };
 
     ShaderBuilder::ShaderBuilder( ConstParseTreeIn tree, ConstSymbolTableIn symbolTable )
@@ -494,7 +526,6 @@ namespace GFW {
         const TextureSamplerPairSet & textureSamplerPairSet = mFunctionTextureSamplerMap[entryPoint];
         ConstructSourceVisitor constructSource( source, textureSamplerPairSet, mSymbolTable, entryPoint );
         mParseTree->TraverseDFS( constructSource );
-
         source << std::endl << std::endl;
 
         // Declare inputs and outputs
@@ -509,36 +540,18 @@ namespace GFW {
             // Declare local copies of inputs and outputs
 
             EnumInputsOutputs( entryPoint, ExpandInputOutputAsLocalDeclaration( source ) );
-            source << std::endl;
 
             // Assign the inputs
 
             EnumInputsOutputs( entryPoint, AssignInput( source, mSymbolTable ) );
-            source << std::endl;
 
             // Call the entry point
 
             EnumInputsOutputs( entryPoint, ExpandInputOutputAsEntryPointArgument( source, entryPoint ) );
-            source << std::endl;
 
             // Assign outputs
 
-            if ( entryPoint->GetType()->GetTokenType() != TOKEN_VOID )
-            {
-                if ( entryPoint->GetSemantic() )
-                {
-                    source << "    ";
-                    const char * semantic = entryPoint->GetSemantic();
-                    if ( std::strcmp( "SV_POSITION", semantic ) == 0 )
-                    {
-                        source << "gl_Position = outp;\n";
-                    }
-                    else if ( std::strcmp( "SV_TARGET", semantic ) == 0 )
-                    {
-                        source << "gl_FragColor = outp;\n";
-                    }
-                }
-            }
+            EnumInputsOutputs( entryPoint, AssignOutput( source, mSymbolTable ) );
         }
         source << "}\n";
 
