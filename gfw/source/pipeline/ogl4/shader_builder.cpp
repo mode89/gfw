@@ -236,7 +236,7 @@ namespace GFW {
                     ConstParseTreeRef semantic = m->GetFirstChildWithType( TOKEN_SEMANTIC );
 
                     (*this)( isInput, type->GetChild()->ToString(), name->ToString(),
-                        semantic.IsAttached() ? semantic->ToString() : nullptr );
+                        semantic.IsAttached() ? semantic->GetChild()->ToString() : nullptr );
                 }
             }
             else
