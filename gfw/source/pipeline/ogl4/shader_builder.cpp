@@ -273,7 +273,7 @@ namespace GFW {
             const Names & names,
             const char * semantic) const
         {
-            if ( std::strcmp( semantic, "SV_POSITION" ) == 0 )
+            if ( !isInput && std::strcmp( semantic, "SV_POSITION" ) == 0 )
             {
                 stream << "out gl_PerVertex { vec4 gl_Position; }";
             }
