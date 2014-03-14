@@ -260,34 +260,88 @@ namespace GFW {
         mutable Names       mNames;
     };
 
-    class ExpandInputOutputAsGlobalDeclaration : public ExpandInputOutput
+    class ExpandOutputAsGlobalDeclaration : public ExpandInputOutput
     {
     public:
-        ExpandInputOutputAsGlobalDeclaration( std::ostream & stream, ConstSymbolTableIn symboTable )
+        ExpandOutputAsGlobalDeclaration( std::ostream & stream, ConstSymbolTableIn symboTable, ShaderStage stage )
             : ExpandInputOutput( stream, symboTable )
+            , mStage( stage )
         {}
 
         void Handler( std::ostream & stream, bool isInput, const char * typeName, const Names & names, const char * semantic ) const
         {
-            if ( !isInput && std::strcmp( semantic, "SV_POSITION" ) == 0 )
+            if ( !isInput )
             {
-                stream << "out gl_PerVertex { vec4 gl_Position; }";
-            }
-            else if ( !isInput && std::strcmp( semantic, "SV_TARGET" ) == 0 )
-            {
-                stream << "out vec4 gl_FragColor";
-            }
-            else
-            {
-                stream << ( isInput ? "in " : "out " ) << typeName << " _inout";
-                for ( uint32_t i = 0; i < names.size(); ++ i )
+                if ( mStage == ShaderStage::VERTEX && std::strcmp( semantic, "SV_POSITION" ) == 0 )
                 {
-                    stream << '_' << names[i];
+                    // Equivalent gl_Position
+                    return;
+                }
+                else
+                {
+                    // OpenGL doesn't allow output blocks in fragment shader
+                    stream << ( ( mStage == ShaderStage::PIXEL ) ? "out " : "    " );
+                    stream << typeName << ' ' << semantic;
+                }
+                stream << ';' << std::endl;
+            }
+        }
+
+    private:
+        ShaderStage mStage;
+    };
+
+    class ExpandInputAsGlobalDeclaration : public ExpandInputOutput
+    {
+    public:
+        ExpandInputAsGlobalDeclaration( std::ostream & stream, ConstSymbolTableIn symboTable, ShaderStage stage )
+            : ExpandInputOutput( stream, symboTable )
+            , mStage( stage )
+        {}
+
+        void Handler( std::ostream & stream, bool isInput, const char * typeName, const Names & names, const char * semantic ) const
+        {
+            if ( isInput )
+            {
+                if ( mStage == ShaderStage::PIXEL && strcmp( semantic, "SV_POSITION") == 0 )
+                {
+                    // Equivalent gl_FragCoord;
+                    return;
+                }
+                else
+                {
+                    // OpenGL doesn't allow input blocks in vertex shader
+                    stream << ( ( mStage == ShaderStage::VERTEX ) ? "in " : "    " );
+                    stream << typeName << ' ' << semantic << ';' << std::endl;
                 }
             }
-
-            stream << ';' << std::endl;
         }
+
+    private:
+        ShaderStage mStage;
+    };
+
+    class ExpandInputOutputAsBuiltinDeclaration : public ExpandInputOutput
+    {
+    public:
+        ExpandInputOutputAsBuiltinDeclaration( std::ostream & stream, ConstSymbolTableIn symbolTable, ShaderStage stage )
+            : ExpandInputOutput( stream, symbolTable )
+            , mStage( stage )
+        {}
+
+        void Handler( std::ostream & stream, bool isInput, const char * typeName, const Names & names, const char * semantic ) const
+        {
+            if ( !isInput )
+            {
+                if ( mStage == ShaderStage::VERTEX && std::strcmp( semantic, "SV_POSITION" ) == 0 )
+                {
+                    stream << "out gl_PerVertex { " << typeName << " gl_Position; };" << std::endl;
+                }
+            }
+        }
+
+    private:
+        ShaderStage mStage;
     };
 
     class ExpandInputOutputAsLocalDeclaration
@@ -309,8 +363,9 @@ namespace GFW {
     class AssignInput : public ExpandInputOutput
     {
     public:
-        AssignInput( std::ostream & stream, ConstSymbolTableIn symbolTable )
+        AssignInput( std::ostream & stream, ConstSymbolTableIn symbolTable, ShaderStage stage )
             : ExpandInputOutput( stream, symbolTable )
+            , mStage( stage )
         {}
 
         void Handler( std::ostream & stream, bool isInput, const char * typeName, const Names & names, const char * semantic ) const
@@ -326,15 +381,27 @@ namespace GFW {
                 }
 
                 stream << " = ";
-                stream << "_inout";
-                for ( Names::size_type i = 0; i < names.size(); ++ i )
+
+                if ( mStage == ShaderStage::VERTEX )
                 {
-                    stream << "_" << names[i];
+                    // OpenGL doesn't allow input blocks in vertex shader
+                    stream << semantic;
+                }
+                else if ( mStage == ShaderStage::PIXEL && std::strcmp( semantic, "SV_POSITION" ) == 0 )
+                {
+                    stream << "gl_FragCoord";
+                }
+                else
+                {
+                    stream << "_inputs." << semantic;
                 }
 
                 stream << ";" << std::endl;
             }
         }
+
+    private:
+        ShaderStage mStage;
     };
 
     class ExpandInputOutputAsEntryPointArgument
@@ -383,8 +450,9 @@ namespace GFW {
     class AssignOutput : public ExpandInputOutput
     {
     public:
-        AssignOutput( std::ostream & stream, ConstSymbolTableIn symbolTable )
+        AssignOutput( std::ostream & stream, ConstSymbolTableIn symbolTable, ShaderStage stage )
             : ExpandInputOutput( stream, symbolTable )
+            , mStage( stage )
         {}
 
         void Handler( std::ostream & stream, bool isInput, const char * typeName, const Names & names, const char * semantic ) const
@@ -393,21 +461,18 @@ namespace GFW {
             {
                 stream << "    ";
 
-                if ( std::strcmp( semantic, "SV_POSITION" ) == 0 )
+                if ( mStage == ShaderStage::VERTEX && std::strcmp( semantic, "SV_POSITION" ) == 0 )
                 {
                     stream << "gl_Position";
                 }
-                else if ( std::strcmp( semantic, "SV_TARGET" ) == 0 )
+                else if ( mStage == ShaderStage::PIXEL )
                 {
-                    stream << "gl_FragColor";
+                    // OpenGL doesn't allow output blocks in fragment shader
+                    stream << semantic;
                 }
                 else
                 {
-                    stream << "_inout";
-                    for ( Names::size_type i = 0; i < names.size(); ++ i )
-                    {
-                        stream << "_" << names[i];
-                    }
+                    stream << "_outputs." << semantic;
                 }
 
                 stream << " = ";
@@ -420,6 +485,9 @@ namespace GFW {
                 stream << ";" << std::endl;
             }
         }
+
+    private:
+        ShaderStage mStage;
     };
 
     ShaderBuilder::ShaderBuilder( ConstParseTreeIn tree, ConstSymbolTableIn symbolTable )
@@ -529,10 +597,54 @@ namespace GFW {
         mParseTree->TraverseDFS( constructSource );
         source << std::endl << std::endl;
 
-        // Declare inputs and outputs
+        // Declare built-in variables
 
-        EnumInputsOutputs( entryPoint, ExpandInputOutputAsGlobalDeclaration( source, mSymbolTable ) );
+        EnumInputsOutputs( entryPoint, ExpandInputOutputAsBuiltinDeclaration( source, mSymbolTable, stage ) );
         source << std::endl;
+
+        // Declare inputs
+
+        std::stringstream inputDecls;
+        EnumInputsOutputs( entryPoint, ExpandInputAsGlobalDeclaration( inputDecls, mSymbolTable, stage ) );
+
+        if ( stage == ShaderStage::VERTEX )
+        {
+            // OpenGL doesn't allow input blocks in vertex shader
+            source << inputDecls.str();
+            source << std::endl;
+        }
+        else
+        {
+            if ( !inputDecls.str().empty() )
+            {
+                source << "in _INOUTS {" << std::endl;
+                source << inputDecls.str();
+                source << "} _inputs;" << std::endl;
+                source << std::endl;
+            }
+        }
+
+        // Declare outputs
+
+        std::stringstream outputDecls;
+        EnumInputsOutputs( entryPoint, ExpandOutputAsGlobalDeclaration( outputDecls, mSymbolTable, stage ) );
+
+        if ( stage == ShaderStage::PIXEL )
+        {
+            // OpenGL doesn't allow output blocks in fragment shader
+            source << outputDecls.str();
+            source << std::endl;
+        }
+        else
+        {
+            if ( !outputDecls.str().empty() )
+            {
+                source << "out _INOUTS {" << std::endl;
+                source << outputDecls.str();
+                source << "} _outputs;" << std::endl;
+                source << std::endl;
+            }
+        }
 
         // main()
 
@@ -544,7 +656,7 @@ namespace GFW {
 
             // Assign the inputs
 
-            EnumInputsOutputs( entryPoint, AssignInput( source, mSymbolTable ) );
+            EnumInputsOutputs( entryPoint, AssignInput( source, mSymbolTable, stage ) );
 
             // Call the entry point
 
@@ -552,7 +664,7 @@ namespace GFW {
 
             // Assign outputs
 
-            EnumInputsOutputs( entryPoint, AssignOutput( source, mSymbolTable ) );
+            EnumInputsOutputs( entryPoint, AssignOutput( source, mSymbolTable, stage ) );
         }
         source << "}\n";
 
