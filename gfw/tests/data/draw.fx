@@ -8,6 +8,11 @@ float4 VS( float4 pos : POSITION ) : SV_POSITION
     return mul( pos, g_WVP );
 }
 
+float2 VS_Quad( float2 pos : POSITION ) : SV_POSITION
+{
+    return pos * float2( 0.5f, -0.5f ) + float2( 0.5f, 0.5f );
+}
+
 float4 PS_Red() : SV_TARGET
 {
     return float4(1.0f, 0.0f, 0.0f, 1.0f);
@@ -43,6 +48,15 @@ VS_TEXTURED_OUTPUT VS_Textured( VS_TEXTURED_INPUT inputs )
 float4 PS_Textured( VS_TEXTURED_OUTPUT inputs ) : SV_TARGET
 {
     return g_Texture.Sample( g_Sampler, inputs.uv );
+}
+
+technique10 DrawRedQuad
+{
+    pass p0
+    {
+        SetVertexShader( CompileShader( vs_4_0, VS_Quad() ) );
+        SetPixelShader( CompileShader( ps_4_0, PS_Red() ) );
+    }
 }
 
 technique10 DrawRed
