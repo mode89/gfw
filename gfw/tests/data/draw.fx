@@ -10,7 +10,7 @@ float4 VS( float4 pos : POSITION ) : SV_POSITION
 
 float2 VS_Quad( float2 pos : POSITION ) : SV_POSITION
 {
-    return pos * float2( 0.5f, -0.5f ) + float2( 0.5f, 0.5f );
+    return pos;
 }
 
 float4 PS_Red() : SV_TARGET
