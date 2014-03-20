@@ -23,6 +23,31 @@ float4 PS_Colored() : SV_TARGET
     return g_Color;
 }
 
+struct VS_COLORED_VERTICES_INPUT
+{
+    float4 pos : POSITION;
+    float4 color : COLOR;
+};
+
+struct VS_COLORED_VERTICES_OUTPUT
+{
+    float4 pos : SV_POSITION;
+    float4 color : COLOR;
+};
+
+VS_COLORED_VERTICES_OUTPUT VS_ColoredVertices( VS_COLORED_VERTICES_INPUT inputs )
+{
+    VS_COLORED_VERTICES_OUTPUT outputs;
+    outputs.pos = inputs.pos;
+    outputs.color = inputs.color;
+    return outputs;
+}
+
+float4 PS_ColoredVertices( VS_COLORED_VERTICES_OUTPUT inputs ) : SV_TARGET
+{
+    return inputs.color;
+}
+
 struct VS_TEXTURED_INPUT
 {
     float4 pos : POSITION;
@@ -65,6 +90,15 @@ technique10 DrawRed
     {
         SetVertexShader( CompileShader( vs_4_0, VS() ) );
         SetPixelShader( CompileShader( ps_4_0, PS_Red() ) );
+    }
+}
+
+technique10 DrawColoredVertices
+{
+    pass p0
+    {
+        SetVertexShader( CompileShader( vs_4_0, VS_ColoredVertices() ) );
+        SetPixelShader( CompileShader( ps_4_0, PS_ColoredVertices() ) );
     }
 }
 

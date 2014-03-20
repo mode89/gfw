@@ -28,7 +28,8 @@ TEST_F(GfwTests, Draw)
 {
     // Create effect
 
-    IEffectRef effect = mFactory->CreateEffect(TESTS_DATA_DIR "draw.fx");
+    IEffectRef    effect    = mFactory->CreateEffect( "draw.fxc" );
+	ITechniqueRef technique = effect->GetTechnique( "DrawColoredVertices" );
 
     // Create geometry
 
@@ -54,7 +55,7 @@ TEST_F(GfwTests, Draw)
     vertexAttribs[1].format   = FORMAT_RGB32_FLOAT;
     vertexAttribs[1].stride   = 20;
     vertexAttribs[1].offset   = 8;
-    IInputLayoutRef inputLayout = mDevice->CreateInputLayout( 2, vertexAttribs, effect->GetShader( ShaderStage::VERTEX ) );
+    IInputLayoutRef inputLayout = mDevice->CreateInputLayout( 2, vertexAttribs, technique->GetShader( ShaderStage::VERTEX ) );
 
     // Define draw params
 
