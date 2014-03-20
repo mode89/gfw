@@ -7,26 +7,28 @@ namespace GFW {
     SEMANTIC_ ## name ## index
 
 #define BUILD_SEMANTIC_INDICES(semantic) \
-    S(semantic, 0) \
-    S(semantic, 1) \
-    S(semantic, 2) \
-    S(semantic, 3) \
-    S(semantic, 4) \
-    S(semantic, 5) \
-    S(semantic, 6) \
-    S(semantic, 7) \
+    SI(semantic, 0) \
+    SI(semantic, 1) \
+    SI(semantic, 2) \
+    SI(semantic, 3) \
+    SI(semantic, 4) \
+    SI(semantic, 5) \
+    SI(semantic, 6) \
+    SI(semantic, 7) \
 
 #define SEMANTICS \
-    BUILD_SEMANTIC_INDICES(POSITION) \
-    BUILD_SEMANTIC_INDICES(TEXCOORD) \
-    BUILD_SEMANTIC_INDICES(NORMAL) \
-    BUILD_SEMANTIC_INDICES(COLOR) \
+    S(POSITION) \
+    S(TEXCOORD) \
+    S(NORMAL) \
+    S(COLOR) \
 
     enum Semantic
     {
         SEMANTIC_UNKNOWN = -1,
-#define S(name, index) BUILD_SEMANTIC(name, index),
+#define S(name) BUILD_SEMANTIC_INDICES( name )
+#define SI(name, index) BUILD_SEMANTIC( name, index ),
         SEMANTICS
+#undef SI
 #undef S
     };
 

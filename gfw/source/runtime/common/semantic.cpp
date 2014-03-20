@@ -2,7 +2,7 @@
 
 #include "gfw/runtime/common/semantic.h"
 
-#include <string.h>
+#include <cstring>
 
 namespace GFW {
 
@@ -10,22 +10,29 @@ namespace GFW {
     {
         switch (semantic)
         {
-#define S(name, index) case BUILD_SEMANTIC(name, index) : return # name # index ;
+#define S( name ) BUILD_SEMANTIC_INDICES( name )
+#define SI( name, index ) case BUILD_SEMANTIC( name, index ) : return # name # index ;
             SEMANTICS
+#undef SI
 #undef S
         default:
             TRACE_FAIL_MSG("Unknown semantic");
         }
-
         return NULL;
     }
 
     Semantic GetSemantic(const char * str)
     {
-#define S(name, index) if (strcmp(str, # name # index) == 0) return BUILD_SEMANTIC(name, index);
+        // Parse semantics without tailing index
+#define S( name ) if ( std::strcmp( str, # name ) == 0 ) return BUILD_SEMANTIC( name, 0 );
         SEMANTICS
 #undef S
-
+        // Parse semanitcs with tailing index
+#define S( name ) BUILD_SEMANTIC_INDICES( name )
+#define SI( name, index ) if ( std::strcmp( str, # name # index ) == 0 ) return BUILD_SEMANTIC( name, index );
+        SEMANTICS
+#undef SI
+#undef S
         return SEMANTIC_UNKNOWN;
     }
 
