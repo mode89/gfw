@@ -24,7 +24,7 @@ TEST_F(GfwTests, Clear)
     }
 }
 
-TEST_F(GfwTests, Draw)
+TEST_F( GfwTests, DrawColored )
 {
     // Create effect
 
@@ -41,7 +41,7 @@ TEST_F(GfwTests, Draw)
 
     BufferDesc vertexBufferDesc;
     vertexBufferDesc.type = BUFFER_VERTEX;
-    vertexBufferDesc.size = 60;
+    vertexBufferDesc.size = sizeof( vertices );
     vertexBufferDesc.usage = USAGE_STATIC;
     IBufferRef vertexBuffer = mDevice->CreateBuffer(vertexBufferDesc, vertices);
 
@@ -75,7 +75,7 @@ TEST_F(GfwTests, Draw)
             mContext->SetRenderTargets(1, &mDefaultRenderTarget);
             mContext->Clear(mClearParams);
 
-            effect->Dispatch();
+            technique->Dispatch();
 
             mContext->SetInputLayout(inputLayout);
             mContext->SetVertexBuffer(0, vertexBuffer);
