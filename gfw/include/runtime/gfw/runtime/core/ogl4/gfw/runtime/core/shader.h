@@ -35,6 +35,10 @@ namespace GFW {
         uint32_t                mHandle;
         uint32_t                mHash;
         ShaderReflectionRef     mReflection;
+
+#if PLAT_DEBUG
+        char *                  mSource;
+#endif
     };
     AUTOREF_REFERENCE_DECLARATION(Shader);
 

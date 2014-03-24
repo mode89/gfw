@@ -19,6 +19,9 @@ namespace GFW {
         , mStage( stage )
         , mHandle(0)
         , mHash(0)
+#if PLAT_DEBUG
+        , mSource(NULL)
+#endif
     {
         uint32_t shader = TRACE_ASSERT_GL( glCreateShader, GetOGLShaderType( stage ) );
         TRACE_ASSERT( shader != 0 );
@@ -84,6 +87,11 @@ namespace GFW {
         mHash = CRC32(0, source, sourceLength);
 
         mReflection = new ShaderReflection(mHandle, mDevice);
+
+#if PLAT_DEBUG
+        mSource = new char [ std::strlen( source ) + 1 ];
+        std::strcpy( mSource, source );
+#endif
     }
 
     Shader::~Shader()
@@ -92,6 +100,13 @@ namespace GFW {
         {
             TRACE_ASSERT_GL(glDeleteProgram, mHandle);
         }
+
+#if PLAT_DEBUG
+        if ( mSource != NULL )
+        {
+            delete[] mSource;
+        }
+#endif
     }
 
 } // namespace GFW
