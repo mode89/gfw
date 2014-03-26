@@ -208,7 +208,7 @@ struct Vertex
 
 TEST_F(GfwTests, CreateMesh)
 {
-    IEffectRef effect = mFactory->CreateEffect(TESTS_DATA_DIR "draw_color_flat.fx");
+    IEffectRef effect = mFactory->CreateEffect( "draw.fxc" );
 
     float    xLeft     = -1.0f;
     float    yBottom   = -1.0f;
@@ -413,8 +413,9 @@ TEST_F(GfwTests, RenderTarget)
 
     // Create effect
 
-    IEffectRef fxRed     = mFactory->CreateEffect(TESTS_DATA_DIR "draw_red.fx");
-    IEffectRef fxTexture = mFactory->CreateEffect(TESTS_DATA_DIR "draw_texture.fx");
+    IEffectRef fx = mFactory->CreateEffect( "draw.fxc" );
+    ITechniqueRef techDrawRed = fx->GetTechnique( "DrawRed" );
+    ITechniqueRef techDrawTexturedQuad = fx->GetTechnique( "DrawTexturedQuad" );
 
     // Create geometry
 
@@ -436,7 +437,7 @@ TEST_F(GfwTests, RenderTarget)
     vertexAttribs.semantic = SEMANTIC_POSITION0;
     vertexAttribs.format   = FORMAT_RG32_FLOAT;
     vertexAttribs.stride   = 8;
-    IInputLayoutRef inputLayout = mDevice->CreateInputLayout(1, &vertexAttribs, fxRed->GetShader(ShaderStage::VERTEX));
+    IInputLayoutRef inputLayout = mDevice->CreateInputLayout( 1, &vertexAttribs, techDrawRed->GetShader(ShaderStage::VERTEX) );
 
     // Define draw params
 
@@ -470,7 +471,7 @@ TEST_F(GfwTests, RenderTarget)
             mContext->SetInputLayout(inputLayout);
             mContext->SetVertexBuffer(0, vertPosBuf);
 
-            fxRed->Dispatch();
+            techDrawRed->Dispatch();
             mContext->Draw(drawParams);
 
             // Draw screen quad with texture
@@ -480,7 +481,7 @@ TEST_F(GfwTests, RenderTarget)
 
             mContext->SetTexture( ShaderStage::PIXEL, 0, rtTex);
 
-            fxTexture->Dispatch();
+            techDrawTexturedQuad->Dispatch();
             mContext->DrawScreenQuad();
         }
         mContext->EndScene();

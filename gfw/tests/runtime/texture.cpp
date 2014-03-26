@@ -4,7 +4,8 @@ using namespace GFW;
 
 TEST_F(GfwTests, Texture)
 {
-    IEffectRef effect = mFactory->CreateEffect(TESTS_DATA_DIR "draw_texture.fx");
+    IEffectRef effect = mFactory->CreateEffect( "draw.fxc" );
+    ITechniqueRef technique = effect->GetTechnique( "DrawTexturedQuad" );
 
     const uint32_t width  = 32;
     const uint32_t cells  = 4;
@@ -35,7 +36,7 @@ TEST_F(GfwTests, Texture)
             mContext->Clear(mClearParams);
 
             mContext->SetTexture( ShaderStage::PIXEL, 0, texture );
-            effect->Dispatch();
+            technique->Dispatch();
             mContext->DrawScreenQuad();
         }
         mContext->EndScene();

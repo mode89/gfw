@@ -70,6 +70,16 @@ VS_TEXTURED_OUTPUT VS_Textured( VS_TEXTURED_INPUT inputs )
     return outputs;
 }
 
+VS_TEXTURED_OUTPUT VS_TexturedQuad( float2 pos : POSITION )
+{
+    VS_TEXTURED_OUTPUT outputs;
+
+    outputs.pos = float4( pos, 0.0f, 1.0f );
+    outputs.uv = pos * float2( 0.5f, -0.5f ) + float2( 0.5f, 0.5f );
+
+    return outputs;
+}
+
 float4 PS_Textured( VS_TEXTURED_OUTPUT inputs ) : SV_TARGET
 {
     return g_Texture.Sample( g_Sampler, inputs.uv );
@@ -119,3 +129,13 @@ technique10 DrawTextured
         SetPixelShader( CompileShader( ps_4_0, PS_Textured() ) );
     }
 }
+
+technique10 DrawTexturedQuad
+{
+    pass p0
+    {
+        SetVertexShader( CompileShader( vs_4_0, VS_TexturedQuad() ) );
+        SetPixelShader( CompileShader( ps_4_0, PS_Textured() ) );
+    }
+}
+
