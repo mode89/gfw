@@ -242,6 +242,11 @@ namespace GFW {
             }
             else
             {
+                if ( semantic == nullptr )
+                {
+                    TRACE_ERROR_FORMATTED( "%s parameter without semantic is not allowed.", isInput ? "Input" : "Output" );
+                }
+
                 Handler( mStream, isInput, type, mNames, semantic );
             }
 
