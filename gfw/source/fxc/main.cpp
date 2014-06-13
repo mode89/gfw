@@ -74,23 +74,37 @@ int main( int argc, const char * argv[] )
         return -1;
     }
 
+    TRACE_MESSAGE( "GFW Effect Compiler" );
+    TRACE_MESSAGE_FORMATTED( "\tEffect file: %s", fxFile.c_str() );
+    TRACE_MESSAGE_FORMATTED( "\tOutput file: %s", outputFile.c_str() );
+
     EffectBuilderRef effectBuilder;
     EffectBinaryRef effectBinary;
 
     try
     {
+        TRACE_MESSAGE( "\tBuild started" );
+
         effectBuilder = new EffectBuilder;
         effectBinary = effectBuilder->Build( fxFile.c_str() );
     }
     catch (...)
     {
+        TRACE_MESSAGE( "\tBuild failed" );
+
         return -1;
     }
 
+    TRACE_MESSAGE( "\tBuild completed" );
+
     std::ofstream fileStream( outputFile, std::ios_base::out | std::ios_base::binary );
     {
+        TRACE_MESSAGE( "\tSerialization" );
+
         OutputArchive< std::ofstream > archive( fileStream );
         archive & CreateNamedValue( "EffectBinary", effectBinary );
+
+        TRACE_MESSAGE( "\tSerialization completed" );
     }
     fileStream.close();
 
