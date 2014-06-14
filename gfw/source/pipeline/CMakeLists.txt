@@ -30,11 +30,11 @@ include_directories(
     )
 
 find_package( antlr CONFIG )
-target_link_libraries( gfw_pipeline ${ANTLR_LIBRARIES} )
+target_link_libraries( gfw_pipeline ${ANTLR_LIBS} )
 include_directories( ${ANTLR_INCLUDE_DIRS} )
 
 find_package( common CONFIG )
-target_link_libraries( gfw_pipeline ${COMMON_LIBRARIES} )
+target_link_libraries( gfw_pipeline ${COMMON_LIBS} )
 include_directories( ${COMMON_INCLUDE_DIRS} )
 
 find_package( serialization CONFIG )

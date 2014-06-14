@@ -1,2 +1,2 @@
 set(GTEST_INCLUDE_DIRS ${CMAKE_CURRENT_LIST_DIR}/include)
-set(GTEST_LIBRARIES gtest)
+set(GTEST_LIBS gtest)

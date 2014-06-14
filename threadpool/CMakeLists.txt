@@ -21,7 +21,7 @@ add_library(threadpool ${THREADPOOL_SOURCE_FILES} ${THREADPOOL_HEADER_FILES})
 include_directories(include include/threadpool)
 
 find_package(common CONFIG)
-target_link_libraries(threadpool ${COMMON_LIBRARIES})
+target_link_libraries(threadpool ${COMMON_LIBS})
 include_directories(${COMMON_INCLUDE_DIRS})
 
 add_subdirectory(tests)

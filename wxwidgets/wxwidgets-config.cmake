@@ -54,7 +54,7 @@ elseif( MINGW )
     set_property( TARGET wxzlib PROPERTY IMPORTED_IMPLIB_DEBUG       $ENV{WXWIN}/lib/gcc_lib/libwxzlibd.a )
 endif()
 
-set( WXWIDGETS_LIBRARIES wxcore wxbase wxpng wxzlib comctl32 rpcrt4 )
+set( WXWIDGETS_LIBS wxcore wxbase wxpng wxzlib comctl32 rpcrt4 )
 
 if ( MSVC )
     set( SETUP_H_DIR $ENV{WXWIN}/lib/vc_lib/mswu )

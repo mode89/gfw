@@ -14,11 +14,11 @@ include_directories(
     ${GFW_ROOT}/include/shared)
 
 find_package( common CONFIG )
-target_link_libraries( gfw_pipeline-tests ${COMMON_LIBRARIES} )
+target_link_libraries( gfw_pipeline-tests ${COMMON_LIBS} )
 include_directories( ${COMMON_INCLUDE_DIRS} )
 
 find_package( gtest CONFIG )
-target_link_libraries( gfw_pipeline-tests ${GTEST_LIBRARIES} )
+target_link_libraries( gfw_pipeline-tests ${GTEST_LIBS} )
 include_directories( ${GTEST_INCLUDE_DIRS} )
 
 find_package( serialization CONFIG )

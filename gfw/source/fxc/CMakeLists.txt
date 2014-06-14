@@ -12,7 +12,7 @@ include_directories(
     )
 
 find_package( common CONFIG )
-target_link_libraries( gfw_fxc ${COMMON_LIBRARIES} )
+target_link_libraries( gfw_fxc ${COMMON_LIBS} )
 include_directories( ${COMMON_INCLUDE_DIRS} )
 
 find_package( serialization CONFIG )
