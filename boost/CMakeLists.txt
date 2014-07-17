@@ -12,6 +12,11 @@ if ( BOOST_FOUND )
     file( TO_CMAKE_PATH $ENV{BOOST_ROOT} BOOST_ROOT )
 
     include_directories( ${BOOST_ROOT} )
+
+    # Boost.Wave
+
+    file( GLOB_RECURSE BOOST_WAVE_SOURCE_FILES ${BOOST_ROOT}/libs/wave/src/*.cpp )
+    add_library( boost-wave ${BOOST_WAVE_SOURCE_FILES} )
 else()
     message( WARNING "Failed to find Boost." )
 endif()
