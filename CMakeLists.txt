@@ -13,6 +13,7 @@ set( GFW_PLATFORM ogl4 )
 
 add_subdirectory( ann )
 add_subdirectory( antlr )
+add_subdirectory( boost )
 add_subdirectory( common )
 add_subdirectory( ga )
 add_subdirectory( gfw )
