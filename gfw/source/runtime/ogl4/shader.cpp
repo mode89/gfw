@@ -7,7 +7,7 @@
 #include "gfw/runtime/core/functions.h"
 #include "gfw/runtime/common/device_child.inl"
 
-#include <string.h>
+#include <cstring>
 
 namespace GFW {
 
@@ -44,7 +44,7 @@ namespace GFW {
             TRACE_ASSERT_GL(glGetShaderInfoLog, shader, infoLogLength, NULL, infoLog);
 
             infoLog[infoLogLength] = 0;
-            TRACE_ERROR_FORMATTED("Cannot compile the shader\n\n%s\n", infoLog);
+            TRACE_THROW("Cannot compile the shader\n\n%s\n", infoLog);
 
             delete infoLog;
 
@@ -71,7 +71,7 @@ namespace GFW {
             char * infoLog = new char8_t [infoLogLength + 1];
             TRACE_ASSERT_GL(glGetProgramInfoLog, program, infoLogLength, NULL, infoLog);
 
-            TRACE_ERROR_FORMATTED("Cannot link the program\n\n%s\n", infoLog);
+            TRACE_THROW("Cannot link the program\n\n%s\n", infoLog);
 
             delete infoLog;
 

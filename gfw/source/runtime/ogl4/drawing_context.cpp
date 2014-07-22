@@ -70,13 +70,13 @@ namespace GFW {
         mPlatform = IPlatform::Acquire();
         if (mPlatform.get())
         {
-            TRACE_ERROR("Failed to acquire OpenGL platform");
+            TRACE_THROW("Failed to acquire OpenGL platform");
         }
 
         mDC = GetDC(mWindow);
         if (mDC == NULL)
         {
-            TRACE_ERROR("Failed to acquire drawing context of the window");
+            TRACE_THROW("Failed to acquire drawing context of the window");
         }
 
         const int attribList[] =
@@ -98,20 +98,20 @@ namespace GFW {
         int res = wglChoosePixelFormat(mDC, attribList, NULL, 1, &pixelFormat, &numFormats);
         if (res == FALSE)
         {
-            TRACE_ERROR("Failed to choose pixel format");
+            TRACE_THROW("Failed to choose pixel format");
         }
 
         PIXELFORMATDESCRIPTOR pfd;
         res = SetPixelFormat(mDC, pixelFormat, &pfd);
         if (res == FALSE)
         {
-            TRACE_ERROR("Failed to set pixel format");
+            TRACE_THROW("Failed to set pixel format");
         }
 
         mDefaultContext = wglCreateContext(mDC);
         if (mDefaultContext == NULL)
         {
-            TRACE_ERROR("Failed to create the default rendering context");
+            TRACE_THROW("Failed to create the default rendering context");
         }
     }
 

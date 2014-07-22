@@ -168,13 +168,13 @@ namespace GFW {
                 SymbolReferenceVec textureSymbol;
                 if ( !mSymbolTable.LookupSymbolByName( textureObjectId.GetText(), textureSymbol ) )
                 {
-                    TRACE_ERROR_FORMATTED( "Failed to find texture object '%s' in the global scope.", textureObjectId.GetText() );
+                    TRACE_THROW( "Failed to find texture object '%s' in the global scope.", textureObjectId.GetText().c_str() );
                 }
 
                 SymbolReferenceVec samplerSymbol;
                 if ( !mSymbolTable.LookupSymbolByName( samplerObjectId.GetText(), samplerSymbol ) )
                 {
-                    TRACE_ERROR_FORMATTED( "Failed to find sampler object '%s' in the global scope.", samplerObjectId.GetText() );
+                    TRACE_THROW( "Failed to find sampler object '%s' in the global scope.", samplerObjectId.GetText().c_str() );
                 }
 
                 TextureSamplerPair textureSamplerPair( textureSymbol[0], samplerSymbol[0] );
@@ -248,7 +248,7 @@ namespace GFW {
             {
                 if ( semantic == "" )
                 {
-                    TRACE_ERROR_FORMATTED( "%s parameter without semantic is not allowed.", isInput ? "Input" : "Output" );
+                    TRACE_THROW( "%s parameter without semantic is not allowed.", isInput ? "Input" : "Output" );
                 }
 
                 Handler( mStream, isInput, type, mNames, semantic );
@@ -258,7 +258,7 @@ namespace GFW {
         }
 
     protected:
-        typedef std::vector< const std::string > Names;
+        typedef std::vector< std::string > Names;
 
         virtual void
         Handler( std::ostream &, bool isInput, const std::string & type, const Names &, const std::string & semantic ) const = 0;
@@ -556,7 +556,7 @@ namespace GFW {
         SymbolReferenceVec entryPointReference;
         if ( !mSymbolTable.LookupSymbolByName(shaderName, entryPointReference) )
         {
-            TRACE_ERROR_FORMATTED( "Failed to find shader entry point '%s'.", shaderName );
+            TRACE_THROW( "Failed to find shader entry point '%s'.", shaderName.c_str() );
         }
         const Symbol * entryPoint = entryPointReference[0];
 

@@ -59,13 +59,13 @@ namespace GFW {
         mDrawingContext = CreateDrawingContext(mParams.windowHandle);
         if (mDrawingContext.get())
         {
-            TRACE_ERROR("Failed to create a drawing context");
+            TRACE_THROW("Failed to create a drawing context");
         }
 
         mContextGL = mDrawingContext->CreateContext();
         if (mContextGL == NULL)
         {
-            TRACE_ERROR("Cannot create a rendering context");
+            TRACE_THROW("Cannot create a rendering context");
         }
 
         AUTO_LOCK_CONTEXT;

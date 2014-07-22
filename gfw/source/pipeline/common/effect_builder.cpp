@@ -118,7 +118,7 @@ namespace GFW {
                 }
                 catch (...)
                 {
-                    TRACE_ERROR_FORMATTED( "Failed to build the shader '%s'.", name.c_str() );
+                    TRACE_THROW( "Failed to build the shader '%s'.", name.c_str() );
                 }
             }
             else

@@ -1,26 +1,29 @@
 #include "common\trace.h"
 
-#include <stdio.h>
-#include <stdarg.h>
+#include <cstdarg>
+#include <cstdio>
+#include <iostream>
 
 #if PLAT_COMPILER_MSVC
     #include <windows.h>
 #endif
 
-namespace Trace {
+namespace Common {
 
-    void Message(const char8_t * format, ...)
+    void TraceMessage( const char * format, ... )
     {
-        va_list args;
-        va_start(args, format);
-        vprintf(format, args);
-        va_end(args);
+        char message[ 4096 ];
 
-        printf("\n");
+        va_list args;
+        va_start( args, format );
+        vsprintf( message, format, args );
+        va_end( args );
+
+        std::cout << message;
     }
 
 #if PLAT_COMPILER_MSVC
-    void DebugBreak()
+    void TraceDebugBreak()
     {
         __try {
             __debugbreak();
@@ -28,5 +31,15 @@ namespace Trace {
         __except ( GetExceptionCode() == EXCEPTION_BREAKPOINT ? EXCEPTION_EXECUTE_HANDLER : EXCEPTION_CONTINUE_SEARCH ) {}
     }
 #endif
+
+    Exception::Exception( const char * file, unsigned line, const char * format, ... )
+    {
+        char * message = mWhat + sprintf( mWhat, "%s(%d) : Exception : ", file, line );
+
+        va_list args;
+        va_start( args, format );
+        vsprintf( message, format, args );
+        va_end( args );
+    }
 
 } // namespace Trace

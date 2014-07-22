@@ -29,7 +29,7 @@ int main()
     uint32_t yNodeDim = kMaxMeshNodeCount / xNodeDim;
     uint32_t nodeCnt  = xNodeDim * yNodeDim;
 
-    TRACE_MESSAGE_FORMATTED("Node count: %d\n", nodeCnt);
+    TRACE_MSG( "Node count: %d\n", nodeCnt );
 
     // Initialize graphics context
 

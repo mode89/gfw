@@ -72,7 +72,7 @@ int main( int argc, const char * argv[] )
                 }
                 else
                 {
-                    TRACE_ERROR( "Missed filename after -fx option" );
+                    TRACE_THROW( "Missed filename after -fx option" );
                 }
             }
             else if ( std::strcmp( "-o", arg ) == 0 )
@@ -83,12 +83,12 @@ int main( int argc, const char * argv[] )
                 }
                 else
                 {
-                    TRACE_ERROR( "Missed filename after -o option" );
+                    TRACE_THROW( "Missed filename after -o option" );
                 }
             }
             else
             {
-                TRACE_ERROR_FORMATTED( "Unknown command line argument '%s'", arg );
+                TRACE_THROW( "Unknown command line argument '%s'", arg );
             }
         }
     }
@@ -97,36 +97,36 @@ int main( int argc, const char * argv[] )
         return -1;
     }
 
-    TRACE_MESSAGE( "GFW Effect Compiler" );
-    TRACE_MESSAGE_FORMATTED( "\tEffect file: %s", fxFile.c_str() );
-    TRACE_MESSAGE_FORMATTED( "\tOutput file: %s", outputFile.c_str() );
+    TRACE_MSG( "GFW Effect Compiler" );
+    TRACE_MSG( "\tEffect file: %s", fxFile.c_str() );
+    TRACE_MSG( "\tOutput file: %s", outputFile.c_str() );
 
     EffectBinary effectBinary;
 
     try
     {
-        TRACE_MESSAGE( "\tBuild started" );
+        TRACE_MSG( "\tBuild started" );
 
         EffectBuilder effectBuilder;
         effectBuilder.Build( effectBinary, fxFile );
     }
     catch (...)
     {
-        TRACE_MESSAGE( "\tBuild failed" );
+        TRACE_MSG( "\tBuild failed" );
 
         return -1;
     }
 
-    TRACE_MESSAGE( "\tBuild completed" );
+    TRACE_MSG( "\tBuild completed" );
 
     std::ofstream fileStream( outputFile, std::ios_base::out | std::ios_base::binary );
     {
-        TRACE_MESSAGE( "\tSerialization" );
+        TRACE_MSG( "\tSerialization" );
 
         boost::archive::binary_oarchive archive( fileStream );
         archive << effectBinary;
 
-        TRACE_MESSAGE( "\tSerialization completed" );
+        TRACE_MSG( "\tSerialization completed" );
     }
     fileStream.close();
 

@@ -145,16 +145,16 @@ namespace GFW {
         // Release resources
 
         res = wglMakeCurrent(hDC, 0);
-        TRACE_ASSERT_AND(res != NULL, retVal);
+        TRACE_ASSERT_AND( res != 0, retVal );
 
         res = wglDeleteContext(hRC);
-        TRACE_ASSERT_AND(res != NULL, retVal);
+        TRACE_ASSERT_AND( res != 0, retVal );
 
         res = ReleaseDC(hWnd, hDC);
-        TRACE_ASSERT_AND(res != NULL, retVal);
+        TRACE_ASSERT_AND( res != 0, retVal );
 
         res = DestroyWindow(hWnd);
-        TRACE_ASSERT_AND(res != NULL, retVal);
+        TRACE_ASSERT_AND( res != 0, retVal );
 
         return retVal;
     }

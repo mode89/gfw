@@ -113,7 +113,7 @@ namespace GFW {
             // Release resources
 
             res = wglMakeCurrent( sHdc, 0 );
-            TRACE_ASSERT( res != NULL );
+            TRACE_ASSERT( res != 0 );
         }
     }
 
@@ -124,13 +124,13 @@ namespace GFW {
             BOOL res;
 
             res = wglDeleteContext( sHrc );
-            TRACE_ASSERT( res != NULL );
+            TRACE_ASSERT( res != 0 );
 
             res = ReleaseDC( sHwnd, sHdc );
-            TRACE_ASSERT( res != NULL );
+            TRACE_ASSERT( res != 0 );
 
             res = DestroyWindow( sHwnd );
-            TRACE_ASSERT( res != NULL );
+            TRACE_ASSERT( res != 0 );
         }
     }
 
@@ -165,7 +165,7 @@ namespace GFW {
             {
                 char infoLog[1024] = { 0 };
                 TRACE_GL( glGetShaderInfoLog, shader, sizeof( infoLog ), NULL, infoLog );
-                TRACE_MESSAGE_FORMATTED( "Shader compilation log:\n%s", infoLog );
+                TRACE_MSG( "Shader compilation log:\n%s", infoLog );
             }
 
             TRACE_GL( glDeleteShader, shader );
@@ -174,7 +174,7 @@ namespace GFW {
 
         if ( compileStatus == GL_FALSE )
         {
-            TRACE_ERROR( "Failed to validate the shader." );
+            TRACE_THROW( "Failed to validate the shader." );
         }
     }
 
