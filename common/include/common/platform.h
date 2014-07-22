@@ -26,4 +26,11 @@
     #define PLAT_THREAD_LOCAL   __thread
 #endif
 
+// Some compilers doesn't support noexcept() operator
+#if defined( PLAT_COMPILER_MSVC )
+    #define PLAT_NOEXCEPT( val )
+#elif defined( PLAT_COMPILER_MINGW )
+    #define PLAT_NOEXCEPT( val ) noexcept( val )
+#endif
+
 #endif // __COMMON_PLATFORM_H__
