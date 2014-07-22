@@ -17,6 +17,11 @@ if ( BOOST_FOUND )
 
     file( GLOB_RECURSE BOOST_WAVE_SOURCE_FILES ${BOOST_ROOT}/libs/wave/src/*.cpp )
     add_library( boost-wave ${BOOST_WAVE_SOURCE_FILES} )
+
+    # Boost.Serialization
+
+    file( GLOB_RECURSE BOOST_SERIALIZATION_SOURCE_FILES ${BOOST_ROOT}/libs/serialization/src/*.cpp )
+    add_library( boost-serialization ${BOOST_SERIALIZATION_SOURCE_FILES} )
 else()
     message( WARNING "Failed to find Boost." )
 endif()
