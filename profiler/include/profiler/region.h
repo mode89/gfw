@@ -10,19 +10,19 @@ namespace Profiler {
     class Region
     {
     public:
-        bool                    Dispatch(const Event *);
+        void             Dispatch(const Event *);
 
-        inline RegionEnding     GetLastEnding() const   { return mLastEnding; }
+        RegionEnding     GetLastEnding() const   { return mLastEnding; }
 
-        inline const char *     GetName() const         { return mName; }
+        const char *     GetName() const         { return mName; }
 
-        inline unsigned int     GetHits() const         { return mHits; }
+        unsigned int     GetHits() const         { return mHits; }
 
-        inline uint64_t         GetTotalTime() const    { return mTotalTime; }
+        uint64_t         GetTotalTime() const    { return mTotalTime; }
 
-        inline uint64_t         GetMinTime() const      { return mMinTime; }
+        uint64_t         GetMinTime() const      { return mMinTime; }
 
-        inline uint64_t         GetMaxTime() const      { return mMaxTime; }
+        uint64_t         GetMaxTime() const      { return mMaxTime; }
 
     public:
         Region()

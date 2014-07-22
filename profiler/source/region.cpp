@@ -4,16 +4,15 @@
 
 namespace Profiler {
 
-    bool Region::Dispatch( const Event * e )
+    void Region::Dispatch( const Event * e )
     {
-        switch (mLastEnding)
+        switch ( mLastEnding )
         {
         case REGION_BEGIN:
             {
                 if (e->ending == REGION_BEGIN)
                 {
-                    TRACE_ERROR("Wrong ending of the event");
-                    return false;
+                    TRACE_THROW( "Wrong ending of the event" );
                 }
 
                 if (mName == NULL)
@@ -35,8 +34,7 @@ namespace Profiler {
             {
                 if (e->ending == REGION_END)
                 {
-                    TRACE_ERROR("Wrong ending of the event");
-                    return false;
+                    TRACE_THROW( "Wrong ending of the event" );
                 }
 
                 mHits ++;
@@ -47,10 +45,7 @@ namespace Profiler {
 
         default:
             TRACE_FAIL();
-            return false;
         }
-
-        return true;
     }
 
 } // namespace Profiler

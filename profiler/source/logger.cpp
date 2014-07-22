@@ -18,65 +18,60 @@ namespace Profiler {
         , mLastBucket(0)
         , mOutputFileName(DEFAULT_DATA_FILE_NAME)
     {
-        mEventCriticalSection = Common::CreateCriticalSection();
     }
 
     Logger::~Logger()
     {
-        TRACE_MESSAGE("Processing profile data...");
+        TRACE_MSG( "Processing profile data..." );
 
         Process();
         Dump();
-
-        Common::DeleteCriticalSection(mEventCriticalSection);
     }
 
     void Logger::CreateEvent(const Token * token, RegionEnding ending)
     {
         time_t t = Common::GetCounter();
 
-        Common::EnterCriticalSection(mEventCriticalSection);
+        std::lock_guard< std::mutex > auto_lock( mMutex );
+
+        if (mFirstBucket == NULL)
         {
-            if (mFirstBucket == NULL)
+            TRACE_ASSERT(mLastBucket == NULL);
+            mFirstBucket = mLastBucket = new EventBucket;
+        }
+
+        // Reached the end of the bucket
+        if (mLastBucket->lastEvent == &mLastBucket->end)
+        {
+            mLastBucket->nextBucket = new EventBucket;
+
+            if (mLastBucket->nextBucket != 0)
             {
-                TRACE_ASSERT(mLastBucket == NULL);
+                mLastBucket = mLastBucket->nextBucket;
+            }
+            // Cannot allocate a new bucket
+            else
+            {
+                Process();
+
+                // Deallocate dumped events
+                for (EventBucket * bucket = mFirstBucket; bucket != NULL;)
+                {
+                    EventBucket * nextBucket = bucket->nextBucket;
+                    delete bucket;
+                    bucket = nextBucket;
+                }
+
                 mFirstBucket = mLastBucket = new EventBucket;
             }
-
-            // Reached the end of the bucket
-            if (mLastBucket->lastEvent == &mLastBucket->end)
-            {
-                mLastBucket->nextBucket = new EventBucket;
-
-                if (mLastBucket->nextBucket != 0)
-                {
-                    mLastBucket = mLastBucket->nextBucket;
-                }
-                // Cannot allocate a new bucket
-                else
-                {
-                    Process();
-
-                    // Deallocate dumped events
-                    for (EventBucket * bucket = mFirstBucket; bucket != NULL;)
-                    {
-                        EventBucket * nextBucket = bucket->nextBucket;
-                        delete bucket;
-                        bucket = nextBucket;
-                    }
-
-                    mFirstBucket = mLastBucket = new EventBucket;
-                }
-            }
-
-            Event * e  = mLastBucket->lastEvent;
-            e->token   = token;
-            e->time    = t;
-            e->ending  = ending;
-
-            mLastBucket->lastEvent ++;
         }
-        Common::LeaveCriticalSection(mEventCriticalSection);
+
+        Event * e  = mLastBucket->lastEvent;
+        e->token   = token;
+        e->time    = t;
+        e->ending  = ending;
+
+        mLastBucket->lastEvent ++;
     }
 
     void Logger::Dump()
@@ -120,7 +115,7 @@ namespace Profiler {
         }
         else
         {
-            TRACE_ERROR_FORMATTED("Cannot open %s", mOutputFileName);
+            TRACE_THROW("Cannot open %s", mOutputFileName);
         }
     }
 

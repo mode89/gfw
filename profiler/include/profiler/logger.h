@@ -1,13 +1,11 @@
 #ifndef __PROFILER_MANAGER_H__
 #define __PROFILER_MANAGER_H__
 
-#include "common/typedefs.h"
-#include "common/critical_section.h"
-
 #include "profiler/event_bucket.h"
 #include "profiler/region.h"
 
 #include <map>
+#include <mutex>
 
 namespace Profiler {
 
@@ -27,14 +25,14 @@ namespace Profiler {
     private:
         typedef std::map< uint64_t, Region > RegionMap;
 
-        EventBucket *           mFirstBucket;
-        EventBucket *           mLastBucket;
+        EventBucket *   mFirstBucket;
+        EventBucket *   mLastBucket;
 
-        Common::CriticalSection mEventCriticalSection;
+        std::mutex      mMutex;
 
-        const char *            mOutputFileName;
+        const char *    mOutputFileName;
 
-        RegionMap               mRegions;
+        RegionMap       mRegions;
     };
 
     Logger * GetGlobalLogger();
