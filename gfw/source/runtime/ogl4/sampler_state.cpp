@@ -1,9 +1,8 @@
 #include "common/trace.h"
-
 #include "gfw/runtime/common/device_child.inl"
-
-#include "gfw/runtime/core/sampler_state.h"
+#include "gfw/runtime/core/device.h"
 #include "gfw/runtime/core/functions.h"
+#include "gfw/runtime/core/sampler_state.h"
 
 namespace GFW {
 
@@ -120,10 +119,10 @@ namespace GFW {
         return 0;
     }
 
-    SamplerState::SamplerState(const SamplerStateDesc & desc, uint32_t descHash, IDeviceRef device)
-        : ADeviceChild(device)
-        , mDesc(desc)
-        , mHandle(0)
+    SamplerState::SamplerState( const SamplerStateDesc & desc, uint32_t descHash, DeviceIn device )
+        : ADeviceChild( device )
+        , mDesc( desc )
+        , mHandle( 0 )
     {
         TRACE_ASSERT_GL(glGenSamplers, 1, &mHandle);
 

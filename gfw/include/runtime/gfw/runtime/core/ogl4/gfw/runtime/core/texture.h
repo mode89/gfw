@@ -11,7 +11,7 @@ namespace GFW {
     {
     public:
         virtual const TextureDesc &
-        GetDesc() { return mDesc; }
+        GetDesc() const { return mDesc; }
 
         virtual void *
         Map(uint32_t mapFlags);
@@ -27,14 +27,14 @@ namespace GFW {
         GetHandle() const { return mHandle; }
 
     public:
-        Texture(const TextureDesc &, const void * initialData, IDeviceIn);
+        Texture( const TextureDesc &, const void * initialData, DeviceIn );
         ~Texture();
 
     private:
         TextureDesc     mDesc;
         uint32_t        mHandle;
     };
-    AUTOREF_REFERENCE_DECLARATION(Texture);
+    SHARED_PTR_TYPEDEFS(Texture);
 
 } // namespace GFW
 

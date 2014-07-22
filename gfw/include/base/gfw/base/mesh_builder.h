@@ -5,7 +5,7 @@
 
 namespace GFW {
 
-    class IMeshBuilder : public Common::ARefCounted
+    class IMeshBuilder
     {
     public:
         virtual void
@@ -26,7 +26,7 @@ namespace GFW {
         virtual
         ~IMeshBuilder() {}
     };
-    AUTOREF_REFERENCE_DECLARATION(IMeshBuilder);
+    SHARED_PTR_TYPEDEFS(IMeshBuilder);
 
 } // namespace GFW
 

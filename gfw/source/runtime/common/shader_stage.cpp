@@ -1,7 +1,6 @@
 #include "common/trace.h"
-
+#include "gfw/base/shader_stage.h"
 #include "gfw/runtime/common/shader_stage.h"
-#include "gfw/shared/shader_stage.h"
 
 namespace GFW {
 

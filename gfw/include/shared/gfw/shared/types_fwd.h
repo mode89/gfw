@@ -1,14 +1,16 @@
 #ifndef __GFW_SHARED_TYPES_FWD_H__
 #define __GFW_SHARED_TYPES_FWD_H__
 
-#include "common/autoref.h"
+#include "common/shared_ptr_typedefs.h"
+
+#include <memory>
 
 namespace GFW {
 
-    AUTOREF_FORWARD_DECLARATION( EffectBinary );
-    AUTOREF_FORWARD_DECLARATION( PassBinary );
-    AUTOREF_FORWARD_DECLARATION( ShaderBinary );
-    AUTOREF_FORWARD_DECLARATION( TechniqueBinary );
+    class EffectBinary;
+    class PassBinary;
+    class ShaderBinary;
+    class TechniqueBinary;
 
     struct EffectDesc;
     struct ShaderDesc;

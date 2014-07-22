@@ -26,14 +26,14 @@ namespace GFW {
         bool
         Init(const void * initialData);
 
-        inline uint32_t
-        GetHandle()     { return mHandle; }
+        uint32_t
+        GetHandle() const       { return mHandle; }
 
-        inline uint32_t
-        GetTarget()     { return mTarget; }
+        uint32_t
+        GetTarget() const       { return mTarget; }
 
     public:
-        Buffer(const BufferDesc &, IDeviceRef);
+        Buffer( const BufferDesc &, DeviceIn );
         ~Buffer();
 
     private:
@@ -41,7 +41,7 @@ namespace GFW {
         uint32_t        mHandle;
         uint32_t        mTarget;
     };
-    AUTOREF_REFERENCE_DECLARATION(Buffer);
+    SHARED_PTR_TYPEDEFS(Buffer);
 
 } // namespace GFW
 

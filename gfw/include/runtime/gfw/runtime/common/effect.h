@@ -2,10 +2,9 @@
 #define __GFW_RUNTIME_COMMON_EFFECT_H__
 
 #include "gfw/base/effect.h"
-#include "gfw/base/shader.h"
-#include "gfw/base/types_fwd.h"
-#include "gfw/runtime/common/device_child.h"
-#include "gfw/shared/effect.h"
+#include "gfw/runtime/common/shader_table.h"
+#include "gfw/runtime/common/types_fwd.h"
+#include "gfw/shared/types_fwd.h"
 
 #include <string>
 #include <unordered_map>
@@ -13,37 +12,37 @@
 
 namespace GFW {
 
-    class Effect : public ADeviceChild<IEffect>
+    class Effect : public IEffect
     {
     public:
+        virtual const EffectDesc &
+        GetDesc() const { return mDesc; }
+
         virtual void
-        Dispatch( uint32_t tech = 0, uint32_t pass = 0 );
+        Dispatch( uint32_t tech, uint32_t pass ) const;
 
-        virtual ITechniqueRef
-        GetTechnique( const char * techName );
+        virtual ConstITechniqueRef
+        GetTechnique( const char * techName ) const;
 
-        virtual IShaderRef
-        GetShader( ShaderStage stage, uint32_t tech = 0, uint32_t pass = 0 );
+        virtual ConstIShaderRef
+        GetShader( ShaderStage stage, uint32_t tech, uint32_t pass ) const;
 
     public:
-        Effect( EffectBinaryRef, IDeviceIn );
+        Effect( const EffectBinary &, IDeviceIn );
         ~Effect();
 
     private:
-        typedef std::vector< ITechniqueRef > TechniqueVec;
-        typedef std::vector< IShaderRef > ShaderVec;
-        typedef std::unordered_map< std::string, ITechniqueRef > TechniqueMap;
+        typedef std::vector< TechniqueRef > TechniqueVec;
+        typedef std::unordered_map< std::string, TechniqueRef > TechniqueMap;
 
         EffectDesc      mDesc;
 
         TechniqueVec    mTechniques;
-        ShaderVec       mShaders;
+        ShaderTable     mShaderTable;
 
         TechniqueMap    mTechniqueMap;
-
-        friend class Pass;
     };
-    AUTOREF_REFERENCE_DECLARATION(Effect);
+    SHARED_PTR_TYPEDEFS(Effect);
 
 } // namespace GFW
 

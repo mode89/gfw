@@ -7,35 +7,35 @@
 
 namespace GFW {
 
-    class IDevice: public Common::ARefCounted
+    class IDevice
     {
     public:
         virtual IContextRef
         CreateContext() = 0;
 
         virtual IShaderRef
-        CreateShader( ShaderStage stage, ShaderBinaryRef ) = 0;
+        CreateShader( ShaderStage stage, const void * shaderBinary ) = 0;
 
         virtual IInputLayoutRef
-        CreateInputLayout(uint32_t attrCnt, VertexAttribute[], IShaderIn vertexShader) = 0;
+        CreateInputLayout( uint32_t attrCnt, VertexAttribute[], ConstIShaderIn vertexShader ) = 0;
 
         virtual IBufferRef
-        CreateBuffer(const BufferDesc &, const void * initialData = 0) = 0;
+        CreateBuffer( const BufferDesc &, const void * initialData = 0 ) = 0;
 
         virtual ITextureRef
-        CreateTexture(const TextureDesc &, const void * initialData = 0) = 0;
+        CreateTexture( const TextureDesc &, const void * initialData = 0 ) = 0;
 
         virtual IRenderTargetRef
-        CreateRenderTarget(ITextureIn, const RenderTargetDesc &) = 0;
+        CreateRenderTarget( ConstITextureIn, const RenderTargetDesc & ) = 0;
 
         virtual IContextRef
-        GetCurrentContext() = 0;
+        GetCurrentContext() const = 0;
 
         virtual IContextRef
-        GetDefaultContext() = 0;
+        GetDefaultContext() const = 0;
 
-        virtual IRenderTargetRef
-        GetDefaultRenderTarget() = 0;
+        virtual ConstIRenderTargetRef
+        GetDefaultRenderTarget() const = 0;
 
         virtual void
         Present() = 0;
@@ -44,7 +44,7 @@ namespace GFW {
         virtual
         ~IDevice() { }
     };
-	AUTOREF_REFERENCE_DECLARATION(IDevice);
+	SHARED_PTR_TYPEDEFS(IDevice);
 
     struct DeviceParams
     {

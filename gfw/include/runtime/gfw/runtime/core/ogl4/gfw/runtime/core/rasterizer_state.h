@@ -14,7 +14,7 @@ namespace GFW {
         Apply() const;
 
     public:
-        RasterizerState(const RasterizerStateDesc &, uint32_t descHash, IDeviceRef);
+        RasterizerState( const RasterizerStateDesc &, uint32_t descHash, DeviceIn );
         ~RasterizerState();
 
     private:

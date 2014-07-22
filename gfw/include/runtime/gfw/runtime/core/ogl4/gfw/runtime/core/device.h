@@ -1,56 +1,53 @@
 #ifndef __GFW_RUNTIME_CORE_DEVICE_H__
 #define __GFW_RUNTIME_CORE_DEVICE_H__
 
-#include "common/mutex.h"
 #include "common/platform.h"
-#include "common/string_table.h"
 
 #include "gfw/base/context.h"
 #include "gfw/base/device.h"
 #include "gfw/base/render_target.h"
 #include "gfw/runtime/core/types_fwd.h"
 
+#include <mutex>
+
 namespace GFW {
 
-    class Device: public IDevice
+    class Device: public IDevice, public std::enable_shared_from_this< Device >
     {
     public:
         virtual IContextRef
         CreateContext();
 
         virtual IShaderRef
-        CreateShader( ShaderStage stage, ShaderBinaryRef );
+        CreateShader( ShaderStage stage, const void * shaderBinary );
 
         virtual IInputLayoutRef
-        CreateInputLayout(uint32_t attrCnt, VertexAttribute[], IShaderIn vertexShader);
+        CreateInputLayout( uint32_t attrCnt, VertexAttribute[], ConstIShaderIn vertexShader );
 
         virtual IBufferRef
-        CreateBuffer(const BufferDesc &, const void * initialData);
+        CreateBuffer( const BufferDesc &, const void * initialData );
 
         virtual ITextureRef
-        CreateTexture(const TextureDesc &, const void * initialData = 0);
+        CreateTexture( const TextureDesc &, const void * initialData = 0 );
 
         virtual IRenderTargetRef
-        CreateRenderTarget(ITextureIn, const RenderTargetDesc &);
+        CreateRenderTarget( ConstITextureIn, const RenderTargetDesc & );
 
-        inline virtual IContextRef
-        GetCurrentContext() { return mCurrentContext; }
+        virtual IContextRef
+        GetCurrentContext() const { return IContextRef( mCurrentContext ); }
 
-        inline virtual IContextRef
-        GetDefaultContext() { return mDefaultContext; }
+        virtual IContextRef
+        GetDefaultContext() const { return mDefaultContext; }
 
-        inline virtual IRenderTargetRef
-        GetDefaultRenderTarget() { return mDefaultRenderTarget; }
+        virtual ConstIRenderTargetRef
+        GetDefaultRenderTarget() const { return mDefaultRenderTarget; }
 
         virtual void
         Present();
 
     public:
-        Device(const DeviceParams &);
+        Device( const DeviceParams & );
         ~Device();
-
-        bool
-        Initialize();
 
         void
         InitializeSwapChain();
@@ -61,9 +58,6 @@ namespace GFW {
         void
         UnlockContext(IContextRef);
 
-        inline Common::StringTable &
-        GetStringTable() { return mStringTable; }
-
     private:
         static PLAT_THREAD_LOCAL
         IContext*                   mCurrentContext;
@@ -73,15 +67,13 @@ namespace GFW {
         IDrawingContextRef          mDrawingContext;
         RenderingContext            mContextGL;
 
-        Common::Mutex               mMutex;
+        std::mutex                  mMutex;
         IContextRef                 mDefaultContext;
 
         IRenderTargetRef            mDefaultRenderTarget;
         uint32_t                    mResolveFramebuffer;
-
-        Common::StringTable         mStringTable;
     };
-    AUTOREF_REFERENCE_DECLARATION(Device);
+    SHARED_PTR_TYPEDEFS( Device );
 
 } // namespace GFW
 

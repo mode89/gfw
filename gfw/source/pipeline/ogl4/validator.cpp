@@ -1,6 +1,6 @@
 #include "common/trace.h"
+#include "gfw/base/shader_stage.h"
 #include "gfw/pipeline/validator.h"
-#include "gfw/shared/shader_stage.h"
 #include "opengl/glcorearb.h"
 
 #include "opengl/wglext.h"

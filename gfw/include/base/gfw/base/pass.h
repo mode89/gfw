@@ -1,24 +1,22 @@
 #ifndef __GFW_BASE_PASS_H__
 #define __GFW_BASE_PASS_H__
 
-#include "common/autoref.h"
-#include "gfw/base/shader.h"
+#include "gfw/base/types_fwd.h"
 
 namespace GFW {
 
-    class IPass : public Common::ARefCounted
+    class IPass
     {
     public:
         virtual void
-        Dispatch() = 0;
+        Dispatch() const = 0;
 
-        virtual IShaderRef
+        virtual ConstIShaderRef
         GetShader( ShaderStage ) const = 0;
 
         virtual
         ~IPass() {}
     };
-    AUTOREF_REFERENCE_DECLARATION( IPass );
 
 } // namespace GFW
 

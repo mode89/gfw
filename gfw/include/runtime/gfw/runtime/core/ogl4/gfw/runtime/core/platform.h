@@ -1,12 +1,14 @@
 #ifndef __GFW_RUNTIME_CORE_PLATFORM_H__
 #define __GFW_RUNTIME_CORE_PLATFORM_H__
 
-#include "common/autoref.h"
+#include "common/shared_ptr_typedefs.h"
+
+#include <memory>
 
 namespace GFW {
 
-    AUTOREF_FORWARD_DECLARATION(IPlatform);
-    class IPlatform: public Common::ARefCounted
+    SHARED_PTR_FORWARD_TYPEDEFS( IPlatform );
+    class IPlatform
     {
     public:
         static  IPlatformRef

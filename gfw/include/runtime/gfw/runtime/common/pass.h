@@ -1,33 +1,33 @@
-#ifndef __GFW_COMMON_PASS_H__
-#define __GFW_COMMON_PASS_H__
+#ifndef __GFW_RUNTIME_COMMON_PASS_H__
+#define __GFW_RUNTIME_COMMON_PASS_H__
 
 #include "gfw/base/pass.h"
-#include "gfw/base/shader.h"
-#include "gfw/shared/shader_stage.h"
+#include "gfw/base/shader_stage.h"
+#include "gfw/runtime/common/shader_table.h"
+#include "gfw/runtime/core/types_fwd.h"
+#include "gfw/shared/types_fwd.h"
 
 namespace GFW {
-
-    class Effect;
 
     class Pass : public IPass
     {
     public:
         virtual void
-        Dispatch();
+        Dispatch() const;
 
-        virtual IShaderRef
-        GetShader( ShaderStage stage ) const { return mShaders[stage]; }
+        virtual ConstIShaderRef
+        GetShader( ShaderStage stage ) const { return mShaders[ stage ]; }
 
     public:
-        Pass( PassBinaryRef, const Effect * );
+        Pass( const PassBinary &, const ShaderTable &, IDeviceIn );
         ~Pass();
 
     private:
-        const Effect *  mEffect;
-        IShaderRef      mShaders[ ShaderStage::COUNT ];
+        std::weak_ptr<IDevice>  mDevice;
+        ConstIShaderRef         mShaders[ ShaderStage::COUNT ];
     };
-    AUTOREF_REFERENCE_DECLARATION( Pass );
+    SHARED_PTR_TYPEDEFS( Pass );
 
 } // namespace GFW
 
-#endif // __GFW_COMMON_PASS_H__
+#endif // __GFW_RUNTIME_COMMON_PASS_H__

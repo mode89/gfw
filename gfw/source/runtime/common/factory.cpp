@@ -1,41 +1,31 @@
+#include "boost/archive/binary_iarchive.hpp"
+#include "boost/serialization/list.hpp"
+#include "boost/serialization/vector.hpp"
 #include "common/trace.h"
-
 #include "gfw/base/buffer.h"
 #include "gfw/base/device.h"
 #include "gfw/base/draw_params.h"
 #include "gfw/base/input_layout.h"
-
 #include "gfw/runtime/common/effect.h"
 #include "gfw/runtime/common/factory.h"
 #include "gfw/runtime/common/mesh_builder.h"
 #include "gfw/runtime/common/shader_stage.h"
-
 #include "gfw/shared/effect.h"
-
-#include "serialization/input_archive.h"
-
+#include "gfw/shared/pass.h"
+#include "gfw/shared/shader.h"
+#include "gfw/shared/technique.h"
 #include <fstream>
 #include <string>
 
 namespace GFW {
 
-    using namespace Common;
-    using namespace Serialization;
-
-    IFactoryRef CreateFactory(IDeviceRef device)
+    IFactoryRef CreateFactory( IDeviceIn device )
     {
-        Factory * factory = new Factory(device);
-        if (!factory->Initialize())
-        {
-            TRACE_FAIL_MSG("Failed to initialize a factory");
-            delete factory;
-            return NULL;
-        }
-        return factory;
+        return std::make_shared<Factory>( device );
     }
 
-    Factory::Factory(IDeviceRef device)
-        : mDevice(device)
+    Factory::Factory( IDeviceIn device )
+        : mDevice( device )
     {
 
     }
@@ -45,11 +35,6 @@ namespace GFW {
 
     }
 
-    bool Factory::Initialize()
-    {
-        return true;
-    }
-
     IEffectRef Factory::CreateEffect( const char * fileName )
     {
         TRACE_ASSERT( fileName != NULL );
@@ -57,17 +42,17 @@ namespace GFW {
         std::ifstream fxStream( fileName, std::ios_base::in | std::ios_base::binary );
         TRACE_ASSERT( fxStream );
 
-        InputArchive<std::ifstream> archive( fxStream );
+        boost::archive::binary_iarchive archive( fxStream );
 
-        EffectBinaryRef effectBinary;
-        archive & CreateNamedValue( "", effectBinary );
+        EffectBinary effectBinary;
+        archive >> effectBinary;
 
-        return new Effect( effectBinary, mDevice );
+        return std::make_shared<Effect>( effectBinary, mDevice.lock() );
     }
 
     IMeshBuilderRef Factory::CreateMeshBuilder()
     {
-        return new MeshBuilder();
+        return std::make_shared<MeshBuilder>();
     }
 
 } // namespace GFW

@@ -1,9 +1,8 @@
 #include "common/trace.h"
 #include "common/crc32.h"
-
+#include "gfw/runtime/common/device_child.inl"
 #include "gfw/runtime/common/format.h"
 #include "gfw/runtime/common/semantic.h"
-
 #include "gfw/runtime/core/buffer.h"
 #include "gfw/runtime/core/context.h"
 #include "gfw/runtime/core/device.h"
@@ -21,8 +20,8 @@ namespace GFW {
 
     using namespace Common;
 
-    Context::Context(IDrawingContextIn dc, Device * d)
-        : mDevice(d)
+    Context::Context( IDrawingContextIn dc, DeviceIn d )
+        : ADeviceChild( d )
         , mDrawingContext(dc)
         , mContextGL(NULL)
         , mScreenQuadBuffer(0)
@@ -102,28 +101,28 @@ namespace GFW {
         TRACE_ASSERT_GL(glBindBuffer, GL_ARRAY_BUFFER, 0);
     }
 
-    void Context::SetInputLayout(IInputLayoutIn layout)
+    void Context::SetInputLayout( ConstIInputLayoutIn layout )
     {
-        mInputLayout = layout;
+        mInputLayout = std::static_pointer_cast<const InputLayout>( layout );
     }
 
-    void Context::SetVertexBuffer( uint32_t slot, IBufferIn buf )
+    void Context::SetVertexBuffer( uint32_t slot, ConstIBufferIn buf )
     {
         TRACE_ASSERT(slot >= 0);
         TRACE_ASSERT(slot < MAX_BIND_VERTEX_BUFFERS);
-        TRACE_ASSERT(buf.IsAttached());
+        TRACE_ASSERT(buf);
 
-        mVertexBuffers[slot] = buf.StaticCast<Buffer>();
+        mVertexBuffers[slot] = std::static_pointer_cast<const Buffer>( buf );
     }
 
-    void Context::SetShader( ShaderStage stage, IShaderIn shader )
+    void Context::SetShader( ShaderStage stage, ConstIShaderIn shader )
     {
         TRACE_ASSERT( stage > ShaderStage::UNKNOWN );
         TRACE_ASSERT( stage < ShaderStage::COUNT );
-        TRACE_ASSERT( shader.IsAttached() );
+        TRACE_ASSERT( shader );
         TRACE_ASSERT( stage == shader->GetStage() );
 
-        mShaders[stage] = shader.StaticCast<Shader>();
+        mShaders[stage] = std::static_pointer_cast<const Shader>( shader );
     }
 
     void Context::Clear(const ClearParams & cp)
@@ -180,7 +179,7 @@ namespace GFW {
 
     void Context::ClearState()
     {
-        if (mDevice->GetCurrentContext().GetPointer() != this)
+        if ( mDevice.lock()->GetCurrentContext().get() != this)
         {
             mDelayedClearState = true;
             return;
@@ -193,18 +192,18 @@ namespace GFW {
             uint32_t stageBit = GetOGLShaderStageBit(static_cast<ShaderStage>(stage));
             TRACE_ASSERT_GL(glUseProgramStages, mProgramPipeline, stageBit, 0);
 
-            mShaders[stage].Detach();
+            mShaders[stage].reset();
         }
 
         // Detach buffers
 
         for (int i = 0; i < MAX_BIND_VERTEX_BUFFERS; ++ i)
         {
-            mVertexBuffers[i].Detach();
+            mVertexBuffers[i].reset();
         }
 
         TRACE_ASSERT_GL(glBindBuffer, GL_ELEMENT_ARRAY_BUFFER, 0);
-        mIndexBuffer.Detach();
+        mIndexBuffer.reset();
 
         for (uint32_t attrIndex = 0, mask = mEnabledVertexAttributesMask; mask; ++ attrIndex, mask >>= 1)
         {
@@ -216,7 +215,7 @@ namespace GFW {
         }
         mEnabledVertexAttributesMask = 0;
 
-        mInputLayout.Detach();
+        mInputLayout.reset();
 
         // Detach textures
 
@@ -230,11 +229,11 @@ namespace GFW {
 
         for (uint32_t texUnit = 0; texUnit < MAX_BIND_TEXTURES; ++ texUnit)
         {
-            if (mActiveTextures[texUnit].IsAttached())
+            if (mActiveTextures[texUnit])
             {
                 TRACE_ASSERT_GL(glActiveTexture, GL_TEXTURE0 + texUnit);
                 TRACE_ASSERT_GL(glBindTexture, GL_TEXTURE_2D, 0);
-                mActiveTextures[texUnit].Detach();
+                mActiveTextures[texUnit].reset();
             }
         }
 
@@ -248,7 +247,7 @@ namespace GFW {
         for (uint32_t i = 0; i < mRenderTargetsCount; ++ i)
         {
             TRACE_ASSERT_GL(glFramebufferTexture, GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, 0, 0);
-            mRenderTargets[i].Detach();
+            mRenderTargets[i].reset();
         }
         TRACE_ASSERT_GL(glDrawBuffer, GL_NONE);
         mRenderTargetsCount = 0;
@@ -260,14 +259,14 @@ namespace GFW {
 
         for (int stage = 0; stage < ShaderStage::COUNT; ++ stage)
         {
-            ShaderRef shader = mShaders[stage];
+            ConstShaderRef shader = mShaders[stage];
             uint32_t stageBit = GetOGLShaderStageBit(static_cast<ShaderStage>(stage));
-            TRACE_ASSERT_GL(glUseProgramStages, mProgramPipeline, stageBit, shader.IsAttached() ? shader->GetHandle() : 0);
+            TRACE_ASSERT_GL(glUseProgramStages, mProgramPipeline, stageBit, shader ? shader->GetHandle() : 0);
         }
 
         // Bind buffers
 
-        if (mInputLayout.IsAttached())
+        if (mInputLayout)
         {
             for (uint32_t attrIndex = 0, mask = mInputLayout->GetEnabledAttributesMask(); mask; ++ attrIndex, mask >>= 1)
             {
@@ -277,7 +276,7 @@ namespace GFW {
 
                     const VertexAttribute & attr = mInputLayout->GetAttribute(attrIndex);
                     TRACE_ASSERT(attr.semantic != SEMANTIC_UNKNOWN);
-                    TRACE_ASSERT(mVertexBuffers[attr.bufSlot].IsAttached());
+                    TRACE_ASSERT(mVertexBuffers[attr.bufSlot]);
 
                     TRACE_ASSERT_GL(glBindBuffer, GL_ARRAY_BUFFER, mVertexBuffers[attr.bufSlot]->GetHandle());
 
@@ -300,7 +299,7 @@ namespace GFW {
             }
             mEnabledVertexAttributesMask = mInputLayout->GetEnabledAttributesMask();
 
-            if (mIndexBuffer.IsAttached())
+            if (mIndexBuffer)
             {
                 TRACE_ASSERT_GL(glBindBuffer, GL_ELEMENT_ARRAY_BUFFER, mIndexBuffer->GetHandle());
             }
@@ -325,8 +324,8 @@ namespace GFW {
         uint32_t drawBuffers[MAX_RENDER_TARGETS];
         for (uint32_t i = 0; i < mRenderTargetsCount; ++ i)
         {
-            RenderTargetRef rt      = mRenderTargets[i];
-            TextureRef      rtTex   = rt->GetTexture();
+            ConstRenderTargetRef rt = mRenderTargets[i];
+            ConstTextureRef rtTex   = std::static_pointer_cast<const Texture>( rt->GetTexture() );
             TRACE_ASSERT_GL(glFramebufferTexture, GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, rtTex->GetHandle(), rt->GetDesc().resourceIndex);
             drawBuffers[i] = GL_COLOR_ATTACHMENT0 + i;
         }
@@ -338,32 +337,32 @@ namespace GFW {
 #endif
     }
 
-    void Context::SetIndexBuffer( IBufferIn buffer )
+    void Context::SetIndexBuffer( ConstIBufferIn buffer )
     {
-        mIndexBuffer = buffer;
+        mIndexBuffer = std::static_pointer_cast<const Buffer>( buffer );
     }
 
-    void Context::SetTexture( int32_t stage, uint32_t slot, ITextureIn texture )
+    void Context::SetTexture( int32_t stage, uint32_t slot, ConstITextureIn texture )
     {
         TRACE_ASSERT(stage >= 0);
         TRACE_ASSERT(stage < ShaderStage::COUNT);
         TRACE_ASSERT(slot < MAX_BIND_TEXTURES);
-        TRACE_ASSERT(texture.IsAttached());
+        TRACE_ASSERT(texture);
 
         int32_t & textureUnit = mTextureUnits[stage][slot];
 
         if (textureUnit == -1)
         {
-            TRACE_ASSERT(mActiveTextures[mNextActiveTextureUnit].IsNull());
+            TRACE_ASSERT(mActiveTextures[mNextActiveTextureUnit].get());
 
             textureUnit = mNextActiveTextureUnit;
-            mActiveTextures[mNextActiveTextureUnit] = texture;
+            mActiveTextures[mNextActiveTextureUnit] = std::static_pointer_cast<const Texture>( texture );
             mActiveTexturesDirtyMask |= (1 << mNextActiveTextureUnit);
 
             // Find a free texture unit
 
             uint32_t unit = (mNextActiveTextureUnit + 1) % MAX_BIND_TEXTURES;
-            while (mActiveTextures[unit].IsAttached() && unit != mNextActiveTextureUnit)
+            while (mActiveTextures[unit] && unit != mNextActiveTextureUnit)
             {
                 unit = (++ unit) % MAX_BIND_TEXTURES;
             }
@@ -381,22 +380,22 @@ namespace GFW {
                     TRACE_ASSERT_GL(glActiveTexture, GL_TEXTURE0 + MAX_BIND_TEXTURES);
                 }
 
-                mActiveTextures[textureUnit] = texture;
+                mActiveTextures[textureUnit] = std::static_pointer_cast<const Texture>( texture );
                 mActiveTexturesDirtyMask |= (1 << textureUnit);
             }
         }
     }
 
-    void Context::SetRenderTargets( uint32_t count, IRenderTargetRef rt[] )
+    void Context::SetRenderTargets( uint32_t count, ConstIRenderTargetRef rt[] )
     {
         for (uint32_t i = 0; i < count; ++ i)
         {
-            mRenderTargets[i] = rt[i];
+            mRenderTargets[i] = std::static_pointer_cast<const RenderTarget>( rt[i] );
         }
 
         for (uint32_t i = count; i < mRenderTargetsCount; ++ i)
         {
-            mRenderTargets[i].Detach();
+            mRenderTargets[i].reset();
         }
 
         mRenderTargetsCount = count;
@@ -404,7 +403,7 @@ namespace GFW {
 
     void Context::BeginScene()
     {
-        mDevice->LockContext(this);
+        mDevice.lock()->LockContext( shared_from_this() );
         mDrawingContext->MakeCurrent(mContextGL);
 
         if (mDelayedClearState)
@@ -419,7 +418,7 @@ namespace GFW {
         ClearState();
 
         mDrawingContext->MakeCurrent(NULL);
-        mDevice->UnlockContext(this);
+        mDevice.lock()->UnlockContext( shared_from_this() );
     }
 
 } // namespace GFW

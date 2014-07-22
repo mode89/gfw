@@ -63,7 +63,7 @@ namespace GFW {
         virtual
         ~IResource() {}
     };
-    AUTOREF_REFERENCE_DECLARATION(IResource);
+    SHARED_PTR_TYPEDEFS(IResource);
 
 } // namespace GFW
 

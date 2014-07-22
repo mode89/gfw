@@ -1,11 +1,10 @@
 #include "common/trace.h"
 #include "common/crc32.h"
-
+#include "gfw/runtime/core/device.h"
 #include "gfw/runtime/core/shader.h"
 #include "gfw/runtime/core/shader_reflect.h"
 #include "gfw/runtime/core/shader_stage.h"
 #include "gfw/runtime/core/functions.h"
-
 #include "gfw/runtime/common/device_child.inl"
 
 #include <string.h>
@@ -14,19 +13,20 @@ namespace GFW {
 
     using namespace Common;
 
-    Shader::Shader( ShaderBinaryRef binary, ShaderStage stage, IDeviceRef device )
-        : ADeviceChild(device)
+    Shader::Shader( const void * binary, ShaderStage stage, DeviceIn device )
+        : ADeviceChild( device )
         , mStage( stage )
-        , mHandle(0)
-        , mHash(0)
+        , mHandle( 0 )
+        , mHash( 0 )
 #if PLAT_DEBUG
-        , mSource(NULL)
+        , mSource( nullptr )
 #endif
     {
         uint32_t shader = TRACE_ASSERT_GL( glCreateShader, GetOGLShaderType( stage ) );
         TRACE_ASSERT( shader != 0 );
 
-        const char * source = (char *) (uint8_t*) binary->mData;
+        const ShaderBinary * shaderBinary = static_cast< const ShaderBinary * >( binary );
+        const char * source = reinterpret_cast< const char * >( shaderBinary->mData.data() );
         const char * strings[] = { source };
         TRACE_ASSERT_GL(glShaderSource, shader, 1, strings, NULL);
 
@@ -86,7 +86,7 @@ namespace GFW {
         uint32_t sourceLength = strlen(source);
         mHash = CRC32(0, source, sourceLength);
 
-        mReflection = new ShaderReflection(mHandle, mDevice);
+        mReflection = std::make_shared<ShaderReflection>( mHandle, device );
 
 #if PLAT_DEBUG
         mSource = new char [ std::strlen( source ) + 1 ];

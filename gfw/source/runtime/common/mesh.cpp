@@ -1,18 +1,15 @@
 #include "common/trace.h"
-
 #include "gfw/base/buffer.h"
 #include "gfw/base/context.h"
+#include "gfw/base/device.h"
 #include "gfw/base/input_layout.h"
-
 #include "gfw/runtime/common/mesh.h"
-
-#include "gfw/runtime/common/device_child.inl"
 
 namespace GFW {
 
-    Mesh::Mesh(IDeviceIn device)
-        : ADeviceChild(device)
-        , mBufCnt(0)
+    Mesh::Mesh( IDeviceIn device )
+        : mDevice( device )
+        , mBufCnt( 0 )
     {
 
     }
@@ -25,7 +22,7 @@ namespace GFW {
     void Mesh::Draw()
     {
         IContextRef context = mDevice->GetCurrentContext();
-        TRACE_ASSERT(context.IsAttached());
+        TRACE_ASSERT(context);
 
         context->SetInputLayout(mInputLayout);
 
@@ -43,13 +40,13 @@ namespace GFW {
     {
         for (uint32_t i = 0; i < bufCnt; ++ i)
         {
-            TRACE_ASSERT(bufs[i].IsAttached());
+            TRACE_ASSERT(bufs[i]);
             mVertexBuffers[i] = bufs[i];
         }
 
         for (uint32_t i = bufCnt; i < mBufCnt; ++ i)
         {
-            mVertexBuffers[i].Detach();
+            mVertexBuffers[i].reset();
         }
 
         mBufCnt = bufCnt;

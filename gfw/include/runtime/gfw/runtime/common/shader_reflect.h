@@ -16,10 +16,10 @@ namespace GFW {
     {
     public:
         virtual const char *
-        GetName() { return mName; }
+        GetName() const { return mName; }
 
         virtual const ShaderVariableDesc &
-        GetDesc() { return mDesc; }
+        GetDesc() const { return mDesc; }
 
     public:
         ShaderVariable(const char * name, const ShaderVariableDesc & desc) { mName = name; mDesc = desc; }
@@ -28,16 +28,16 @@ namespace GFW {
         const char *        mName;
         ShaderVariableDesc  mDesc;
     };
-    AUTOREF_REFERENCE_DECLARATION(ShaderVariable);
+    SHARED_PTR_TYPEDEFS(ShaderVariable);
 
     class ShaderBuffer : public IShaderBuffer
     {
     public:
         virtual const char *
-        GetName() { return mName; }
+        GetName() const { return mName; }
 
         virtual const ShaderBufferDesc &
-        GetDesc() { return mDesc; }
+        GetDesc() const { return mDesc; }
 
     public:
         ShaderBuffer(const char * name, const ShaderBufferDesc & desc) { mName = name; mDesc = desc; }
@@ -46,16 +46,16 @@ namespace GFW {
         const char *        mName;
         ShaderBufferDesc    mDesc;
     };
-    AUTOREF_REFERENCE_DECLARATION(ShaderBuffer);
+    SHARED_PTR_TYPEDEFS(ShaderBuffer);
 
     class ShaderResource : public IShaderResource
     {
     public:
         virtual const char *
-        GetName() { return mName; }
+        GetName() const { return mName; }
 
         virtual const ShaderResourceDesc &
-        GetDesc() { return mDesc; }
+        GetDesc() const { return mDesc; }
 
     public:
         ShaderResource(const char * name, const ShaderResourceDesc & desc) { mName = name; mDesc = desc; }
@@ -64,13 +64,13 @@ namespace GFW {
         const char *        mName;
         ShaderResourceDesc  mDesc;
     };
-    AUTOREF_REFERENCE_DECLARATION(ShaderResource);
+    SHARED_PTR_TYPEDEFS(ShaderResource);
 
     class ShaderParameter : public IShaderParameter
     {
     public:
         virtual const ShaderParameterDesc &
-        GetDesc() { return mDesc; }
+        GetDesc() const { return mDesc; }
 
     public:
         ShaderParameter(const ShaderParameterDesc & desc) { mDesc = desc; }
@@ -78,44 +78,44 @@ namespace GFW {
     private:
         ShaderParameterDesc mDesc;
     };
-    AUTOREF_REFERENCE_DECLARATION(ShaderParameter);
+    SHARED_PTR_TYPEDEFS(ShaderParameter);
 
     template < class Base >
     class AShaderReflection : public ADeviceChild<Base>
     {
     public:
         virtual const ShaderDesc &
-        GetDesc() { return mDesc; }
+        GetDesc() const { return mDesc; }
 
-        virtual IShaderVariableRef
-        GetVariable(uint32_t index);
+        virtual ConstIShaderVariableRef
+        GetVariable(uint32_t index) const;
 
-        virtual IShaderVariableRef
-        GetVariable(const char * name);
+        virtual ConstIShaderVariableRef
+        GetVariable(const char * name) const;
 
-        virtual IShaderBufferRef
-        GetBuffer(uint32_t index);
+        virtual ConstIShaderBufferRef
+        GetBuffer(uint32_t index) const;
 
-        virtual IShaderBufferRef
-        GetBuffer(const char * name);
+        virtual ConstIShaderBufferRef
+        GetBuffer(const char * name) const;
 
-        virtual IShaderResourceRef
-        GetResource(uint32_t index);
+        virtual ConstIShaderResourceRef
+        GetResource(uint32_t index) const;
 
-        virtual IShaderResourceRef
-        GetResource(const char * name);
+        virtual ConstIShaderResourceRef
+        GetResource(const char * name) const;
 
-        virtual IShaderParameterRef
-        GetInputParameter(uint32_t index);
+        virtual ConstIShaderParameterRef
+        GetInputParameter(uint32_t index) const;
 
-        virtual IShaderParameterRef
-        GetInputParameter(Semantic);
+        virtual ConstIShaderParameterRef
+        GetInputParameter(Semantic) const;
 
     public:
         void Initialize();
 
     public:
-        AShaderReflection(IDeviceIn);
+        AShaderReflection( DeviceIn );
         ~AShaderReflection();
 
     protected:

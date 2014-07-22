@@ -12,20 +12,20 @@ namespace GFW {
     {
     public:
         virtual const RenderTargetDesc &
-        GetDesc() { return mDesc; }
+        GetDesc() const { return mDesc; }
 
-        virtual ITextureRef
-        GetTexture() { return mTexture; }
+        virtual ConstITextureRef
+        GetTexture() const { return std::static_pointer_cast<const ITexture>( mTexture ); }
 
     public:
-        RenderTarget(ITextureIn, const RenderTargetDesc &, IDeviceIn);
+        RenderTarget( ConstITextureIn, const RenderTargetDesc &, DeviceIn );
         ~RenderTarget();
 
     private:
         RenderTargetDesc    mDesc;
-        TextureRef          mTexture;
+        ConstTextureRef     mTexture;
     };
-    AUTOREF_REFERENCE_DECLARATION(RenderTarget);
+    SHARED_PTR_TYPEDEFS(RenderTarget);
 
 } // namespace GFW
 

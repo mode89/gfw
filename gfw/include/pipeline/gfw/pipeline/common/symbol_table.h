@@ -5,23 +5,23 @@
 
 namespace GFW {
 
-    class SymbolTable : public Common::ARefCounted
+    class SymbolTable
     {
         typedef std::vector< Symbol > SymbolVec;
 
     public:
         typedef SymbolVec::const_iterator const_iterator;
 
-        SymbolTable( ConstParseTreeIn );
+        SymbolTable( const ParseTree & );
 
         bool
-        CollectSymbol( ConstParseTreeIn );
+        CollectSymbol( const ParseTree & );
 
         bool
-        LookupSymbolByName( const char * name, SymbolReferenceVec & result ) const;
+        LookupSymbolByName( const std::string & name, SymbolReferenceVec & result ) const;
 
         const Symbol *
-        LookupSymbolByTree( ConstParseTreeIn ) const;
+        LookupSymbolByTree( const ParseTree & ) const;
 
         const_iterator begin() const { return mSymbols.begin(); }
 
@@ -36,7 +36,6 @@ namespace GFW {
         SymbolReferenceVec  mSymbolsByName;
         SymbolReferenceVec  mSymbolsByTreeAddress;
     };
-    AUTOREF_REFERENCE_DECLARATION( SymbolTable );
 
 } // namespace GFW
 

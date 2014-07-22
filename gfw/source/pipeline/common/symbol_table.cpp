@@ -8,33 +8,33 @@ namespace GFW {
 
     static bool SymbolLessByName( const Symbol * l, const Symbol * r )
     {
-        return std::strcmp( l->GetName(), r->GetName() ) < 0;
+        return l->GetName() < r->GetName();
     }
 
     static bool SymbolLessByTreeAddress( const Symbol * l, const Symbol * r )
     {
-        return l->GetTree().GetPointer() < r->GetTree().GetPointer();
+        return &l->GetTree() < &r->GetTree();
     }
 
     class CollectReferencedSymbolsVisitor
     {
     public:
-        CollectReferencedSymbolsVisitor( const SymbolTable * symbolTable, SymbolReferenceVec & references )
+        CollectReferencedSymbolsVisitor( const SymbolTable & symbolTable, SymbolReferenceVec & references )
             : mSymbolTable( symbolTable )
             , mReferences( references )
         {}
 
-        bool operator() ( ConstParseTreeIn tree )
+        bool operator() ( const ParseTree & tree )
         {
-            if ( tree->GetTokenType() == TOKEN_ID )
+            if ( tree.GetTokenType() == TOKEN_ID )
             {
-                mSymbolTable->LookupSymbolByName( tree->ToString(), mReferences );
+                mSymbolTable.LookupSymbolByName( tree.GetText(), mReferences );
             }
             return true;
         }
 
     private:
-        const SymbolTable *  mSymbolTable;
+        const SymbolTable &  mSymbolTable;
         SymbolReferenceVec & mReferences;
     };
 
@@ -43,9 +43,9 @@ namespace GFW {
         return std::binary_search( mReferences.begin(), mReferences.end(), symbol );
     }
 
-    SymbolTable::SymbolTable( ConstParseTreeIn tree )
+    SymbolTable::SymbolTable( const ParseTree & tree )
     {
-        tree->TraverseDFS( *this, &SymbolTable::CollectSymbol );
+        tree.TraverseDFS( *this, &SymbolTable::CollectSymbol );
 
         // Mapping by name
 
@@ -73,8 +73,8 @@ namespace GFW {
             {
             case TOKEN_FUNCTION_DEFINITION:
                 {
-                    CollectReferencedSymbolsVisitor collectReferencedSymbolsVisitor( this, symbol.mReferences );
-                    symbol.GetTree()->TraverseDFS( collectReferencedSymbolsVisitor );
+                    CollectReferencedSymbolsVisitor collectReferencedSymbolsVisitor( *this, symbol.mReferences );
+                    symbol.GetTree().TraverseDFS( collectReferencedSymbolsVisitor );
                 }
                 break;
             }
@@ -125,9 +125,9 @@ namespace GFW {
         }
     }
 
-    bool SymbolTable::CollectSymbol( ConstParseTreeIn tree )
+    bool SymbolTable::CollectSymbol( const ParseTree & tree )
     {
-        switch ( tree->GetTokenType() )
+        switch ( tree.GetTokenType() )
         {
         case TOKEN_VARIABLE_DEFINITION:
             {
@@ -143,28 +143,28 @@ namespace GFW {
 
                 // Remember a return type
 
-                symbol.mType = tree->GetChild();
+                symbol.mType = &tree.GetChild();
 
                 // Remember arguments
 
-                ConstParseTreeRef args = tree->GetFirstChildWithType( TOKEN_ARGUMENTS_LIST );
-                if ( args.IsAttached() )
+                const ParseTree * args = tree.GetFirstChildWithType( TOKEN_ARGUMENTS_LIST );
+                if ( args )
                 {
                     for ( uint32_t i = 0; i < args->GetChildCount(); ++ i )
                     {
-                        if ( args->GetChild(i)->GetTokenType() == TOKEN_ARGUMENT )
+                        if ( args->GetChild(i).GetTokenType() == TOKEN_ARGUMENT )
                         {
-                            symbol.mArgs.push_back( args->GetChild(i) );
+                            symbol.mArgs.push_back( &args->GetChild(i) );
                         }
                     }
                 }
 
                 // Remember an output semantic
 
-                ConstParseTreeRef semantic = tree->GetFirstChildWithType( TOKEN_SEMANTIC );
-                if ( semantic.IsAttached() )
+                const ParseTree * semantic = tree.GetFirstChildWithType( TOKEN_SEMANTIC );
+                if ( semantic )
                 {
-                    symbol.mSemantic = semantic->GetChild()->ToString();
+                    symbol.mSemantic = &semantic->GetChild().GetText();
                 }
 
                 AddSymbol( symbol );
@@ -185,9 +185,9 @@ namespace GFW {
 
                 // Remember members
 
-                for ( uint32_t i = 0; i < tree->GetChildCount(); ++ i )
+                for ( uint32_t i = 0; i < tree.GetChildCount(); ++ i )
                 {
-                    ConstParseTreeRef child = tree->GetChild(i);
+                    const ParseTree * child = &tree.GetChild(i);
                     if ( child->GetTokenType() == TOKEN_STRUCT_MEMBER_DECLARATION )
                     {
                         symbol.mMembers.push_back( child );
@@ -201,15 +201,15 @@ namespace GFW {
         return true;
     }
 
-    bool SymbolTable::LookupSymbolByName( const char * name, SymbolReferenceVec & result ) const
+    bool SymbolTable::LookupSymbolByName( const std::string & name, SymbolReferenceVec & result ) const
     {
         Symbol symbol;
-        symbol.mName = name;
+        symbol.mName = &name;
 
         SymbolReferenceVec::const_iterator it = lower_bound( mSymbolsByName.begin(), mSymbolsByName.end(), &symbol, SymbolLessByName );
         if ( it != mSymbolsByName.end() )
         {
-            for (; it != mSymbolsByName.end() && std::strcmp( (*it)->GetName(), name ) == 0 ; ++ it )
+            for (; it != mSymbolsByName.end() && (*it)->GetName() == name; ++ it )
             {
                 result.push_back( *it );
             }
@@ -218,10 +218,10 @@ namespace GFW {
         return !result.empty();
     }
 
-    const Symbol * SymbolTable::LookupSymbolByTree( ConstParseTreeIn tree ) const
+    const Symbol * SymbolTable::LookupSymbolByTree( const ParseTree & tree ) const
     {
         Symbol symbol;
-        symbol.mTree = tree;
+        symbol.mTree = &tree;
 
         SymbolReferenceVec::const_iterator it = lower_bound( mSymbolsByTreeAddress.begin(), mSymbolsByTreeAddress.end(),
             &symbol, SymbolLessByTreeAddress );

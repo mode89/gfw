@@ -1,10 +1,10 @@
 #ifndef __GFW_PIPELINE_COMMON_PARSE_TREE_H__
 #define __GFW_PIPELINE_COMMON_PARSE_TREE_H__
 
-#include "common/autoref.h"
-
-#include <vector>
+#include "boost/filesystem.hpp"
+#include <memory>
 #include <string>
+#include <vector>
 
 namespace GFW {
 
@@ -75,32 +75,29 @@ namespace GFW {
 #undef T
     };
 
-    AUTOREF_FORWARD_DECLARATION( ParseTree );
-    typedef std::vector< ConstParseTreeRef > ParseTreeVec;
-
-    class ParseTree : public Common::ARefCounted
+    class ParseTree
     {
     public:
         template < class Visitor > void
         TraverseDFS( Visitor & visitor ) const
         {
-            if ( visitor( this ) )
+            if ( visitor( *this ) )
             {
                 for ( uint32_t i = 0; i < mChildCount; ++ i )
                 {
-                    mChildren[i]->TraverseDFS( visitor );
+                    mChildren[i].TraverseDFS( visitor );
                 }
             }
         }
 
         template < class Delegator > void
-        TraverseDFS( Delegator & delegator, bool (Delegator::*visitor)( ConstParseTreeIn ) ) const
+        TraverseDFS( Delegator & delegator, bool (Delegator::*visitor)( const ParseTree & ) ) const
         {
-            if ( (delegator.*visitor)( this ) )
+            if ( (delegator.*visitor)( *this ) )
             {
                 for ( uint32_t i = 0; i < mChildCount; ++ i )
                 {
-                    mChildren[i]->TraverseDFS( delegator, visitor );
+                    mChildren[i].TraverseDFS( delegator, visitor );
                 }
             }
         }
@@ -120,23 +117,23 @@ namespace GFW {
         uint32_t
         GetEndRow() const { return mEndRow; }
 
-        ConstParseTreeRef
+        const ParseTree &
         GetChild( uint32_t index = 0 ) const { return mChildren[index]; }
 
         uint32_t
         GetChildCount() const { return mChildCount; }
 
-        ConstParseTreeRef
+        const ParseTree *
         GetFirstChildWithType( TokenType ) const;
 
-        const char *
-        ToString() const { return mString.c_str(); }
+        const std::string &
+        GetText() const { return mString; }
 
     public:
         ParseTree( void * nativeTree );
 
     private:
-        typedef std::vector< ParseTreeRef > ParseTreeVec;
+        typedef std::vector< ParseTree > ParseTreeVec;
 
         std::string     mString;
         TokenType       mTokenType;
@@ -149,8 +146,8 @@ namespace GFW {
         uint32_t        mChildCount;
     };
 
-    ConstParseTreeRef
-    CreateParseTree( const char * fileName );
+    std::shared_ptr< const ParseTree >
+    CreateParseTree( const boost::filesystem::path & );
 
 } // namespace GFW
 

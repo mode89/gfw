@@ -1,7 +1,6 @@
 #include "gfw_tests.h"
 
 using namespace GFW;
-using namespace Common;
 
 TEST_F(GfwTests, Clear)
 {
@@ -13,8 +12,9 @@ TEST_F(GfwTests, Clear)
 
         mContext->BeginScene();
         {
-            mContext->SetRenderTargets(1, &mDefaultRenderTarget);
-            mContext->Clear(mClearParams);
+            ConstIRenderTargetRef rt[] = { mDefaultRenderTarget };
+            mContext->SetRenderTargets( 1, rt );
+            mContext->Clear( mClearParams );
         }
         mContext->EndScene();
 
@@ -28,8 +28,8 @@ TEST_F( GfwTests, DrawColored )
 {
     // Create effect
 
-    IEffectRef    effect    = mFactory->CreateEffect( "draw.fxc" );
-	ITechniqueRef technique = effect->GetTechnique( "DrawColoredVertices" );
+    IEffectRef         effect    = mFactory->CreateEffect( "draw.fxc" );
+	ConstITechniqueRef technique = effect->GetTechnique( "DrawColoredVertices" );
 
     // Create geometry
 
@@ -72,8 +72,9 @@ TEST_F( GfwTests, DrawColored )
 
         mContext->BeginScene();
         {
-            mContext->SetRenderTargets(1, &mDefaultRenderTarget);
-            mContext->Clear(mClearParams);
+            ConstIRenderTargetRef rt[] = { mDefaultRenderTarget };
+            mContext->SetRenderTargets( 1, rt );
+            mContext->Clear( mClearParams );
 
             technique->Dispatch();
 
@@ -95,7 +96,7 @@ TEST_F(GfwTests, DrawIndexed)
     // Create effect
 
     IEffectRef effect = mFactory->CreateEffect( "draw.fxc" );
-    ITechniqueRef technique = effect->GetTechnique( "DrawColoredVertices" );
+    ConstITechniqueRef technique = effect->GetTechnique( "DrawColoredVertices" );
 
     // Create geometry
 
@@ -150,8 +151,9 @@ TEST_F(GfwTests, DrawIndexed)
 
         mContext->BeginScene();
         {
-            mContext->SetRenderTargets(1, &mDefaultRenderTarget);
-            mContext->Clear(mClearParams);
+            ConstIRenderTargetRef rt[] = { mDefaultRenderTarget };
+            mContext->SetRenderTargets( 1, rt );
+            mContext->Clear( mClearParams );
 
             technique->Dispatch();
 
@@ -172,7 +174,7 @@ TEST_F(GfwTests, DrawIndexed)
 TEST_F(GfwTests, DrawScreenQuad)
 {
     IEffectRef effect = mFactory->CreateEffect( "draw.fxc" );
-    ITechniqueRef tech = effect->GetTechnique( "DrawRedQuad" );
+    ConstITechniqueRef tech = effect->GetTechnique( "DrawRedQuad" );
 
     for (int i = 0; i < 60; ++ i)
     {
@@ -180,8 +182,9 @@ TEST_F(GfwTests, DrawScreenQuad)
 
         mContext->BeginScene();
         {
-            mContext->SetRenderTargets(1, &mDefaultRenderTarget);
-            mContext->Clear(mClearParams);
+            ConstIRenderTargetRef rt[] = { mDefaultRenderTarget };
+            mContext->SetRenderTargets( 1, rt );
+            mContext->Clear( mClearParams );
 
             effect->Dispatch();
             mContext->DrawScreenQuad();
@@ -223,7 +226,7 @@ TEST_F(GfwTests, CreateMesh)
 
     // Create vertex buffer
 
-    AutoArray<Vertex> vertices = new Vertex [vertCnt];
+    std::vector< Vertex > vertices( vertCnt );
     for (uint32_t j = 0; j < yVertCnt; ++ j)
     {
         uint32_t offset = j * xVertCnt;
@@ -243,12 +246,12 @@ TEST_F(GfwTests, CreateMesh)
     vertexBufferDesc.size  = sizeof(Vertex) * vertCnt;
     vertexBufferDesc.type  = BUFFER_VERTEX;
     vertexBufferDesc.usage = USAGE_STATIC;
-    IBufferRef vertexBuffer = mDevice->CreateBuffer(vertexBufferDesc, vertices);
+    IBufferRef vertexBuffer = mDevice->CreateBuffer( vertexBufferDesc, vertices.data() );
 
     // Create index buffer
 
     uint32_t indexCount = xSegments * ySegments * 2 * 3;
-    AutoArray<uint32_t> indices = new uint32_t [indexCount];
+    std::vector< uint32_t > indices( indexCount );
     for (uint32_t j = 0; j < ySegments; ++ j)
     {
         for (uint32_t i = 0; i < xSegments; ++ i)
@@ -274,7 +277,7 @@ TEST_F(GfwTests, CreateMesh)
     indexBufferDesc.size  = sizeof(uint32_t) * xSegments * ySegments * 2 * 3;
     indexBufferDesc.type  = BUFFER_INDEX;
     indexBufferDesc.usage = USAGE_STATIC;
-    IBufferRef indexBuffer = mDevice->CreateBuffer(indexBufferDesc, indices);
+    IBufferRef indexBuffer = mDevice->CreateBuffer( indexBufferDesc, indices.data() );
 
     // Create input layout
 
@@ -305,8 +308,9 @@ TEST_F(GfwTests, CreateMesh)
 
         mContext->BeginScene();
         {
-            mContext->SetRenderTargets(1, &mDefaultRenderTarget);
-            mContext->Clear(mClearParams);
+            ConstIRenderTargetRef rt[] = { mDefaultRenderTarget };
+            mContext->SetRenderTargets( 1, rt );
+            mContext->Clear( mClearParams );
 
             effect->Dispatch();
             mesh->Draw();
@@ -324,7 +328,7 @@ TEST_F(GfwTests, MapBuffer)
     static const uint32_t kDataCount = 100;
 
     // Allocate system copy of the buffer data
-    AutoArray<uint32_t> data = new uint32_t [kDataCount];
+    std::vector< uint32_t > data( kDataCount );
 
     uint32_t bufferSize = sizeof(uint32_t) * kDataCount;
 
@@ -347,8 +351,8 @@ TEST_F(GfwTests, MapBuffer)
 
         mContext->BeginScene();
         {
-            uint32_t * mappedData = static_cast<uint32_t*>(buffer->Map(MAP_FLAG_WRITE));
-            memcpy(mappedData, data, bufferSize);
+            uint32_t * mappedData = static_cast< uint32_t * >( buffer->Map( MAP_FLAG_WRITE ) );
+            memcpy( mappedData, data.data(), bufferSize );
             buffer->Unmap();
         }
         mContext->EndScene();
@@ -357,8 +361,8 @@ TEST_F(GfwTests, MapBuffer)
 
         mContext->BeginScene();
         {
-            uint32_t * mappedData = static_cast<uint32_t*>(buffer->Map(MAP_FLAG_READ));
-            ASSERT_TRUE(memcmp(mappedData, data, bufferSize) == 0);
+            uint32_t * mappedData = static_cast< uint32_t * >( buffer->Map( MAP_FLAG_READ ) );
+            ASSERT_TRUE( memcmp( mappedData, data.data(), bufferSize ) == 0 );
             buffer->Unmap();
         }
         mContext->EndScene();
@@ -370,7 +374,7 @@ TEST_F(GfwTests, UpdateBuffer)
     static const uint32_t kDataCount = 100;
 
     // Allocate system copy of the buffer data
-    AutoArray<uint32_t> data = new uint32_t [kDataCount];
+    std::vector< uint32_t > data( kDataCount );
 
     uint32_t bufferSize = sizeof(uint32_t) * kDataCount;
 
@@ -392,14 +396,14 @@ TEST_F(GfwTests, UpdateBuffer)
         // Write the buffer
 
         mContext->BeginScene();
-        buffer->UpdateSubresource(data);
+        buffer->UpdateSubresource( data.data() );
         mContext->EndScene();
 
         // Compare buffer with the data
 
         mContext->BeginScene();
-        void * mappedData = buffer->Map(MAP_FLAG_READ);
-        ASSERT_TRUE(memcmp(mappedData, data, bufferSize) == 0);
+        void * mappedData = buffer->Map( MAP_FLAG_READ );
+        ASSERT_TRUE( memcmp( mappedData, data.data(), bufferSize ) == 0 );
         buffer->Unmap();
         mContext->EndScene();
     }
@@ -409,13 +413,13 @@ TEST_F(GfwTests, RenderTarget)
 {
     // Get default render target
 
-    IRenderTargetRef defaultRenderTarget = mDevice->GetDefaultRenderTarget();
+    ConstIRenderTargetRef defaultRenderTarget = mDevice->GetDefaultRenderTarget();
 
     // Create effect
 
     IEffectRef fx = mFactory->CreateEffect( "draw.fxc" );
-    ITechniqueRef techDrawRed = fx->GetTechnique( "DrawRed" );
-    ITechniqueRef techDrawTexturedQuad = fx->GetTechnique( "DrawTexturedQuad" );
+    ConstITechniqueRef techDrawRed = fx->GetTechnique( "DrawRed" );
+    ConstITechniqueRef techDrawTexturedQuad = fx->GetTechnique( "DrawTexturedQuad" );
 
     // Create geometry
 
@@ -465,11 +469,12 @@ TEST_F(GfwTests, RenderTarget)
         {
             // Draw to texture
 
-            mContext->SetRenderTargets(1, &renderTarget);
-            mContext->Clear(mClearParams);
+            ConstIRenderTargetRef rt[] = { renderTarget };
+            mContext->SetRenderTargets( 1, rt );
+            mContext->Clear( mClearParams );
 
-            mContext->SetInputLayout(inputLayout);
-            mContext->SetVertexBuffer(0, vertPosBuf);
+            mContext->SetInputLayout( inputLayout );
+            mContext->SetVertexBuffer( 0, vertPosBuf );
 
             techDrawRed->Dispatch();
             mContext->Draw(drawParams);

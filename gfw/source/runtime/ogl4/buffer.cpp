@@ -5,12 +5,11 @@
 #include "gfw/runtime/common/device_child.inl"
 
 #include "gfw/runtime/core/buffer.h"
+#include "gfw/runtime/core/device.h"
 #include "gfw/runtime/core/functions.h"
 #include "gfw/runtime/core/resource.h"
 
 namespace GFW {
-
-    using namespace Common;
 
     static uint32_t GetBufferTarget(BufferType type)
     {
@@ -25,7 +24,7 @@ namespace GFW {
         return 0;
     }
 
-    Buffer::Buffer(const BufferDesc & desc, IDeviceRef device)
+    Buffer::Buffer(const BufferDesc & desc, DeviceIn device)
         : ADeviceChild(device)
         , mDesc(desc)
         , mHandle(0)
@@ -65,7 +64,7 @@ namespace GFW {
     void * Buffer::Map(uint32_t mapFlags)
     {
         TRACE_ASSERT((mapFlags & (MAP_FLAG_READ | MAP_FLAG_WRITE)) != 0);
-        TRACE_ASSERT(mDevice->GetCurrentContext().IsAttached());
+        TRACE_ASSERT(mDevice.lock()->GetCurrentContext());
 
         uint32_t access;
         if (mapFlags & MAP_FLAG_READ && mapFlags & MAP_FLAG_WRITE)
@@ -90,7 +89,7 @@ namespace GFW {
 
     void Buffer::Unmap()
     {
-        TRACE_ASSERT(mDevice->GetCurrentContext().IsAttached());
+        TRACE_ASSERT(mDevice.lock()->GetCurrentContext());
 
         TRACE_ASSERT_GL(glBindBuffer, mTarget, mHandle);
         TRACE_ASSERT_GL(glUnmapBuffer, mTarget);
@@ -99,7 +98,7 @@ namespace GFW {
 
     void Buffer::UpdateSubresource(const void * data, uint32_t subResourceIndex)
     {
-        TRACE_ASSERT(mDevice->GetCurrentContext().IsAttached());
+        TRACE_ASSERT(mDevice.lock()->GetCurrentContext());
 
         uint32_t usage = GetOGLUsage(mDesc.usage);
 

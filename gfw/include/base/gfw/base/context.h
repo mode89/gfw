@@ -6,26 +6,26 @@
 
 namespace GFW {
 
-    class IContext: public Common::ARefCounted
+    class IContext
     {
     public:
         virtual void
-        SetShader( ShaderStage stage, IShaderIn ) = 0;
+        SetShader( ShaderStage stage, ConstIShaderIn ) = 0;
 
         virtual void
-        SetInputLayout(IInputLayoutIn) = 0;
+        SetInputLayout( ConstIInputLayoutIn ) = 0;
 
         virtual void
-        SetVertexBuffer(uint32_t slot, IBufferIn) = 0;
+        SetVertexBuffer( uint32_t slot, ConstIBufferIn ) = 0;
 
         virtual void
-        SetIndexBuffer(IBufferIn) = 0;
+        SetIndexBuffer( ConstIBufferIn ) = 0;
 
         virtual void
-        SetTexture(int32_t stage, uint32_t slot, ITextureIn) = 0;
+        SetTexture( int32_t stage, uint32_t slot, ConstITextureIn ) = 0;
 
         virtual void
-        SetRenderTargets(uint32_t rtCount, IRenderTargetRef rt[]) = 0;
+        SetRenderTargets( uint32_t rtCount, ConstIRenderTargetRef rt[] ) = 0;
 
         virtual void
         BeginScene() = 0;
@@ -34,13 +34,13 @@ namespace GFW {
         EndScene() = 0;
 
         virtual void
-        Clear(const ClearParams &) = 0;
+        Clear( const ClearParams & ) = 0;
 
         virtual void
-        Draw(const DrawParams &) = 0;
+        Draw( const DrawParams & ) = 0;
 
         virtual void
-        Draw(const DrawIndexedParams &) = 0;
+        Draw( const DrawIndexedParams & ) = 0;
 
         virtual void
         DrawScreenQuad() = 0;
@@ -52,7 +52,7 @@ namespace GFW {
         virtual
         ~IContext() { }
     };
-    AUTOREF_REFERENCE_DECLARATION(IContext);
+    SHARED_PTR_TYPEDEFS( IContext );
 
 } // namespace GFW
 

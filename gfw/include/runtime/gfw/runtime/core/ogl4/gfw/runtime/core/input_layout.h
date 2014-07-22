@@ -13,20 +13,20 @@ namespace GFW {
     {
     public:
         uint32_t
-        GetEnabledAttributesMask() { return mAttributesMask; }
+        GetEnabledAttributesMask() const { return mAttributesMask; }
 
         const VertexAttribute &
-        GetAttribute(uint32_t index) { return mAttributes[index]; }
+        GetAttribute(uint32_t index) const { return mAttributes[index]; }
 
     public:
-        InputLayout(uint32_t attrCnt, VertexAttribute[], IShaderIn vertexShader, IDeviceIn);
+        InputLayout(uint32_t attrCnt, VertexAttribute[], ConstIShaderIn vertexShader, DeviceIn);
         ~InputLayout();
 
     private:
         VertexAttribute     mAttributes[MAX_INPUT_ATTRIBUTES];
         uint32_t            mAttributesMask;
     };
-    AUTOREF_REFERENCE_DECLARATION(InputLayout);
+    SHARED_PTR_TYPEDEFS(InputLayout);
 
 } // namespace GFW
 

@@ -7,8 +7,8 @@
 namespace GFW {
 
     template < class Base >
-    ADeviceChild<Base>::ADeviceChild(IDeviceRef device)
-        : mDevice(device)
+    ADeviceChild<Base>::ADeviceChild( DeviceIn device )
+        : mDevice( device )
     {
 
     }

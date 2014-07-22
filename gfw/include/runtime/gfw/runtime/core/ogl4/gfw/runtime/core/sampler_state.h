@@ -11,17 +11,17 @@ namespace GFW {
     {
     public:
         virtual void
-        Apply();
+        Apply() const;
 
     public:
-        SamplerState(const SamplerStateDesc & desc, uint32_t descHash, IDeviceRef);
+        SamplerState( const SamplerStateDesc & desc, uint32_t descHash, DeviceIn );
         ~SamplerState();
 
     private:
         SamplerStateDesc    mDesc;
         uint32_t            mHandle;
     };
-    AUTOREF_REFERENCE_DECLARATION(SamplerState);
+    SHARED_PTR_TYPEDEFS(SamplerState);
 
 } // namespace GFW
 

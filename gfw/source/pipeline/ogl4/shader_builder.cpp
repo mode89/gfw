@@ -1,7 +1,11 @@
 #include "common/trace.h"
+#include "gfw/base/shader_stage.h"
 #include "gfw/pipeline/common/parse_tree.h"
+#include "gfw/pipeline/common/symbol.h"
+#include "gfw/pipeline/common/symbol_table.h"
 #include "gfw/pipeline/shader_builder.h"
 #include "gfw/pipeline/validator.h"
+#include "gfw/shared/shader.h"
 
 #include <algorithm>
 #include <cstring>
@@ -10,14 +14,14 @@
 
 namespace GFW {
 
-    inline static bool CompareTreesByRef( const ConstParseTreeRef & t1, const ConstParseTreeRef & t2 )
+    inline static bool CompareTreesByRef( const ParseTree & t1, const ParseTree & t2 )
     {
-        return t1.GetPointer() < t2.GetPointer();
+        return &t1 < &t2;
     }
 
     inline static bool LessByTreeRef( const Symbol * ls, const Symbol * rs )
     {
-        return ls->GetTree().GetPointer() < rs->GetTree().GetPointer();
+        return &ls->GetTree() < &rs->GetTree();
     }
 
     class ConstructSourceVisitor
@@ -26,14 +30,14 @@ namespace GFW {
         ConstructSourceVisitor(
             std::stringstream & source,
             const TextureSamplerPairSet & textureSamplerPairSet,
-            ConstSymbolTableIn symbolTable,
+            const SymbolTable & symbolTable,
             const Symbol * entryPoint )
             : mSource( source )
             , mLine( 1 )
             , mRow( 0 )
             , mTextureSamplerPairSet( textureSamplerPairSet )
         {
-            for ( SymbolTable::const_iterator it = symbolTable->begin(); it != symbolTable->end(); ++ it )
+            for ( auto it = symbolTable.begin(); it != symbolTable.end(); ++ it )
             {
                 const Symbol & symbol = *it;
                 if ( !entryPoint->RefersTo( &symbol ) )
@@ -44,7 +48,7 @@ namespace GFW {
             std::sort( mSkipSymbols.begin(), mSkipSymbols.end(), LessByTreeRef );
         }
 
-        bool operator() ( ConstParseTreeRef tree )
+        bool operator() ( const ParseTree & tree )
         {
             // If an unused symbol
             {
@@ -56,15 +60,15 @@ namespace GFW {
                 }
             }
 
-            switch ( tree->GetTokenType() )
+            switch ( tree.GetTokenType() )
             {
             case TOKEN_VARIABLE_DEFINITION:
-                if ( tree->GetChild()->GetTokenType() == TOKEN_TEXTURE2D )
+                if ( tree.GetChild().GetTokenType() == TOKEN_TEXTURE2D )
                 {
                     PutLeadingWhitespaces( tree );
                     for ( TextureSamplerPairSet::iterator it = mTextureSamplerPairSet.begin(); it != mTextureSamplerPairSet.end(); ++ it )
                     {
-                        if ( it->first->GetTree() == tree )
+                        if ( &it->first->GetTree() == &tree )
                         {
                             mSource << "uniform sampler2D _sampler_"
                                     << it->first->GetName()
@@ -80,8 +84,8 @@ namespace GFW {
             case TOKEN_TEXTURE_SAMPLE_EXPRESSION_HEAD:
                 {
                     PutLeadingWhitespaces( tree );
-                    const char * textureName = tree->GetFirstChildWithType( TOKEN_TEXTURE_OBJECT_ID )->GetChild()->ToString();
-                    const char * samplerName = tree->GetFirstChildWithType( TOKEN_SAMPLER_OBJECT_ID )->GetChild()->ToString();
+                    const std::string & textureName = tree.GetFirstChildWithType( TOKEN_TEXTURE_OBJECT_ID )->GetChild().GetText();
+                    const std::string & samplerName = tree.GetFirstChildWithType( TOKEN_SAMPLER_OBJECT_ID )->GetChild().GetText();
                     mSource << "texture( "
                             << "_sampler_"
                             << textureName
@@ -97,7 +101,7 @@ namespace GFW {
                 return false;
             default:
                 {
-                    std::string token = tree->ToString();
+                    std::string token = tree.GetText();
                     if ( !token.empty() )
                     {
                         PutLeadingWhitespaces( tree );
@@ -112,10 +116,10 @@ namespace GFW {
         }
 
     private:
-        void PutLeadingWhitespaces( ConstParseTreeIn tree )
+        void PutLeadingWhitespaces( const ParseTree & tree )
         {
-            uint32_t line = tree->GetLine();
-            uint32_t row  = tree->GetRow();
+            uint32_t line = tree.GetLine();
+            uint32_t row  = tree.GetRow();
 
             for ( ; mLine < line; ++ mLine )
             {
@@ -129,10 +133,10 @@ namespace GFW {
             }
         }
 
-        void AdvancePosition( ConstParseTreeIn tree )
+        void AdvancePosition( const ParseTree & tree )
         {
-            mLine = tree->GetEndLine();
-            mRow = tree->GetEndRow();
+            mLine = tree.GetEndLine();
+            mRow = tree.GetEndRow();
         }
 
     private:
@@ -148,29 +152,29 @@ namespace GFW {
     {
     public:
         CollectTextureSampleExpressionsVisitor(
-            ConstSymbolTableIn symbolTable,
+            const SymbolTable & symbolTable,
             TextureSamplerPairSet & textureSamplerPairSet )
             : mSymbolTable( symbolTable )
             , mTextureSamplerPairSet( textureSamplerPairSet )
         {}
 
-        bool operator() ( ConstParseTreeIn tree )
+        bool operator() ( const ParseTree & tree )
         {
-            if ( tree->GetTokenType() == TOKEN_TEXTURE_SAMPLE_EXPRESSION_HEAD )
+            if ( tree.GetTokenType() == TOKEN_TEXTURE_SAMPLE_EXPRESSION_HEAD )
             {
-                ConstParseTreeRef textureObjectId = tree->GetFirstChildWithType( TOKEN_TEXTURE_OBJECT_ID )->GetChild();
-                ConstParseTreeRef samplerObjectId = tree->GetFirstChildWithType( TOKEN_SAMPLER_OBJECT_ID )->GetChild();
+                const ParseTree & textureObjectId = tree.GetFirstChildWithType( TOKEN_TEXTURE_OBJECT_ID )->GetChild();
+                const ParseTree & samplerObjectId = tree.GetFirstChildWithType( TOKEN_SAMPLER_OBJECT_ID )->GetChild();
 
                 SymbolReferenceVec textureSymbol;
-                if ( !mSymbolTable->LookupSymbolByName( textureObjectId->ToString(), textureSymbol ) )
+                if ( !mSymbolTable.LookupSymbolByName( textureObjectId.GetText(), textureSymbol ) )
                 {
-                    TRACE_ERROR_FORMATTED( "Failed to find texture object '%s' in the global scope.", textureObjectId->ToString() );
+                    TRACE_ERROR_FORMATTED( "Failed to find texture object '%s' in the global scope.", textureObjectId.GetText() );
                 }
 
                 SymbolReferenceVec samplerSymbol;
-                if ( !mSymbolTable->LookupSymbolByName( samplerObjectId->ToString(), samplerSymbol ) )
+                if ( !mSymbolTable.LookupSymbolByName( samplerObjectId.GetText(), samplerSymbol ) )
                 {
-                    TRACE_ERROR_FORMATTED( "Failed to find sampler object '%s' in the global scope.", samplerObjectId->ToString() );
+                    TRACE_ERROR_FORMATTED( "Failed to find sampler object '%s' in the global scope.", samplerObjectId.GetText() );
                 }
 
                 TextureSamplerPair textureSamplerPair( textureSymbol[0], samplerSymbol[0] );
@@ -182,7 +186,7 @@ namespace GFW {
         }
 
     private:
-        ConstSymbolTableRef     mSymbolTable;
+        const SymbolTable &     mSymbolTable;
         TextureSamplerPairSet & mTextureSamplerPairSet;
     };
 
@@ -191,58 +195,58 @@ namespace GFW {
     {
         // Process return value
 
-        if ( entryPoint->GetType()->GetTokenType() != TOKEN_VOID )
+        if ( entryPoint->GetType().GetTokenType() != TOKEN_VOID )
         {
-            handler( false, entryPoint->GetType()->ToString(), "retval", entryPoint->GetSemantic() );
+            handler( false, entryPoint->GetType().GetText(), "retval", entryPoint->GetSemantic() );
         }
 
         // Process arguments
 
-        const ParseTreeVec & args = entryPoint->GetArgs();
-        for ( ParseTreeVec::const_iterator it = args.begin(); it != args.end(); ++ it )
+        auto & args = entryPoint->GetArgs();
+        for ( auto it = args.begin(); it != args.end(); ++ it )
         {
-            ConstParseTreeRef arg = *it;
+            const ParseTree * arg = *it;
 
-            ConstParseTreeRef type     = arg->GetFirstChildWithType( TOKEN_TYPE_SPECIFIER );
-            ConstParseTreeRef name     = arg->GetFirstChildWithType( TOKEN_ID );
-            ConstParseTreeRef semantic = arg->GetFirstChildWithType( TOKEN_SEMANTIC );
+            const ParseTree * type     = arg->GetFirstChildWithType( TOKEN_TYPE_SPECIFIER );
+            const ParseTree * name     = arg->GetFirstChildWithType( TOKEN_ID );
+            const ParseTree * semantic = arg->GetFirstChildWithType( TOKEN_SEMANTIC );
 
-            handler( true, type->GetChild()->ToString(), name->ToString(),
-                semantic.IsAttached() ? semantic->GetChild()->ToString() : nullptr );
+            handler( true, type->GetChild().GetText(), name->GetText(),
+                semantic ? semantic->GetChild().GetText() : "" );
         }
     }
 
     class ExpandInputOutput
     {
     public:
-        ExpandInputOutput( std::ostream & stream, ConstSymbolTableIn symbolTable )
+        ExpandInputOutput( std::ostream & stream, const SymbolTable & symbolTable )
             : mStream( stream )
             , mSymbolTable( symbolTable )
         {}
 
-        void operator() ( bool isInput, const char * type, const char * name, const char * semantic ) const
+        void operator() ( bool isInput, const std::string & type, const std::string & name, const std::string & semantic ) const
         {
             mNames.push_back( name );
 
             SymbolReferenceVec typeSymbol;
-            if ( mSymbolTable->LookupSymbolByName( type, typeSymbol ) && typeSymbol[0]->IsStruct() )
+            if ( mSymbolTable.LookupSymbolByName( type, typeSymbol ) && typeSymbol[0]->IsStruct() )
             {
-                const ParseTreeVec & members = typeSymbol[0]->GetMembers();
-                for ( ParseTreeVec::const_iterator it = members.begin(); it != members.end(); ++ it )
+                auto & members = typeSymbol[0]->GetMembers();
+                for ( auto it = members.begin(); it != members.end(); ++ it )
                 {
-                    ConstParseTreeRef m = *it;
+                    const ParseTree * m = *it;
 
-                    ConstParseTreeRef type = m->GetFirstChildWithType( TOKEN_TYPE_SPECIFIER );
-                    ConstParseTreeRef name = m->GetFirstChildWithType( TOKEN_ID );
-                    ConstParseTreeRef semantic = m->GetFirstChildWithType( TOKEN_SEMANTIC );
+                    const ParseTree * type = m->GetFirstChildWithType( TOKEN_TYPE_SPECIFIER );
+                    const ParseTree * name = m->GetFirstChildWithType( TOKEN_ID );
+                    const ParseTree * semantic = m->GetFirstChildWithType( TOKEN_SEMANTIC );
 
-                    (*this)( isInput, type->GetChild()->ToString(), name->ToString(),
-                        semantic.IsAttached() ? semantic->GetChild()->ToString() : nullptr );
+                    (*this)( isInput, type->GetChild().GetText(), name->GetText(),
+                        semantic ? semantic->GetChild().GetText() : "" );
                 }
             }
             else
             {
-                if ( semantic == nullptr )
+                if ( semantic == "" )
                 {
                     TRACE_ERROR_FORMATTED( "%s parameter without semantic is not allowed.", isInput ? "Input" : "Output" );
                 }
@@ -254,30 +258,30 @@ namespace GFW {
         }
 
     protected:
-        typedef std::vector<const char *> Names;
+        typedef std::vector< const std::string > Names;
 
         virtual void
-        Handler( std::ostream &, bool isInput, const char * type, const Names &, const char * semantic ) const = 0;
+        Handler( std::ostream &, bool isInput, const std::string & type, const Names &, const std::string & semantic ) const = 0;
 
     private:
         std::ostream &      mStream;
-        ConstSymbolTableRef mSymbolTable;
+        const SymbolTable & mSymbolTable;
         mutable Names       mNames;
     };
 
     class ExpandOutputAsGlobalDeclaration : public ExpandInputOutput
     {
     public:
-        ExpandOutputAsGlobalDeclaration( std::ostream & stream, ConstSymbolTableIn symboTable, ShaderStage stage )
+        ExpandOutputAsGlobalDeclaration( std::ostream & stream, const SymbolTable & symboTable, ShaderStage stage )
             : ExpandInputOutput( stream, symboTable )
             , mStage( stage )
         {}
 
-        void Handler( std::ostream & stream, bool isInput, const char * typeName, const Names & names, const char * semantic ) const
+        void Handler( std::ostream & stream, bool isInput, const std::string & typeName, const Names & names, const std::string & semantic ) const
         {
             if ( !isInput )
             {
-                if ( mStage == ShaderStage::VERTEX && std::strcmp( semantic, "SV_POSITION" ) == 0 )
+                if ( mStage == ShaderStage::VERTEX && semantic == "SV_POSITION" )
                 {
                     // Equivalent gl_Position
                     return;
@@ -299,16 +303,16 @@ namespace GFW {
     class ExpandInputAsGlobalDeclaration : public ExpandInputOutput
     {
     public:
-        ExpandInputAsGlobalDeclaration( std::ostream & stream, ConstSymbolTableIn symboTable, ShaderStage stage )
+        ExpandInputAsGlobalDeclaration( std::ostream & stream, const SymbolTable & symboTable, ShaderStage stage )
             : ExpandInputOutput( stream, symboTable )
             , mStage( stage )
         {}
 
-        void Handler( std::ostream & stream, bool isInput, const char * typeName, const Names & names, const char * semantic ) const
+        void Handler( std::ostream & stream, bool isInput, const std::string & typeName, const Names & names, const std::string & semantic ) const
         {
             if ( isInput )
             {
-                if ( mStage == ShaderStage::PIXEL && strcmp( semantic, "SV_POSITION") == 0 )
+                if ( mStage == ShaderStage::PIXEL && semantic == "SV_POSITION" )
                 {
                     // Equivalent gl_FragCoord;
                     return;
@@ -329,16 +333,16 @@ namespace GFW {
     class ExpandInputOutputAsBuiltinDeclaration : public ExpandInputOutput
     {
     public:
-        ExpandInputOutputAsBuiltinDeclaration( std::ostream & stream, ConstSymbolTableIn symbolTable, ShaderStage stage )
+        ExpandInputOutputAsBuiltinDeclaration( std::ostream & stream, const SymbolTable & symbolTable, ShaderStage stage )
             : ExpandInputOutput( stream, symbolTable )
             , mStage( stage )
         {}
 
-        void Handler( std::ostream & stream, bool isInput, const char * typeName, const Names & names, const char * semantic ) const
+        void Handler( std::ostream & stream, bool isInput, const std::string & typeName, const Names & names, const std::string & semantic ) const
         {
             if ( !isInput )
             {
-                if ( mStage == ShaderStage::VERTEX && std::strcmp( semantic, "SV_POSITION" ) == 0 )
+                if ( mStage == ShaderStage::VERTEX && semantic == "SV_POSITION" )
                 {
                     stream << "out gl_PerVertex { " << typeName << " gl_Position; };" << std::endl;
                 }
@@ -356,7 +360,7 @@ namespace GFW {
             : mStream( stream )
         {}
 
-        void operator() ( bool isInput, const char * type, const char * name, const char * semantic ) const
+        void operator() ( bool isInput, const std::string & type, const std::string & name, const std::string & semantic ) const
         {
             mStream << "    " << type << ' ' << name << ';' << std::endl;
         }
@@ -368,12 +372,12 @@ namespace GFW {
     class AssignInput : public ExpandInputOutput
     {
     public:
-        AssignInput( std::ostream & stream, ConstSymbolTableIn symbolTable, ShaderStage stage )
+        AssignInput( std::ostream & stream, const SymbolTable & symbolTable, ShaderStage stage )
             : ExpandInputOutput( stream, symbolTable )
             , mStage( stage )
         {}
 
-        void Handler( std::ostream & stream, bool isInput, const char * typeName, const Names & names, const char * semantic ) const
+        void Handler( std::ostream & stream, bool isInput, const std::string & typeName, const Names & names, const std::string & semantic ) const
         {
             if ( isInput )
             {
@@ -392,7 +396,7 @@ namespace GFW {
                     // OpenGL doesn't allow input blocks in vertex shader
                     stream << semantic;
                 }
-                else if ( mStage == ShaderStage::PIXEL && std::strcmp( semantic, "SV_POSITION" ) == 0 )
+                else if ( mStage == ShaderStage::PIXEL && semantic == "SV_POSITION" )
                 {
                     stream << "gl_FragCoord";
                 }
@@ -414,13 +418,13 @@ namespace GFW {
     public:
         ExpandInputOutputAsEntryPointArgument( std::ostream & stream, const Symbol * entryPoint )
             : mStream( stream )
-            , mIsVoid( entryPoint->GetType()->GetTokenType() == TOKEN_VOID )
+            , mIsVoid( entryPoint->GetType().GetTokenType() == TOKEN_VOID )
             , mEntryName( entryPoint->GetName() )
             , mInputsOutputsNumber( entryPoint->GetArgs().size() + ( mIsVoid ? 0 : 1 ) )
             , mInputsOutputsCounter( 0 )
         {}
 
-        void operator() ( bool isInput, const char * type, const char * name, const char * semantic ) const
+        void operator() ( bool isInput, const std::string & type, const std::string & name, const std::string & semantic ) const
         {
             if ( ( mInputsOutputsCounter ++ ) == 0 )
             {
@@ -447,7 +451,7 @@ namespace GFW {
     private:
         std::ostream &      mStream;
         bool                mIsVoid;
-        const char *        mEntryName;
+        const std::string & mEntryName;
         uint32_t            mInputsOutputsNumber;
         mutable uint32_t    mInputsOutputsCounter;
     };
@@ -455,18 +459,18 @@ namespace GFW {
     class AssignOutput : public ExpandInputOutput
     {
     public:
-        AssignOutput( std::ostream & stream, ConstSymbolTableIn symbolTable, ShaderStage stage )
+        AssignOutput( std::ostream & stream, const SymbolTable & symbolTable, ShaderStage stage )
             : ExpandInputOutput( stream, symbolTable )
             , mStage( stage )
         {}
 
-        void Handler( std::ostream & stream, bool isInput, const char * typeName, const Names & names, const char * semantic ) const
+        void Handler( std::ostream & stream, bool isInput, const std::string & typeName, const Names & names, const std::string & semantic ) const
         {
             if ( !isInput )
             {
                 stream << "    ";
 
-                if ( mStage == ShaderStage::VERTEX && std::strcmp( semantic, "SV_POSITION" ) == 0 )
+                if ( mStage == ShaderStage::VERTEX && semantic == "SV_POSITION" )
                 {
                     stream << "gl_Position";
                 }
@@ -495,30 +499,30 @@ namespace GFW {
         ShaderStage mStage;
     };
 
-    ShaderBuilder::ShaderBuilder( ConstParseTreeIn tree, ConstSymbolTableIn symbolTable )
+    ShaderBuilder::ShaderBuilder( const ParseTree & tree, const SymbolTable & symbolTable )
         : mParseTree( tree )
         , mSymbolTable( symbolTable )
     {
         AcquireValidator();
 
-        mParseTree->TraverseDFS( *this, &ShaderBuilder::CollectVariables );
+        mParseTree.TraverseDFS( *this, &ShaderBuilder::CollectVariables );
 
         // Collect immediate references to sampling expressions
 
-        for ( SymbolTable::const_iterator it = mSymbolTable->begin(); it != mSymbolTable->end(); ++ it )
+        for ( SymbolTable::const_iterator it = mSymbolTable.begin(); it != mSymbolTable.end(); ++ it )
         {
             if ( it->IsFunction() )
             {
                 const Symbol * functionSymbol = &(*it);
                 TextureSamplerPairSet & textureSamplerPairSet = mFunctionTextureSamplerMap[functionSymbol];
                 CollectTextureSampleExpressionsVisitor collectTextureSampleExpressions( mSymbolTable, textureSamplerPairSet );
-                it->GetTree()->TraverseDFS( collectTextureSampleExpressions );
+                it->GetTree().TraverseDFS( collectTextureSampleExpressions );
             }
         }
 
         // Collect indirect references to sampling expressions
 
-        for ( SymbolTable::const_iterator it = mSymbolTable->begin(); it != mSymbolTable->end(); ++ it )
+        for ( SymbolTable::const_iterator it = mSymbolTable.begin(); it != mSymbolTable.end(); ++ it )
         {
             if ( it->IsFunction() )
             {
@@ -545,12 +549,12 @@ namespace GFW {
         ReleaseValidator();
     }
 
-    ShaderBinaryRef ShaderBuilder::Compile( const char * shaderName, const char * profile )
+    void ShaderBuilder::Build( ShaderBinary & shaderBinary, const std::string & shaderName, const std::string & profile )
     {
         // Query entry point's symbol
 
         SymbolReferenceVec entryPointReference;
-        if ( !mSymbolTable->LookupSymbolByName(shaderName, entryPointReference) )
+        if ( !mSymbolTable.LookupSymbolByName(shaderName, entryPointReference) )
         {
             TRACE_ERROR_FORMATTED( "Failed to find shader entry point '%s'.", shaderName );
         }
@@ -559,11 +563,11 @@ namespace GFW {
         // Translate the profile
 
         ShaderStage stage;
-        if ( strcmp( profile, "vs_4_0" ) == 0 )
+        if ( profile == "vs_4_0" )
         {
             stage = ShaderStage::VERTEX;
         }
-        else if ( strcmp( profile, "ps_4_0" ) == 0 )
+        else if ( profile == "ps_4_0" )
         {
             stage = ShaderStage::PIXEL;
         }
@@ -599,7 +603,7 @@ namespace GFW {
 
         const TextureSamplerPairSet & textureSamplerPairSet = mFunctionTextureSamplerMap[entryPoint];
         ConstructSourceVisitor constructSource( source, textureSamplerPairSet, mSymbolTable, entryPoint );
-        mParseTree->TraverseDFS( constructSource );
+        mParseTree.TraverseDFS( constructSource );
         source << std::endl << std::endl;
 
         // Declare built-in variables
@@ -677,29 +681,23 @@ namespace GFW {
 
         // Construct binary
 
-        ShaderBinaryRef shaderBinary = new ShaderBinary;
+        shaderBinary.mDesc.inputsCount = entryPoint->GetArgs().size();
+        shaderBinary.mStage = stage;
 
-        shaderBinary->mDesc.inputsCount = entryPoint->GetArgs().size();
-        shaderBinary->mStage = stage;
-
-        uint32_t sourceSize = source.str().size() + 1; // + 1 for null-terminator
-        shaderBinary->mSize = sourceSize;
-        shaderBinary->mData = new uint8_t [ sourceSize ];
-        std::memcpy( shaderBinary->mData, source.str().c_str(), sourceSize );
-
-        return shaderBinary;
+        const std::string & sourceString = source.str();
+        shaderBinary.mData.insert( shaderBinary.mData.begin(), sourceString.begin(), sourceString.end() );
     }
 
-    bool ShaderBuilder::CollectVariables( ConstParseTreeIn tree )
+    bool ShaderBuilder::CollectVariables( const ParseTree & tree )
     {
-        if ( tree->GetTokenType() == TOKEN_EXTERNAL_DECLARATION )
+        if ( tree.GetTokenType() == TOKEN_EXTERNAL_DECLARATION )
         {
-            ConstParseTreeRef child = tree->GetChild();
-            if ( child->GetTokenType() == TOKEN_VARIABLE_DEFINITION ||
-                 child->GetTokenType() == TOKEN_STATE_OBJECT_DEFINITION )
+            const ParseTree & child = tree.GetChild();
+            if ( child.GetTokenType() == TOKEN_VARIABLE_DEFINITION ||
+                 child.GetTokenType() == TOKEN_STATE_OBJECT_DEFINITION )
             {
-                ConstParseTreeRef name = child->GetFirstChildWithType( TOKEN_SYMBOL_NAME )->GetChild();
-                mVariables[name->ToString()] = child;
+                const ParseTree & name = child.GetFirstChildWithType( TOKEN_SYMBOL_NAME )->GetChild();
+                mVariables[name.GetText()] = &child;
             }
             return false;
         }

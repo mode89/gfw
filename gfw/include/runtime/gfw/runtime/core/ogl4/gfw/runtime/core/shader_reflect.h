@@ -8,10 +8,10 @@ namespace GFW {
     class ShaderReflection : public AShaderReflection<IShaderReflection>
     {
     public:
-        ShaderReflection(uint32_t program, IDeviceIn);
+        ShaderReflection(uint32_t program, DeviceIn );
         ~ShaderReflection();
     };
-    AUTOREF_REFERENCE_DECLARATION(ShaderReflection);
+    SHARED_PTR_TYPEDEFS(ShaderReflection);
 
 } // namespace GFW
 

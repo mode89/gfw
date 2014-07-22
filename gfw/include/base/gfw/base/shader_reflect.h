@@ -11,89 +11,89 @@ namespace GFW {
     {
     public:
         virtual const ShaderDesc &
-        GetDesc() = 0;
+        GetDesc() const = 0;
 
-        virtual IShaderVariableRef
-        GetVariable(uint32_t index) = 0;
+        virtual ConstIShaderVariableRef
+        GetVariable(uint32_t index) const = 0;
 
-        virtual IShaderVariableRef
-        GetVariable(const char * name) = 0;
+        virtual ConstIShaderVariableRef
+        GetVariable(const char * name) const = 0;
 
-        virtual IShaderBufferRef
-        GetBuffer(uint32_t index) = 0;
+        virtual ConstIShaderBufferRef
+        GetBuffer(uint32_t index) const = 0;
 
-        virtual IShaderBufferRef
-        GetBuffer(const char * name) = 0;
+        virtual ConstIShaderBufferRef
+        GetBuffer(const char * name) const = 0;
 
-        virtual IShaderResourceRef
-        GetResource(uint32_t index) = 0;
+        virtual ConstIShaderResourceRef
+        GetResource(uint32_t index) const = 0;
 
-        virtual IShaderResourceRef
-        GetResource(const char * name) = 0;
+        virtual ConstIShaderResourceRef
+        GetResource(const char * name) const = 0;
 
-        virtual IShaderParameterRef
-        GetInputParameter(uint32_t index) = 0;
+        virtual ConstIShaderParameterRef
+        GetInputParameter(uint32_t index) const = 0;
 
-        virtual IShaderParameterRef
-        GetInputParameter(Semantic) = 0;
+        virtual ConstIShaderParameterRef
+        GetInputParameter(Semantic) const = 0;
 
         virtual
         ~IShaderReflection() {}
     };
-    AUTOREF_REFERENCE_DECLARATION(IShaderReflection);
+    SHARED_PTR_TYPEDEFS(IShaderReflection);
 
-    class IShaderVariable : public Common::ARefCounted
+    class IShaderVariable
     {
     public:
         virtual const ShaderVariableDesc &
-        GetDesc() = 0;
+        GetDesc() const = 0;
 
         virtual const char *
-        GetName() = 0;
+        GetName() const = 0;
 
         virtual
         ~IShaderVariable() {}
     };
-    AUTOREF_REFERENCE_DECLARATION(IShaderVariable);
+    SHARED_PTR_TYPEDEFS(IShaderVariable);
 
-    class IShaderBuffer : public Common::ARefCounted
+    class IShaderBuffer
     {
     public:
         virtual const ShaderBufferDesc &
-        GetDesc() = 0;
+        GetDesc() const = 0;
 
         virtual const char *
-        GetName() = 0;
+        GetName() const = 0;
 
         virtual
         ~IShaderBuffer() {}
     };
-    AUTOREF_REFERENCE_DECLARATION(IShaderBuffer);
+    SHARED_PTR_TYPEDEFS(IShaderBuffer);
 
-    class IShaderResource : public Common::ARefCounted
+    class IShaderResource
     {
     public:
         virtual const ShaderResourceDesc &
-        GetDesc() = 0;
+        GetDesc() const = 0;
 
         virtual const char *
-        GetName() = 0;
+        GetName() const = 0;
 
         virtual
         ~IShaderResource() {}
     };
-    AUTOREF_REFERENCE_DECLARATION(IShaderResource);
+    SHARED_PTR_TYPEDEFS(IShaderResource);
 
-    class IShaderParameter : public Common::ARefCounted
+    class IShaderParameter
     {
     public:
         virtual const ShaderParameterDesc &
-        GetDesc() = 0;
+        GetDesc() const = 0;
 
         virtual
         ~IShaderParameter() {}
     };
-    AUTOREF_REFERENCE_DECLARATION(IShaderParameter);
+    SHARED_PTR_TYPEDEFS(IShaderParameter);
 
 } // namespace GFW
 

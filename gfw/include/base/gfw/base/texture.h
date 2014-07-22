@@ -26,12 +26,12 @@ namespace GFW {
     {
     public:
         virtual const TextureDesc &
-        GetDesc() = 0;
+        GetDesc() const = 0;
 
         virtual
         ~ITexture() {}
     };
-    AUTOREF_REFERENCE_DECLARATION(ITexture);
+    SHARED_PTR_TYPEDEFS(ITexture);
 
 } // namespace GFW
 

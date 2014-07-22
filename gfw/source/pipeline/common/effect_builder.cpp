@@ -1,153 +1,129 @@
 #include "common/trace.h"
-
 #include "gfw/pipeline/common/effect_builder.h"
 #include "gfw/pipeline/common/parse_tree.h"
+#include "gfw/pipeline/common/symbol_table.h"
 #include "gfw/pipeline/shader_builder.h"
+#include "gfw/shared/effect.h"
+#include "gfw/shared/pass.h"
+#include "gfw/shared/shader.h"
+#include "gfw/shared/technique.h"
 
 namespace GFW {
-
-    using namespace Common;
 
     EffectBuilder::EffectBuilder()
     {
 
     }
 
-    EffectBinaryRef EffectBuilder::Build( const char * fileName )
+    void EffectBuilder::Build( EffectBinary & effectBinary, const boost::filesystem::path & filePath )
     {
-        ConstParseTreeRef tree = CreateParseTree( fileName );
+        // TODO Replace with stack allocation
+        std::shared_ptr< const ParseTree > tree = CreateParseTree( filePath );
 
         // Collect symbols
-
-        mSymbolTable = new SymbolTable( tree );
+        SymbolTable symbolTable( *tree );
 
         // Construct shader builder
+        std::shared_ptr< ShaderBuilder > shaderBuilder = std::make_shared<ShaderBuilder>( *tree, symbolTable );
+        mShaderBuilder = shaderBuilder;
 
-        mShaderBuilder = new ShaderBuilder( tree, mSymbolTable );
+        // Allocate a shader table
+        std::shared_ptr< ShaderTable > shaderTable = std::make_shared<ShaderTable>();
+        mShaderTable = shaderTable;
 
-        EffectBinaryRef fxBin = new EffectBinary;
-
-        mStringTable = new StringTable;
+        mEffectBinary = &effectBinary;
 
         // Process techniques
-
         tree->TraverseDFS( *this, &EffectBuilder::ProcessTechniques );
-
-        // Save techniques to the binary
-
-        fxBin->mDesc.techniqueCount = mTechniques.size();
-        fxBin->mTechniques = new TechniqueBinaryRef [ mTechniques.size() ];
-        for ( uint32_t i = 0; i < mTechniques.size(); ++ i )
-        {
-            fxBin->mTechniques[i] = mTechniques[i];
-        }
-
-        // Save shaders to the binary
-
-        fxBin->mShaderCount = mShaders.size();
-        fxBin->mShaders = new ShaderBinaryRef [ mShaders.size() ];
-        for ( uint32_t i = 0; i < mShaders.size(); ++ i )
-        {
-            fxBin->mShaders[i] = mShaders[i];
-        }
-
-        fxBin->mStringTable = *mStringTable;
-        mStringTable.Detach();
-
-        return fxBin;
     }
 
-    bool EffectBuilder::ProcessTechniques( ConstParseTreeIn tree )
+    bool EffectBuilder::ProcessTechniques( const ParseTree & tree )
     {
-        if ( tree->GetTokenType() == TOKEN_EXTERNAL_DECLARATION )
+        if ( tree.GetTokenType() == TOKEN_EXTERNAL_DECLARATION )
         {
-            ConstParseTreeRef child = tree->GetChild();
-            if ( child->GetTokenType() == TOKEN_TECHNIQUE_DEFINITION )
+            const ParseTree & child = tree.GetChild();
+            if ( child.GetTokenType() == TOKEN_TECHNIQUE_DEFINITION )
             {
-                InternedString name = mStringTable->Resolve( child->GetChild()->ToString() );
+                const std::string & name = child.GetChild().GetText();
 
-                TechniqueBinaryRef techBin = new TechniqueBinary;
-                techBin->mName = name;
+                // Allocate a technique binary and add it to the effect
+                auto & techniques = mEffectBinary->mTechniques;
+                techniques.emplace_back();
+                TechniqueBinary & techniqueBinary = techniques.back();
 
-                mTechniques.push_back( techBin );
+                techniqueBinary.mName = name;
 
-                mPasses.clear();
-                child->TraverseDFS( *this, &EffectBuilder::ProcessPasses );
-
-                techBin->mDesc.passCount = mPasses.size();
-                techBin->mPasses = new PassBinaryRef [ mPasses.size() ];
-                for ( PassBinaryVec::size_type i = 0; i < mPasses.size(); ++ i )
-                {
-                    techBin->mPasses[i] = mPasses[i];
-                }
+                child.TraverseDFS( *this, &EffectBuilder::ProcessPasses );
             }
             return false;
         }
         return true;
     }
 
-    bool EffectBuilder::ProcessPasses( ConstParseTreeIn tree )
+    bool EffectBuilder::ProcessPasses( const ParseTree & tree )
     {
-        if ( tree->GetTokenType() == TOKEN_PASS_DEFINITION )
+        if ( tree.GetTokenType() == TOKEN_PASS_DEFINITION )
         {
-            InternedString name = mStringTable->Resolve( tree->GetChild()->ToString() );
+            const std::string & name = tree.GetChild().GetText();
 
-            PassBinaryRef passBin = new PassBinary;
-            passBin->mName = name;
+            // Allocate a pass binary and add it to the current technique
+            auto & passes = mEffectBinary->mTechniques.back().mPasses;
+            passes.emplace_back();
+            PassBinary & passBinary = passes.back();
 
-            mPasses.push_back( passBin );
+            passBinary.mName = name;
 
-            tree->TraverseDFS( *this, &EffectBuilder::ProcessShaders );
+            tree.TraverseDFS( *this, &EffectBuilder::ProcessShaders );
 
             return false;
         }
         return true;
     }
 
-    bool EffectBuilder::ProcessShaders( ConstParseTreeIn tree )
+    bool EffectBuilder::ProcessShaders( const ParseTree & tree )
     {
-        if ( tree->GetTokenType() == TOKEN_SET_SHADER )
+        if ( tree.GetTokenType() == TOKEN_SET_SHADER )
         {
-            ConstParseTreeRef shader = tree->GetChild( 1 );
+            const ParseTree & compiledShader = tree.GetChild( 1 );
 
-            InternedString name;
-            InternedString profile;
-            if ( shader->GetTokenType() == TOKEN_COMPILE_SHADER )
+            if ( compiledShader.GetTokenType() == TOKEN_COMPILE_SHADER )
             {
-                name = mStringTable->Resolve( shader->GetChild( 1 )->ToString() );
-                profile = mStringTable->Resolve( shader->GetChild( 0 )->ToString() );
+                const std::string & name = compiledShader.GetChild( 1 ).GetText();
+                const std::string & profile = compiledShader.GetChild( 0 ).GetText();
+
+                try
+                {
+                    // Allocate a shader binary
+                    mEffectBinary->mShaderTable.emplace_back();
+                    ShaderBinary & shaderBinary = mEffectBinary->mShaderTable.back();
+
+                    // Compile the shader
+                    mShaderBuilder.lock()->Build( shaderBinary, name, profile );
+
+                    PassBinary & pass = mEffectBinary->mTechniques.back().mPasses.back();
+
+                    const ParseTree & shaderType = tree.GetChild( 0 );
+                    switch ( shaderType.GetTokenType() )
+                    {
+                    case TOKEN_SET_VERTEX_SHADER:
+                        pass.mShaders[ ShaderStage::VERTEX ] = &shaderBinary;
+                        break;
+                    case TOKEN_SET_PIXEL_SHADER:
+                        pass.mShaders[ ShaderStage::PIXEL ] = &shaderBinary;
+                        break;
+                    default:
+                        TRACE_FAIL();
+                        break;
+                    }
+                }
+                catch (...)
+                {
+                    TRACE_ERROR_FORMATTED( "Failed to build the shader '%s'.", name.c_str() );
+                }
             }
             else
             {
                 TRACE_FAIL();
-            }
-
-            try
-            {
-                ShaderBinaryRef shaderBin = mShaderBuilder->Compile( name.GetString(), profile.GetString() );
-
-                uint32_t shaderIndex = mShaders.size();
-                mShaders.push_back( shaderBin );
-
-                PassBinaryRef pass = mPasses.back();
-
-                ConstParseTreeRef shaderType = tree->GetChild( 0 );
-                switch ( shaderType->GetTokenType() )
-                {
-                case TOKEN_SET_VERTEX_SHADER:
-                    pass->mShaders[ ShaderStage::VERTEX ] = shaderIndex;
-                    break;
-                case TOKEN_SET_PIXEL_SHADER:
-                    pass->mShaders[ ShaderStage::PIXEL ] = shaderIndex;
-                    break;
-                default:
-                    TRACE_FAIL();
-                    break;
-                }
-            }
-            catch (...)
-            {
-                TRACE_ERROR_FORMATTED( "Failed to build the shader '%s'.", name.GetString() );
             }
 
             return false;

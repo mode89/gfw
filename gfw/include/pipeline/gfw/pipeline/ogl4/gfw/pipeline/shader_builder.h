@@ -1,9 +1,6 @@
 #ifndef __GFW_PIPELINE_OGL4_SHADER_BUILDER_H__
 #define __GFW_PIPELINE_OGL4_SHADER_BUILDER_H__
 
-#include "gfw/pipeline/common/shader_builder.h"
-#include "gfw/pipeline/common/symbol_table.h"
-
 #include <set>
 #include <string>
 #include <unordered_map>
@@ -11,34 +8,38 @@
 
 namespace GFW {
 
+    class ParseTree;
+    class ShaderBinary;
+    class Symbol;
+    class SymbolTable;
+
     typedef std::pair< const Symbol *, const Symbol * > TextureSamplerPair;
     typedef std::set< TextureSamplerPair > TextureSamplerPairSet;
 
-    class ShaderBuilder : public IShaderBuilder
+    class ShaderBuilder
     {
     public:
-        ShaderBinaryRef
-        Compile( const char * shaderName, const char * profile );
+        void
+        Build( ShaderBinary &, const std::string & entryPoint, const std::string & profile );
 
     public:
-        ShaderBuilder( ConstParseTreeIn, ConstSymbolTableIn );
+        ShaderBuilder( const ParseTree &, const SymbolTable & );
         ~ShaderBuilder();
 
     private:
         bool
-        CollectVariables( ConstParseTreeIn );
+        CollectVariables( const ParseTree & );
 
     private:
-        typedef std::unordered_map< std::string, ConstParseTreeRef > ParseTreeMap;
+        typedef std::unordered_map< std::string, const ParseTree * > ParseTreeMap;
         typedef std::unordered_map< const Symbol *, TextureSamplerPairSet > FunctionTextureSamplerMap;
 
-        ConstParseTreeRef           mParseTree;
-        ConstSymbolTableRef         mSymbolTable;
+        const ParseTree &           mParseTree;
+        const SymbolTable &         mSymbolTable;
 
         ParseTreeMap                mVariables;
         FunctionTextureSamplerMap   mFunctionTextureSamplerMap;
     };
-    AUTOREF_REFERENCE_DECLARATION( ShaderBuilder );
 
 } // namespace GFW
 

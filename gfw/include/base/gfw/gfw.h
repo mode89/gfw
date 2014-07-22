@@ -21,12 +21,12 @@
 #include "gfw/base/sampler_state.h"
 #include "gfw/base/shader.h"
 #include "gfw/base/shader_reflect.h"
+#include "gfw/base/shader_stage.h"
 #include "gfw/base/technique.h"
 #include "gfw/base/texture.h"
 #include "gfw/base/vertex_attribute.h"
 #include "gfw/base/window.h"
 
 #include "gfw/shared/shader_reflect.h"
-#include "gfw/shared/shader_stage.h"
 
 #endif // __GFW_H__

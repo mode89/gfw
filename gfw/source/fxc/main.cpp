@@ -1,6 +1,30 @@
+#if defined( BOOST_ALL_NO_LIB )
+#include "boost/archive/binary_oarchive.hpp"
+#endif
+#if defined( BOOST_ALL_NO_LIB )
+#include "boost/serialization/list.hpp"
+#endif
+#if defined( BOOST_ALL_NO_LIB )
+#include "boost/serialization/vector.hpp"
+#endif
+#if defined( BOOST_ALL_NO_LIB )
 #include "common/trace.h"
+#endif
+#if defined( BOOST_ALL_NO_LIB )
 #include "gfw/pipeline/common/effect_builder.h"
-#include "serialization/output_archive.h"
+#endif
+#if defined( BOOST_ALL_NO_LIB )
+#include "gfw/shared/effect.h"
+#endif
+#if defined( BOOST_ALL_NO_LIB )
+#include "gfw/shared/pass.h"
+#endif
+#if defined( BOOST_ALL_NO_LIB )
+#include "gfw/shared/shader.h"
+#endif
+#if defined( BOOST_ALL_NO_LIB )
+#include "gfw/shared/technique.h"
+#endif
 
 #include <cstring>
 #include <iostream>
@@ -8,7 +32,6 @@
 #include <string>
 
 using namespace GFW;
-using namespace Serialization;
 
 void PrintHelp()
 {
@@ -78,15 +101,14 @@ int main( int argc, const char * argv[] )
     TRACE_MESSAGE_FORMATTED( "\tEffect file: %s", fxFile.c_str() );
     TRACE_MESSAGE_FORMATTED( "\tOutput file: %s", outputFile.c_str() );
 
-    EffectBuilderRef effectBuilder;
-    EffectBinaryRef effectBinary;
+    EffectBinary effectBinary;
 
     try
     {
         TRACE_MESSAGE( "\tBuild started" );
 
-        effectBuilder = new EffectBuilder;
-        effectBinary = effectBuilder->Build( fxFile.c_str() );
+        EffectBuilder effectBuilder;
+        effectBuilder.Build( effectBinary, fxFile );
     }
     catch (...)
     {
@@ -101,8 +123,8 @@ int main( int argc, const char * argv[] )
     {
         TRACE_MESSAGE( "\tSerialization" );
 
-        OutputArchive< std::ofstream > archive( fileStream );
-        archive & CreateNamedValue( "EffectBinary", effectBinary );
+        boost::archive::binary_oarchive archive( fileStream );
+        archive << effectBinary;
 
         TRACE_MESSAGE( "\tSerialization completed" );
     }

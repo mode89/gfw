@@ -48,15 +48,15 @@ namespace GFW {
         StencilOpDesc       frontFace;          ///< Identify how to use the results of the depth test and the stencil test for pixels whose surface normal is facing towards the camera.
         StencilOpDesc       backFace;           ///< Identify how to use the results of the depth test and the stencil test for pixels whose surface normal is facing away from the camera.
         CompareFunc         depthFunc;          ///< A function that compares depth data against existing depth data.
-        bool8_t             depthEnable;        ///< Enable depth testing.
-        bool8_t             depthWriteEnable;   ///< Enable writes to the depth portion of the depth-stencil buffer.
-        bool8_t             stencilEnable;      ///< Enable stencil testing.
+        bool                depthEnable;        ///< Enable depth testing.
+        bool                depthWriteEnable;   ///< Enable writes to the depth portion of the depth-stencil buffer.
+        bool                stencilEnable;      ///< Enable stencil testing.
 
         DepthStencilStateDesc()
             : depthFunc(COMPARE_LESS_EQUAL)
-            , depthEnable(1)
-            , depthWriteEnable(1)
-            , stencilEnable(0)
+            , depthEnable(true)
+            , depthWriteEnable(true)
+            , stencilEnable(false)
         {}
     };
 

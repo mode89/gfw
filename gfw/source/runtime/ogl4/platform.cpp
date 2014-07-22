@@ -9,8 +9,6 @@
 
 namespace GFW {
 
-    using namespace Common;
-
 #if defined(PLAT_WIN32)
 
 #define F(type, func) type func = NULL;
@@ -31,18 +29,18 @@ namespace GFW {
         bool Initialize();
 
     private:
-        static Platform *   mInstance;
-        HMODULE             mLibrary;
+        static std::weak_ptr<IPlatform> mInstance;
+        HMODULE                         mLibrary;
 
         friend class IPlatform;
     };
 
-    Platform * Platform::mInstance = NULL;
+    std::weak_ptr<IPlatform> Platform::mInstance;
 
     Platform::Platform()
         : mLibrary(NULL)
     {
-
+        Initialize();
     }
 
     Platform::~Platform()
@@ -55,27 +53,22 @@ namespace GFW {
 
         TRACE_ASSERT(mLibrary != NULL);
         FreeLibrary(mLibrary);
-
-        TRACE_ASSERT(mInstance != NULL);
-        mInstance = NULL;
     }
 
     // static
     IPlatformRef Platform::Acquire()
     {
-        if (mInstance == NULL)
-        {
-            mInstance = new Platform;
+        IPlatformRef retVal = mInstance.lock();
 
-            if (!mInstance->Initialize())
-            {
-                TRACE_ERROR("Failed to initialize a new platform");
-                delete mInstance;
-                mInstance = NULL;
-            }
+        if ( !retVal )
+        {
+            // std::make_shared() is not allowed because the destructor is protected
+            IPlatform * newInstance = new Platform;
+            retVal.reset( newInstance );
+            mInstance = retVal;
         }
 
-        return mInstance;
+        return retVal;
     }
 
     bool Platform::Initialize()
@@ -143,15 +136,15 @@ namespace GFW {
         OPENGL_FUNCTIONS_CORE
 #undef F
 
-            // Load extended functions
+        // Load extended functions
 
 #define F(type, func)   func = reinterpret_cast<type>(wglGetProcAddress(#func));
-            OPENGL_FUNCTIONS_EXT
+        OPENGL_FUNCTIONS_EXT
 #undef F
 
-            // Release resources
+        // Release resources
 
-            res = wglMakeCurrent(hDC, 0);
+        res = wglMakeCurrent(hDC, 0);
         TRACE_ASSERT_AND(res != NULL, retVal);
 
         res = wglDeleteContext(hRC);

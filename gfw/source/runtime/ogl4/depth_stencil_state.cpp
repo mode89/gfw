@@ -1,8 +1,7 @@
 #include "common/trace.h"
-
 #include "gfw/runtime/common/device_child.inl"
-
 #include "gfw/runtime/core/depth_stencil_state.h"
+#include "gfw/runtime/core/device.h"
 #include "gfw/runtime/core/functions.h"
 
 namespace GFW {
@@ -45,7 +44,7 @@ namespace GFW {
         return GL_KEEP;
     }
 
-    DepthStencilState::DepthStencilState(const DepthStencilStateDesc & desc, uint32_t descHash, IDeviceRef device)
+    DepthStencilState::DepthStencilState(const DepthStencilStateDesc & desc, uint32_t descHash, DeviceIn device)
         : ADeviceChild(device)
         , mDesc(desc)
     { }

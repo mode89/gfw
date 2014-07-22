@@ -1,13 +1,12 @@
 #include "common/trace.h"
-#include "common/file.h"
 
 #include "gfw/gfw.h"
 
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
+#include <vector>
 
-using namespace Common;
 using namespace GFW;
 
 static const uint32_t kWindowWidth  = 800;
@@ -47,7 +46,7 @@ int main()
 
     IDeviceRef device = CreateDevice(deviceParams);
 
-    IRenderTargetRef defaultRenderTarget = device->GetDefaultRenderTarget();
+    ConstIRenderTargetRef defaultRenderTarget = device->GetDefaultRenderTarget();
 
     IContextRef context = device->GetDefaultContext();
 
@@ -59,8 +58,8 @@ int main()
 
     // Initialize geometry
 
-    AutoArray<Vertex> u = new Vertex [nodeCnt];
-    AutoArray<float> du_dt = new float [nodeCnt];
+    std::vector< Vertex > u( nodeCnt );
+    std::vector< float > du_dt( nodeCnt );
     for (uint32_t j = 0; j < yNodeDim; ++ j)
     {
         uint32_t offset = j * xNodeDim;
@@ -82,10 +81,10 @@ int main()
     vertexBufferDesc.size  = sizeof(Vertex) * nodeCnt;
     vertexBufferDesc.type  = BUFFER_VERTEX;
     vertexBufferDesc.usage = USAGE_DYNAMIC;
-    IBufferRef vertexBuffer = device->CreateBuffer(vertexBufferDesc, u);
+    IBufferRef vertexBuffer = device->CreateBuffer( vertexBufferDesc, u.data() );
 
     uint32_t indexCount = (xNodeDim - 1) * (yNodeDim - 1) * 2 * 3;
-    AutoArray<uint16_t> indexBufferData = new uint16_t [indexCount];
+    std::vector< uint16_t > indexBufferData( indexCount );
     for (uint32_t j = 0; j < (yNodeDim - 1); ++ j)
     {
         for (uint32_t i = 0; i < (xNodeDim - 1); ++ i)
@@ -111,8 +110,7 @@ int main()
     indexBufferDesc.size  = 2 * (xNodeDim - 1) * (yNodeDim - 1) * 2 * 3;
     indexBufferDesc.type  = BUFFER_INDEX;
     indexBufferDesc.usage = USAGE_STATIC;
-    IBufferRef indexBuffer = device->CreateBuffer(indexBufferDesc, indexBufferData);
-    indexBufferData.Detach();
+    IBufferRef indexBuffer = device->CreateBuffer( indexBufferDesc, indexBufferData.data() );
 
     VertexAttribute vertexAttribute;
     vertexAttribute.semantic = SEMANTIC_POSITION0;
@@ -172,7 +170,7 @@ int main()
         {
             // Update the geometry
 
-            vertexBuffer->UpdateSubresource(u);
+            vertexBuffer->UpdateSubresource( u.data() );
 
             // Draw the geometry
 

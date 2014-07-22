@@ -31,7 +31,7 @@ namespace GFW {
         virtual const BufferDesc &
         GetDesc() = 0;
     };
-    AUTOREF_REFERENCE_DECLARATION(IBuffer);
+    SHARED_PTR_TYPEDEFS(IBuffer);
 
 } // namespace GFW
 

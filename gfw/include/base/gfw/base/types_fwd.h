@@ -1,41 +1,46 @@
 #ifndef __GFW_BASE_TYPES_FWD_H__
 #define __GFW_BASE_TYPES_FWD_H__
 
-#include "common/autoref.h"
+#include "common/shared_ptr_typedefs.h"
+
+#include <memory>
 
 namespace GFW {
 
-    AUTOREF_FORWARD_DECLARATION( IBlendState );
-    AUTOREF_FORWARD_DECLARATION( IBuffer );
-    AUTOREF_FORWARD_DECLARATION( IContext );
-    AUTOREF_FORWARD_DECLARATION( IDepthStencilState );
-    AUTOREF_FORWARD_DECLARATION( IDevice );
-    AUTOREF_FORWARD_DECLARATION( IDeviceChild );
-    AUTOREF_FORWARD_DECLARATION( IEffect );
-    AUTOREF_FORWARD_DECLARATION( IFactory );
-    AUTOREF_FORWARD_DECLARATION( IInputLayout );
-    AUTOREF_FORWARD_DECLARATION( IMesh );
-    AUTOREF_FORWARD_DECLARATION( IMeshBuilder );
-    AUTOREF_FORWARD_DECLARATION( IPass );
-    AUTOREF_FORWARD_DECLARATION( IRasterizerState );
-    AUTOREF_FORWARD_DECLARATION( IRenderTarget );
-    AUTOREF_FORWARD_DECLARATION( IResource );
-    AUTOREF_FORWARD_DECLARATION( ISamplerState );
-    AUTOREF_FORWARD_DECLARATION( IShader );
-    AUTOREF_FORWARD_DECLARATION( IShaderBuffer );
-    AUTOREF_FORWARD_DECLARATION( IShaderParameter );
-    AUTOREF_FORWARD_DECLARATION( IShaderReflection );
-    AUTOREF_FORWARD_DECLARATION( IShaderResource );
-    AUTOREF_FORWARD_DECLARATION( IShaderVariable );
-    AUTOREF_FORWARD_DECLARATION( ITechnique );
-    AUTOREF_FORWARD_DECLARATION( ITexture );
+    SHARED_PTR_FORWARD_TYPEDEFS( IBlendState );
+    SHARED_PTR_FORWARD_TYPEDEFS( IBuffer );
+    SHARED_PTR_FORWARD_TYPEDEFS( IContext );
+    SHARED_PTR_FORWARD_TYPEDEFS( IDepthStencilState );
+    SHARED_PTR_FORWARD_TYPEDEFS( IDevice );
+    SHARED_PTR_FORWARD_TYPEDEFS( IDeviceChild );
+    SHARED_PTR_FORWARD_TYPEDEFS( IEffect );
+    SHARED_PTR_FORWARD_TYPEDEFS( IFactory );
+    SHARED_PTR_FORWARD_TYPEDEFS( IInputLayout );
+    SHARED_PTR_FORWARD_TYPEDEFS( IMesh );
+    SHARED_PTR_FORWARD_TYPEDEFS( IMeshBuilder );
+    SHARED_PTR_FORWARD_TYPEDEFS( IPass );
+    SHARED_PTR_FORWARD_TYPEDEFS( IRasterizerState );
+    SHARED_PTR_FORWARD_TYPEDEFS( IRenderTarget );
+    SHARED_PTR_FORWARD_TYPEDEFS( IResource );
+    SHARED_PTR_FORWARD_TYPEDEFS( ISamplerState );
+    SHARED_PTR_FORWARD_TYPEDEFS( IShader );
+    SHARED_PTR_FORWARD_TYPEDEFS( IShaderBuffer );
+    SHARED_PTR_FORWARD_TYPEDEFS( IShaderParameter );
+    SHARED_PTR_FORWARD_TYPEDEFS( IShaderReflection );
+    SHARED_PTR_FORWARD_TYPEDEFS( IShaderResource );
+    SHARED_PTR_FORWARD_TYPEDEFS( IShaderVariable );
+    SHARED_PTR_FORWARD_TYPEDEFS( ITechnique );
+    SHARED_PTR_FORWARD_TYPEDEFS( ITexture );
 
     struct BufferDesc;
     struct ClearParams;
     struct DrawParams;
     struct DrawIndexedParams;
+    struct EffectDesc;
+    struct PassDesc;
     struct RenderTargetDesc;
     struct ResourceDesc;
+    struct TechniqueDesc;
     struct TextureDesc;
     struct ShaderDesc;
     struct ShaderBufferDesc;
@@ -46,6 +51,8 @@ namespace GFW {
     struct VertexAttribute;
 
     typedef void * WindowHandle;
+
+    enum ShaderStage : int32_t;
 
 } // namespace GFW
 

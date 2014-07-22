@@ -1,40 +1,24 @@
 #include "common/trace.h"
-
-#include "gfw/base/context.h"
-
+#include "gfw/base/device.h"
 #include "gfw/runtime/common/effect.h"
-#include "gfw/runtime/common/device_child.inl"
 #include "gfw/runtime/common/technique.h"
-#include "gfw/runtime/core/device.h"
+#include "gfw/shared/effect.h"
+#include "gfw/shared/pass.h"
+#include "gfw/shared/shader.h"
+#include "gfw/shared/technique.h"
 
 namespace GFW {
 
-    using namespace Common;
-
-    Effect::Effect( EffectBinaryRef effectBinary, IDeviceIn device )
-        : ADeviceChild(device)
-        , mDesc( effectBinary->mDesc )
+    Effect::Effect( const EffectBinary & effectBinary, IDeviceIn device )
     {
-        StringTable & stringTable = device.StaticCast<Device>()->GetStringTable();
-        stringTable.Resolve( effectBinary->mStringTable );
-
-        mShaders.reserve( effectBinary->mShaderCount );
-        for ( uint32_t i = 0; i < effectBinary->mShaderCount; ++ i )
-        {
-            ShaderBinaryRef shaderBin = effectBinary->mShaders[i];
-            ShaderStage stage = static_cast<ShaderStage>( shaderBin->mStage );
-            mShaders.push_back( device->CreateShader( stage, shaderBin ) );
-        }
-
+        mDesc.techniqueCount = effectBinary.mTechniques.size();
         mTechniques.reserve( mDesc.techniqueCount );
-        for ( uint32_t i = 0; i < mDesc.techniqueCount; ++ i )
+        for ( auto techniqueBinary : effectBinary.mTechniques )
         {
-            TechniqueBinaryRef techBin = effectBinary->mTechniques[i];
-            ITechniqueRef tech = new Technique( techBin, this );
-            InternedString name = stringTable.Resolve( techBin->mName );
+            TechniqueRef technique = std::make_shared<Technique>( techniqueBinary, mShaderTable, device );
 
-            mTechniques.push_back( tech );
-            mTechniqueMap[ name.GetString() ] = tech;
+            mTechniques.push_back( technique );
+            mTechniqueMap[ techniqueBinary.mName ] = technique;
         }
     }
 
@@ -43,22 +27,19 @@ namespace GFW {
 
     }
 
-    void Effect::Dispatch( uint32_t tech /* = 0 */, uint32_t pass /* = 0 */ )
+    void Effect::Dispatch( uint32_t tech, uint32_t pass ) const
     {
-        IContextRef context = mDevice->GetCurrentContext();
-        TRACE_ASSERT(context.IsAttached());
-
         mTechniques[ tech ]->Dispatch( pass );
     }
 
-    ITechniqueRef Effect::GetTechnique( const char * techName )
+    ConstITechniqueRef Effect::GetTechnique( const char * techName ) const
     {
-        TechniqueMap::iterator it = mTechniqueMap.find( techName );
+        TechniqueMap::const_iterator it = mTechniqueMap.find( techName );
         TRACE_ASSERT( it != mTechniqueMap.end() );
         return it->second;
     }
 
-    IShaderRef Effect::GetShader( ShaderStage stage, uint32_t tech /* = 0 */, uint32_t pass /* = 0 */ )
+    ConstIShaderRef Effect::GetShader( ShaderStage stage, uint32_t tech, uint32_t pass ) const
     {
         return mTechniques[tech]->GetShader( stage, pass );
     }

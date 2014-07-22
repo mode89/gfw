@@ -13,21 +13,21 @@ namespace GFW {
         virtual ShaderStage
         GetStage() const { return mStage; }
 
-        virtual IShaderReflectionRef
-        GetReflection() { return mReflection; }
+        virtual ConstIShaderReflectionRef
+        GetReflection() const { return std::static_pointer_cast<IShaderReflection>( mReflection ); }
 
     public:
         bool
         Compile(const char * source);
 
-        inline uint32_t
-        GetHash() { return mHash; }
+        uint32_t
+        GetHash() const { return mHash; }
 
-        inline uint32_t
-        GetHandle() { return mHandle; }
+        uint32_t
+        GetHandle() const { return mHandle; }
 
     public:
-        Shader( ShaderBinaryRef, ShaderStage, IDeviceRef );
+        Shader( const void * shaderBinary, ShaderStage, DeviceIn );
         ~Shader();
 
     private:
@@ -40,7 +40,7 @@ namespace GFW {
         char *                  mSource;
 #endif
     };
-    AUTOREF_REFERENCE_DECLARATION(Shader);
+    SHARED_PTR_TYPEDEFS(Shader);
 
 } // namespace GFW
 

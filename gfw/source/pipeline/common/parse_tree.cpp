@@ -1,7 +1,5 @@
 #include "common/trace.h"
-
 #include "gfw/pipeline/common/parse_tree.h"
-
 #include "FXLexer.h"
 #include "FXParser.h"
 
@@ -21,14 +19,14 @@ namespace GFW {
         return TOKEN_UNKNOWN;
     }
 
-    ConstParseTreeRef CreateParseTree(  const char * fileName )
+    std::shared_ptr< const ParseTree > CreateParseTree( const boost::filesystem::path & filePath )
     {
-        pANTLR3_UINT8               fName       = (pANTLR3_UINT8) fileName;
+        pANTLR3_UINT8               fName       = (pANTLR3_UINT8) filePath.c_str();
         pANTLR3_INPUT_STREAM        inputStream = NULL;
         pFXLexer                    lexer       = NULL;
         pANTLR3_COMMON_TOKEN_STREAM tokenStream = NULL;
         pFXParser                   parser      = NULL;
-        const ParseTree *           tree        = NULL;
+        std::shared_ptr< ParseTree > tree;
 
         inputStream = antlr3FileStreamNew( fName, ANTLR3_ENC_8BIT );
         if ( inputStream != NULL )
@@ -45,7 +43,7 @@ namespace GFW {
                         FXParser_translation_unit_return ast = parser->translation_unit( parser );
                         if ( parser->pParser->rec->state->errorCount == 0 )
                         {
-                            tree = new ParseTree( ast.tree );
+                            tree = std::make_shared<ParseTree>( ast.tree );
                         }
                     }
                     parser->free( parser );
@@ -95,34 +93,34 @@ namespace GFW {
         }
 
         mChildCount = tree->getChildCount( tree );
-        mChildren.resize( mChildCount );
+        mChildren.reserve( mChildCount );
         for ( uint32_t i = 0; i < mChildCount; ++ i )
         {
-            mChildren[i] = new ParseTree( tree->getChild( tree, i ) );
+            mChildren.emplace_back( tree->getChild( tree, i ) );
         }
 
         if ( mChildCount > 0 )
         {
-            mLine = mChildren[0]->GetLine();
-            mRow  = mChildren[0]->GetRow();
+            mLine = mChildren[0].GetLine();
+            mRow  = mChildren[0].GetRow();
 
-            mEndLine = mChildren.back()->GetEndLine();
-            mEndRow  = mChildren.back()->GetEndRow();
+            mEndLine = mChildren.back().GetEndLine();
+            mEndRow  = mChildren.back().GetEndRow();
         }
     }
 
-    ConstParseTreeRef ParseTree::GetFirstChildWithType( TokenType type ) const
+    const ParseTree * ParseTree::GetFirstChildWithType( TokenType type ) const
     {
         for ( uint32_t i = 0; i < mChildCount; ++ i )
         {
-            const ParseTreeRef child = mChildren[i];
-            if ( child->GetTokenType() == type )
+            const ParseTree & child = mChildren[i];
+            if ( child.GetTokenType() == type )
             {
-                return child;
+                return &child;
             }
         }
 
-        return NULL;
+        return nullptr;
     }
 
 } // namespace GFW

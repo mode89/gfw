@@ -1,53 +1,28 @@
 #ifndef __GFW_SHARED_EFFECT_H__
 #define __GFW_SHARED_EFFECT_H__
 
-#include "gfw/shared/shader.h"
-#include "gfw/shared/technique.h"
-#include "serialization/named_value.h"
+#include "gfw/shared/types_fwd.h"
+
+#include <list>
 
 namespace GFW {
 
-    struct EffectDesc
+    class EffectBinary
     {
-        uint32_t techniqueCount;
-
-        EffectDesc()
-            : techniqueCount( 0 )
-        {}
-
-        template < class Archive > void
-        Serialize( Archive & archive )
-        {
-            archive & NAMED_VALUE( techniqueCount );
-        }
-    };
-
-    class EffectBinary : public Common::ARefCounted
-    {
-        typedef Common::AutoArray< TechniqueBinaryRef > TechniqueBinaryVec;
-        typedef Common::AutoArray< ShaderBinaryRef > ShaderBinaryVec;
+        typedef std::list< TechniqueBinary > TechniqueBinaryList;
+        typedef std::list< ShaderBinary > ShaderBinaryList;
 
     public:
-        EffectDesc                      mDesc;
-
-        TechniqueBinaryVec              mTechniques;
-
-        uint32_t                        mShaderCount;
-        ShaderBinaryVec                 mShaders;
-
-        Common::StringTableBinaryRef    mStringTable;
+        ShaderBinaryList    mShaderTable;
+        TechniqueBinaryList mTechniques;
 
         template < class Archive > void
-        Serialize( Archive & archive )
+        serialize( Archive & ar, unsigned version )
         {
-            archive & NAMED_VALUE( mDesc );
-            archive & NAMED_ARRAY( mTechniques, mDesc.techniqueCount );
-            archive & NAMED_VALUE( mShaderCount );
-            archive & NAMED_ARRAY( mShaders, mShaderCount );
-            archive & NAMED_VALUE( mStringTable );
+            ar & mShaderTable;
+            ar & mTechniques;
         }
     };
-    AUTOREF_REFERENCE_DECLARATION(EffectBinary);
 
 } // namespace GFW
 

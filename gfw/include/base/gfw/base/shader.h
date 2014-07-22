@@ -13,13 +13,13 @@ namespace GFW {
         virtual ShaderStage
         GetStage() const = 0;
 
-        virtual IShaderReflectionRef
-        GetReflection() = 0;
+        virtual ConstIShaderReflectionRef
+        GetReflection() const = 0;
 
         virtual
         ~IShader() {}
     };
-    AUTOREF_REFERENCE_DECLARATION(IShader);
+    SHARED_PTR_TYPEDEFS(IShader);
 
 } // namespace GFW
 

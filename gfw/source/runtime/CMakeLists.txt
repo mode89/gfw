@@ -48,7 +48,9 @@ find_package( common CONFIG )
 target_link_libraries( gfw_runtime ${COMMON_LIBS} )
 include_directories( ${COMMON_INCLUDE_DIRS} )
 
-find_package( serialization CONFIG )
-include_directories( ${SERIALIZATION_INCLUDE_DIRS} )
+find_package( boost CONFIG )
+target_link_libraries( gfw_runtime boost-serialization )
+include_directories( ${BOOST_INCLUDE_DIRS} )
+add_definitions( ${BOOST_DEFINITIONS} )
 
 include( ${GFW_ROOT}/scripts/${GFW_PLATFORM}/build.cmake )

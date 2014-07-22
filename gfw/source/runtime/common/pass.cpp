@@ -1,20 +1,21 @@
 #include "common/trace.h"
+#include "gfw/base/device.h"
 #include "gfw/base/context.h"
-#include "gfw/runtime/common/effect.h"
 #include "gfw/runtime/common/pass.h"
+#include "gfw/runtime/core/device.h"
 #include "gfw/shared/pass.h"
-
-#include "gfw/runtime/common/device_child.inl"
 
 namespace GFW {
 
-    Pass::Pass(  PassBinaryRef binary, const Effect * effect )
-        : mEffect( effect )
+    Pass::Pass( const PassBinary & binary, const ShaderTable & shaderMap, IDeviceIn device )
+        : mDevice( device )
     {
         for ( uint32_t stage = 0; stage < ShaderStage::COUNT; ++ stage )
         {
-            uint32_t shaderIndex = binary->mShaders[stage];
-            mShaders[stage] = mEffect->mShaders[shaderIndex];
+            const ShaderBinary * shaderBinary = binary.mShaders[ stage ];
+            ShaderTable::const_iterator shaderIt = shaderMap.find( shaderBinary );
+            TRACE_ASSERT( shaderIt != shaderMap.end() );
+            mShaders[ stage ] = shaderIt->second;
         }
     }
 
@@ -23,11 +24,10 @@ namespace GFW {
 
     }
 
-    void Pass::Dispatch()
+    void Pass::Dispatch() const
     {
-        IDeviceRef device = mEffect->GetDevice();
-        IContextRef context = device->GetCurrentContext();
-        TRACE_ASSERT( context.IsAttached() );
+        IContextRef context = IDeviceRef( mDevice )->GetCurrentContext();
+        TRACE_ASSERT( context );
 
         for ( uint32_t stage = 0; stage< ShaderStage::COUNT; ++ stage )
         {

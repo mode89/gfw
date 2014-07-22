@@ -1,46 +1,28 @@
 #ifndef __GFW_SHARED_TECHNIQUE_H__
 #define __GFW_SHARED_TECHNIQUE_H__
 
-#include "gfw/shared/pass.h"
-#include "serialization/named_value.h"
+#include "gfw/shared/types_fwd.h"
 
-#include <vector>
+#include <string>
+#include <list>
 
 namespace GFW {
 
-    struct TechniqueDesc
+    class TechniqueBinary
     {
-        uint32_t passCount;
+        typedef std::list< PassBinary > PassBinaryList;
 
-        TechniqueDesc()
-            : passCount( 0 )
-        {}
-
-        template < class Archive > void
-        Serialize( Archive & archive )
-        {
-            archive & NAMED_VALUE( passCount );
-        }
-    };
-
-    class TechniqueBinary : public Common::ARefCounted
-    {
     public:
-        typedef Common::AutoArray< PassBinaryRef > PassBinaryVec;
-
-        TechniqueDesc                   mDesc;
-        Common::InternedStringBinary    mName;
-        PassBinaryVec                   mPasses;
+        std::string     mName;
+        PassBinaryList  mPasses;
 
         template < class Archive > void
-        Serialize( Archive & archive )
+        serialize( Archive & ar, unsigned version )
         {
-            archive & NAMED_VALUE( mDesc );
-            archive & NAMED_VALUE( mName );
-            archive & NAMED_ARRAY( mPasses, mDesc.passCount );
+            ar & mName;
+            ar & mPasses;
         }
     };
-    AUTOREF_REFERENCE_DECLARATION( TechniqueBinary );
 
 } // namespace GFW
 

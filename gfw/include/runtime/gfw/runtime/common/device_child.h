@@ -5,19 +5,21 @@
 
 namespace GFW {
 
+    SHARED_PTR_FORWARD_TYPEDEFS( Device );
+
     template < class Base >
     class ADeviceChild : public Base
     {
     public:
-        inline virtual IDeviceRef
-        GetDevice() const { return mDevice; }
+        virtual IDeviceRef
+        GetDevice() const { return std::static_pointer_cast<IDevice>( mDevice.lock() ); }
 
     public:
-        ADeviceChild(IDeviceRef device);
+        ADeviceChild( DeviceIn device );
         ~ADeviceChild();
 
     protected:
-        IDeviceRef  mDevice;
+        std::weak_ptr< Device > mDevice;
     };
 
 } // namespace GFW

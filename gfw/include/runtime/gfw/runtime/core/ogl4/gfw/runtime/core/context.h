@@ -5,37 +5,36 @@
 #include "gfw/base/context.h"
 #include "gfw/base/draw_params.h"
 #include "gfw/base/shader.h"
+#include "gfw/base/shader_stage.h"
 #include "gfw/base/vertex_attribute.h"
 
 #include "gfw/runtime/core/limits.h"
 #include "gfw/runtime/core/types_fwd.h"
 
-#include "gfw/shared/shader_stage.h"
-
 #include <map>
 
 namespace GFW {
 
-    class Context: public IContext
+    class Context: public ADeviceChild< IContext >, public std::enable_shared_from_this< Context >
     {
     public:
         virtual void
-        SetShader( ShaderStage stage, IShaderIn );
+        SetShader( ShaderStage stage, ConstIShaderIn );
 
         virtual void
-        SetInputLayout(IInputLayoutIn);
+        SetInputLayout( ConstIInputLayoutIn );
 
         virtual void
-        SetVertexBuffer(uint32_t slot, IBufferIn);
+        SetVertexBuffer( uint32_t slot, ConstIBufferIn );
 
         virtual void
-        SetIndexBuffer(IBufferIn);
+        SetIndexBuffer( ConstIBufferIn );
 
         virtual void
-        SetTexture(int32_t stage, uint32_t slot, ITextureIn);
+        SetTexture( int32_t stage, uint32_t slot, ConstITextureIn );
 
         virtual void
-        SetRenderTargets(uint32_t cpunt, IRenderTargetRef rt[]);
+        SetRenderTargets( uint32_t cpunt, ConstIRenderTargetRef rt[] );
 
         virtual void
         BeginScene();
@@ -44,13 +43,13 @@ namespace GFW {
         EndScene();
 
         virtual void
-        Clear(const ClearParams &);
+        Clear( const ClearParams & );
 
         virtual void
-        Draw(const DrawParams &);
+        Draw( const DrawParams & );
 
         virtual void
-        Draw(const DrawIndexedParams &);
+        Draw( const DrawIndexedParams & );
 
         virtual void
         DrawScreenQuad();
@@ -63,7 +62,7 @@ namespace GFW {
         FlushState();
 
     public:
-        Context(IDrawingContextIn, Device *);
+        Context( IDrawingContextIn, DeviceIn );
         ~Context();
 
     private:
@@ -73,29 +72,28 @@ namespace GFW {
     private:
         typedef std::map < uint32_t, uint32_t > tMapProgs;
 
-        Device *                    mDevice;
         IDrawingContextRef          mDrawingContext;
 
         RenderingContext            mContextGL;
 
         uint32_t                    mScreenQuadBuffer;
 
-        ShaderRef                   mShaders[ ShaderStage::COUNT ];
+        ConstShaderRef              mShaders[ ShaderStage::COUNT ];
         uint32_t                    mProgramPipeline;
 
-        InputLayoutRef              mInputLayout;
+        ConstInputLayoutRef         mInputLayout;
         uint32_t                    mEnabledVertexAttributesMask;
 
-        BufferRef                   mVertexBuffers[MAX_BIND_VERTEX_BUFFERS];
+        ConstBufferRef              mVertexBuffers[MAX_BIND_VERTEX_BUFFERS];
 
-        BufferRef                   mIndexBuffer;
+        ConstBufferRef              mIndexBuffer;
 
         int32_t                     mTextureUnits[ ShaderStage::COUNT ][ MAX_BIND_TEXTURES ];
-        TextureRef                  mActiveTextures[MAX_BIND_TEXTURES];
+        ConstTextureRef             mActiveTextures[MAX_BIND_TEXTURES];
         uint32_t                    mActiveTexturesDirtyMask;
         uint32_t                    mNextActiveTextureUnit;
 
-        RenderTargetRef             mRenderTargets[MAX_RENDER_TARGETS];
+        ConstRenderTargetRef        mRenderTargets[MAX_RENDER_TARGETS];
         uint32_t                    mRenderTargetsCount;
         uint32_t                    mDrawFramebuffer;
 

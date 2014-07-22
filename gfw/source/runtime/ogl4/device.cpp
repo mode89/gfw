@@ -14,35 +14,24 @@
 #include "gfw/runtime/core/shader_reflect.h"
 #include "gfw/runtime/core/texture.h"
 
-#define AUTO_LOCK_CONTEXT   AutoLock __auto_lock_context(mDrawingContext.GetPointer(), &mMutex, mContextGL)
+#define AUTO_LOCK_CONTEXT   AutoLock __auto_lock_context(mDrawingContext.get(), mMutex, mContextGL)
 
 namespace GFW {
 
-    using namespace Common;
-
     IDeviceRef CreateDevice(DeviceParams & params)
     {
-        Device * obj = new Device(params);
-
-        if (!obj->Initialize())
-        {
-            TRACE_ERROR("Failed to initialize the new device");
-            delete obj;
-            return NULL;
-        }
-
-        return obj;
+        return std::static_pointer_cast<IDevice>( std::make_shared<Device>( params ) );
     }
 
     class AutoLock
     {
     public:
-        AutoLock(IDrawingContext * dc, Mutex * mutex, RenderingContext nativeContext)
+        AutoLock(IDrawingContext * dc, std::mutex & mutex, RenderingContext nativeContext)
             : mDrawingContext(dc)
             , mMutex(mutex)
             , mPrevContext(NULL)
         {
-            mMutex->Lock();
+            mMutex.lock();
             mPrevContext = mDrawingContext->GetCurrentContext();
             mDrawingContext->MakeCurrent(nativeContext);
         }
@@ -50,12 +39,12 @@ namespace GFW {
         ~AutoLock()
         {
             mDrawingContext->MakeCurrent(mPrevContext);
-            mMutex->Unlock();
+            mMutex.unlock();
         }
 
     private:
         IDrawingContext *   mDrawingContext;
-        Mutex *             mMutex;
+        std::mutex &        mMutex;
         RenderingContext    mPrevContext;
     };
 
@@ -66,6 +55,26 @@ namespace GFW {
         , mContextGL(NULL)
     {
         TRACE_ASSERT(mParams.backBufferFormat != FORMAT_UNKNOWN);
+
+        mDrawingContext = CreateDrawingContext(mParams.windowHandle);
+        if (mDrawingContext.get())
+        {
+            TRACE_ERROR("Failed to create a drawing context");
+        }
+
+        mContextGL = mDrawingContext->CreateContext();
+        if (mContextGL == NULL)
+        {
+            TRACE_ERROR("Cannot create a rendering context");
+        }
+
+        AUTO_LOCK_CONTEXT;
+
+        InitializeSwapChain();
+
+        mDefaultContext = std::make_shared<Context>( mDrawingContext, shared_from_this() );
+
+        const uint8_t * extensions = glGetString(GL_EXTENSIONS);
     }
 
     Device::~Device()
@@ -75,38 +84,11 @@ namespace GFW {
             TRACE_ASSERT_GL(glDeleteFramebuffers, 1, &mResolveFramebuffer);
         }
 
-        if (mDrawingContext.IsAttached() && mContextGL != NULL)
+        if (mDrawingContext && mContextGL != NULL)
         {
             mDrawingContext->MakeCurrent(NULL);
             mDrawingContext->DeleteContext(mContextGL);
         }
-    }
-
-    bool Device::Initialize()
-    {
-        mDrawingContext = CreateDrawingContext(mParams.windowHandle);
-        if (mDrawingContext.IsNull())
-        {
-            TRACE_ERROR("Failed to create a drawing context");
-            return false;
-        }
-
-        mContextGL = mDrawingContext->CreateContext();
-        if (mContextGL == NULL)
-        {
-            TRACE_ERROR("Cannot create a rendering context");
-            return false;
-        }
-
-        AUTO_LOCK_CONTEXT;
-
-        InitializeSwapChain();
-
-        mDefaultContext = new Context(mDrawingContext, this);
-
-        const uint8_t * extensions = glGetString(GL_EXTENSIONS);
-
-        return true;
     }
 
     void Device::InitializeSwapChain()
@@ -117,15 +99,18 @@ namespace GFW {
         defaultRenderTargetTextureDesc.height       = mParams.backBufferHeight;
         defaultRenderTargetTextureDesc.usage        = USAGE_DEFAULT;
         defaultRenderTargetTextureDesc.mipLevels    = 1;
-        TextureRef defaultRenderTargetTexture = new Texture(defaultRenderTargetTextureDesc, NULL, this);
+        TextureRef defaultRenderTargetTexture = std::make_shared<Texture>(
+            defaultRenderTargetTextureDesc, nullptr, shared_from_this() );
 
         RenderTargetDesc defaultRenderTargetDesc;
         defaultRenderTargetDesc.format = mParams.backBufferFormat;
-        mDefaultRenderTarget = new RenderTarget(defaultRenderTargetTexture, defaultRenderTargetDesc, this);
+        mDefaultRenderTarget = std::make_shared<RenderTarget>( defaultRenderTargetTexture,
+            defaultRenderTargetDesc, shared_from_this() );
 
         TRACE_ASSERT_GL(glGenFramebuffers, 1, &mResolveFramebuffer);
         TRACE_ASSERT_GL(glBindFramebuffer, GL_READ_FRAMEBUFFER, mResolveFramebuffer);
-        TRACE_ASSERT_GL(glFramebufferTexture, GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, defaultRenderTargetTexture->GetHandle(), 0);
+        TRACE_ASSERT_GL(glFramebufferTexture, GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+            defaultRenderTargetTexture->GetHandle(), 0);
         TRACE_ASSERT_GL(glReadBuffer, GL_COLOR_ATTACHMENT0);
 
         TRACE_ASSERT_GL(glBindFramebuffer, GL_DRAW_FRAMEBUFFER, 0);
@@ -136,34 +121,34 @@ namespace GFW {
     {
         AUTO_LOCK_CONTEXT;
 
-        return new Context(mDrawingContext, this);
+        return std::make_shared<Context>( mDrawingContext, shared_from_this() );
     }
 
-    IShaderRef Device::CreateShader( ShaderStage stage, ShaderBinaryRef binary )
+    IShaderRef Device::CreateShader( ShaderStage stage, const void * shaderBinary )
     {
         AUTO_LOCK_CONTEXT;
 
-        return new Shader( binary, stage, this );
+        return std::make_shared<Shader>( shaderBinary, stage, shared_from_this() );
     }
 
-    IInputLayoutRef Device::CreateInputLayout(uint32_t attrCnt, VertexAttribute attrs[], IShaderIn shader)
+    IInputLayoutRef Device::CreateInputLayout( uint32_t attrCnt, VertexAttribute attrs[], ConstIShaderIn shader )
     {
-        TRACE_ASSERT(shader.IsAttached());
+        TRACE_ASSERT(shader);
 
         AUTO_LOCK_CONTEXT;
 
-        return new InputLayout(attrCnt, attrs, shader, this);
+        return std::make_shared<InputLayout>( attrCnt, attrs, shader, shared_from_this() );
     }
 
     IBufferRef Device::CreateBuffer( const BufferDesc & desc, const void * initialData )
     {
         AUTO_LOCK_CONTEXT;
 
-        BufferRef buffer = new Buffer(desc, this);
+        BufferRef buffer = std::make_shared<Buffer>( desc, shared_from_this() );
 
         if (buffer->Init(initialData) != 0)
         {
-            return buffer.StaticCast<IBuffer>();
+            return buffer;
         }
 
         return NULL;
@@ -173,14 +158,14 @@ namespace GFW {
     {
         AUTO_LOCK_CONTEXT;
 
-        return new Texture(desc, initialData, this);
+        return std::make_shared<Texture>( desc, initialData, shared_from_this() );
     }
 
-    IRenderTargetRef Device::CreateRenderTarget(ITextureIn texture, const RenderTargetDesc & desc)
+    IRenderTargetRef Device::CreateRenderTarget( ConstITextureIn texture, const RenderTargetDesc & desc )
     {
         AUTO_LOCK_CONTEXT;
 
-        return new RenderTarget(texture, desc, this);
+        return std::make_shared<RenderTarget>( texture, desc, shared_from_this() );
     }
 
     void Device::Present()
@@ -195,15 +180,15 @@ namespace GFW {
 
     void Device::LockContext(IContextRef context)
     {
-        TRACE_ASSERT(context.IsAttached());
+        TRACE_ASSERT(context);
         TRACE_ASSERT(mCurrentContext == NULL);
-        mCurrentContext = context.GetPointer();
+        mCurrentContext = context.get();
     }
 
     void Device::UnlockContext(IContextRef context)
     {
-        TRACE_ASSERT(context.IsAttached());
-        TRACE_ASSERT(mCurrentContext == context.GetPointer());
+        TRACE_ASSERT(context);
+        TRACE_ASSERT(mCurrentContext == context.get());
         mCurrentContext = NULL;
     }
 

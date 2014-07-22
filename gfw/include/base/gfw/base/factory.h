@@ -5,7 +5,7 @@
 
 namespace GFW {
 
-    class IFactory : public Common:: ARefCounted
+    class IFactory
     {
     public:
         virtual IEffectRef
@@ -17,10 +17,10 @@ namespace GFW {
         virtual
         ~IFactory() {}
     };
-    AUTOREF_REFERENCE_DECLARATION(IFactory);
+    SHARED_PTR_TYPEDEFS(IFactory);
 
     IFactoryRef
-    CreateFactory(IDeviceRef);
+    CreateFactory( IDeviceIn );
 
 } // namespace GFW
 

@@ -13,17 +13,27 @@ namespace GFW {
     class DrawingContext : public IDrawingContext
     {
     public:
-        virtual RenderingContext    CreateContext();
-        virtual void                DeleteContext(RenderingContext);
-        virtual void                MakeCurrent(RenderingContext);
-        virtual RenderingContext    GetCurrentContext();
-        virtual void                SwapBuffers();
+        virtual RenderingContext
+        CreateContext();
+
+        virtual void
+        DeleteContext(RenderingContext);
+
+        virtual void
+        MakeCurrent(RenderingContext);
+
+        virtual RenderingContext
+        GetCurrentContext();
+
+        virtual void
+        SwapBuffers();
 
     public:
         DrawingContext(WindowHandle);
         ~DrawingContext();
 
-        bool            Initialize();
+        void
+        Initialize();
 
     private:
         IPlatformRef    mPlatform;
@@ -37,7 +47,7 @@ namespace GFW {
         , mDC(NULL)
         , mDefaultContext(NULL)
     {
-
+        Initialize();
     }
 
     DrawingContext::~DrawingContext()
@@ -55,20 +65,18 @@ namespace GFW {
         }
     }
 
-    bool DrawingContext::Initialize()
+    void DrawingContext::Initialize()
     {
         mPlatform = IPlatform::Acquire();
-        if (mPlatform.IsNull())
+        if (mPlatform.get())
         {
             TRACE_ERROR("Failed to acquire OpenGL platform");
-            return false;
         }
 
         mDC = GetDC(mWindow);
         if (mDC == NULL)
         {
             TRACE_ERROR("Failed to acquire drawing context of the window");
-            return false;
         }
 
         const int attribList[] =
@@ -91,7 +99,6 @@ namespace GFW {
         if (res == FALSE)
         {
             TRACE_ERROR("Failed to choose pixel format");
-            return false;
         }
 
         PIXELFORMATDESCRIPTOR pfd;
@@ -99,17 +106,13 @@ namespace GFW {
         if (res == FALSE)
         {
             TRACE_ERROR("Failed to set pixel format");
-            return false;
         }
 
         mDefaultContext = wglCreateContext(mDC);
         if (mDefaultContext == NULL)
         {
             TRACE_ERROR("Failed to create the default rendering context");
-            return false;
         }
-
-        return true;
     }
 
     RenderingContext DrawingContext::CreateContext()
@@ -149,15 +152,7 @@ namespace GFW {
 
     IDrawingContextRef CreateDrawingContext(WindowHandle window)
     {
-        DrawingContext * obj = new DrawingContext(window);
-        if (!obj->Initialize())
-        {
-            TRACE_ERROR("Failed to initialize drawing context");
-            delete obj;
-            return NULL;
-        }
-
-        return obj;
+        return std::make_shared<DrawingContext>( window );
     }
 
 } // namespace GFW

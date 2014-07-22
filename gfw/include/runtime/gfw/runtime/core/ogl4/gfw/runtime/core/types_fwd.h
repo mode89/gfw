@@ -1,20 +1,22 @@
 #ifndef __GFW_RUNTIME_CORE_TYPES_FWD_H__
 #define __GFW_RUNTIME_CORE_TYPES_FWD_H__
 
-#include "common/autoref.h"
+#include "common/shared_ptr_typedefs.h"
+
+#include <memory>
 
 namespace GFW {
 
-    AUTOREF_FORWARD_DECLARATION(IDrawingContext);
+    SHARED_PTR_FORWARD_TYPEDEFS(IDrawingContext);
 
-    AUTOREF_FORWARD_DECLARATION(Buffer);
-    AUTOREF_FORWARD_DECLARATION(Context);
-    AUTOREF_FORWARD_DECLARATION(Device);
-    AUTOREF_FORWARD_DECLARATION(InputLayout);
-    AUTOREF_FORWARD_DECLARATION(RenderTarget);
-    AUTOREF_FORWARD_DECLARATION(Shader);
-    AUTOREF_FORWARD_DECLARATION(ShaderReflection);
-    AUTOREF_FORWARD_DECLARATION(Texture);
+    SHARED_PTR_FORWARD_TYPEDEFS(Buffer);
+    SHARED_PTR_FORWARD_TYPEDEFS(Context);
+    SHARED_PTR_FORWARD_TYPEDEFS(Device);
+    SHARED_PTR_FORWARD_TYPEDEFS(InputLayout);
+    SHARED_PTR_FORWARD_TYPEDEFS(RenderTarget);
+    SHARED_PTR_FORWARD_TYPEDEFS(Shader);
+    SHARED_PTR_FORWARD_TYPEDEFS(ShaderReflection);
+    SHARED_PTR_FORWARD_TYPEDEFS(Texture);
 
     typedef void * RenderingContext;
 

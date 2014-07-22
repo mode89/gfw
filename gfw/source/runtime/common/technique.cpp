@@ -1,18 +1,17 @@
 #include "gfw/runtime/common/pass.h"
 #include "gfw/runtime/common/technique.h"
+#include "gfw/shared/pass.h"
 #include "gfw/shared/technique.h"
 
 namespace GFW {
 
-    Technique::Technique( TechniqueBinaryRef binary, const Effect * effect )
-        : mEffect( effect )
-        , mDesc( binary->mDesc )
+    Technique::Technique( const TechniqueBinary & binary, const ShaderTable & shaderTable, IDeviceIn device )
     {
+        mDesc.passCount = binary.mPasses.size();
         mPasses.reserve( mDesc.passCount );
-        for ( uint32_t i = 0; i < mDesc.passCount; ++ i )
+        for ( auto passBinary : binary.mPasses )
         {
-            PassBinaryRef passBin = binary->mPasses[i];
-            mPasses.push_back( new Pass( passBin, effect ) );
+            mPasses.push_back( std::make_shared<Pass>( passBinary, shaderTable, device ) );
         }
     }
 
@@ -21,12 +20,12 @@ namespace GFW {
 
     }
 
-    void Technique::Dispatch( uint32_t pass /* = 0 */ )
+    void Technique::Dispatch( uint32_t pass ) const
     {
         mPasses[ pass ]->Dispatch();
     }
 
-    IShaderRef Technique::GetShader( ShaderStage stage, uint32_t pass /* = 0 */ ) const
+    ConstIShaderRef Technique::GetShader( ShaderStage stage, uint32_t pass ) const
     {
         return mPasses[pass]->GetShader( stage );
     }

@@ -3,12 +3,11 @@
 
 #include "gfw/base/draw_params.h"
 #include "gfw/base/mesh.h"
-#include "gfw/runtime/common/device_child.h"
 #include "gfw/runtime/core/limits.h"
 
 namespace GFW {
 
-    class Mesh : public ADeviceChild<IMesh>
+    class Mesh : public IMesh
     {
     public:
         virtual void
@@ -28,10 +27,12 @@ namespace GFW {
         SetDrawParams(const DrawIndexedParams & params) { mDrawParams = params; }
 
     public:
-        Mesh(IDeviceIn);
+        Mesh( IDeviceIn );
         ~Mesh();
 
     private:
+        IDeviceRef          mDevice;
+
         IInputLayoutRef     mInputLayout;
 
         IBufferRef          mVertexBuffers[MAX_BIND_VERTEX_BUFFERS];
@@ -41,7 +42,7 @@ namespace GFW {
 
         DrawIndexedParams   mDrawParams;
     };
-    AUTOREF_REFERENCE_DECLARATION(Mesh);
+    SHARED_PTR_TYPEDEFS(Mesh);
 
 } // namespace GFW
 

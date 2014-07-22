@@ -1,8 +1,9 @@
-#ifndef __GFW_COMMON_TECHNIQUE_H__
-#define __GFW_COMMON_TECHNIQUE_H__
+#ifndef __GFW_RUNTIME_COMMON_TECHNIQUE_H__
+#define __GFW_RUNTIME_COMMON_TECHNIQUE_H__
 
 #include "gfw/base/technique.h"
-#include "gfw/shared/technique.h"
+#include "gfw/runtime/common/shader_table.h"
+#include "gfw/runtime/common/types_fwd.h"
 #include "gfw/shared/types_fwd.h"
 
 #include <vector>
@@ -12,25 +13,27 @@ namespace GFW {
     class Technique : public ITechnique
     {
     public:
-        virtual void
-        Dispatch( uint32_t pass = 0 );
+        virtual const TechniqueDesc &
+        GetDesc() const { return mDesc; }
 
-        virtual IShaderRef
-        GetShader( ShaderStage, uint32_t pass = 0 ) const;
+        virtual void
+        Dispatch( uint32_t pass ) const;
+
+        virtual ConstIShaderRef
+        GetShader( ShaderStage, uint32_t pass ) const;
 
     public:
-        Technique( TechniqueBinaryRef, const Effect * );
+        Technique( const TechniqueBinary &, const ShaderTable &, IDeviceIn );
         ~Technique();
 
     private:
-        typedef std::vector< IPassRef > PassVec;
+        typedef std::vector< PassRef > PassVec;
 
-        const Effect *  mEffect;
         TechniqueDesc   mDesc;
         PassVec         mPasses;
     };
-    AUTOREF_REFERENCE_DECLARATION( Technique );
+    SHARED_PTR_TYPEDEFS( Technique );
 
 } // namespace GFW
 
-#endif // __GFW_COMMON_TECHNIQUE_H__
+#endif // __GFW_RUNTIME_COMMON_TECHNIQUE_H__

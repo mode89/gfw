@@ -58,7 +58,7 @@ namespace GFW {
         BlendFactor             dstBlendAlpha;  ///< Specifies the second alpha data source and includes an optional pre-blend operation. Blend-factors that end in _COLOR are not allowed.
         BlendOp                 blendOpAlpha;   ///< Defines how to combine the alpha data sources.
         uint32_t                writeMask;      ///< Mask specifying which channels of the rendertarget will be written to. OR'd combination of ColorMask.
-        bool8_t                 blendEnable;    ///< Enable (or disable) blending.
+        bool                    blendEnable;    ///< Enable (or disable) blending.
 
         RenderTargetBlendDesc()
             : srcBlend(BLEND_FACTOR_ONE)
@@ -68,7 +68,7 @@ namespace GFW {
             , dstBlendAlpha(BLEND_FACTOR_ZERO)
             , blendOpAlpha(BLEND_OP_ADD)
             , writeMask(COLOR_MASK_ALL) 
-            , blendEnable(0)
+            , blendEnable(false)
         {}
     };
 
@@ -80,9 +80,9 @@ namespace GFW {
         CompareFunc             alphaFunc;              ///< Fixed-function alpha test.
         uint32_t                alphaRef;               ///< Fixed-function alpha test.
         uint32_t                sampleMask;             ///< Coverage mask that controls which samples are written to a surface.
-        bool8_t                 alphaToCoverageEnable;  ///< Determines whether or not to use alpha-to-coverage as a multisampling technique when setting a pixel to a rendertarget.
-        bool8_t                 independentBlendEnable; ///< Set to true to enable independent blending in simultaneous render targets. If set to false, only the renderTarget[0] members are used and renderTarget[1..7] are ignored.
-        bool8_t                 alphaTestEnable;        ///< Enable (or disable) fixed-function alpha testing.
+        bool                    alphaToCoverageEnable;  ///< Determines whether or not to use alpha-to-coverage as a multisampling technique when setting a pixel to a rendertarget.
+        bool                    independentBlendEnable; ///< Set to true to enable independent blending in simultaneous render targets. If set to false, only the renderTarget[0] members are used and renderTarget[1..7] are ignored.
+        bool                    alphaTestEnable;        ///< Enable (or disable) fixed-function alpha testing.
 
         BlendStateDesc()
             : alphaFunc(COMPARE_ALWAYS)

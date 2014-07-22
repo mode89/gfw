@@ -5,7 +5,7 @@
 
 namespace GFW {
 
-    class IDeviceChild : public Common::ARefCounted
+    class IDeviceChild
     {
     public:
         virtual IDeviceRef
@@ -14,7 +14,7 @@ namespace GFW {
         virtual
         ~IDeviceChild() {}
     };
-    AUTOREF_REFERENCE_DECLARATION(IDeviceChild);
+    SHARED_PTR_TYPEDEFS(IDeviceChild);
 }
 
 #endif // __GFW_BASE_DEVICE_CHILD_H__

@@ -6,7 +6,7 @@
 
 namespace GFW {
 
-    class IMesh : public IDeviceChild
+    class IMesh
     {
     public:
         virtual void
@@ -15,7 +15,7 @@ namespace GFW {
         virtual
         ~IMesh() {}
     };
-    AUTOREF_REFERENCE_DECLARATION(IMesh);
+    SHARED_PTR_TYPEDEFS(IMesh);
 
 } // namespace GFW
 

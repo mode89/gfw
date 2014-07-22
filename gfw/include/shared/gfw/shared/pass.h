@@ -1,30 +1,26 @@
 #ifndef __GFW_SHARED_PASS_H__
 #define __GFW_SHARED_PASS_H__
 
-#include "common/autoref.h"
-#include "common/string_table.h"
-#include "gfw/shared/shader_stage.h"
+#include "gfw/base/shader_stage.h"
+#include "gfw/shared/types_fwd.h"
+
+#include <string>
 
 namespace GFW {
 
-    struct PassDesc
-    {
-    };
-
-    class PassBinary : public Common::ARefCounted
+    class PassBinary
     {
     public:
-        Common::InternedStringBinary    mName;
-        uint32_t                        mShaders[ ShaderStage::COUNT ];
+        std::string             mName;
+        const ShaderBinary *    mShaders[ ShaderStage::COUNT ];
 
         template < class Archive > void
-        Serialize( Archive & archive )
+        serialize( Archive & ar, unsigned version )
         {
-            archive & NAMED_VALUE( mName );
-            archive & NAMED_ARRAY( mShaders, ShaderStage::COUNT );
+            ar & mName;
+            ar & mShaders;
         }
     };
-    AUTOREF_REFERENCE_DECLARATION( PassBinary );
 
 } // namespace GFW
 

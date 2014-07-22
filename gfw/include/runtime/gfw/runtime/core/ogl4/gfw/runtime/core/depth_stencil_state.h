@@ -17,7 +17,7 @@ namespace GFW {
         Apply() const;
 
     public:
-        DepthStencilState(const DepthStencilStateDesc &, uint32_t descHash, IDeviceRef);
+        DepthStencilState( const DepthStencilStateDesc &, uint32_t descHash, DeviceIn );
         ~DepthStencilState();
 
     private:

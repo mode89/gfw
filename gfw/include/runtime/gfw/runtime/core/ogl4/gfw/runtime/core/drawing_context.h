@@ -8,7 +8,7 @@ namespace GFW {
 
     typedef void * RenderingContext;
 
-    class IDrawingContext : public Common::ARefCounted
+    class IDrawingContext
     {
     public:
         virtual RenderingContext    CreateContext() = 0;
@@ -19,7 +19,7 @@ namespace GFW {
 
         virtual                     ~IDrawingContext()  {}
     };
-    AUTOREF_REFERENCE_DECLARATION(IDrawingContext);
+    SHARED_PTR_TYPEDEFS(IDrawingContext);
 
     IDrawingContextRef CreateDrawingContext(WindowHandle);
 

@@ -22,16 +22,16 @@ namespace GFW {
     {
     public:
         virtual const RenderTargetDesc &
-        GetDesc() = 0;
+        GetDesc() const = 0;
 
-        virtual ITextureRef
-        GetTexture() = 0;
+        virtual ConstITextureRef
+        GetTexture() const = 0;
 
     public:
         virtual
         ~IRenderTarget() {}
     };
-    AUTOREF_REFERENCE_DECLARATION(IRenderTarget);
+    SHARED_PTR_TYPEDEFS(IRenderTarget);
 
 } // namespace GFW
 

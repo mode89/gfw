@@ -89,8 +89,8 @@ namespace GFW {
         return SHADER_RES_DIM_UNKNOWN;
     }
 
-    ShaderReflection::ShaderReflection(uint32_t program, IDeviceIn device)
-        : AShaderReflection(device)
+    ShaderReflection::ShaderReflection( uint32_t program, DeviceIn device )
+        : AShaderReflection( device )
     {
         DeviceRef deviceImpl = device;
 
@@ -118,7 +118,7 @@ namespace GFW {
             paramDesc.location = params[1];
             paramDesc.semantic = GetSemantic(name);
 
-            mInputs.push_back(new ShaderParameter(paramDesc));
+            mInputs.push_back( std::make_shared<ShaderParameter>( paramDesc ) );
             mDesc.inputsCount ++;
         }
 
@@ -131,7 +131,6 @@ namespace GFW {
         for (int32_t i = 0; i < uniformBlocksCount; ++ i)
         {
             TRACE_ASSERT_GL(glGetProgramResourceName, program, GL_UNIFORM_BLOCK, i, sizeof(name), NULL, name);
-            Common::InternedString uniformBlockName = deviceImpl->GetStringTable().Resolve(name);
 
             uint32_t props[] = {
                 GL_BUFFER_DATA_SIZE,
@@ -144,7 +143,7 @@ namespace GFW {
             ShaderBufferDesc bufDesc;
             bufDesc.size = params[0];
 
-            mBuffers.push_back(new ShaderBuffer(uniformBlockName.GetString(), bufDesc));
+            mBuffers.push_back( std::make_shared<ShaderBuffer>( name, bufDesc ) );
             mDesc.bufferCount ++;
 
             ShaderResourceDesc resDesc;
@@ -153,7 +152,7 @@ namespace GFW {
             resDesc.type      = SHADER_RES_TYPE_CBUFFER;
             resDesc.dim       = SHADER_RES_DIM_BUFFER;
 
-            mResources.push_back(new ShaderResource(uniformBlockName.GetString(), resDesc));
+            mResources.push_back( std::make_shared<ShaderResource>( name, resDesc ) );
             mDesc.resourceCount ++;
         }
 
@@ -166,7 +165,6 @@ namespace GFW {
         for (int32_t i = 0; i < uniformsCount; ++ i)
         {
             TRACE_ASSERT_GL(glGetProgramResourceName, program, GL_UNIFORM, i, sizeof(name), NULL, name);
-            Common::InternedString uniformName = deviceImpl->GetStringTable().Resolve(name);
 
             uint32_t props[] = {
                 GL_TYPE,
@@ -191,7 +189,7 @@ namespace GFW {
                 uint32_t stride     = (params[1] != -1) ? params[5] : typeSize;
                 varDesc.size        = (params[4] == 0) ? typeSize : params[4] * stride;
 
-                mVariables.push_back(new ShaderVariable(uniformName.GetString(), varDesc));
+                mVariables.push_back( std::make_shared<ShaderVariable>( name, varDesc ) );
                 mDesc.variableCount ++;
             }
             else if (IsSamplerType(params[0]))
@@ -202,7 +200,7 @@ namespace GFW {
                 resDesc.bindPoint = params[2];
                 resDesc.bindCount = (params[4] == 0) ? 1 : params[4];
 
-                mResources.push_back(new ShaderResource(uniformName.GetString(), resDesc));
+                mResources.push_back( std::make_shared<ShaderResource>( name, resDesc ) );
                 mDesc.resourceCount ++;
             }
             else

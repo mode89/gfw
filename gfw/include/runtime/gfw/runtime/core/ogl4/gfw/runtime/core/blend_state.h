@@ -14,7 +14,7 @@ namespace GFW {
         Apply() const;
 
     public:
-        BlendState(const BlendStateDesc &, uint32_t descHash, IDeviceRef);
+        BlendState( const BlendStateDesc &, uint32_t descHash, DeviceIn );
         ~BlendState();
 
     private:

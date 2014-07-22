@@ -1,17 +1,16 @@
 #include "common/trace.h"
-
+#include "gfw/runtime/core/device.h"
 #include "gfw/runtime/core/format.h"
 #include "gfw/runtime/core/functions.h"
 #include "gfw/runtime/core/texture.h"
-
 #include "gfw/runtime/common/device_child.inl"
 
 namespace GFW {
 
-    Texture::Texture(const TextureDesc & desc, const void * initialData, IDeviceIn device)
-        : ADeviceChild(device)
-        , mDesc(desc)
-        , mHandle(0)
+    Texture::Texture( const TextureDesc & desc, const void * initialData, DeviceIn device )
+        : ADeviceChild( device )
+        , mDesc( desc )
+        , mHandle( 0 )
     {
         TRACE_ASSERT_GL(glGenTextures, 1, &mHandle);
         TRACE_ASSERT(mHandle != 0);

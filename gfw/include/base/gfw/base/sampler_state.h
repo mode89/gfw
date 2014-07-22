@@ -80,11 +80,11 @@ namespace GFW {
     {
     public:
         virtual void
-        Apply() = 0;
+        Apply() const = 0;
 
         ~ISamplerState() {}
     };
-    AUTOREF_REFERENCE_DECLARATION(ISamplerState);
+    SHARED_PTR_TYPEDEFS(ISamplerState);
 
 } // namespace GFW
 

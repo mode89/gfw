@@ -23,6 +23,7 @@ source_group( "include\\shared" FILES ${TEMP_LIST} )
 
 add_library( gfw_pipeline ${GFW_PIPELINE_SOURCE_FILES} )
 include_directories(
+    ${GFW_ROOT}/include/base
     ${GFW_ROOT}/include/pipeline
     ${GFW_ROOT}/include/pipeline/gfw/pipeline/${GFW_PLATFORM}
     ${GFW_PIPELINE_BINARY_DIR}
@@ -37,8 +38,9 @@ find_package( common CONFIG )
 target_link_libraries( gfw_pipeline ${COMMON_LIBS} )
 include_directories( ${COMMON_INCLUDE_DIRS} )
 
-find_package( serialization CONFIG )
-include_directories( ${SERIALIZATION_INCLUDE_DIRS} )
+find_package( boost CONFIG )
+include_directories( ${BOOST_INCLUDE_DIRS} )
+add_definitions( ${BOOST_DEFINITIONS} )
 
 # Pre-build
 

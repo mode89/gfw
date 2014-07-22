@@ -12,7 +12,7 @@ namespace GFW {
         virtual
         ~IInputLayout() {}
     };
-    AUTOREF_REFERENCE_DECLARATION(IInputLayout);
+    SHARED_PTR_TYPEDEFS(IInputLayout);
 
 } // namespace GFW
 

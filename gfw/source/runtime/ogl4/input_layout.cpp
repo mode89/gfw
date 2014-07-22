@@ -2,6 +2,7 @@
 
 #include "gfw/base/device.h"
 #include "gfw/runtime/common/semantic.h"
+#include "gfw/runtime/core/device.h"
 #include "gfw/runtime/core/functions.h"
 #include "gfw/runtime/core/input_layout.h"
 #include "gfw/runtime/core/shader.h"
@@ -11,14 +12,14 @@
 
 namespace GFW {
 
-    InputLayout::InputLayout(uint32_t attrCnt, VertexAttribute attrs[], IShaderIn shader, IDeviceIn device)
-        : ADeviceChild(device)
-        , mAttributesMask(0)
+    InputLayout::InputLayout( uint32_t attrCnt, VertexAttribute attrs[], ConstIShaderIn shader, DeviceIn device )
+        : ADeviceChild( device )
+        , mAttributesMask( 0 )
     {
         TRACE_ASSERT(attrCnt <= MAX_INPUT_ATTRIBUTES);
-        TRACE_ASSERT(shader.IsAttached());
+        TRACE_ASSERT(shader);
 
-        IShaderReflectionRef reflection = shader->GetReflection();
+        ConstIShaderReflectionRef reflection = shader->GetReflection();
 
         for (uint32_t i = 0; i < attrCnt; ++ i)
         {

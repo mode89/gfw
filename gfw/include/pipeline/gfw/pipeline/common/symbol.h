@@ -18,39 +18,44 @@ namespace GFW {
 
     class Symbol
     {
+        typedef std::vector< const ParseTree * > ParseTreeVec;
+
     public:
         Symbol()
-            : mName( NULL )
+            : mTree( nullptr )
+            , mName( nullptr )
             , mFlags( 0 )
-            , mSemantic( NULL )
+            , mType( nullptr )
+            , mSemantic( nullptr )
         {}
 
-        Symbol( ConstParseTreeIn tree )
-            : mName( NULL )
-            , mTree( tree )
+        Symbol( const ParseTree & tree )
+            : mTree( &tree )
+            , mName( nullptr )
             , mFlags( 0 )
-            , mSemantic( NULL )
+            , mType( nullptr )
+            , mSemantic( nullptr )
         {
-            ConstParseTreeRef symbolName = tree->GetFirstChildWithType( TOKEN_SYMBOL_NAME );
-            mName = symbolName.IsAttached() ? symbolName->GetChild()->ToString() : NULL;
+            const ParseTree * symbolName = tree.GetFirstChildWithType( TOKEN_SYMBOL_NAME );
+            mName = symbolName ? &symbolName->GetChild().GetText() : nullptr;
         }
 
-        const char *
-        GetName() const { return mName; }
+        const std::string &
+        GetName() const { return *mName; }
 
         TokenType
         GetTokenType() const { return mTree->GetTokenType(); }
 
-        ConstParseTreeRef
-        GetTree() const { return mTree; }
+        const ParseTree &
+        GetTree() const { return *mTree; }
 
         // Symbols referenced by this symbol (i.e. global variables by a function)
         const SymbolReferenceVec &
         GetReferences() const { return mReferences; }
 
         // Object type or function return type
-        ConstParseTreeRef
-        GetType() const { return mType; }
+        const ParseTree &
+        GetType() const { return *mType; }
 
         // Function arguments
         const ParseTreeVec &
@@ -60,8 +65,8 @@ namespace GFW {
         const ParseTreeVec &
         GetMembers() const { return mMembers; }
 
-        const char *
-        GetSemantic() const { return mSemantic; }
+        const std::string &
+        GetSemantic() const { return *mSemantic; }
 
         bool
         RefersTo( const Symbol * ) const;
@@ -85,14 +90,14 @@ namespace GFW {
 #undef F
         };
 
-        ConstParseTreeRef   mTree;
-        const char *        mName;
+        const ParseTree *   mTree;
+        const std::string * mName;
         uint32_t            mFlags;
         SymbolReferenceVec  mReferences;    // Symbols referenced by this symbol (i.e. global variables by a function)
-        ConstParseTreeRef   mType;          // Object type or function return type
+        const ParseTree *   mType;          // Object type or function return type
         ParseTreeVec        mArgs;          // Function arguments
         ParseTreeVec        mMembers;       // Members of a struct
-        const char *        mSemantic;
+        const std::string * mSemantic;
 
         friend class SymbolTable;
     };

@@ -16,16 +16,13 @@ namespace GFW {
         CreateMeshBuilder();
 
     public:
-        Factory(IDeviceRef);
+        Factory( IDeviceIn );
         ~Factory();
 
-        bool
-        Initialize();
-
     private:
-        IDeviceRef  mDevice;
+        std::weak_ptr<IDevice>  mDevice;
     };
-    AUTOREF_REFERENCE_DECLARATION(IFactory);
+    SHARED_PTR_TYPEDEFS(IFactory);
 
 } // namespace GFW
 
