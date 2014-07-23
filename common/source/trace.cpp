@@ -34,16 +34,6 @@ namespace Common {
         std::cerr << message;
     }
 
-#if PLAT_COMPILER_MSVC
-    void TraceDebugBreak()
-    {
-        __try {
-            __debugbreak();
-        }
-        __except ( GetExceptionCode() == EXCEPTION_BREAKPOINT ? EXCEPTION_EXECUTE_HANDLER : EXCEPTION_CONTINUE_SEARCH ) {}
-    }
-#endif
-
     Exception::Exception( const char * file, unsigned line, const char * format, ... )
     {
         char * message = mWhat + sprintf( mWhat, "%s(%d) : Exception : ", file, line );

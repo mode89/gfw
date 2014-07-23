@@ -9,7 +9,7 @@
 
 #if PLAT_DEBUG
     #if PLAT_COMPILER_MSVC
-        #define TRACE_DEBUG_BREAK()     Common::TraceDebugBreak();
+        #define TRACE_DEBUG_BREAK()     __debugbreak()
     #elif PLAT_COMPILER_MINGW
         #define TRACE_DEBUG_BREAK()     asm("int $3")
     #endif // Determine the compiler
@@ -92,10 +92,6 @@ namespace Common {
     void TraceMessage( const char * format, ... );
 
     void TraceError( const char * format, ... );
-
-#if PLAT_COMPILER_MSVC
-    void TraceDebugBreak();
-#endif
 
     class Exception : public std::exception
     {
