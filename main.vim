@@ -1,6 +1,16 @@
-let $PATH .=
-    \ ";d:/development/utils/git-1.9.4/bin/" .
-    \ ";d:/development/utils/cmake-3.0.0-win32-x86/bin/"
+" Adding Git to $PATH
+if $GIT_ROOT == ""
+    echoerr "Environment variable GIT_ROOT is undefined."
+else
+    let $PATH .= ";" . $GIT_ROOT . "/bin"
+endif
+
+" Adding Cmake to $PATH
+if $CMAKE_ROOT == ""
+    echoerr "Environment variable CMAKE_ROOT is undefined."
+else
+    let $PAT .= ";" . $CMAKE_ROOT . "/bin"
+endif
 
 " Search tags asynchronously
 !start vim -S "tags.vim"
