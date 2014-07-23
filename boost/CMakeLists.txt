@@ -1,5 +1,5 @@
 project( BOOST )
-cmake_minimum_required( VERSION 3.0 )
+cmake_minimum_required( VERSION 2.8 )
 
 if ( "$ENV{BOOST_ROOT}" STREQUAL "" )
     message( WARNING "Environment variable BOOST_ROOT is undefined." )
