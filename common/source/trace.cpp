@@ -22,6 +22,18 @@ namespace Common {
         std::cout << message;
     }
 
+    void TraceError( const char * format, ... )
+    {
+        char message[ 4096 ];
+
+        va_list args;
+        va_start( args, format );
+        vsprintf( message, format, args );
+        va_end( args );
+
+        std::cerr << message;
+    }
+
 #if PLAT_COMPILER_MSVC
     void TraceDebugBreak()
     {

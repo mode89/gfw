@@ -21,14 +21,14 @@
 
 #if PLAT_DEBUG
     #define TRACE_FAIL_MSG( ... ) \
-        Common::TraceMessage( "%s(%d) : Failed : ", __FILE__, __LINE__ ); \
-        Common::TraceMessage( __VA_ARGS__ ); \
-        Common::TraceMessage( "\n" ); \
+        Common::TraceError( "%s(%d) : Failed : ", __FILE__, __LINE__ ); \
+        Common::TraceError( __VA_ARGS__ ); \
+        Common::TraceError( "\n" ); \
         TRACE_DEBUG_BREAK()
 
     #define TRACE_FAIL() \
-        Common::TraceMessage( "%s(%d) : Failed", __FILE__, __LINE__ ); \
-        Common::TraceMessage( "\n" ); \
+        Common::TraceError( "%s(%d) : Failed", __FILE__, __LINE__ ); \
+        Common::TraceError( "\n" ); \
         TRACE_DEBUG_BREAK()
 #else
     #define TRACE_FAIL_MSG( ... )
@@ -41,17 +41,17 @@
     #define TRACE_ASSERT( expr ) \
         if ( !( expr ) ) \
         { \
-            Common::TraceMessage( "%s(%d) : Assertion failed : %s", __FILE__, __LINE__, #expr ); \
-            Common::TraceMessage( "\n" ); \
+            Common::TraceError( "%s(%d) : Assertion failed : %s", __FILE__, __LINE__, #expr ); \
+            Common::TraceError( "\n" ); \
             TRACE_DEBUG_BREAK(); \
         }
 
     #define TRACE_ASSERT_MSG( expr, ... ) \
         if ( !( expr ) ) \
         { \
-            Common::TraceMessage( "%s(%d) : Assertion failed : %s : ", __FILE__, __LINE__, #expr ); \
-            Common::TraceMessage( __VA_ARGS__ ); \
-            Common::TraceMessage( "\n" ); \
+            Common::TraceError( "%s(%d) : Assertion failed : %s : ", __FILE__, __LINE__, #expr ); \
+            Common::TraceError( __VA_ARGS__ ); \
+            Common::TraceError( "\n" ); \
             TRACE_DEBUG_BREAK(); \
         }
 
@@ -59,8 +59,8 @@
         var = var && ( expr ); \
         if ( !var ) \
         { \
-            Common::TraceMessage( "%s(%d) : Assertion failed : %s", __FILE__, __LINE__, #expr ); \
-            Common::TraceMessage( "\n" ); \
+            Common::TraceError( "%s(%d) : Assertion failed : %s", __FILE__, __LINE__, #expr ); \
+            Common::TraceError( "\n" ); \
             TRACE_DEBUG_BREAK(); \
         }
 #else
@@ -75,6 +75,10 @@
     Common::TraceMessage( __VA_ARGS__ ); \
     Common::TraceMessage( "\n" )
 
+#define TRACE_ERR( ... ) \
+    Common::TraceError( __VS_ARGS__ ); \
+    Common::TraceError( "\n" )
+
 // Exceptions
 
 #define TRACE_THROW( ... ) \
@@ -86,6 +90,8 @@ namespace Common {
     // Subroutine to show a formatted message
 
     void TraceMessage( const char * format, ... );
+
+    void TraceError( const char * format, ... );
 
 #if PLAT_COMPILER_MSVC
     void TraceDebugBreak();
