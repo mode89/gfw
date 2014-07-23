@@ -9,7 +9,7 @@ endif
 if $CMAKE_ROOT == ""
     echoerr "Environment variable CMAKE_ROOT is undefined."
 else
-    let $PAT .= ";" . $CMAKE_ROOT . "/bin"
+    let $PATH .= ";" . $CMAKE_ROOT . "/bin"
 endif
 
 " Search tags asynchronously
