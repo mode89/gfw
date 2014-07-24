@@ -76,7 +76,7 @@
     Common::TraceMessage( "\n" )
 
 #define TRACE_ERR( ... ) \
-    Common::TraceError( __VS_ARGS__ ); \
+    Common::TraceError( __VA_ARGS__ ); \
     Common::TraceError( "\n" )
 
 // Exceptions
