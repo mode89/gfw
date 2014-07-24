@@ -4,6 +4,7 @@
 #include "gfw/pipeline/common/symbol.h"
 #include "gfw/pipeline/common/symbol_table.h"
 #include "gfw/pipeline/shader_builder.h"
+#include "gfw/pipeline/shader_builder_exception.h"
 #include "gfw/pipeline/validator.h"
 #include "gfw/shared/shader.h"
 
@@ -166,16 +167,12 @@ namespace GFW {
                 const ParseTree & samplerObjectId = tree.GetFirstChildWithType( TOKEN_SAMPLER_OBJECT_ID )->GetChild();
 
                 SymbolReferenceVec textureSymbol;
-                if ( !mSymbolTable.LookupSymbolByName( textureObjectId.GetText(), textureSymbol ) )
-                {
-                    TRACE_THROW( "Failed to find texture object '%s' in the global scope.", textureObjectId.GetText().c_str() );
-                }
+                TRACE_THROW_IF( !mSymbolTable.LookupSymbolByName( textureObjectId.GetText(), textureSymbol ),
+                    ShaderBuilderException::UndefinedTextureObject( textureObjectId.GetText().c_str() ) );
 
                 SymbolReferenceVec samplerSymbol;
-                if ( !mSymbolTable.LookupSymbolByName( samplerObjectId.GetText(), samplerSymbol ) )
-                {
-                    TRACE_THROW( "Failed to find sampler object '%s' in the global scope.", samplerObjectId.GetText().c_str() );
-                }
+                TRACE_THROW_IF( !mSymbolTable.LookupSymbolByName( samplerObjectId.GetText(), samplerSymbol ),
+                    ShaderBuilderException::UndefinedTextureObject( textureObjectId.GetText().c_str() ) );
 
                 TextureSamplerPair textureSamplerPair( textureSymbol[0], samplerSymbol[0] );
                 mTextureSamplerPairSet.insert( textureSamplerPair );
@@ -246,10 +243,7 @@ namespace GFW {
             }
             else
             {
-                if ( semantic == "" )
-                {
-                    TRACE_THROW( "%s parameter without semantic is not allowed.", isInput ? "Input" : "Output" );
-                }
+                TRACE_THROW_IF( semantic == "", ShaderBuilderException::ParameterWithoutSemantic() );
 
                 Handler( mStream, isInput, type, mNames, semantic );
             }
@@ -554,10 +548,9 @@ namespace GFW {
         // Query entry point's symbol
 
         SymbolReferenceVec entryPointReference;
-        if ( !mSymbolTable.LookupSymbolByName(shaderName, entryPointReference) )
-        {
-            TRACE_THROW( "Failed to find shader entry point '%s'.", shaderName.c_str() );
-        }
+        TRACE_THROW_IF( !mSymbolTable.LookupSymbolByName(shaderName, entryPointReference),
+            ShaderBuilderException::UndefinedEntry( shaderName.c_str() ) );
+
         const Symbol * entryPoint = entryPointReference[0];
 
         // Translate the profile

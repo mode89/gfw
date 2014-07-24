@@ -1,5 +1,6 @@
 #include "common/trace.h"
 #include "gfw/base/shader_stage.h"
+#include "gfw/pipeline/shader_builder_exception.h"
 #include "gfw/pipeline/validator.h"
 #include "opengl/glcorearb.h"
 
@@ -172,10 +173,8 @@ namespace GFW {
         }
         wglMakeCurrent( sHdc, NULL );
 
-        if ( compileStatus == GL_FALSE )
-        {
-            TRACE_THROW( "Failed to validate the shader." );
-        }
+        TRACE_THROW_IF( compileStatus == GL_FALSE,
+            ShaderBuilderException::ValidationError() );
     }
 
 } // namespace GFW
