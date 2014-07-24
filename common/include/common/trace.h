@@ -85,6 +85,12 @@
     TRACE_DEBUG_BREAK(); \
     throw type
 
+#define TRACE_THROW_IF( expr, type ) \
+    if ( expr ) \
+    { \
+        TRACE_THROW( type ); \
+    }
+
 namespace Common {
 
     // Subroutine to show a formatted message
