@@ -59,76 +59,71 @@ int main( int argc, const char * argv[] )
     std::string fxFile;
     std::string outputFile;
 
-    try
+    for ( int i = 1; i < argc; ++ i )
     {
-        for ( int i = 1; i < argc; ++ i )
+        const char * arg = argv[i];
+        if ( std::strcmp( "-fx", arg ) == 0 )
         {
-            const char * arg = argv[i];
-            if ( std::strcmp( "-fx", arg ) == 0 )
+            if ( ++i < argc )
             {
-                if ( ++i < argc )
-                {
-                    fxFile = argv[i];
-                }
-                else
-                {
-                    TRACE_THROW( "Missed filename after -fx option" );
-                }
-            }
-            else if ( std::strcmp( "-o", arg ) == 0 )
-            {
-                if ( ++i < argc )
-                {
-                    outputFile = argv[i];
-                }
-                else
-                {
-                    TRACE_THROW( "Missed filename after -o option" );
-                }
+                fxFile = argv[i];
             }
             else
             {
-                TRACE_THROW( "Unknown command line argument '%s'", arg );
+                TRACE_ERR( "Missed filename after -fx option" );
+                return -1;
             }
         }
+        else if ( std::strcmp( "-o", arg ) == 0 )
+        {
+            if ( ++i < argc )
+            {
+                outputFile = argv[i];
+            }
+            else
+            {
+                TRACE_ERR( "Missed filename after -o option" );
+                return -1;
+            }
+        }
+        else
+        {
+            TRACE_ERR( "Unknown command line argument '%s'", arg );
+            return -1;
+        }
     }
-    catch (...)
-    {
-        return -1;
-    }
 
-    TRACE_MSG( "GFW Effect Compiler" );
-    TRACE_MSG( "\tEffect file: %s", fxFile.c_str() );
-    TRACE_MSG( "\tOutput file: %s", outputFile.c_str() );
+    try {
+        TRACE_MSG( "GFW Effect Compiler" );
+        TRACE_MSG( "\tEffect file: %s", fxFile.c_str() );
+        TRACE_MSG( "\tOutput file: %s", outputFile.c_str() );
 
-    EffectBinary effectBinary;
+        EffectBinary effectBinary;
 
-    try
-    {
         TRACE_MSG( "\tBuild started" );
 
         EffectBuilder effectBuilder;
         effectBuilder.Build( effectBinary, fxFile );
+
+        TRACE_MSG( "\tBuild completed" );
+
+        std::ofstream fileStream( outputFile, std::ios_base::out | std::ios_base::binary );
+        {
+            TRACE_MSG( "\tSerialization" );
+
+            boost::archive::binary_oarchive archive( fileStream );
+            archive << effectBinary;
+
+            TRACE_MSG( "\tSerialization completed" );
+        }
+        fileStream.close();
     }
-    catch (...)
-    {
-        TRACE_MSG( "\tBuild failed" );
-
-        return -1;
+    catch ( std::exception e ) {
+        TRACE_ERR( e.what() );
     }
-
-    TRACE_MSG( "\tBuild completed" );
-
-    std::ofstream fileStream( outputFile, std::ios_base::out | std::ios_base::binary );
-    {
-        TRACE_MSG( "\tSerialization" );
-
-        boost::archive::binary_oarchive archive( fileStream );
-        archive << effectBinary;
-
-        TRACE_MSG( "\tSerialization completed" );
+    catch ( ... ) {
+        TRACE_ERR( "Unrecognized exception." );
     }
-    fileStream.close();
 
     return 0;
 }
