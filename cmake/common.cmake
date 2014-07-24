@@ -36,9 +36,47 @@ endif()
 # Disable CRT warnings in VS
 
 if ( MSVC )
-    add_definitions( -D_CRT_SECURE_NO_WARNINGS )
-    add_definitions( -D_SCL_SECURE_NO_WARNINGS ) # Disabling warning: 'function': was declared deprecated
+    # add_definitions( -D_CRT_SECURE_NO_WARNINGS )
+    # add_definitions( -D_SCL_SECURE_NO_WARNINGS ) # Disabling warning: 'function': was declared deprecated
 endif()
+
+# Warnings
+
+    if ( MSVC )
+
+        string( CONCAT WFLAGS
+            "/Wall "    # Enable all warnings
+            "/WX "      # Treat all compiler warnings as errors
+
+            # Disabling specific warnings
+            "/wd4061 "  # Enumerator 'value' in switch of enum 'enum' is not explicitly handled by a case label
+            "/wd4062 "  # Enumerator 'value' in switch of enum 'enum' is not handled
+            "/wd4100 "  # Unreferenced formal parameter
+            "/wd4350 "  # behavior change: 'member1' called instead of 'member2'
+            "/wd4365 "  # '=' : conversion from 'type1' to 'type2', signed/unsigned mismatch
+            "/wd4514 "  # Unreferenced inline function has been removed
+            "/wd4571 "  # catch(...) semantics changed since VC++ 7.1; structured exceptions are no longer caught
+            "/wd4640 "  # Construction of local static object is not threa-safe
+            "/wd4668 "  # 'symbol' is not defined as a preprocessor macro, replacing with '0' for 'directives'
+            "/wd4710 "  # Function not inlined
+            "/wd4711 "  # Function 'function' selected for inline expansion
+            "/wd4820 "  # 'bytes' bytes padding added after construct 'member_name'
+            "/wd4826 "  # Conversion from 'type1' to 'type2' is sign-extended.
+            )
+
+    elseif ( MINGW )
+
+        string( CONCAT WFLAGS
+            "-Wall "    # Enable warnings
+            "-Werror "  # Treat all compiler warnings as errors
+            )
+
+    endif()
+
+    set( CMAKE_C_FLAGS          "${CMAKE_C_FLAGS} ${WFLAGS}" )
+    set( CMAKE_CXX_FLAGS        "${CMAKE_CXX_FLAGS} ${WFLAGS}" )
+
+# Macroses
 
 macro(target_precompiled_header target precHeader precSource)
     if (MSVC_IDE)

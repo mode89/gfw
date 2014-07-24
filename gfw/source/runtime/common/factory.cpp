@@ -1,6 +1,10 @@
+#pragma warning( push )
+#pragma warning( disable : 4242 4244 4265 4365 4619 4625 4626 4640 )
 #include "boost/archive/binary_iarchive.hpp"
 #include "boost/serialization/list.hpp"
 #include "boost/serialization/vector.hpp"
+#pragma warning( pop )
+
 #include "common/trace.h"
 #include "gfw/base/buffer.h"
 #include "gfw/base/device.h"

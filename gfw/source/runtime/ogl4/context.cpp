@@ -108,7 +108,6 @@ namespace GFW {
 
     void Context::SetVertexBuffer( uint32_t slot, ConstIBufferIn buf )
     {
-        TRACE_ASSERT(slot >= 0);
         TRACE_ASSERT(slot < MAX_BIND_VERTEX_BUFFERS);
         TRACE_ASSERT(buf);
 

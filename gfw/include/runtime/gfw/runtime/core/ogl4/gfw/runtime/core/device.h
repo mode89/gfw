@@ -8,7 +8,10 @@
 #include "gfw/base/render_target.h"
 #include "gfw/runtime/core/types_fwd.h"
 
+#pragma warning( push )
+#pragma warning( disable : 4265 )
 #include <mutex>
+#pragma warning( pop )
 
 namespace GFW {
 
@@ -57,6 +60,9 @@ namespace GFW {
 
         void
         UnlockContext(IContextRef);
+
+        Device( const Device & );
+        Device & operator= ( const Device & );
 
     private:
         static PLAT_THREAD_LOCAL

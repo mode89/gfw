@@ -60,6 +60,9 @@ namespace GFW {
 
             // Load Windows specific functions
 
+#pragma warning( push )
+#pragma warning( disable : 4191 ) // Unsafe conversion from FARPROC
+
             wglGetProcAddress = reinterpret_cast<PFNWGLGETPROCADDRESS>( GetProcAddress( sLibrary, "wglGetProcAddress" ) );
             TRACE_ASSERT( wglGetProcAddress != NULL );
 
@@ -110,6 +113,8 @@ namespace GFW {
 #define F( type, func )   func = reinterpret_cast<type>( wglGetProcAddress( #func ) );
             OPENGL_FUNCTIONS_EXT
 #undef F
+
+#pragma warning( pop )
 
             // Release resources
 

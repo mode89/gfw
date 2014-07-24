@@ -30,6 +30,8 @@ namespace GFW {
         bool
         CollectVariables( const ParseTree & );
 
+        ShaderBuilder & operator= ( const ShaderBuilder & );
+
     private:
         typedef std::unordered_map< std::string, const ParseTree * > ParseTreeMap;
         typedef std::unordered_map< const Symbol *, TextureSamplerPairSet > FunctionTextureSamplerMap;

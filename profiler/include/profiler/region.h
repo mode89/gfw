@@ -33,7 +33,7 @@ namespace Profiler {
             , mLastTime(0)
             , mHits(0)
             , mTotalTime(0)
-            , mMinTime(-1)
+            , mMinTime( static_cast< uint64_t >( -1 ) )
             , mMaxTime(0)
         {}
 

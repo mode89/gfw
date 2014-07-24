@@ -42,6 +42,8 @@ namespace GFW {
             mMutex.unlock();
         }
 
+        AutoLock & operator= ( const AutoLock & );
+
     private:
         IDrawingContext *   mDrawingContext;
         std::mutex &        mMutex;
@@ -75,6 +77,7 @@ namespace GFW {
         mDefaultContext = std::make_shared<Context>( mDrawingContext, shared_from_this() );
 
         const uint8_t * extensions = glGetString(GL_EXTENSIONS);
+        PLAT_UNUSED( extensions );
     }
 
     Device::~Device()

@@ -140,6 +140,8 @@ namespace GFW {
             mRow = tree.GetEndRow();
         }
 
+        ConstructSourceVisitor & operator= ( const ConstructSourceVisitor & );
+
     private:
         std::stringstream &             mSource;
         uint32_t                        mLine;
@@ -182,6 +184,8 @@ namespace GFW {
             return true;
         }
 
+        CollectTextureSampleExpressionsVisitor & operator= ( const CollectTextureSampleExpressionsVisitor & );
+
     private:
         const SymbolTable &     mSymbolTable;
         TextureSamplerPairSet & mTextureSamplerPairSet;
@@ -221,6 +225,8 @@ namespace GFW {
             , mSymbolTable( symbolTable )
         {}
 
+        virtual ~ExpandInputOutput() {}
+
         void operator() ( bool isInput, const std::string & type, const std::string & name, const std::string & semantic ) const
         {
             mNames.push_back( name );
@@ -250,6 +256,8 @@ namespace GFW {
 
             mNames.pop_back();
         }
+
+        ExpandInputOutput & operator= ( const ExpandInputOutput & );
 
     protected:
         typedef std::vector< std::string > Names;
@@ -359,6 +367,8 @@ namespace GFW {
             mStream << "    " << type << ' ' << name << ';' << std::endl;
         }
 
+        ExpandInputOutputAsLocalDeclaration & operator= ( const ExpandInputOutputAsLocalDeclaration & );
+
     private:
         std::ostream & mStream;
     };
@@ -441,6 +451,8 @@ namespace GFW {
                 mStream << ( ( mInputsOutputsCounter != mInputsOutputsNumber ) ? ", " : " );\n" );
             }
         }
+
+        ExpandInputOutputAsEntryPointArgument & operator= ( const ExpandInputOutputAsEntryPointArgument & );
 
     private:
         std::ostream &      mStream;

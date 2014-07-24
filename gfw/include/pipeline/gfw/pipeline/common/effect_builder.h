@@ -1,7 +1,11 @@
 #ifndef __GFW_PIPELINE_COMMON_EFFECT_BUILDER_H__
 #define __GFW_PIPELINE_COMMON_EFFECT_BUILDER_H__
 
+#pragma warning( push )
+#pragma warning( disable : 4625 4626 4640 )
 #include "boost/filesystem.hpp"
+#pragma warning( pop )
+
 #include <list>
 #include <memory>
 

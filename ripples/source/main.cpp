@@ -101,7 +101,7 @@ int main()
                     { 1, 0 }
                 };
 
-                indexBufferData[offset + k] = (i + pattern[k][0]) + (j + pattern[k][1]) * xNodeDim;
+                indexBufferData[offset + k] = static_cast< uint16_t >( ( i + pattern[k][0] ) + ( j + pattern[k][1] ) * xNodeDim );
             }
         }
     }

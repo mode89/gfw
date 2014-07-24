@@ -1,30 +1,16 @@
-#if defined( BOOST_ALL_NO_LIB )
+#pragma warning( push )
+#pragma warning( disable : 4242 4265 4310 4365 4619 4625 4626 4640 )
 #include "boost/archive/binary_oarchive.hpp"
-#endif
-#if defined( BOOST_ALL_NO_LIB )
 #include "boost/serialization/list.hpp"
-#endif
-#if defined( BOOST_ALL_NO_LIB )
 #include "boost/serialization/vector.hpp"
-#endif
-#if defined( BOOST_ALL_NO_LIB )
+#pragma warning( pop )
+
 #include "common/trace.h"
-#endif
-#if defined( BOOST_ALL_NO_LIB )
 #include "gfw/pipeline/common/effect_builder.h"
-#endif
-#if defined( BOOST_ALL_NO_LIB )
 #include "gfw/shared/effect.h"
-#endif
-#if defined( BOOST_ALL_NO_LIB )
 #include "gfw/shared/pass.h"
-#endif
-#if defined( BOOST_ALL_NO_LIB )
 #include "gfw/shared/shader.h"
-#endif
-#if defined( BOOST_ALL_NO_LIB )
 #include "gfw/shared/technique.h"
-#endif
 
 #include <cstring>
 #include <iostream>

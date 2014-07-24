@@ -1,5 +1,8 @@
 #if defined( EXCEPTION_NAMESPACE ) && defined( EXCEPTION_CODES )
 
+    #pragma warning( push )
+    #pragma warning( disable : 4996 ) // Deprecated function
+
     #define STRINGIFY( val ) #val
 
     #define C( code, message ) \
@@ -25,6 +28,8 @@
 
     #undef STRINGIFY
     #undef C
+
+    #pragma warning( pop )
 
 #else // defined( EXCEPTION_NAMESPACE ) && defined( EXCEPTION_CODES )
 

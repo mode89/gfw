@@ -31,7 +31,7 @@ namespace GFW {
 
             if (RegisterClass(&wc) == 0)
             {
-                TRACE_THROW("Failed to register window class");
+                TRACE_ERR("Failed to register window class");
                 return false;
             }
 
@@ -43,7 +43,7 @@ namespace GFW {
             HINSTANCE hInst = GetModuleHandle(NULL);
             if (UnregisterClass(kName, hInst) == 0)
             {
-                TRACE_THROW("Failed to unregister the window class");
+                TRACE_ERR("Failed to unregister the window class");
                 return;
             }
         }
@@ -61,7 +61,7 @@ namespace GFW {
 
                 if (!mInstance->Initialize())
                 {
-                    TRACE_THROW("Failed to initialize the window class");
+                    TRACE_ERR("Failed to initialize the window class");
                     delete mInstance;
                     mInstance = NULL;
                     return NULL;
@@ -117,7 +117,7 @@ namespace GFW {
 
             if (ChangeDisplaySettings(&devMode, CDS_FULLSCREEN) != DISP_CHANGE_SUCCESSFUL)
             {
-                TRACE_THROW("Failed to enter fullscreen mode");
+                TRACE_ERR("Failed to enter fullscreen mode");
                 return NULL;
             }
         }
@@ -161,7 +161,7 @@ namespace GFW {
 
         if (handle == NULL)
         {
-            TRACE_THROW("Failed to create a window");
+            TRACE_ERR("Failed to create a window");
             return NULL;
         }
 

@@ -5,7 +5,11 @@
 #include "profiler/region.h"
 
 #include <map>
+
+#pragma warning( push )
+#pragma warning( disable : 4265 )
 #include <mutex>
+#pragma warning( pop )
 
 namespace Profiler {
 
@@ -17,6 +21,9 @@ namespace Profiler {
     public:
         Logger();
         ~Logger();
+
+        Logger( const Logger & );
+        Logger & operator= ( const Logger & );
 
     private:
         void Process();

@@ -33,4 +33,7 @@
     #define PLAT_NOEXCEPT( val ) noexcept( val )
 #endif
 
+// If variable is unused use this macro
+#define PLAT_UNUSED( var )  ( var )
+
 #endif // __COMMON_PLATFORM_H__

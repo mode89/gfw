@@ -44,7 +44,7 @@ namespace GFW {
             TRACE_ASSERT_GL(glGetShaderInfoLog, shader, infoLogLength, NULL, infoLog);
 
             infoLog[infoLogLength] = 0;
-            TRACE_THROW("Cannot compile the shader\n\n%s\n", infoLog);
+            TRACE_ERR("Cannot compile the shader\n\n%s\n", infoLog);
 
             delete infoLog;
 
@@ -71,7 +71,7 @@ namespace GFW {
             char * infoLog = new char8_t [infoLogLength + 1];
             TRACE_ASSERT_GL(glGetProgramInfoLog, program, infoLogLength, NULL, infoLog);
 
-            TRACE_THROW("Cannot link the program\n\n%s\n", infoLog);
+            TRACE_ERR("Cannot link the program\n\n%s\n", infoLog);
 
             delete infoLog;
 
@@ -89,8 +89,11 @@ namespace GFW {
         mReflection = std::make_shared<ShaderReflection>( mHandle, device );
 
 #if PLAT_DEBUG
+#pragma warning( push )
+#pragma warning( disable : 4996 )
         mSource = new char [ std::strlen( source ) + 1 ];
         std::strcpy( mSource, source );
+#pragma warning( pop )
 #endif
     }
 

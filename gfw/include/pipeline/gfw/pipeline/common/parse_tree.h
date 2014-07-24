@@ -1,7 +1,11 @@
 #ifndef __GFW_PIPELINE_COMMON_PARSE_TREE_H__
 #define __GFW_PIPELINE_COMMON_PARSE_TREE_H__
 
+#pragma warning( push )
+#pragma warning( disable : 4548 4625 4626 4640 )
 #include "boost/filesystem.hpp"
+#pragma warning( pop )
+
 #include <memory>
 #include <string>
 #include <vector>

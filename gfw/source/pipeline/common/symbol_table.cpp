@@ -33,6 +33,8 @@ namespace GFW {
             return true;
         }
 
+        CollectReferencedSymbolsVisitor operator= ( const CollectReferencedSymbolsVisitor & );
+
     private:
         const SymbolTable &  mSymbolTable;
         SymbolReferenceVec & mReferences;

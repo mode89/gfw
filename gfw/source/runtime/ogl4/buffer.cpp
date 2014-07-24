@@ -66,7 +66,7 @@ namespace GFW {
         TRACE_ASSERT((mapFlags & (MAP_FLAG_READ | MAP_FLAG_WRITE)) != 0);
         TRACE_ASSERT(mDevice.lock()->GetCurrentContext());
 
-        uint32_t access;
+        uint32_t access = 0;
         if (mapFlags & MAP_FLAG_READ && mapFlags & MAP_FLAG_WRITE)
         {
             access = GL_READ_WRITE;
