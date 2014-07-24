@@ -1,4 +1,5 @@
 #include "common/trace.h"
+#include "gfw/pipeline/common/effect_builder_exception.h"
 #include "gfw/pipeline/common/parse_tree.h"
 #include "FXLexer.h"
 #include "FXParser.h"
@@ -21,45 +22,32 @@ namespace GFW {
 
     std::shared_ptr< const ParseTree > CreateParseTree( const boost::filesystem::path & filePath )
     {
-        pANTLR3_UINT8               fName       = (pANTLR3_UINT8) filePath.c_str();
-        pANTLR3_INPUT_STREAM        inputStream = NULL;
-        pFXLexer                    lexer       = NULL;
-        pANTLR3_COMMON_TOKEN_STREAM tokenStream = NULL;
-        pFXParser                   parser      = NULL;
-        std::shared_ptr< ParseTree > tree;
+        pANTLR3_UINT8 filePathString = (pANTLR3_UINT8) filePath.c_str();
 
-        inputStream = antlr3FileStreamNew( fName, ANTLR3_ENC_8BIT );
-        if ( inputStream != NULL )
-        {
-            lexer = FXLexerNew( inputStream );
-            if ( lexer != NULL )
-            {
-                tokenStream = antlr3CommonTokenStreamSourceNew( ANTLR3_SIZE_HINT, TOKENSOURCE( lexer ) );
-                if ( tokenStream != NULL)
-                {
-                    parser = FXParserNew( tokenStream );
-                    if ( parser != NULL )
-                    {
-                        FXParser_translation_unit_return ast = parser->translation_unit( parser );
-                        if ( parser->pParser->rec->state->errorCount == 0 )
-                        {
-                            tree = std::make_shared<ParseTree>( ast.tree );
-                        }
-                    }
-                    parser->free( parser );
-                }
-                lexer->free( lexer );
-            }
-            inputStream->close( inputStream );
-        }
+        std::shared_ptr< ANTLR3_INPUT_STREAM > inputStream(
+            antlr3FileStreamNew( filePathString, ANTLR3_ENC_8BIT ),
+            [] ( ANTLR3_INPUT_STREAM * stream ) { stream->close( stream ); } );
+        TRACE_THROW_IF( !inputStream, EffectBuilderException::ParsingError() );
 
-        TRACE_ASSERT( inputStream != NULL );
-        TRACE_ASSERT( lexer != NULL );
-        TRACE_ASSERT( tokenStream != NULL );
-        TRACE_ASSERT( parser != NULL );
-        TRACE_ASSERT( tree != NULL );
+        std::shared_ptr< FXLexer > lexer(
+            FXLexerNew( inputStream.get() ),
+            [] ( FXLexer * lexer ) { lexer->free( lexer ); } );
+        TRACE_THROW_IF( !lexer, EffectBuilderException::ParsingError() );
 
-        return tree;
+        std::shared_ptr< ANTLR3_COMMON_TOKEN_STREAM > tokenStream(
+            antlr3CommonTokenStreamSourceNew( ANTLR3_SIZE_HINT, TOKENSOURCE( lexer.get() ) ),
+            [] ( ANTLR3_COMMON_TOKEN_STREAM * stream ) { stream->free( stream ); } );
+        TRACE_THROW_IF( !tokenStream, EffectBuilderException::ParsingError() );
+
+        std::shared_ptr< FXParser > parser(
+            FXParserNew( tokenStream.get() ),
+            [] ( FXParser * parser ) { parser->free( parser ); } );
+        TRACE_THROW_IF( !parser, EffectBuilderException::ParsingError() );
+
+        FXParser_translation_unit_return ast = parser->translation_unit( parser.get() );
+        TRACE_THROW_IF( parser->pParser->rec->state->errorCount != 0, EffectBuilderException::ParsingError() );
+
+        return std::make_shared< ParseTree >( ast.tree );
     }
 
     ParseTree::ParseTree( void * nativeTree )

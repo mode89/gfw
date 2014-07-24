@@ -1,5 +1,6 @@
 #include "common/trace.h"
 #include "gfw/pipeline/common/effect_builder.h"
+#include "gfw/pipeline/common/effect_builder_exception.h"
 #include "gfw/pipeline/common/parse_tree.h"
 #include "gfw/pipeline/common/symbol_table.h"
 #include "gfw/pipeline/shader_builder.h"
@@ -91,34 +92,34 @@ namespace GFW {
                 const std::string & name = compiledShader.GetChild( 1 ).GetText();
                 const std::string & profile = compiledShader.GetChild( 0 ).GetText();
 
-                try
-                {
-                    // Allocate a shader binary
-                    mEffectBinary->mShaderTable.emplace_back();
-                    ShaderBinary & shaderBinary = mEffectBinary->mShaderTable.back();
+                // Allocate a shader binary
+                mEffectBinary->mShaderTable.emplace_back();
+                ShaderBinary & shaderBinary = mEffectBinary->mShaderTable.back();
 
-                    // Compile the shader
+                // Compile the shader
+                try {
                     mShaderBuilder.lock()->Build( shaderBinary, name, profile );
-
-                    PassBinary & pass = mEffectBinary->mTechniques.back().mPasses.back();
-
-                    const ParseTree & shaderType = tree.GetChild( 0 );
-                    switch ( shaderType.GetTokenType() )
-                    {
-                    case TOKEN_SET_VERTEX_SHADER:
-                        pass.mShaders[ ShaderStage::VERTEX ] = &shaderBinary;
-                        break;
-                    case TOKEN_SET_PIXEL_SHADER:
-                        pass.mShaders[ ShaderStage::PIXEL ] = &shaderBinary;
-                        break;
-                    default:
-                        TRACE_FAIL();
-                        break;
-                    }
+                } catch ( std::exception  e ) {
+                    TRACE_ERR( e.what() );
+                    TRACE_THROW( EffectBuilderException::ShaderBuilderError( name.c_str() ) );
+                } catch ( ... ) {
+                    TRACE_ERR( "Unrocegnized ShaderBuilder exception." );
                 }
-                catch (...)
+
+                PassBinary & pass = mEffectBinary->mTechniques.back().mPasses.back();
+
+                const ParseTree & shaderType = tree.GetChild( 0 );
+                switch ( shaderType.GetTokenType() )
                 {
-                    TRACE_THROW( "Failed to build the shader '%s'.", name.c_str() );
+                case TOKEN_SET_VERTEX_SHADER:
+                    pass.mShaders[ ShaderStage::VERTEX ] = &shaderBinary;
+                    break;
+                case TOKEN_SET_PIXEL_SHADER:
+                    pass.mShaders[ ShaderStage::PIXEL ] = &shaderBinary;
+                    break;
+                default:
+                    TRACE_FAIL();
+                    break;
                 }
             }
             else
