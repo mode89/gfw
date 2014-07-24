@@ -34,14 +34,4 @@ namespace Common {
         std::cerr << message;
     }
 
-    Exception::Exception( const char * file, unsigned line, const char * format, ... )
-    {
-        char * message = mWhat + sprintf( mWhat, "%s(%d) : Exception : ", file, line );
-
-        va_list args;
-        va_start( args, format );
-        vsprintf( message, format, args );
-        va_end( args );
-    }
-
 } // namespace Trace

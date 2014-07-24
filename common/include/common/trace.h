@@ -81,9 +81,9 @@
 
 // Exceptions
 
-#define TRACE_THROW( ... ) \
+#define TRACE_THROW( type ) \
     TRACE_DEBUG_BREAK(); \
-    throw Common::Exception( __FILE__, __LINE__, __VA_ARGS__ )
+    throw type
 
 namespace Common {
 
@@ -92,18 +92,6 @@ namespace Common {
     void TraceMessage( const char * format, ... );
 
     void TraceError( const char * format, ... );
-
-    class Exception : public std::exception
-    {
-    public:
-        Exception( const char * file, std::uint32_t line, const char * fmt, ... );
-
-        virtual const char *
-        what() const PLAT_NOEXCEPT( true ) { return mWhat; }
-
-    private:
-        char    mWhat[ 4096 ];
-    };
 
 } // namespace Common
 
