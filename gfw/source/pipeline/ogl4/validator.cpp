@@ -11,7 +11,7 @@
     func( __VA_ARGS__ );        \
     if ( glGetError() )         \
     {                           \
-        TRACE_FAIL();           \
+        CMN_FAIL();           \
     }                           \
 
 namespace GFW {
@@ -158,7 +158,7 @@ PLAT_WARNING_POP
                 shaderType = GL_FRAGMENT_SHADER;
                 break;
             default:
-                TRACE_FAIL();
+                CMN_FAIL();
             }
 
             uint32_t shader = VGL( glCreateShader, shaderType );

@@ -26,7 +26,7 @@ namespace GFW {
             VGL( glPolygonMode, GL_FRONT_AND_BACK, GL_FILL );
             break;
         default:
-            TRACE_FAIL();
+            CMN_FAIL();
             VGL( glPolygonMode, GL_FRONT_AND_BACK, GL_FILL );
             break;
         }
@@ -49,7 +49,7 @@ namespace GFW {
             VGL( glDisable, GL_CULL_FACE );
             break;
         default:
-            TRACE_FAIL();
+            CMN_FAIL();
             VGL( glDisable, GL_CULL_FACE );
             break;
         }
@@ -66,7 +66,7 @@ namespace GFW {
             VGL( glDisable, GL_POLYGON_OFFSET_LINE );
             break;
         default:
-            TRACE_FAIL();
+            CMN_FAIL();
             VGL( glEnable, GL_POLYGON_OFFSET_FILL );
             VGL( glDisable, GL_POLYGON_OFFSET_LINE );
             break;

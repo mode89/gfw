@@ -15,7 +15,7 @@ namespace GFW {
         case ShaderStage::PIXEL:
             return GL_FRAGMENT_SHADER;
         default:
-            TRACE_FAIL();
+            CMN_FAIL();
         }
 
         return 0;
@@ -30,7 +30,7 @@ namespace GFW {
         case ShaderStage::PIXEL:
             return GL_FRAGMENT_SHADER_BIT;
         default:
-            TRACE_FAIL();
+            CMN_FAIL();
         }
 
         return 0;

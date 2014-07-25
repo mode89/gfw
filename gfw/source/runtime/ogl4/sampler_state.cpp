@@ -29,7 +29,7 @@ namespace GFW {
         #undef F
 
         default:
-            TRACE_FAIL();
+            CMN_FAIL();
         }
 
         return 0;
@@ -48,7 +48,7 @@ namespace GFW {
         #undef F
 
         default:
-            TRACE_FAIL();
+            CMN_FAIL();
         }
 
         return 0;
@@ -67,7 +67,7 @@ namespace GFW {
         case ADDRESSMODE_WRAP:
             return GL_REPEAT;
         default:
-            TRACE_FAIL();
+            CMN_FAIL();
         }
 
         return 0;
@@ -86,7 +86,7 @@ namespace GFW {
         #undef F
 
         default:
-            TRACE_FAIL();
+            CMN_FAIL();
         }
 
         return 0;
@@ -113,7 +113,7 @@ namespace GFW {
         case COMPARE_NOT_EQUAL:
             return GL_NOTEQUAL;
         default:
-            TRACE_FAIL();
+            CMN_FAIL();
         }
 
         return 0;

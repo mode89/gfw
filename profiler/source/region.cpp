@@ -44,7 +44,7 @@ namespace Profiler {
             break;
 
         default:
-            TRACE_FAIL();
+            CMN_FAIL();
         }
     }
 

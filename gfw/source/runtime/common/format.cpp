@@ -24,7 +24,7 @@ namespace GFW {
         #undef F
 
         default:
-            TRACE_FAIL();
+            CMN_FAIL();
         }
 
         return 0;
@@ -39,7 +39,7 @@ namespace GFW {
         #undef F
 
         default:
-            TRACE_FAIL();
+            CMN_FAIL();
         }
 
         return TYPE_UNKNOWN;
@@ -54,7 +54,7 @@ namespace GFW {
         #undef T
 
         default:
-            TRACE_FAIL();
+            CMN_FAIL();
         }
 
         return 0;

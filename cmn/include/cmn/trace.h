@@ -26,13 +26,13 @@
         Cmn::TraceError( "\n" ); \
         TRACE_DEBUG_BREAK()
 
-    #define TRACE_FAIL() \
+    #define CMN_FAIL() \
         Cmn::TraceError( "%s(%d) : Failed", __FILE__, __LINE__ ); \
         Cmn::TraceError( "\n" ); \
         TRACE_DEBUG_BREAK()
 #else
     #define CMN_FAIL_MSG( ... )
-    #define TRACE_FAIL()
+    #define CMN_FAIL()
 #endif // PLAT_DEBUG
 
 // Assertion

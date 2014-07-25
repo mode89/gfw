@@ -22,7 +22,7 @@ namespace GFW {
         case BLEND_FACTOR_INV_DEST_COLOR:   return GL_ONE_MINUS_DST_COLOR;
         case BLEND_FACTOR_SRC_ALPHA_SAT:    return GL_SRC_ALPHA_SATURATE;
         default:
-            TRACE_FAIL();
+            CMN_FAIL();
         }
 
         return GL_ZERO;
@@ -38,7 +38,7 @@ namespace GFW {
         case BLEND_OP_MIN:                  return GL_MIN;
         case BLEND_OP_MAX:                  return GL_MAX;
         default:
-            TRACE_FAIL();
+            CMN_FAIL();
         }
 
         return GL_FUNC_ADD;

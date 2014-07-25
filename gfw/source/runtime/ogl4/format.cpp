@@ -25,7 +25,7 @@ namespace GFW {
         case TYPE_UBYTE:
             return GL_UNSIGNED_BYTE;
         default:
-            TRACE_FAIL();
+            CMN_FAIL();
         }
 
         return 0;
@@ -45,7 +45,7 @@ namespace GFW {
         case PRIM_TRIANGLES_STRIP:
             return GL_TRIANGLE_STRIP;
         default:
-            TRACE_FAIL();
+            CMN_FAIL();
         }
 
         return 0;

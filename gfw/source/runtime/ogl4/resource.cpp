@@ -16,7 +16,7 @@ namespace GFW {
         case USAGE_DYNAMIC:
             return GL_DYNAMIC_DRAW;
         default:
-            TRACE_FAIL();
+            CMN_FAIL();
         }
 
         return 0;

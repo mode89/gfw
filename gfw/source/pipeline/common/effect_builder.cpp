@@ -118,13 +118,13 @@ namespace GFW {
                     pass.mShaders[ ShaderStage::PIXEL ] = &shaderBinary;
                     break;
                 default:
-                    TRACE_FAIL();
+                    CMN_FAIL();
                     break;
                 }
             }
             else
             {
-                TRACE_FAIL();
+                CMN_FAIL();
             }
 
             return false;

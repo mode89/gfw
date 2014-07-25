@@ -19,7 +19,7 @@ namespace GFW {
         case COMPARE_GREATER_EQUAL:     return GL_GEQUAL;
         case COMPARE_ALWAYS:            return GL_ALWAYS;
         default:
-            TRACE_FAIL();
+            CMN_FAIL();
         }
 
         return GL_LEQUAL;
@@ -38,7 +38,7 @@ namespace GFW {
             case STENCIL_OP_INCR:       return GL_INCR;
             case STENCIL_OP_DECR:       return GL_DECR;
             default:
-                TRACE_FAIL();
+                CMN_FAIL();
         }
 
         return GL_KEEP;

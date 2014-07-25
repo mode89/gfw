@@ -18,7 +18,7 @@ namespace GFW {
         case BUFFER_VERTEX:     return GL_ARRAY_BUFFER;
         case BUFFER_INDEX:      return GL_ELEMENT_ARRAY_BUFFER;
         case BUFFER_PIXEL:      return GL_PIXEL_UNPACK_BUFFER;
-        default:                TRACE_FAIL();
+        default:                CMN_FAIL();
         }
 
         return 0;
