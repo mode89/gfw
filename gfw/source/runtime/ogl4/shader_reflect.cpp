@@ -42,7 +42,7 @@ namespace GFW {
             VAR_TYPES
 #undef T
         default:
-            TRACE_FAIL_MSG("Undefined variable type");
+            CMN_FAIL_MSG( "Undefined variable type" );
         }
 
         return SHADER_VAR_TYPE_UNKNOWN;
@@ -56,7 +56,7 @@ namespace GFW {
             VAR_TYPES
 #undef T
         default:
-            TRACE_FAIL_MSG("Undefined variable type");
+            CMN_FAIL_MSG( "Undefined variable type" );
         }
 
         return 0;
@@ -83,7 +83,7 @@ namespace GFW {
             SAMPLER_TYPES
 #undef T
         default:
-            TRACE_FAIL_MSG("Undefined type of the sampler");
+            CMN_FAIL_MSG( "Undefined type of the sampler" );
         }
 
         return SHADER_RES_DIM_UNKNOWN;
@@ -205,7 +205,7 @@ namespace GFW {
             }
             else
             {
-                TRACE_FAIL_MSG("Undefined type of the uniform");
+                CMN_FAIL_MSG( "Undefined type of the uniform" );
             }
         }
 

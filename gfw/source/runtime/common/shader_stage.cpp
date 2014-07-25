@@ -13,7 +13,7 @@ namespace GFW {
         case ShaderStage::PIXEL:
             return "PIXEL";
         default:
-            TRACE_FAIL_MSG("Unknown stage");
+            CMN_FAIL_MSG( "Unknown stage" );
         }
 
         return NULL;

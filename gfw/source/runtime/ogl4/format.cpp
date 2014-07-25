@@ -60,7 +60,7 @@ namespace GFW {
 #undef F
 
         default:
-            TRACE_FAIL_MSG("Unsupported format");
+            CMN_FAIL_MSG( "Unsupported format" );
         }
 
         return 0;
@@ -75,7 +75,7 @@ namespace GFW {
 #undef F
 
         default:
-            TRACE_FAIL_MSG("Unsupported format");
+            CMN_FAIL_MSG( "Unsupported format" );
         }
 
         return 0;

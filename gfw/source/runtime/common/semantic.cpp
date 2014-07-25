@@ -16,7 +16,7 @@ namespace GFW {
 #undef SI
 #undef S
         default:
-            TRACE_FAIL_MSG("Unknown semantic");
+            CMN_FAIL_MSG( "Unknown semantic" );
         }
         return NULL;
     }

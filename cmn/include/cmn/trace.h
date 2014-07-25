@@ -20,7 +20,7 @@
 // Failing
 
 #if PLAT_DEBUG
-    #define TRACE_FAIL_MSG( ... ) \
+    #define CMN_FAIL_MSG( ... ) \
         Cmn::TraceError( "%s(%d) : Failed : ", __FILE__, __LINE__ ); \
         Cmn::TraceError( __VA_ARGS__ ); \
         Cmn::TraceError( "\n" ); \
@@ -31,7 +31,7 @@
         Cmn::TraceError( "\n" ); \
         TRACE_DEBUG_BREAK()
 #else
-    #define TRACE_FAIL_MSG( ... )
+    #define CMN_FAIL_MSG( ... )
     #define TRACE_FAIL()
 #endif // PLAT_DEBUG
 

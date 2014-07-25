@@ -33,18 +33,18 @@ namespace GFW {
 
     void * Texture::Map(uint32_t mapFlags)
     {
-        TRACE_FAIL_MSG("Not yet implemented");
+        CMN_FAIL_MSG( "Not yet implemented" );
         return NULL;
     }
 
     void Texture::Unmap()
     {
-        TRACE_FAIL_MSG("Not yet implemented");
+        CMN_FAIL_MSG( "Not yet implemented" );
     }
 
     void Texture::UpdateSubresource(const void * data, uint32_t subResourceIndex)
     {
-        TRACE_FAIL_MSG("Not yet implemented");
+        CMN_FAIL_MSG( "Not yet implemented" );
     }
 
 } // namespace GFW
