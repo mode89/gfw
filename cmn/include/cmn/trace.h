@@ -9,12 +9,12 @@
 
 #if PLAT_DEBUG
     #if PLAT_COMPILER_MSVC
-        #define TRACE_DEBUG_BREAK()     __debugbreak()
+        #define CMN_DEBUG_BREAK()     __debugbreak()
     #elif PLAT_COMPILER_MINGW
-        #define TRACE_DEBUG_BREAK()     asm("int $3")
+        #define CMN_DEBUG_BREAK()     asm("int $3")
     #endif // Determine the compiler
 #else
-    #define TRACE_DEBUG_BREAK()
+    #define CMN_DEBUG_BREAK()
 #endif
 
 // Failing
@@ -24,12 +24,12 @@
         Cmn::TraceError( "%s(%d) : Failed : ", __FILE__, __LINE__ ); \
         Cmn::TraceError( __VA_ARGS__ ); \
         Cmn::TraceError( "\n" ); \
-        TRACE_DEBUG_BREAK()
+        CMN_DEBUG_BREAK()
 
     #define CMN_FAIL() \
         Cmn::TraceError( "%s(%d) : Failed", __FILE__, __LINE__ ); \
         Cmn::TraceError( "\n" ); \
-        TRACE_DEBUG_BREAK()
+        CMN_DEBUG_BREAK()
 #else
     #define CMN_FAIL_MSG( ... )
     #define CMN_FAIL()
@@ -43,7 +43,7 @@
         { \
             Cmn::TraceError( "%s(%d) : Assertion failed : %s", __FILE__, __LINE__, #expr ); \
             Cmn::TraceError( "\n" ); \
-            TRACE_DEBUG_BREAK(); \
+            CMN_DEBUG_BREAK(); \
         }
 
     #define TRACE_ASSERT_MSG( expr, ... ) \
@@ -52,7 +52,7 @@
             Cmn::TraceError( "%s(%d) : Assertion failed : %s : ", __FILE__, __LINE__, #expr ); \
             Cmn::TraceError( __VA_ARGS__ ); \
             Cmn::TraceError( "\n" ); \
-            TRACE_DEBUG_BREAK(); \
+            CMN_DEBUG_BREAK(); \
         }
 
     #define TRACE_ASSERT_AND( expr, var ) \
@@ -61,7 +61,7 @@
         { \
             Cmn::TraceError( "%s(%d) : Assertion failed : %s", __FILE__, __LINE__, #expr ); \
             Cmn::TraceError( "\n" ); \
-            TRACE_DEBUG_BREAK(); \
+            CMN_DEBUG_BREAK(); \
         }
 #else
     #define CMN_ASSERT( expr )
@@ -82,7 +82,7 @@
 // Exceptions
 
 #define TRACE_THROW( type ) \
-    TRACE_DEBUG_BREAK(); \
+    CMN_DEBUG_BREAK(); \
     throw type
 
 #define TRACE_THROW_IF( expr, type ) \
