@@ -26,4 +26,4 @@ add_custom_command(
     TARGET gfw_runtime-tests
     POST_BUILD
     COMMAND gfw_fxc -o "${GFW_RUNTIME_TESTS_BINARY_DIR}/draw.fxc" -fx "${GFW_TESTS_DATA_DIR}/draw.fx"
-    COMMENT Building draw.fx )
+    COMMENT "Building draw.fx" )
