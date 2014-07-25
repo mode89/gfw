@@ -1,4 +1,4 @@
-#include "common/trace.h"
+#include "cmn/trace.h"
 
 #include "gfw/base/device_child.h"
 #include "gfw/base/resource.h"

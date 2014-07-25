@@ -1,7 +1,7 @@
 #ifndef __PROFILER_MANAGER_H__
 #define __PROFILER_MANAGER_H__
 
-#include "common/platform.h"
+#include "cmn/platform.h"
 #include "profiler/event_bucket.h"
 #include "profiler/region.h"
 

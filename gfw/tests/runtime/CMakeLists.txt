@@ -12,7 +12,7 @@ include_directories( ${GFW_ROOT}/include/base ${GFW_ROOT}/include/shared )
 
 target_link_libraries( gfw_runtime-tests gfw_runtime )
 
-find_package( common CONFIG )
+find_package( cmn CONFIG )
 target_link_libraries( gfw_runtime-tests ${COMMON_LIBS} )
 include_directories( ${COMMON_INCLUDE_DIRS} )
 

@@ -1,7 +1,7 @@
 #ifndef __GFW_PIPELINE_COMMON_PARSE_TREE_H__
 #define __GFW_PIPELINE_COMMON_PARSE_TREE_H__
 
-#include "common/platform.h"
+#include "cmn/platform.h"
 
 PLAT_WARNING_PUSH
 PLAT_WARNING_DISABLE_MSVC( 4548 4625 4626 4640 )

@@ -1,7 +1,7 @@
 #ifndef __PROFILER_TOKEN_H__
 #define __PROFILER_TOKEN_H__
 
-#include "common/typedefs.h"
+#include "cmn/typedefs.h"
 
 namespace Profiler {
 

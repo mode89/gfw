@@ -1,4 +1,4 @@
-#include "common/trace.h"
+#include "cmn/trace.h"
 #include "gfw/base/shader_stage.h"
 #include "gfw/pipeline/common/parse_tree.h"
 #include "gfw/pipeline/common/symbol.h"

@@ -1,7 +1,7 @@
 #ifndef __GFW_RUNTIME_CORE_DEVICE_H__
 #define __GFW_RUNTIME_CORE_DEVICE_H__
 
-#include "common/platform.h"
+#include "cmn/platform.h"
 
 #include "gfw/base/context.h"
 #include "gfw/base/device.h"

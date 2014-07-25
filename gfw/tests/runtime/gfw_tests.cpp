@@ -1,4 +1,4 @@
-#include "common/counter.h"
+#include "cmn/counter.h"
 
 #include "gfw_tests.h"
 

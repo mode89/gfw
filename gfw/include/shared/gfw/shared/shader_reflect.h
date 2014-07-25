@@ -1,7 +1,7 @@
 #ifndef __GFW_SHARED_SHADER_REFLECT_H__
 #define __GFW_SHARED_SHADER_REFLECT_H__
 
-#include "common/typedefs.h"
+#include "cmn/typedefs.h"
 
 #include "gfw/shared/semantic.h"
 

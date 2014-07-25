@@ -1,7 +1,7 @@
 #ifndef __GFW_RUNTIME_CORE_FUNCTIONS_H__
 #define __GFW_RUNTIME_CORE_FUNCTIONS_H__
 
-#include "common/platform.h"
+#include "cmn/platform.h"
 
 #include "opengl/glcorearb.h"
 

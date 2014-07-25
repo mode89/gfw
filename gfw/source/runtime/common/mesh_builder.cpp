@@ -1,4 +1,4 @@
-#include "common/trace.h"
+#include "cmn/trace.h"
 #include "gfw/base/buffer.h"
 #include "gfw/base/device.h"
 #include "gfw/base/input_layout.h"

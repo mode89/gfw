@@ -1,4 +1,4 @@
-#include "common/trace.h"
+#include "cmn/trace.h"
 #include "gfw/pipeline/common/effect_builder_exception.h"
 #include "gfw/pipeline/common/parse_tree.h"
 #include "FXLexer.h"

@@ -1,7 +1,7 @@
 #ifndef __PROFILER_REGION_H__
 #define __PROFILER_REGION_H__
 
-#include "common/typedefs.h"
+#include "cmn/typedefs.h"
 #include "profiler/token.h"
 #include "profiler/event.h"
 

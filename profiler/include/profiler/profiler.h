@@ -1,8 +1,8 @@
 #ifndef __PROFILER_PROFILER_H__
 #define __PROFILER_PROFILER_H__
 
-#include "common/typedefs.h"
-#include "common/platform.h"
+#include "cmn/typedefs.h"
+#include "cmn/platform.h"
 #include "profiler/meson.h"
 #include "profiler/token.h"
 

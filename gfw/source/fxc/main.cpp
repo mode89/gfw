@@ -1,4 +1,4 @@
-#include "common/platform.h"
+#include "cmn/platform.h"
 
 PLAT_WARNING_PUSH
 PLAT_WARNING_DISABLE_MSVC( 4242 4265 4310 4365 4619 4625 4626 4640 )
@@ -8,7 +8,7 @@ PLAT_WARNING_DISABLE_GCC( unused-local-typedefs )
 #include "boost/serialization/vector.hpp"
 PLAT_WARNING_POP
 
-#include "common/trace.h"
+#include "cmn/trace.h"
 #include "gfw/pipeline/common/effect_builder.h"
 #include "gfw/shared/effect.h"
 #include "gfw/shared/pass.h"

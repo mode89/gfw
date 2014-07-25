@@ -11,7 +11,7 @@ namespace GFW {
         C( ParsingError, "Failed to build a parsing tree." ) \
         C( ShaderBuilderError, "Failed to build the shader '%s'." ) \
 
-    #include "common/exception.inl"
+    #include "cmn/exception.inl"
 
     #undef EXCEPTION_NAMESPACE
     #undef EXCEPTION_CODES

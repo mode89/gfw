@@ -12,7 +12,7 @@ namespace GFW {
         C( UndefinedSamplerObject, "Failed to find sampler object '%s' in the global scope." ) \
         C( ValidationError, "Failed to validate the shader." ) \
 
-    #include "common/exception.inl"
+    #include "cmn/exception.inl"
 
     #undef EXCEPTION_NAMESPACE
     #undef EXCEPTION_CODES

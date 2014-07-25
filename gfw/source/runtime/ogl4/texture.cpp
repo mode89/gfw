@@ -1,4 +1,4 @@
-#include "common/trace.h"
+#include "cmn/trace.h"
 #include "gfw/runtime/core/device.h"
 #include "gfw/runtime/core/format.h"
 #include "gfw/runtime/core/functions.h"

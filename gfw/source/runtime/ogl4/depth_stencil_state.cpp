@@ -1,4 +1,4 @@
-#include "common/trace.h"
+#include "cmn/trace.h"
 #include "gfw/runtime/common/device_child.inl"
 #include "gfw/runtime/core/depth_stencil_state.h"
 #include "gfw/runtime/core/device.h"

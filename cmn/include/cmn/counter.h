@@ -1,7 +1,7 @@
 #ifndef __COMMON_COUNTER_H__
 #define __COMMON_COUNTER_H__
 
-#include "common/typedefs.h"
+#include "cmn/typedefs.h"
 
 namespace Common {
 

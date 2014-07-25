@@ -15,7 +15,7 @@ include_directories(
     ${GFW_ROOT}/include/shared
     )
 
-find_package( common CONFIG )
+find_package( cmn CONFIG )
 target_link_libraries( gfw_pipeline-tests ${COMMON_LIBS} )
 include_directories( ${COMMON_INCLUDE_DIRS} )
 

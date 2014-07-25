@@ -1,5 +1,5 @@
-#include "common/platform.h"
-#include "common/counter.h"
+#include "cmn/platform.h"
+#include "cmn/counter.h"
 
 #if PLAT_WIN32
 

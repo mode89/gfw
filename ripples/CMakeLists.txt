@@ -7,7 +7,7 @@ file( GLOB RIPPLES_SOURCE_FILES source/*.cpp )
 add_executable( ripples ${RIPPLES_SOURCE_FILES} )
 include_directories( include )
 
-find_package( common CONFIG )
+find_package( cmn CONFIG )
 target_link_libraries( ripples ${COMMON_LIBS} )
 include_directories( ${COMMON_INCLUDE_DIRS} )
 

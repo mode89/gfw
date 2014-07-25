@@ -12,7 +12,7 @@ include_directories(
     ${GFW_ROOT}/include/shared
     )
 
-find_package( common CONFIG )
+find_package( cmn CONFIG )
 include_directories( ${COMMON_INCLUDE_DIRS} )
 
 find_package( boost CONFIG )

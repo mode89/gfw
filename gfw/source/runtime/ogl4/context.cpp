@@ -1,5 +1,5 @@
-#include "common/trace.h"
-#include "common/crc32.h"
+#include "cmn/trace.h"
+#include "cmn/crc32.h"
 #include "gfw/runtime/common/device_child.inl"
 #include "gfw/runtime/common/format.h"
 #include "gfw/runtime/common/semantic.h"

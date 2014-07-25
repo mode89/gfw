@@ -1,5 +1,5 @@
-#include "common/trace.h"
-#include "common/counter.h"
+#include "cmn/trace.h"
+#include "cmn/counter.h"
 
 #include "profiler/logger.h"
 #include "profiler/config.h"

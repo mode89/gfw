@@ -1,4 +1,4 @@
-#include "common/trace.h"
+#include "cmn/trace.h"
 #include "gfw/base/shader_stage.h"
 #include "gfw/pipeline/shader_builder_exception.h"
 #include "gfw/pipeline/validator.h"

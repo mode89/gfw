@@ -10,6 +10,6 @@ source_group("Include" FILES ${PROFILER_HEADER_FILES})
 add_library(profiler ${PROFILER_SOURCE_FILES} ${PROFILER_HEADER_FILES})
 include_directories(include)
 
-find_package(common CONFIG)
+find_package(cmn CONFIG)
 target_link_libraries(profiler ${COMMON_LIBS})
 include_directories(${COMMON_INCLUDE_DIRS})

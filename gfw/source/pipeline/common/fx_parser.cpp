@@ -1,6 +1,6 @@
 // This file is added to build the generated parser
 
-#include "common/platform.h"
+#include "cmn/platform.h"
 
 PLAT_WARNING_DISABLE_MSVC( 4365 )
 PLAT_WARNING_DEFAULT_MSVC( 4505 )

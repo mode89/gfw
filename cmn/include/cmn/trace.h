@@ -1,7 +1,7 @@
 #ifndef __COMMON_TRACE_H__
 #define __COMMON_TRACE_H__
 
-#include "common\platform.h"
+#include "cmn\platform.h"
 #include <cstdint>
 #include <stdexcept>
 

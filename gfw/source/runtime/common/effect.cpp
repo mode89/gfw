@@ -1,4 +1,4 @@
-#include "common/trace.h"
+#include "cmn/trace.h"
 #include "gfw/base/device.h"
 #include "gfw/runtime/common/effect.h"
 #include "gfw/runtime/common/technique.h"

@@ -1,7 +1,7 @@
 #ifndef __GFW_RUNTIME_CORE_TYPES_FWD_H__
 #define __GFW_RUNTIME_CORE_TYPES_FWD_H__
 
-#include "common/shared_ptr_typedefs.h"
+#include "cmn/shared_ptr_typedefs.h"
 
 #include <memory>
 

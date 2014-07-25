@@ -1,5 +1,5 @@
-#include "common/trace.h"
-#include "common/crc32.h"
+#include "cmn/trace.h"
+#include "cmn/crc32.h"
 #include "gfw/runtime/core/device.h"
 #include "gfw/runtime/core/shader.h"
 #include "gfw/runtime/core/shader_reflect.h"
