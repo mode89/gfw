@@ -27,11 +27,11 @@ namespace GFW {
         , mScreenQuadBuffer(0)
         , mProgramPipeline(0)
         , mEnabledVertexAttributesMask(0)
-        , mDelayedClearState(false)
         , mActiveTexturesDirtyMask(0)
         , mNextActiveTextureUnit(0)
         , mRenderTargetsCount(0)
         , mDrawFramebuffer(0)
+        , mDelayedClearState(false)
     {
         mContextGL = mDrawingContext->CreateContext();
 
@@ -196,7 +196,7 @@ namespace GFW {
 
         // Detach buffers
 
-        for (int i = 0; i < MAX_BIND_VERTEX_BUFFERS; ++ i)
+        for (uint32_t i = 0; i < MAX_BIND_VERTEX_BUFFERS; ++ i)
         {
             mVertexBuffers[i].reset();
         }

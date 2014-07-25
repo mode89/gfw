@@ -342,7 +342,7 @@ TEST_F(GfwTests, MapBuffer)
     {
         // Prepare a random data
 
-        for (int i = 0; i < kDataCount; ++ i)
+        for (uint32_t i = 0; i < kDataCount; ++ i)
         {
             data[i] = rand();
         }
@@ -388,7 +388,7 @@ TEST_F(GfwTests, UpdateBuffer)
     {
         // Prepare a random data
 
-        for (int i = 0; i < kDataCount; ++ i)
+        for ( uint32_t i = 0; i < kDataCount; ++ i )
         {
             data[i] = rand();
         }

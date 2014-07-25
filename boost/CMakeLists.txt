@@ -43,6 +43,14 @@ if ( BOOST_FOUND )
                 " /wd4709"  # Comma operator within array index expression
                 " /wd4996"  # Deprecated function
                 )
+        elseif( MINGW )
+            string( CONCAT CMAKE_CXX_FLAGS
+                ${CMAKE_CXX_FLAGS}
+                " -Wno-reorder"                 # Members must appear in initializer list in the same order as they apear in class
+                " -Wno-unknown-pragmas"         # Unrecognized #pragma
+                " -Wno-unused-but-set-variable" # Local variable is assigned to, but otherwise unused
+                " -Wno-unused-local-typedefs"   # Typedef locally defined in a function is not used
+                )
         endif()
 
     # Boost.Filesystem

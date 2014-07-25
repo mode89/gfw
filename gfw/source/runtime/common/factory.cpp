@@ -1,9 +1,12 @@
-#pragma warning( push )
-#pragma warning( disable : 4242 4244 4265 4365 4619 4625 4626 4640 )
+#include "common/platform.h"
+
+PLAT_WARNING_PUSH
+PLAT_WARNING_DISABLE_MSVC( 4242 4244 4265 4365 4619 4625 4626 4640 )
+PLAT_WARNING_DISABLE_GCC( unused-local-typedefs )
 #include "boost/archive/binary_iarchive.hpp"
 #include "boost/serialization/list.hpp"
 #include "boost/serialization/vector.hpp"
-#pragma warning( pop )
+PLAT_WARNING_POP
 
 #include "common/trace.h"
 #include "gfw/base/buffer.h"

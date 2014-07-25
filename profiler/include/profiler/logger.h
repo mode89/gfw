@@ -1,15 +1,16 @@
 #ifndef __PROFILER_MANAGER_H__
 #define __PROFILER_MANAGER_H__
 
+#include "common/platform.h"
 #include "profiler/event_bucket.h"
 #include "profiler/region.h"
 
 #include <map>
 
-#pragma warning( push )
-#pragma warning( disable : 4265 )
+PLAT_WARNING_PUSH
+PLAT_WARNING_DISABLE_MSVC( 4265 )
 #include <mutex>
-#pragma warning( pop )
+PLAT_WARNING_POP
 
 namespace Profiler {
 

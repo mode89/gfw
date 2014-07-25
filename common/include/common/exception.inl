@@ -1,7 +1,7 @@
 #if defined( EXCEPTION_NAMESPACE ) && defined( EXCEPTION_CODES )
 
-    #pragma warning( push )
-    #pragma warning( disable : 4996 ) // Deprecated function
+    PLAT_WARNING_PUSH
+    PLAT_WARNING_DISABLE_MSVC( 4996 ) // Deprecated function
 
     #define STRINGIFY( val ) #val
 
@@ -29,7 +29,7 @@
     #undef STRINGIFY
     #undef C
 
-    #pragma warning( pop )
+    PLAT_WARNING_POP
 
 #else // defined( EXCEPTION_NAMESPACE ) && defined( EXCEPTION_CODES )
 

@@ -6,7 +6,7 @@
 
 #if PLAT_COMPILER_MSVC
     #include <windows.h>
-    #pragma warning( disable : 4996 ) // Deprecated functions
+    PLAT_WARNING_DISABLE_MSVC( 4996 ) // Deprecated functions
 #endif
 
 namespace Common {

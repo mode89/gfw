@@ -1,10 +1,12 @@
 #ifndef __GFW_PIPELINE_COMMON_PARSE_TREE_H__
 #define __GFW_PIPELINE_COMMON_PARSE_TREE_H__
 
-#pragma warning( push )
-#pragma warning( disable : 4548 4625 4626 4640 )
+#include "common/platform.h"
+
+PLAT_WARNING_PUSH
+PLAT_WARNING_DISABLE_MSVC( 4548 4625 4626 4640 )
 #include "boost/filesystem.hpp"
-#pragma warning( pop )
+PLAT_WARNING_POP
 
 #include <memory>
 #include <string>

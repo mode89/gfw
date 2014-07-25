@@ -8,10 +8,10 @@
 #include "gfw/base/render_target.h"
 #include "gfw/runtime/core/types_fwd.h"
 
-#pragma warning( push )
-#pragma warning( disable : 4265 )
+PLAT_WARNING_PUSH
+PLAT_WARNING_DISABLE_MSVC( 4265 )
 #include <mutex>
-#pragma warning( pop )
+PLAT_WARNING_POP
 
 namespace GFW {
 

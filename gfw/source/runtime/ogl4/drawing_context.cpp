@@ -55,13 +55,13 @@ namespace GFW {
         if (mDefaultContext != NULL)
         {
             BOOL res = wglDeleteContext(mDefaultContext);
-            TRACE_ASSERT(res == TRUE);
+            TRACE_ASSERT( res == TRUE ); PLAT_UNUSED( res );
         }
 
         if (IsWindow(mWindow) == TRUE)
         {
             BOOL res = ReleaseDC(mWindow, mDC);
-            TRACE_ASSERT(res == TRUE);
+            TRACE_ASSERT(res == TRUE); PLAT_UNUSED( res );
         }
     }
 
@@ -120,7 +120,7 @@ namespace GFW {
         HGLRC hRC = wglCreateContext(mDC);
         TRACE_ASSERT(hRC != NULL);
         BOOL res = wglShareLists(mDefaultContext, hRC);
-        TRACE_ASSERT(res == TRUE);
+        TRACE_ASSERT(res == TRUE); PLAT_UNUSED( res );
         return hRC;
     }
 
@@ -128,7 +128,7 @@ namespace GFW {
     {
         TRACE_ASSERT(context != NULL);
         BOOL res = wglDeleteContext(static_cast<HGLRC>(context));
-        TRACE_ASSERT(res == TRUE);
+        TRACE_ASSERT(res == TRUE); PLAT_UNUSED( res );
     }
 
     void DrawingContext::MakeCurrent(RenderingContext context)

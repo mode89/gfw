@@ -1,7 +1,9 @@
-#pragma warning( push )
-#pragma warning( disable : 4625 4626 )
+#include "common/platform.h"
+
+PLAT_WARNING_PUSH
+PLAT_WARNING_DISABLE_MSVC( 4625 4626 )
 #include "gtest/gtest.h"
-#pragma warning( pop )
+PLAT_WARNING_POP
 
 #include "gfw/pipeline/common/effect_builder.h"
 #include "gfw/shared/effect.h"

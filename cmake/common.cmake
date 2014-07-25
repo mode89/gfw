@@ -67,8 +67,16 @@ endif()
     elseif ( MINGW )
 
         string( CONCAT WFLAGS
-            "-Wall "    # Enable warnings
+            "-Wall "    # Enable most of the warnings
+            "-Wextra "  # Enable extra warnings
             "-Werror "  # Treat all compiler warnings as errors
+
+            # Disabling specific warnings
+            "-Wno-sequence-point "          # Violations of sequence point rules
+            "-Wno-switch "                  # Enumeration value not handled in switch
+            "-Wno-unknown-pragmas "         # Unrecognized #pragma
+            "-Wno-unused-but-set-variable " # Local variable is assigned to, but otherwise not used
+            "-Wno-unused-parameter "        # Unreferenced formal parameter
             )
 
     endif()

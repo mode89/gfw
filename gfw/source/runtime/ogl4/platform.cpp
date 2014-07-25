@@ -80,8 +80,8 @@ namespace GFW {
 
         // Load Windows specific functions
 
-#pragma warning( push )
-#pragma warning( disable : 4191 ) // Unsafe cast from PROC
+PLAT_WARNING_PUSH
+PLAT_WARNING_DISABLE_MSVC( 4191 ) // Unsafe cast from PROC
 
         wglGetProcAddress = reinterpret_cast<PFNWGLGETPROCADDRESS>(GetProcAddress(mLibrary, "wglGetProcAddress"));
         TRACE_ASSERT_AND(wglGetProcAddress != NULL, retVal);
@@ -145,7 +145,7 @@ namespace GFW {
         OPENGL_FUNCTIONS_EXT
 #undef F
 
-#pragma warning( pop )
+PLAT_WARNING_POP
 
         // Release resources
 

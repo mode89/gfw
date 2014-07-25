@@ -89,11 +89,11 @@ namespace GFW {
         mReflection = std::make_shared<ShaderReflection>( mHandle, device );
 
 #if PLAT_DEBUG
-#pragma warning( push )
-#pragma warning( disable : 4996 )
+PLAT_WARNING_PUSH
+PLAT_WARNING_DISABLE_MSVC( 4996 )
         mSource = new char [ std::strlen( source ) + 1 ];
         std::strcpy( mSource, source );
-#pragma warning( pop )
+PLAT_WARNING_POP
 #endif
     }
 
