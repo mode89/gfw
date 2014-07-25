@@ -37,13 +37,13 @@ namespace GFW {
     {
         if (mHandle != 0)
         {
-            TRACE_ASSERT_GL(glDeleteBuffers, 1, &mHandle);
+            VGL( glDeleteBuffers, 1, &mHandle );
         }
     }
 
     bool Buffer::Init( const void * initialData )
     {
-        TRACE_ASSERT_GL(glGenBuffers, 1, &mHandle);
+        VGL( glGenBuffers, 1, &mHandle );
         TRACE_ASSERT(mHandle != 0);
 
         if (mHandle != 0)
@@ -51,9 +51,9 @@ namespace GFW {
             mTarget = GetBufferTarget(mDesc.type);
             uint32_t usage  = GetOGLUsage(mDesc.usage);
 
-            TRACE_ASSERT_GL(glBindBuffer, mTarget, mHandle);
-            TRACE_ASSERT_GL(glBufferData, mTarget, mDesc.size, initialData, usage);
-            TRACE_ASSERT_GL(glBindBuffer, mTarget, 0);
+            VGL( glBindBuffer, mTarget, mHandle );
+            VGL( glBufferData, mTarget, mDesc.size, initialData, usage );
+            VGL( glBindBuffer, mTarget, 0 );
 
             return true;
         }
@@ -80,9 +80,9 @@ namespace GFW {
             access = GL_WRITE_ONLY;
         }
 
-        TRACE_ASSERT_GL(glBindBuffer, mTarget, mHandle);
-        void * retVal = TRACE_ASSERT_GL(glMapBuffer, mTarget, access);
-        TRACE_ASSERT_GL(glBindBuffer, mTarget, 0);
+        VGL( glBindBuffer, mTarget, mHandle );
+        void * retVal = VGL( glMapBuffer, mTarget, access );
+        VGL( glBindBuffer, mTarget, 0 );
 
         return retVal;
     }
@@ -91,9 +91,9 @@ namespace GFW {
     {
         TRACE_ASSERT(mDevice.lock()->GetCurrentContext());
 
-        TRACE_ASSERT_GL(glBindBuffer, mTarget, mHandle);
-        TRACE_ASSERT_GL(glUnmapBuffer, mTarget);
-        TRACE_ASSERT_GL(glBindBuffer, mTarget, 0);
+        VGL( glBindBuffer, mTarget, mHandle );
+        VGL( glUnmapBuffer, mTarget );
+        VGL( glBindBuffer, mTarget, 0 );
     }
 
     void Buffer::UpdateSubresource(const void * data, uint32_t subResourceIndex)
@@ -102,10 +102,10 @@ namespace GFW {
 
         uint32_t usage = GetOGLUsage(mDesc.usage);
 
-        TRACE_ASSERT_GL(glBindBuffer, mTarget, mHandle);
-        TRACE_ASSERT_GL(glBufferData, mTarget, 0, NULL, usage);
-        TRACE_ASSERT_GL(glBufferData, mTarget, mDesc.size, data, usage);
-        TRACE_ASSERT_GL(glBindBuffer, mTarget, 0);
+        VGL( glBindBuffer, mTarget, mHandle );
+        VGL( glBufferData, mTarget, 0, NULL, usage );
+        VGL( glBufferData, mTarget, mDesc.size, data, usage );
+        VGL( glBindBuffer, mTarget, 0 );
     }
 
 } // namespace GFW

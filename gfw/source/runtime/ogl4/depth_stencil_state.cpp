@@ -56,7 +56,7 @@ namespace GFW {
     {
         if (mDesc.stencilEnable)
         {
-            TRACE_ASSERT_GL(glEnable, GL_STENCIL_TEST);
+            VGL( glEnable, GL_STENCIL_TEST );
 
             uint32_t frontStencilFailOp      = DepthStencilState_GetStencilOp(mDesc.frontFace.stencilFailOp);
             uint32_t frontStencilDepthFailOp = DepthStencilState_GetStencilOp(mDesc.frontFace.stencilDepthFailOp);
@@ -76,12 +76,12 @@ namespace GFW {
 
             if (stencilOpSeparation)
             {
-                TRACE_ASSERT_GL(glStencilOpSeparate, GL_FRONT, frontStencilFailOp, frontStencilDepthFailOp, frontStencilPassOp);
-                TRACE_ASSERT_GL(glStencilOpSeparate, GL_BACK , backStencilFailOp , backStencilDepthFailOp , backStencilPassOp);
+                VGL( glStencilOpSeparate, GL_FRONT, frontStencilFailOp, frontStencilDepthFailOp, frontStencilPassOp );
+                VGL( glStencilOpSeparate, GL_BACK , backStencilFailOp , backStencilDepthFailOp , backStencilPassOp );
             }
             else
             {
-                TRACE_ASSERT_GL(glStencilOp, frontStencilFailOp, frontStencilDepthFailOp, frontStencilPassOp);
+                VGL( glStencilOp, frontStencilFailOp, frontStencilDepthFailOp, frontStencilPassOp );
             }
 
             uint32_t stencilFuncSeparation = 0;
@@ -96,40 +96,40 @@ namespace GFW {
             // and the resulting masked values are those that participate in the comparison controlled by 'func'
             if (stencilFuncSeparation)
             {
-                TRACE_ASSERT_GL(glStencilFuncSeparate, GL_FRONT, frontStencilFunc, mDesc.frontFace.stencilRef, mDesc.frontFace.stencilReadMask);
-                TRACE_ASSERT_GL(glStencilFuncSeparate, GL_BACK , backStencilFunc , mDesc.backFace.stencilRef , mDesc.backFace.stencilReadMask);
+                VGL( glStencilFuncSeparate, GL_FRONT, frontStencilFunc, mDesc.frontFace.stencilRef, mDesc.frontFace.stencilReadMask );
+                VGL( glStencilFuncSeparate, GL_BACK , backStencilFunc , mDesc.backFace.stencilRef , mDesc.backFace.stencilReadMask );
             }
             else
             {
-                TRACE_ASSERT_GL(glStencilFunc, frontStencilFunc, mDesc.backFace.stencilRef, mDesc.backFace.stencilReadMask);
+                VGL( glStencilFunc, frontStencilFunc, mDesc.backFace.stencilRef, mDesc.backFace.stencilReadMask );
             }
 
             if (mDesc.frontFace.stencilReadMask != mDesc.backFace.stencilWriteMask)
             {
-                TRACE_ASSERT_GL(glStencilMaskSeparate, GL_FRONT, mDesc.frontFace.stencilWriteMask);
-                TRACE_ASSERT_GL(glStencilMaskSeparate, GL_BACK , mDesc.backFace.stencilWriteMask);
+                VGL( glStencilMaskSeparate, GL_FRONT, mDesc.frontFace.stencilWriteMask );
+                VGL( glStencilMaskSeparate, GL_BACK , mDesc.backFace.stencilWriteMask );
             }
             else
             {
-                TRACE_ASSERT_GL(glStencilMask, mDesc.backFace.stencilWriteMask);
+                VGL( glStencilMask, mDesc.backFace.stencilWriteMask );
             }
         }
         else
         {
-            TRACE_ASSERT_GL(glDisable, GL_STENCIL_TEST);
+            VGL( glDisable, GL_STENCIL_TEST );
         }
 
         if (mDesc.depthEnable)
         {
             uint32_t depthFunc = DepthStencilState_GetCompareFunc(mDesc.depthFunc);
 
-            TRACE_ASSERT_GL(glEnable, GL_DEPTH_TEST);
-            TRACE_ASSERT_GL(glDepthFunc, depthFunc);
-            TRACE_ASSERT_GL(glDepthMask, mDesc.depthWriteEnable);
+            VGL( glEnable, GL_DEPTH_TEST );
+            VGL( glDepthFunc, depthFunc );
+            VGL( glDepthMask, mDesc.depthWriteEnable );
         }
         else
         {
-            TRACE_ASSERT_GL(glDisable, GL_DEPTH_TEST);
+            VGL( glDisable, GL_DEPTH_TEST );
         }
     }
 

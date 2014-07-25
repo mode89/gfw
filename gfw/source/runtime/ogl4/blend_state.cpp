@@ -63,7 +63,7 @@ namespace GFW {
         {
             for (uint32_t i = 1; i < 8; ++i)
             {
-                TRACE_ASSERT_GL(glDisablei, GL_BLEND, i);
+                VGL( glDisablei, GL_BLEND, i );
             }
         }
 
@@ -73,7 +73,7 @@ namespace GFW {
         {
             if (mDesc.renderTarget[i].blendEnable)
             {
-                TRACE_ASSERT_GL(glEnablei, GL_BLEND, i);
+                VGL( glEnablei, GL_BLEND, i );
 
                 uint32_t srcBlend      = BlendState_GetBlendFactor(mDesc.renderTarget[i].srcBlend);
                 uint32_t dstBlend      = BlendState_GetBlendFactor(mDesc.renderTarget[i].dstBlend);
@@ -83,12 +83,12 @@ namespace GFW {
                 uint32_t dstBlendAlpha = BlendState_GetBlendFactor(mDesc.renderTarget[i].dstBlendAlpha);
                 uint32_t blendOpAlpha  = BlendState_GetBlendOp    (mDesc.renderTarget[i].blendOpAlpha);
 
-                TRACE_ASSERT_GL(glBlendFuncSeparatei, i, srcBlend, dstBlend, srcBlendAlpha, dstBlendAlpha);
-                TRACE_ASSERT_GL(glBlendEquationSeparatei, i, blendOp, blendOpAlpha);
+                VGL( glBlendFuncSeparatei, i, srcBlend, dstBlend, srcBlendAlpha, dstBlendAlpha );
+                VGL( glBlendEquationSeparatei, i, blendOp, blendOpAlpha );
             }
             else
             {
-                TRACE_ASSERT_GL(glDisablei, GL_BLEND, i);
+                VGL( glDisablei, GL_BLEND, i );
             }
 
             // This state setup is out of condition scope as
@@ -99,10 +99,10 @@ namespace GFW {
             uint8_t maskB = (mask & COLOR_MASK_BLUE)  ? GL_TRUE : GL_FALSE;
             uint8_t maskA = (mask & COLOR_MASK_ALPHA) ? GL_TRUE : GL_FALSE;
 
-            TRACE_ASSERT_GL(glColorMaski, i, maskR, maskG, maskB, maskA);
+            VGL( glColorMaski, i, maskR, maskG, maskB, maskA );
         }
 
-        TRACE_ASSERT_GL(glBlendColor, mDesc.blendFactor[0], mDesc.blendFactor[1], mDesc.blendFactor[2], mDesc.blendFactor[3]);
+        VGL( glBlendColor, mDesc.blendFactor[0], mDesc.blendFactor[1], mDesc.blendFactor[2], mDesc.blendFactor[3] );
     }
 
 } // namespace GFW

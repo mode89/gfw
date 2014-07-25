@@ -124,29 +124,29 @@ namespace GFW {
         , mDesc( desc )
         , mHandle( 0 )
     {
-        TRACE_ASSERT_GL(glGenSamplers, 1, &mHandle);
+        VGL( glGenSamplers, 1, &mHandle );
 
         // Set sampler's states
-        TRACE_ASSERT_GL(glSamplerParameteri,  mHandle, GL_TEXTURE_WRAP_S,       GetGLAddressMode(desc.addressU));
-        TRACE_ASSERT_GL(glSamplerParameteri,  mHandle, GL_TEXTURE_WRAP_T,       GetGLAddressMode(desc.addressV));
-        TRACE_ASSERT_GL(glSamplerParameteri,  mHandle, GL_TEXTURE_WRAP_R,       GetGLAddressMode(desc.addressW));
+        VGL( glSamplerParameteri,  mHandle, GL_TEXTURE_WRAP_S,       GetGLAddressMode(desc.addressU ));
+        VGL( glSamplerParameteri,  mHandle, GL_TEXTURE_WRAP_T,       GetGLAddressMode(desc.addressV ));
+        VGL( glSamplerParameteri,  mHandle, GL_TEXTURE_WRAP_R,       GetGLAddressMode(desc.addressW ));
 
-        TRACE_ASSERT_GL(glSamplerParameterfv, mHandle, GL_TEXTURE_BORDER_COLOR, desc.borderColor);
+        VGL( glSamplerParameterfv, mHandle, GL_TEXTURE_BORDER_COLOR, desc.borderColor );
 
-        TRACE_ASSERT_GL(glSamplerParameteri,  mHandle, GL_TEXTURE_COMPARE_MODE, GetGLCompareMode(desc.filter));
-        TRACE_ASSERT_GL(glSamplerParameteri,  mHandle, GL_TEXTURE_COMPARE_FUNC, GetGLCompareFunc(desc.comparison));
+        VGL( glSamplerParameteri,  mHandle, GL_TEXTURE_COMPARE_MODE, GetGLCompareMode(desc.filter ));
+        VGL( glSamplerParameteri,  mHandle, GL_TEXTURE_COMPARE_FUNC, GetGLCompareFunc(desc.comparison ));
 
-        TRACE_ASSERT_GL(glSamplerParameteri,  mHandle, GL_TEXTURE_MIN_FILTER,   GetGLMinFilter(desc.filter));
-        TRACE_ASSERT_GL(glSamplerParameteri,  mHandle, GL_TEXTURE_MAG_FILTER,   GetGLMagFilter(desc.filter));
+        VGL( glSamplerParameteri,  mHandle, GL_TEXTURE_MIN_FILTER,   GetGLMinFilter(desc.filter ));
+        VGL( glSamplerParameteri,  mHandle, GL_TEXTURE_MAG_FILTER,   GetGLMagFilter(desc.filter ));
 
-        TRACE_ASSERT_GL(glSamplerParameterf,  mHandle, GL_TEXTURE_MAX_LOD,      desc.maxLod);
-        TRACE_ASSERT_GL(glSamplerParameterf,  mHandle, GL_TEXTURE_MIN_LOD,      desc.minLod);
-        TRACE_ASSERT_GL(glSamplerParameterf,  mHandle, GL_TEXTURE_LOD_BIAS,     desc.mipLodBias);
+        VGL( glSamplerParameterf,  mHandle, GL_TEXTURE_MAX_LOD,      desc.maxLod );
+        VGL( glSamplerParameterf,  mHandle, GL_TEXTURE_MIN_LOD,      desc.minLod );
+        VGL( glSamplerParameterf,  mHandle, GL_TEXTURE_LOD_BIAS,     desc.mipLodBias );
     }
 
     SamplerState::~SamplerState()
     {
-        TRACE_ASSERT_GL(glDeleteSamplers, 1, &mHandle);
+        VGL( glDeleteSamplers, 1, &mHandle );
     }
 
 } // namespace GFW

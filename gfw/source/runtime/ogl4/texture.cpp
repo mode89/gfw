@@ -12,22 +12,22 @@ namespace GFW {
         , mDesc( desc )
         , mHandle( 0 )
     {
-        TRACE_ASSERT_GL(glGenTextures, 1, &mHandle);
+        VGL( glGenTextures, 1, &mHandle );
         TRACE_ASSERT(mHandle != 0);
 
-        TRACE_ASSERT_GL(glBindTexture, GL_TEXTURE_2D, mHandle);
-        TRACE_ASSERT_GL(glTexImage2D,
-            GL_TEXTURE_2D, 0, GetOGLInternalFormat(desc.format), desc.width, desc.height, 0,
-            GetOGLFormat(desc.format), GetOGLType(desc.format), initialData);
-        TRACE_ASSERT_GL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        TRACE_ASSERT_GL(glBindTexture, GL_TEXTURE_2D, 0);
+        VGL( glBindTexture, GL_TEXTURE_2D, mHandle );
+        VGL( glTexImage2D,
+            GL_TEXTURE_2D, 0, GetOGLInternalFormat( desc.format ), desc.width, desc.height, 0,
+            GetOGLFormat( desc.format ), GetOGLType( desc.format ), initialData );
+        VGL( glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+        VGL( glBindTexture, GL_TEXTURE_2D, 0 );
     }
 
     Texture::~Texture()
     {
         if (mHandle != 0)
         {
-            TRACE_ASSERT_GL(glDeleteTextures, 1, &mHandle);
+            VGL( glDeleteTextures, 1, &mHandle );
         }
     }
 

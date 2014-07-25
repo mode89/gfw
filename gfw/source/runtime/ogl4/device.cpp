@@ -84,7 +84,7 @@ namespace GFW {
     {
         if (mResolveFramebuffer != 0)
         {
-            TRACE_ASSERT_GL(glDeleteFramebuffers, 1, &mResolveFramebuffer);
+            VGL( glDeleteFramebuffers, 1, &mResolveFramebuffer );
         }
 
         if (mDrawingContext && mContextGL != NULL)
@@ -110,14 +110,14 @@ namespace GFW {
         mDefaultRenderTarget = std::make_shared<RenderTarget>( defaultRenderTargetTexture,
             defaultRenderTargetDesc, shared_from_this() );
 
-        TRACE_ASSERT_GL(glGenFramebuffers, 1, &mResolveFramebuffer);
-        TRACE_ASSERT_GL(glBindFramebuffer, GL_READ_FRAMEBUFFER, mResolveFramebuffer);
-        TRACE_ASSERT_GL(glFramebufferTexture, GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-            defaultRenderTargetTexture->GetHandle(), 0);
-        TRACE_ASSERT_GL(glReadBuffer, GL_COLOR_ATTACHMENT0);
+        VGL( glGenFramebuffers, 1, &mResolveFramebuffer );
+        VGL( glBindFramebuffer, GL_READ_FRAMEBUFFER, mResolveFramebuffer );
+        VGL( glFramebufferTexture, GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+            defaultRenderTargetTexture->GetHandle(), 0 );
+        VGL( glReadBuffer, GL_COLOR_ATTACHMENT0 );
 
-        TRACE_ASSERT_GL(glBindFramebuffer, GL_DRAW_FRAMEBUFFER, 0);
-        TRACE_ASSERT_GL(glDrawBuffer, GL_LEFT);
+        VGL( glBindFramebuffer, GL_DRAW_FRAMEBUFFER, 0 );
+        VGL( glDrawBuffer, GL_LEFT );
     }
 
     IContextRef Device::CreateContext()
@@ -175,8 +175,8 @@ namespace GFW {
     {
         AUTO_LOCK_CONTEXT;
 
-        TRACE_ASSERT_GL(glBlitFramebuffer, 0, 0, mParams.backBufferWidth, mParams.backBufferHeight,
-            0, 0, mParams.backBufferWidth, mParams.backBufferHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+        VGL( glBlitFramebuffer, 0, 0, mParams.backBufferWidth, mParams.backBufferHeight,
+            0, 0, mParams.backBufferWidth, mParams.backBufferHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST );
 
         mDrawingContext->SwapBuffers();
     }

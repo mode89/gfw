@@ -99,12 +99,12 @@ namespace GFW {
         // Reflect input parameters
 
         int32_t inputsCount = -1;
-        TRACE_ASSERT_GL(glGetProgramInterfaceiv, program, GL_PROGRAM_INPUT, GL_ACTIVE_RESOURCES, &inputsCount);
+        VGL( glGetProgramInterfaceiv, program, GL_PROGRAM_INPUT, GL_ACTIVE_RESOURCES, &inputsCount );
         TRACE_ASSERT(inputsCount != -1);
 
         for (int32_t i = 0; i < inputsCount; ++ i)
         {
-            TRACE_ASSERT_GL(glGetProgramResourceName, program, GL_PROGRAM_INPUT, i, sizeof(name), NULL, name);
+            VGL( glGetProgramResourceName, program, GL_PROGRAM_INPUT, i, sizeof(name), NULL, name );
 
             uint32_t props[] = {
                 GL_TYPE,
@@ -112,7 +112,7 @@ namespace GFW {
             };
             const uint32_t propsCount = sizeof(props) / sizeof(props[0]);
             int32_t params[propsCount];
-            TRACE_ASSERT_GL(glGetProgramResourceiv, program, GL_PROGRAM_INPUT, i, propsCount, props, sizeof(params), NULL, params);
+            VGL( glGetProgramResourceiv, program, GL_PROGRAM_INPUT, i, propsCount, props, sizeof(params), NULL, params );
 
             ShaderParameterDesc paramDesc;
             paramDesc.location = params[1];
@@ -125,12 +125,12 @@ namespace GFW {
         // Reflect uniform blocks
 
         int32_t uniformBlocksCount = -1;
-        TRACE_ASSERT_GL(glGetProgramInterfaceiv, program, GL_UNIFORM_BLOCK, GL_ACTIVE_RESOURCES, &uniformBlocksCount);
+        VGL( glGetProgramInterfaceiv, program, GL_UNIFORM_BLOCK, GL_ACTIVE_RESOURCES, &uniformBlocksCount );
         TRACE_ASSERT(uniformBlocksCount != -1);
 
         for (int32_t i = 0; i < uniformBlocksCount; ++ i)
         {
-            TRACE_ASSERT_GL(glGetProgramResourceName, program, GL_UNIFORM_BLOCK, i, sizeof(name), NULL, name);
+            VGL( glGetProgramResourceName, program, GL_UNIFORM_BLOCK, i, sizeof(name), NULL, name );
 
             uint32_t props[] = {
                 GL_BUFFER_DATA_SIZE,
@@ -138,7 +138,7 @@ namespace GFW {
             };
             const uint32_t propsCount = sizeof(props) / sizeof(props[0]);
             int32_t params[propsCount];
-            TRACE_ASSERT_GL(glGetProgramResourceiv, program, GL_UNIFORM_BLOCK, i, propsCount, props, sizeof(params), NULL, params);
+            VGL( glGetProgramResourceiv, program, GL_UNIFORM_BLOCK, i, propsCount, props, sizeof(params), NULL, params );
 
             ShaderBufferDesc bufDesc;
             bufDesc.size = params[0];
@@ -159,12 +159,12 @@ namespace GFW {
         // Reflect uniforms
 
         int32_t uniformsCount = -1;
-        TRACE_ASSERT_GL(glGetProgramInterfaceiv, program, GL_UNIFORM, GL_ACTIVE_RESOURCES, &uniformsCount);
+        VGL( glGetProgramInterfaceiv, program, GL_UNIFORM, GL_ACTIVE_RESOURCES, &uniformsCount );
         TRACE_ASSERT(uniformsCount != -1);
 
         for (int32_t i = 0; i < uniformsCount; ++ i)
         {
-            TRACE_ASSERT_GL(glGetProgramResourceName, program, GL_UNIFORM, i, sizeof(name), NULL, name);
+            VGL( glGetProgramResourceName, program, GL_UNIFORM, i, sizeof(name), NULL, name );
 
             uint32_t props[] = {
                 GL_TYPE,
@@ -176,7 +176,7 @@ namespace GFW {
             };
             const uint32_t propsCount = sizeof(props) / sizeof(props[0]);
             int32_t params[propsCount];
-            TRACE_ASSERT_GL(glGetProgramResourceiv, program, GL_UNIFORM, i, propsCount, props, sizeof(params), NULL, params);
+            VGL( glGetProgramResourceiv, program, GL_UNIFORM, i, propsCount, props, sizeof(params), NULL, params );
 
             if (IsVariableType(params[0]))
             {

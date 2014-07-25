@@ -22,61 +22,61 @@ namespace GFW {
         , mSource( nullptr )
 #endif
     {
-        uint32_t shader = TRACE_ASSERT_GL( glCreateShader, GetOGLShaderType( stage ) );
+        uint32_t shader = VGL( glCreateShader, GetOGLShaderType( stage ) );
         TRACE_ASSERT( shader != 0 );
 
         const ShaderBinary * shaderBinary = static_cast< const ShaderBinary * >( binary );
         const char * source = reinterpret_cast< const char * >( shaderBinary->mData.data() );
         const char * strings[] = { source };
-        TRACE_ASSERT_GL(glShaderSource, shader, 1, strings, NULL);
+        VGL( glShaderSource, shader, 1, strings, NULL );
 
-        TRACE_ASSERT_GL(glCompileShader, shader);
+        VGL( glCompileShader, shader );
 
         int32_t compileStatus = 0;
-        TRACE_ASSERT_GL(glGetShaderiv, shader, GL_COMPILE_STATUS, &compileStatus);
+        VGL( glGetShaderiv, shader, GL_COMPILE_STATUS, &compileStatus );
 
         if (compileStatus == GL_FALSE)
         {
             int32_t infoLogLength = 0;
-            TRACE_ASSERT_GL(glGetShaderiv, shader, GL_INFO_LOG_LENGTH, &infoLogLength);
+            VGL( glGetShaderiv, shader, GL_INFO_LOG_LENGTH, &infoLogLength );
 
             char * infoLog = new char [infoLogLength + 1];
-            TRACE_ASSERT_GL(glGetShaderInfoLog, shader, infoLogLength, NULL, infoLog);
+            VGL( glGetShaderInfoLog, shader, infoLogLength, NULL, infoLog );
 
             infoLog[infoLogLength] = 0;
             TRACE_ERR("Cannot compile the shader\n\n%s\n", infoLog);
 
             delete infoLog;
 
-            TRACE_ASSERT_GL(glDeleteShader, shader);
+            VGL( glDeleteShader, shader );
 
             return;
         }
 
-        uint32_t program = TRACE_ASSERT_GL(glCreateProgram);
+        uint32_t program = VGL( glCreateProgram );
         TRACE_ASSERT(program != 0);
 
-        TRACE_ASSERT_GL(glProgramParameteri, program, GL_PROGRAM_SEPARABLE, GL_TRUE);
-        TRACE_ASSERT_GL(glAttachShader, program, shader);
-        TRACE_ASSERT_GL(glLinkProgram, program);
+        VGL( glProgramParameteri, program, GL_PROGRAM_SEPARABLE, GL_TRUE );
+        VGL( glAttachShader, program, shader );
+        VGL( glLinkProgram, program );
 
         int32_t linkStatus = 0;
-        TRACE_ASSERT_GL(glGetProgramiv, program, GL_LINK_STATUS, &linkStatus);
+        VGL( glGetProgramiv, program, GL_LINK_STATUS, &linkStatus );
 
         if (linkStatus == 0)
         {
             int32_t infoLogLength = 0;
-            TRACE_ASSERT_GL(glGetProgramiv, program, GL_INFO_LOG_LENGTH, &infoLogLength);
+            VGL( glGetProgramiv, program, GL_INFO_LOG_LENGTH, &infoLogLength );
 
             char * infoLog = new char8_t [infoLogLength + 1];
-            TRACE_ASSERT_GL(glGetProgramInfoLog, program, infoLogLength, NULL, infoLog);
+            VGL( glGetProgramInfoLog, program, infoLogLength, NULL, infoLog );
 
             TRACE_ERR("Cannot link the program\n\n%s\n", infoLog);
 
             delete infoLog;
 
-            TRACE_ASSERT_GL(glDeleteShader, shader);
-            TRACE_ASSERT_GL(glDeleteProgram, program);
+            VGL( glDeleteShader, shader );
+            VGL( glDeleteProgram, program );
 
             return;
         }
@@ -101,7 +101,7 @@ PLAT_WARNING_POP
     {
         if (mHandle != 0)
         {
-            TRACE_ASSERT_GL(glDeleteProgram, mHandle);
+            VGL( glDeleteProgram, mHandle );
         }
 
 #if PLAT_DEBUG

@@ -6,7 +6,7 @@
 #include "opengl/glcorearb.h"
 
 #if TRACE_ASSERT_ENABLED
-    #define TRACE_ASSERT_GL( func, ... ) \
+    #define VGL( func, ... ) \
         ( func != NULL ) ? func( __VA_ARGS__ ) : ( throw -1 ) ; \
         { \
             TRACE_ASSERT_MESSAGE_FORMATED( func != NULL, "Function %s() is not supported by the hardware", #func ); \
@@ -18,7 +18,7 @@
             } \
         }
 #else
-    #define TRACE_ASSERT_GL(func, ...)  func(__VA_ARGS__)
+    #define VGL( func, ...)  func(__VA_ARGS__ )
 #endif // TRACE_ASSERT_ENABLED
 
 #define OPENGL_FUNCTIONS_CORE \

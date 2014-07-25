@@ -40,13 +40,13 @@ namespace GFW {
         RenderingContext currentContext = mDrawingContext->GetCurrentContext();
         mDrawingContext->MakeCurrent(mContextGL);
         {
-            TRACE_ASSERT_GL(glGenProgramPipelines, 1, &mProgramPipeline);
+            VGL( glGenProgramPipelines, 1, &mProgramPipeline );
             TRACE_ASSERT(mProgramPipeline != 0);
-            TRACE_ASSERT_GL(glBindProgramPipeline, mProgramPipeline);
+            VGL( glBindProgramPipeline, mProgramPipeline );
 
-            TRACE_ASSERT_GL(glGenFramebuffers, 1, &mDrawFramebuffer);
+            VGL( glGenFramebuffers, 1, &mDrawFramebuffer );
             TRACE_ASSERT(mDrawFramebuffer != -1);
-            TRACE_ASSERT_GL(glBindFramebuffer, GL_DRAW_FRAMEBUFFER, mDrawFramebuffer);
+            VGL( glBindFramebuffer, GL_DRAW_FRAMEBUFFER, mDrawFramebuffer );
 
             InitScreenQuad();
         }
@@ -64,17 +64,17 @@ namespace GFW {
         {
             if (mProgramPipeline != 0)
             {
-                TRACE_ASSERT_GL(glDeleteProgramPipelines, 1, &mProgramPipeline);
+                VGL( glDeleteProgramPipelines, 1, &mProgramPipeline );
             }
 
             if (mDrawFramebuffer != 0)
             {
-                TRACE_ASSERT_GL(glDeleteFramebuffers, 1, &mDrawFramebuffer);
+                VGL( glDeleteFramebuffers, 1, &mDrawFramebuffer );
             }
 
             if (mScreenQuadBuffer)
             {
-                TRACE_ASSERT_GL(glDeleteBuffers, 1, &mScreenQuadBuffer);
+                VGL( glDeleteBuffers, 1, &mScreenQuadBuffer );
             }
         }
         mDrawingContext->MakeCurrent(currentContext);
@@ -94,11 +94,11 @@ namespace GFW {
              1.0f,  1.0f
         };
 
-        TRACE_ASSERT_GL(glGenBuffers, 1, &mScreenQuadBuffer);
+        VGL( glGenBuffers, 1, &mScreenQuadBuffer );
         TRACE_ASSERT(mScreenQuadBuffer != 0);
-        TRACE_ASSERT_GL(glBindBuffer, GL_ARRAY_BUFFER, mScreenQuadBuffer);
-        TRACE_ASSERT_GL(glBufferData, GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-        TRACE_ASSERT_GL(glBindBuffer, GL_ARRAY_BUFFER, 0);
+        VGL( glBindBuffer, GL_ARRAY_BUFFER, mScreenQuadBuffer );
+        VGL( glBufferData, GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW );
+        VGL( glBindBuffer, GL_ARRAY_BUFFER, 0 );
     }
 
     void Context::SetInputLayout( ConstIInputLayoutIn layout )
@@ -130,31 +130,31 @@ namespace GFW {
 
         if (cp.mask & CLEAR_COLOR)
         {
-            TRACE_ASSERT_GL(glClearColor, cp.color[0], cp.color[1], cp.color[2], cp.color[3]);
+            VGL( glClearColor, cp.color[0], cp.color[1], cp.color[2], cp.color[3] );
             mask |= GL_COLOR_BUFFER_BIT;
         }
 
 		if (cp.mask & CLEAR_DEPTH)
 		{
-			TRACE_ASSERT_GL(glClearDepth, cp.depth);
+			VGL( glClearDepth, cp.depth );
 			mask |= GL_DEPTH_BUFFER_BIT;
 		}
 
         FlushState();
 
-        TRACE_ASSERT_GL(glClear, mask);
+        VGL( glClear, mask );
     }
 
     void Context::DrawScreenQuad()
     {
         FlushState();
 
-        TRACE_ASSERT_GL(glBindBuffer, GL_ARRAY_BUFFER, mScreenQuadBuffer);
-        TRACE_ASSERT_GL(glVertexAttribPointer, 0, 2, GL_FLOAT, GL_TRUE, 2 * sizeof(float), NULL);
-        TRACE_ASSERT_GL(glEnableVertexAttribArray, 0);
-        TRACE_ASSERT_GL(glBindBuffer, GL_ARRAY_BUFFER, 0);
+        VGL( glBindBuffer, GL_ARRAY_BUFFER, mScreenQuadBuffer );
+        VGL( glVertexAttribPointer, 0, 2, GL_FLOAT, GL_TRUE, 2 * sizeof(float), NULL );
+        VGL( glEnableVertexAttribArray, 0 );
+        VGL( glBindBuffer, GL_ARRAY_BUFFER, 0 );
 
-        TRACE_ASSERT_GL(glDrawArrays, GL_TRIANGLE_STRIP, 0, 4);
+        VGL( glDrawArrays, GL_TRIANGLE_STRIP, 0, 4 );
     }
 
     void Context::Draw( const DrawParams & dp )
@@ -162,7 +162,7 @@ namespace GFW {
         FlushState();
 
         uint32_t mode = GetOGLDrawMode(dp.primTop);
-        TRACE_ASSERT_GL(glDrawArrays, mode, dp.vertexStart, dp.vertexCount);
+        VGL( glDrawArrays, mode, dp.vertexStart, dp.vertexCount );
     }
 
     void Context::Draw( const DrawIndexedParams & dp )
@@ -173,7 +173,7 @@ namespace GFW {
         uint32_t type     = GetOGLType(dp.indexType);
         uint32_t typeSize = GetTypeSize(dp.indexType);
 
-        TRACE_ASSERT_GL(glDrawElements, mode, dp.indexCount, type, reinterpret_cast<void*>(typeSize * dp.indexStart));
+        VGL( glDrawElements, mode, dp.indexCount, type, reinterpret_cast<void*>(typeSize * dp.indexStart ));
     }
 
     void Context::ClearState()
@@ -189,7 +189,7 @@ namespace GFW {
         for (int stage = 0; stage < ShaderStage::COUNT; ++ stage)
         {
             uint32_t stageBit = GetOGLShaderStageBit(static_cast<ShaderStage>(stage));
-            TRACE_ASSERT_GL(glUseProgramStages, mProgramPipeline, stageBit, 0);
+            VGL( glUseProgramStages, mProgramPipeline, stageBit, 0 );
 
             mShaders[stage].reset();
         }
@@ -201,7 +201,7 @@ namespace GFW {
             mVertexBuffers[i].reset();
         }
 
-        TRACE_ASSERT_GL(glBindBuffer, GL_ELEMENT_ARRAY_BUFFER, 0);
+        VGL( glBindBuffer, GL_ELEMENT_ARRAY_BUFFER, 0 );
         mIndexBuffer.reset();
 
         for (uint32_t attrIndex = 0, mask = mEnabledVertexAttributesMask; mask; ++ attrIndex, mask >>= 1)
@@ -209,7 +209,7 @@ namespace GFW {
             if (mask & 1)
             {
                 TRACE_ASSERT(attrIndex < MAX_INPUT_ATTRIBUTES);
-                TRACE_ASSERT_GL(glDisableVertexAttribArray, attrIndex);
+                VGL( glDisableVertexAttribArray, attrIndex );
             }
         }
         mEnabledVertexAttributesMask = 0;
@@ -230,8 +230,8 @@ namespace GFW {
         {
             if (mActiveTextures[texUnit])
             {
-                TRACE_ASSERT_GL(glActiveTexture, GL_TEXTURE0 + texUnit);
-                TRACE_ASSERT_GL(glBindTexture, GL_TEXTURE_2D, 0);
+                VGL( glActiveTexture, GL_TEXTURE0 + texUnit );
+                VGL( glBindTexture, GL_TEXTURE_2D, 0 );
                 mActiveTextures[texUnit].reset();
             }
         }
@@ -239,16 +239,16 @@ namespace GFW {
         mActiveTexturesDirtyMask = 0;
         mNextActiveTextureUnit   = 0;
 
-        TRACE_ASSERT_GL(glActiveTexture, GL_TEXTURE0 + MAX_BIND_TEXTURES); // Is used as a temp texture
+        VGL( glActiveTexture, GL_TEXTURE0 + MAX_BIND_TEXTURES ); // Is used as a temp texture
 
         // Detach render targets
 
         for (uint32_t i = 0; i < mRenderTargetsCount; ++ i)
         {
-            TRACE_ASSERT_GL(glFramebufferTexture, GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, 0, 0);
+            VGL( glFramebufferTexture, GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, 0, 0 );
             mRenderTargets[i].reset();
         }
-        TRACE_ASSERT_GL(glDrawBuffer, GL_NONE);
+        VGL( glDrawBuffer, GL_NONE );
         mRenderTargetsCount = 0;
     }
 
@@ -260,7 +260,7 @@ namespace GFW {
         {
             ConstShaderRef shader = mShaders[stage];
             uint32_t stageBit = GetOGLShaderStageBit(static_cast<ShaderStage>(stage));
-            TRACE_ASSERT_GL(glUseProgramStages, mProgramPipeline, stageBit, shader ? shader->GetHandle() : 0);
+            VGL( glUseProgramStages, mProgramPipeline, stageBit, shader ? shader->GetHandle() : 0 );
         }
 
         // Bind buffers
@@ -277,14 +277,14 @@ namespace GFW {
                     TRACE_ASSERT(attr.semantic != SEMANTIC_UNKNOWN);
                     TRACE_ASSERT(mVertexBuffers[attr.bufSlot]);
 
-                    TRACE_ASSERT_GL(glBindBuffer, GL_ARRAY_BUFFER, mVertexBuffers[attr.bufSlot]->GetHandle());
+                    VGL( glBindBuffer, GL_ARRAY_BUFFER, mVertexBuffers[attr.bufSlot]->GetHandle() );
 
                     int32_t size = GetFormatElementNumber(attr.format);
                     Type type    = GetFormatElementType(attr.format);
-                    TRACE_ASSERT_GL(glVertexAttribPointer, attrIndex, size, GetOGLType(type), GL_FALSE, attr.stride, reinterpret_cast<void*>(attr.offset));
-                    TRACE_ASSERT_GL(glEnableVertexAttribArray, attrIndex);
+                    VGL( glVertexAttribPointer, attrIndex, size, GetOGLType(type), GL_FALSE, attr.stride, reinterpret_cast<void*>(attr.offset ));
+                    VGL( glEnableVertexAttribArray, attrIndex );
 
-                    TRACE_ASSERT_GL(glBindBuffer, GL_ARRAY_BUFFER, 0);
+                    VGL( glBindBuffer, GL_ARRAY_BUFFER, 0 );
                 }
             }
 
@@ -293,14 +293,14 @@ namespace GFW {
             {
                 if (mask & 1)
                 {
-                    TRACE_ASSERT_GL(glDisableVertexAttribArray, attrIndex);
+                    VGL( glDisableVertexAttribArray, attrIndex );
                 }
             }
             mEnabledVertexAttributesMask = mInputLayout->GetEnabledAttributesMask();
 
             if (mIndexBuffer)
             {
-                TRACE_ASSERT_GL(glBindBuffer, GL_ELEMENT_ARRAY_BUFFER, mIndexBuffer->GetHandle());
+                VGL( glBindBuffer, GL_ELEMENT_ARRAY_BUFFER, mIndexBuffer->GetHandle() );
             }
         }
 
@@ -310,13 +310,13 @@ namespace GFW {
         {
             if (mask & 1)
             {
-                TRACE_ASSERT_GL(glActiveTexture, GL_TEXTURE0 + unit);
-                TRACE_ASSERT_GL(glBindTexture, GL_TEXTURE_2D, mActiveTextures[unit]->GetHandle());
+                VGL( glActiveTexture, GL_TEXTURE0 + unit );
+                VGL( glBindTexture, GL_TEXTURE_2D, mActiveTextures[unit]->GetHandle() );
             }
         }
         mActiveTexturesDirtyMask = 0;
 
-        TRACE_ASSERT_GL(glActiveTexture, GL_TEXTURE0 + MAX_BIND_TEXTURES); // Is used as a temp texture
+        VGL( glActiveTexture, GL_TEXTURE0 + MAX_BIND_TEXTURES ); // Is used as a temp texture
 
         // Bind render targets
 
@@ -325,13 +325,13 @@ namespace GFW {
         {
             ConstRenderTargetRef rt = mRenderTargets[i];
             ConstTextureRef rtTex   = std::static_pointer_cast<const Texture>( rt->GetTexture() );
-            TRACE_ASSERT_GL(glFramebufferTexture, GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, rtTex->GetHandle(), rt->GetDesc().resourceIndex);
+            VGL( glFramebufferTexture, GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, rtTex->GetHandle(), rt->GetDesc().resourceIndex );
             drawBuffers[i] = GL_COLOR_ATTACHMENT0 + i;
         }
-        TRACE_ASSERT_GL(glDrawBuffers, mRenderTargetsCount, drawBuffers);
+        VGL( glDrawBuffers, mRenderTargetsCount, drawBuffers );
 
 #ifdef TRACE_ASSERT_ENABLED
-        int32_t status  = TRACE_ASSERT_GL(glCheckFramebufferStatus, GL_DRAW_FRAMEBUFFER);
+        int32_t status  = VGL( glCheckFramebufferStatus, GL_DRAW_FRAMEBUFFER );
         TRACE_ASSERT(status == GL_FRAMEBUFFER_COMPLETE);
 #endif
     }
@@ -374,9 +374,9 @@ namespace GFW {
                 // Unbind a previous texture
                 if ((mActiveTexturesDirtyMask & (1 << textureUnit)) == 0)
                 {
-                    TRACE_ASSERT_GL(glActiveTexture, GL_TEXTURE0 + textureUnit);
-                    TRACE_ASSERT_GL(glBindTexture, GL_TEXTURE_2D, 0);
-                    TRACE_ASSERT_GL(glActiveTexture, GL_TEXTURE0 + MAX_BIND_TEXTURES);
+                    VGL( glActiveTexture, GL_TEXTURE0 + textureUnit );
+                    VGL( glBindTexture, GL_TEXTURE_2D, 0 );
+                    VGL( glActiveTexture, GL_TEXTURE0 + MAX_BIND_TEXTURES );
                 }
 
                 mActiveTextures[textureUnit] = std::static_pointer_cast<const Texture>( texture );
