@@ -38,4 +38,11 @@
 
 #define PLAT_STRINGIFY( val )   #val
 
+// Overriding pragma
+#if defined( PLAT_COMPILER_MSVC )
+    #define PLAT_PRAGMA( dirv )     __pragma( dirv )
+#elif defined( PLAT_COMPILER_MINGW )
+    #define PLAT_PRAGMA( dirv )     _Pragma( #dirv )
+#endif
+
 #endif // __COMMON_PLATFORM_H__
