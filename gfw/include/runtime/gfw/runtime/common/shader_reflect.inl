@@ -50,7 +50,7 @@ namespace GFW {
     template < class Base >
     ConstIShaderVariableRef AShaderReflection<Base>::GetVariable(uint32_t index) const
     {
-        TRACE_ASSERT(index < mDesc.variableCount);
+        CMN_ASSERT( index < mDesc.variableCount );
         return mVariables[index];
     }
 
@@ -58,14 +58,14 @@ namespace GFW {
     ConstIShaderVariableRef AShaderReflection<Base>::GetVariable(const char * name) const
     {
         ShaderVariableMap::const_iterator it = mVariablesMap.find(name);
-        TRACE_ASSERT(it != mVariablesMap.end());
+        CMN_ASSERT( it != mVariablesMap.end() );
         return it->second;
     }
 
     template < class Base >
     ConstIShaderBufferRef AShaderReflection<Base>::GetBuffer(uint32_t index) const
     {
-        TRACE_ASSERT(index < mDesc.bufferCount);
+        CMN_ASSERT( index < mDesc.bufferCount );
         return mBuffers[index];
     }
 
@@ -73,14 +73,14 @@ namespace GFW {
     ConstIShaderBufferRef AShaderReflection<Base>::GetBuffer(const char * name) const
     {
         ShaderBufferMap::const_iterator it = mBuffersMap.find(name);
-        TRACE_ASSERT(it != mBuffersMap.end());
+        CMN_ASSERT( it != mBuffersMap.end() );
         return it->second;
     }
 
     template < class Base >
     ConstIShaderResourceRef AShaderReflection<Base>::GetResource(uint32_t index) const
     {
-        TRACE_ASSERT(index < mDesc.resourceCount);
+        CMN_ASSERT( index < mDesc.resourceCount );
         return mResources[index];
     }
 
@@ -88,14 +88,14 @@ namespace GFW {
     ConstIShaderResourceRef AShaderReflection<Base>::GetResource(const char * name) const
     {
         ShaderResourceMap::const_iterator it = mResourcesMap.find(name);
-        TRACE_ASSERT(it != mResourcesMap.end());
+        CMN_ASSERT( it != mResourcesMap.end() );
         return it->second;
     }
 
     template < class Base >
     ConstIShaderParameterRef AShaderReflection<Base>::GetInputParameter(uint32_t index) const
     {
-        TRACE_ASSERT(index < mDesc.inputsCount);
+        CMN_ASSERT( index < mDesc.inputsCount );
         return mInputs[index];
     }
 
@@ -103,7 +103,7 @@ namespace GFW {
     ConstIShaderParameterRef AShaderReflection<Base>::GetInputParameter(Semantic semantic) const
     {
         ShaderParameterMap::const_iterator it = mInputsMap.find(semantic);
-        TRACE_ASSERT(it != mInputsMap.end());
+        CMN_ASSERT( it != mInputsMap.end() );
         return it->second;
     }
 

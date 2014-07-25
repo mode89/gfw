@@ -55,13 +55,13 @@ namespace GFW {
         if (mDefaultContext != NULL)
         {
             BOOL res = wglDeleteContext(mDefaultContext);
-            TRACE_ASSERT( res == TRUE ); PLAT_UNUSED( res );
+            CMN_ASSERT( res == TRUE ); PLAT_UNUSED( res );
         }
 
         if (IsWindow(mWindow) == TRUE)
         {
             BOOL res = ReleaseDC(mWindow, mDC);
-            TRACE_ASSERT(res == TRUE); PLAT_UNUSED( res );
+            CMN_ASSERT( res == TRUE); PLAT_UNUSED( res );
         }
     }
 
@@ -118,24 +118,24 @@ namespace GFW {
     RenderingContext DrawingContext::CreateContext()
     {
         HGLRC hRC = wglCreateContext(mDC);
-        TRACE_ASSERT(hRC != NULL);
+        CMN_ASSERT( hRC != NULL );
         BOOL res = wglShareLists(mDefaultContext, hRC);
-        TRACE_ASSERT(res == TRUE); PLAT_UNUSED( res );
+        CMN_ASSERT( res == TRUE); PLAT_UNUSED( res );
         return hRC;
     }
 
     void DrawingContext::DeleteContext(RenderingContext context)
     {
-        TRACE_ASSERT(context != NULL);
+        CMN_ASSERT( context != NULL );
         BOOL res = wglDeleteContext(static_cast<HGLRC>(context));
-        TRACE_ASSERT(res == TRUE); PLAT_UNUSED( res );
+        CMN_ASSERT( res == TRUE); PLAT_UNUSED( res );
     }
 
     void DrawingContext::MakeCurrent(RenderingContext context)
     {
         BOOL res = FALSE;
         res = wglMakeCurrent(mDC, static_cast<HGLRC>(context));
-        TRACE_ASSERT(res == TRUE);
+        CMN_ASSERT( res == TRUE );
     }
 
     RenderingContext DrawingContext::GetCurrentContext()
@@ -147,7 +147,7 @@ namespace GFW {
     {
         BOOL res = FALSE;
         res = ::SwapBuffers(mDC);
-        TRACE_ASSERT(res == TRUE);
+        CMN_ASSERT( res == TRUE );
     }
 
     IDrawingContextRef CreateDrawingContext(WindowHandle window)

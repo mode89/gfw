@@ -56,7 +56,7 @@ namespace GFW {
         if ( sValidatorRefCount++ == 0 )
         {
             sLibrary = LoadLibrary("opengl32.dll");
-            TRACE_ASSERT( sLibrary != NULL );
+            CMN_ASSERT( sLibrary != NULL );
 
             // Load Windows specific functions
 
@@ -64,26 +64,26 @@ PLAT_WARNING_PUSH
 PLAT_WARNING_DISABLE_MSVC( 4191 ) // Unsafe conversion from FARPROC
 
             wglGetProcAddress = reinterpret_cast<PFNWGLGETPROCADDRESS>( GetProcAddress( sLibrary, "wglGetProcAddress" ) );
-            TRACE_ASSERT( wglGetProcAddress != NULL );
+            CMN_ASSERT( wglGetProcAddress != NULL );
 
             wglCreateContext = reinterpret_cast<PFNWGLCREATECONTEXT>( GetProcAddress( sLibrary, "wglCreateContext" ) );
-            TRACE_ASSERT( wglCreateContext != NULL );
+            CMN_ASSERT( wglCreateContext != NULL );
 
             wglMakeCurrent = reinterpret_cast<PFNWGLMAKECURRENT>( GetProcAddress( sLibrary, "wglMakeCurrent" ) );
-            TRACE_ASSERT( wglMakeCurrent != NULL );
+            CMN_ASSERT( wglMakeCurrent != NULL );
 
             wglDeleteContext = reinterpret_cast<PFNWGLDELETECONTEXT>( GetProcAddress( sLibrary, "wglDeleteContext" ) );
-            TRACE_ASSERT( wglDeleteContext != NULL );
+            CMN_ASSERT( wglDeleteContext != NULL );
 
             // Create empty window
 
             sHwnd = CreateWindow("STATIC", "Window",
                 WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
                 0, 0, 16, 16, NULL, NULL, GetModuleHandle( NULL ), NULL);
-            TRACE_ASSERT( sHwnd != NULL );
+            CMN_ASSERT( sHwnd != NULL );
 
             sHdc = GetDC( sHwnd );
-            TRACE_ASSERT( sHdc != NULL );
+            CMN_ASSERT( sHdc != NULL );
 
             // Create temp rendering context
 
@@ -91,16 +91,16 @@ PLAT_WARNING_DISABLE_MSVC( 4191 ) // Unsafe conversion from FARPROC
             ZeroMemory( &pfd, sizeof( pfd ) );
 
             int pixelFormat = ChoosePixelFormat( sHdc, &pfd );
-            TRACE_ASSERT( pixelFormat != 0 );
+            CMN_ASSERT( pixelFormat != 0 );
 
             int res = SetPixelFormat( sHdc, pixelFormat, &pfd );
-            TRACE_ASSERT( res != FALSE );
+            CMN_ASSERT( res != FALSE );
 
             sHrc = wglCreateContext( sHdc );
-            TRACE_ASSERT( sHrc != NULL );
+            CMN_ASSERT( sHrc != NULL );
 
             res = wglMakeCurrent( sHdc, sHrc );
-            TRACE_ASSERT( res != FALSE );
+            CMN_ASSERT( res != FALSE );
 
             // Load core functions
 
@@ -119,7 +119,7 @@ PLAT_WARNING_POP
             // Release resources
 
             res = wglMakeCurrent( sHdc, 0 );
-            TRACE_ASSERT( res != 0 );
+            CMN_ASSERT( res != 0 );
         }
     }
 
@@ -130,19 +130,19 @@ PLAT_WARNING_POP
             BOOL res;
 
             res = wglDeleteContext( sHrc );
-            TRACE_ASSERT( res != 0 );
+            CMN_ASSERT( res != 0 );
 
             res = ReleaseDC( sHwnd, sHdc );
-            TRACE_ASSERT( res != 0 );
+            CMN_ASSERT( res != 0 );
 
             res = DestroyWindow( sHwnd );
-            TRACE_ASSERT( res != 0 );
+            CMN_ASSERT( res != 0 );
         }
     }
 
     void Validate( ShaderStage stage, const char * source )
     {
-        TRACE_ASSERT( source != NULL );
+        CMN_ASSERT( source != NULL );
 
         int32_t compileStatus = GL_FALSE;
 

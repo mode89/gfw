@@ -44,10 +44,10 @@ namespace GFW {
 
     IEffectRef Factory::CreateEffect( const char * fileName )
     {
-        TRACE_ASSERT( fileName != NULL );
+        CMN_ASSERT( fileName != NULL );
 
         std::ifstream fxStream( fileName, std::ios_base::in | std::ios_base::binary );
-        TRACE_ASSERT( fxStream );
+        CMN_ASSERT( fxStream );
 
         boost::archive::binary_iarchive archive( fxStream );
 

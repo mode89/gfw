@@ -14,7 +14,7 @@ namespace GFW {
         {
             const ShaderBinary * shaderBinary = binary.mShaders[ stage ];
             ShaderTable::const_iterator shaderIt = shaderMap.find( shaderBinary );
-            TRACE_ASSERT( shaderIt != shaderMap.end() );
+            CMN_ASSERT( shaderIt != shaderMap.end() );
             mShaders[ stage ] = shaderIt->second;
         }
     }
@@ -27,7 +27,7 @@ namespace GFW {
     void Pass::Dispatch() const
     {
         IContextRef context = IDeviceRef( mDevice )->GetCurrentContext();
-        TRACE_ASSERT( context );
+        CMN_ASSERT( context );
 
         for ( uint32_t stage = 0; stage< ShaderStage::COUNT; ++ stage )
         {

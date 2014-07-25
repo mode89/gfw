@@ -74,7 +74,7 @@ namespace GFW {
 
         static void Release()
         {
-            TRACE_ASSERT(mInstance != NULL);
+            CMN_ASSERT( mInstance != NULL );
 
             mRefCounter --;
             if (mRefCounter == 0)
@@ -174,13 +174,13 @@ namespace GFW {
 
     void DestroyDefaultWindow(const WindowHandle handle)
     {
-        TRACE_ASSERT(handle != NULL);
+        CMN_ASSERT( handle != NULL );
         if (handle != NULL)
         {
             int res = 0;
 
             res = DestroyWindow(static_cast<HWND>(handle));
-            TRACE_ASSERT( res != 0 );
+            CMN_ASSERT( res != 0 );
 
             WindowClass::Release();
         }

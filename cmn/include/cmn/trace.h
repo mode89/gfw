@@ -38,7 +38,7 @@
 // Assertion
 
 #if PLAT_DEBUG
-    #define TRACE_ASSERT( expr ) \
+    #define CMN_ASSERT( expr ) \
         if ( !( expr ) ) \
         { \
             Cmn::TraceError( "%s(%d) : Assertion failed : %s", __FILE__, __LINE__, #expr ); \
@@ -64,7 +64,7 @@
             TRACE_DEBUG_BREAK(); \
         }
 #else
-    #define TRACE_ASSERT( expr )
+    #define CMN_ASSERT( expr )
     #define TRACE_ASSERT_MSG( expr, ... )
     #define TRACE_ASSERT_AND( expr, var )
 #endif // PLAT_DEBUG

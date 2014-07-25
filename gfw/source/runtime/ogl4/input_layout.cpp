@@ -16,8 +16,8 @@ namespace GFW {
         : ADeviceChild( device )
         , mAttributesMask( 0 )
     {
-        TRACE_ASSERT(attrCnt <= MAX_INPUT_ATTRIBUTES);
-        TRACE_ASSERT(shader);
+        CMN_ASSERT( attrCnt <= MAX_INPUT_ATTRIBUTES );
+        CMN_ASSERT( shader );
 
         ConstIShaderReflectionRef reflection = shader->GetReflection();
 

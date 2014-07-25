@@ -51,7 +51,7 @@ namespace GFW {
         OPENGL_FUNCTIONS_PLAT
 #undef F
 
-        TRACE_ASSERT(mLibrary != NULL);
+        CMN_ASSERT( mLibrary != NULL );
         FreeLibrary(mLibrary);
     }
 

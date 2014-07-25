@@ -23,7 +23,7 @@ namespace GFW {
 #endif
     {
         uint32_t shader = VGL( glCreateShader, GetOGLShaderType( stage ) );
-        TRACE_ASSERT( shader != 0 );
+        CMN_ASSERT( shader != 0 );
 
         const ShaderBinary * shaderBinary = static_cast< const ShaderBinary * >( binary );
         const char * source = reinterpret_cast< const char * >( shaderBinary->mData.data() );
@@ -54,7 +54,7 @@ namespace GFW {
         }
 
         uint32_t program = VGL( glCreateProgram );
-        TRACE_ASSERT(program != 0);
+        CMN_ASSERT( program != 0 );
 
         VGL( glProgramParameteri, program, GL_PROGRAM_SEPARABLE, GL_TRUE );
         VGL( glAttachShader, program, shader );

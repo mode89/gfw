@@ -13,7 +13,7 @@ namespace GFW {
         , mHandle( 0 )
     {
         VGL( glGenTextures, 1, &mHandle );
-        TRACE_ASSERT(mHandle != 0);
+        CMN_ASSERT( mHandle != 0 );
 
         VGL( glBindTexture, GL_TEXTURE_2D, mHandle );
         VGL( glTexImage2D,

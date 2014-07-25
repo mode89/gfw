@@ -100,7 +100,7 @@ namespace GFW {
 
         int32_t inputsCount = -1;
         VGL( glGetProgramInterfaceiv, program, GL_PROGRAM_INPUT, GL_ACTIVE_RESOURCES, &inputsCount );
-        TRACE_ASSERT(inputsCount != -1);
+        CMN_ASSERT( inputsCount != -1 );
 
         for (int32_t i = 0; i < inputsCount; ++ i)
         {
@@ -126,7 +126,7 @@ namespace GFW {
 
         int32_t uniformBlocksCount = -1;
         VGL( glGetProgramInterfaceiv, program, GL_UNIFORM_BLOCK, GL_ACTIVE_RESOURCES, &uniformBlocksCount );
-        TRACE_ASSERT(uniformBlocksCount != -1);
+        CMN_ASSERT( uniformBlocksCount != -1 );
 
         for (int32_t i = 0; i < uniformBlocksCount; ++ i)
         {
@@ -160,7 +160,7 @@ namespace GFW {
 
         int32_t uniformsCount = -1;
         VGL( glGetProgramInterfaceiv, program, GL_UNIFORM, GL_ACTIVE_RESOURCES, &uniformsCount );
-        TRACE_ASSERT(uniformsCount != -1);
+        CMN_ASSERT( uniformsCount != -1 );
 
         for (int32_t i = 0; i < uniformsCount; ++ i)
         {

@@ -44,7 +44,7 @@ namespace GFW {
     bool Buffer::Init( const void * initialData )
     {
         VGL( glGenBuffers, 1, &mHandle );
-        TRACE_ASSERT(mHandle != 0);
+        CMN_ASSERT( mHandle != 0 );
 
         if (mHandle != 0)
         {
@@ -63,8 +63,8 @@ namespace GFW {
 
     void * Buffer::Map(uint32_t mapFlags)
     {
-        TRACE_ASSERT((mapFlags & (MAP_FLAG_READ | MAP_FLAG_WRITE)) != 0);
-        TRACE_ASSERT(mDevice.lock()->GetCurrentContext());
+        CMN_ASSERT( (mapFlags & (MAP_FLAG_READ | MAP_FLAG_WRITE)) != 0 );
+        CMN_ASSERT( mDevice.lock()->GetCurrentContext() );
 
         uint32_t access = 0;
         if (mapFlags & MAP_FLAG_READ && mapFlags & MAP_FLAG_WRITE)
@@ -89,7 +89,7 @@ namespace GFW {
 
     void Buffer::Unmap()
     {
-        TRACE_ASSERT(mDevice.lock()->GetCurrentContext());
+        CMN_ASSERT( mDevice.lock()->GetCurrentContext() );
 
         VGL( glBindBuffer, mTarget, mHandle );
         VGL( glUnmapBuffer, mTarget );
@@ -98,7 +98,7 @@ namespace GFW {
 
     void Buffer::UpdateSubresource(const void * data, uint32_t subResourceIndex)
     {
-        TRACE_ASSERT(mDevice.lock()->GetCurrentContext());
+        CMN_ASSERT( mDevice.lock()->GetCurrentContext() );
 
         uint32_t usage = GetOGLUsage(mDesc.usage);
 

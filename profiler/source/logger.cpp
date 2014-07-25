@@ -36,7 +36,7 @@ namespace Profiler {
 
         if (mFirstBucket == NULL)
         {
-            TRACE_ASSERT(mLastBucket == NULL);
+            CMN_ASSERT( mLastBucket == NULL );
             mFirstBucket = mLastBucket = new EventBucket;
         }
 

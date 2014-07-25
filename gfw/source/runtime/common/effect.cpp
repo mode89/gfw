@@ -35,7 +35,7 @@ namespace GFW {
     ConstITechniqueRef Effect::GetTechnique( const char * techName ) const
     {
         TechniqueMap::const_iterator it = mTechniqueMap.find( techName );
-        TRACE_ASSERT( it != mTechniqueMap.end() );
+        CMN_ASSERT( it != mTechniqueMap.end() );
         return it->second;
     }
 

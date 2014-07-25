@@ -41,11 +41,11 @@ namespace GFW {
         mDrawingContext->MakeCurrent(mContextGL);
         {
             VGL( glGenProgramPipelines, 1, &mProgramPipeline );
-            TRACE_ASSERT(mProgramPipeline != 0);
+            CMN_ASSERT( mProgramPipeline != 0 );
             VGL( glBindProgramPipeline, mProgramPipeline );
 
             VGL( glGenFramebuffers, 1, &mDrawFramebuffer );
-            TRACE_ASSERT(mDrawFramebuffer != -1);
+            CMN_ASSERT( mDrawFramebuffer != -1 );
             VGL( glBindFramebuffer, GL_DRAW_FRAMEBUFFER, mDrawFramebuffer );
 
             InitScreenQuad();
@@ -95,7 +95,7 @@ namespace GFW {
         };
 
         VGL( glGenBuffers, 1, &mScreenQuadBuffer );
-        TRACE_ASSERT(mScreenQuadBuffer != 0);
+        CMN_ASSERT( mScreenQuadBuffer != 0 );
         VGL( glBindBuffer, GL_ARRAY_BUFFER, mScreenQuadBuffer );
         VGL( glBufferData, GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW );
         VGL( glBindBuffer, GL_ARRAY_BUFFER, 0 );
@@ -108,18 +108,18 @@ namespace GFW {
 
     void Context::SetVertexBuffer( uint32_t slot, ConstIBufferIn buf )
     {
-        TRACE_ASSERT(slot < MAX_BIND_VERTEX_BUFFERS);
-        TRACE_ASSERT(buf);
+        CMN_ASSERT( slot < MAX_BIND_VERTEX_BUFFERS );
+        CMN_ASSERT( buf );
 
         mVertexBuffers[slot] = std::static_pointer_cast<const Buffer>( buf );
     }
 
     void Context::SetShader( ShaderStage stage, ConstIShaderIn shader )
     {
-        TRACE_ASSERT( stage > ShaderStage::UNKNOWN );
-        TRACE_ASSERT( stage < ShaderStage::COUNT );
-        TRACE_ASSERT( shader );
-        TRACE_ASSERT( stage == shader->GetStage() );
+        CMN_ASSERT( stage > ShaderStage::UNKNOWN );
+        CMN_ASSERT( stage < ShaderStage::COUNT );
+        CMN_ASSERT( shader );
+        CMN_ASSERT( stage == shader->GetStage() );
 
         mShaders[stage] = std::static_pointer_cast<const Shader>( shader );
     }
@@ -208,7 +208,7 @@ namespace GFW {
         {
             if (mask & 1)
             {
-                TRACE_ASSERT(attrIndex < MAX_INPUT_ATTRIBUTES);
+                CMN_ASSERT( attrIndex < MAX_INPUT_ATTRIBUTES );
                 VGL( glDisableVertexAttribArray, attrIndex );
             }
         }
@@ -271,11 +271,11 @@ namespace GFW {
             {
                 if (mask & 1)
                 {
-                    TRACE_ASSERT(attrIndex < MAX_INPUT_ATTRIBUTES);
+                    CMN_ASSERT( attrIndex < MAX_INPUT_ATTRIBUTES );
 
                     const VertexAttribute & attr = mInputLayout->GetAttribute(attrIndex);
-                    TRACE_ASSERT(attr.semantic != SEMANTIC_UNKNOWN);
-                    TRACE_ASSERT(mVertexBuffers[attr.bufSlot]);
+                    CMN_ASSERT( attr.semantic != SEMANTIC_UNKNOWN );
+                    CMN_ASSERT( mVertexBuffers[attr.bufSlot] );
 
                     VGL( glBindBuffer, GL_ARRAY_BUFFER, mVertexBuffers[attr.bufSlot]->GetHandle() );
 
@@ -332,7 +332,7 @@ namespace GFW {
 
 #ifdef TRACE_ASSERT_ENABLED
         int32_t status  = VGL( glCheckFramebufferStatus, GL_DRAW_FRAMEBUFFER );
-        TRACE_ASSERT(status == GL_FRAMEBUFFER_COMPLETE);
+        CMN_ASSERT( status == GL_FRAMEBUFFER_COMPLETE );
 #endif
     }
 
@@ -343,16 +343,16 @@ namespace GFW {
 
     void Context::SetTexture( int32_t stage, uint32_t slot, ConstITextureIn texture )
     {
-        TRACE_ASSERT(stage >= 0);
-        TRACE_ASSERT(stage < ShaderStage::COUNT);
-        TRACE_ASSERT(slot < MAX_BIND_TEXTURES);
-        TRACE_ASSERT(texture);
+        CMN_ASSERT( stage >= 0 );
+        CMN_ASSERT( stage < ShaderStage::COUNT );
+        CMN_ASSERT( slot < MAX_BIND_TEXTURES );
+        CMN_ASSERT( texture );
 
         int32_t & textureUnit = mTextureUnits[stage][slot];
 
         if (textureUnit == -1)
         {
-            TRACE_ASSERT(mActiveTextures[mNextActiveTextureUnit].get());
+            CMN_ASSERT( mActiveTextures[mNextActiveTextureUnit].get() );
 
             textureUnit = mNextActiveTextureUnit;
             mActiveTextures[mNextActiveTextureUnit] = std::static_pointer_cast<const Texture>( texture );

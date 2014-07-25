@@ -22,7 +22,7 @@ namespace GFW {
     void Mesh::Draw()
     {
         IContextRef context = mDevice->GetCurrentContext();
-        TRACE_ASSERT(context);
+        CMN_ASSERT( context );
 
         context->SetInputLayout(mInputLayout);
 
@@ -40,7 +40,7 @@ namespace GFW {
     {
         for (uint32_t i = 0; i < bufCnt; ++ i)
         {
-            TRACE_ASSERT(bufs[i]);
+            CMN_ASSERT( bufs[i] );
             mVertexBuffers[i] = bufs[i];
         }
 

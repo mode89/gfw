@@ -56,7 +56,7 @@ namespace GFW {
         : mParams(params)
         , mContextGL(NULL)
     {
-        TRACE_ASSERT(mParams.backBufferFormat != FORMAT_UNKNOWN);
+        CMN_ASSERT( mParams.backBufferFormat != FORMAT_UNKNOWN );
 
         mDrawingContext = CreateDrawingContext(mParams.windowHandle);
         if (mDrawingContext.get())
@@ -136,7 +136,7 @@ namespace GFW {
 
     IInputLayoutRef Device::CreateInputLayout( uint32_t attrCnt, VertexAttribute attrs[], ConstIShaderIn shader )
     {
-        TRACE_ASSERT(shader);
+        CMN_ASSERT( shader );
 
         AUTO_LOCK_CONTEXT;
 
@@ -183,15 +183,15 @@ namespace GFW {
 
     void Device::LockContext(IContextRef context)
     {
-        TRACE_ASSERT(context);
-        TRACE_ASSERT(mCurrentContext == NULL);
+        CMN_ASSERT( context );
+        CMN_ASSERT( mCurrentContext == NULL );
         mCurrentContext = context.get();
     }
 
     void Device::UnlockContext(IContextRef context)
     {
-        TRACE_ASSERT(context);
-        TRACE_ASSERT(mCurrentContext == context.get());
+        CMN_ASSERT( context );
+        CMN_ASSERT( mCurrentContext == context.get() );
         mCurrentContext = NULL;
     }
 
