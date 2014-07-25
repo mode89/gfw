@@ -45,4 +45,21 @@
     #define PLAT_PRAGMA( dirv )     _Pragma( #dirv )
 #endif
 
+// Controlling warnings
+#if defined( PLAT_COMPILER_MSVC )
+    #define PLAT_WARNING_PUSH                   PLAT_PRAGMA( warning( push ) )
+    #define PLAT_WARNING_POP                    PLAT_PRAGMA( warning( pop ) )
+
+    #define PLAT_WARNING_DEFAULT_MSVC( warn )   PLAT_PRAGMA( warning( default : warn ) )
+    #define PLAT_WARNING_DISABLE_MSVC( warn )   PLAT_PRAGMA( warning( disable : warn ) )
+    #define PLAT_WARNING_DISABLE_GCC( warn )
+#elif defined( PLAT_COMPILER_MINGW )
+    #define PLAT_WARNING_PUSH                   PLAT_PRAGMA( GCC diagnostic push )
+    #define PLAT_WARNING_POP                    PLAT_PRAGMA( GCC diagnostic pop )
+
+    #define PLAT_WARNING_DEFAULT_MSVC( warn )
+    #define PLAT_WARNING_DISABLE_MSVC( warn )
+    #define PLAT_WARNING_DISABLE_GCC( warn )    PLAT_PRAGMA( GCC diagnostic ignored "-W" #warn )
+#endif
+
 #endif // __COMMON_PLATFORM_H__
