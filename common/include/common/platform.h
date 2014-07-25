@@ -36,4 +36,6 @@
 // If variable is unused use this macro
 #define PLAT_UNUSED( var )  ( ( void ) var )
 
+#define PLAT_STRINGIFY( val )   #val
+
 #endif // __COMMON_PLATFORM_H__
