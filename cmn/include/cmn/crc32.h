@@ -3,11 +3,11 @@
 
 #include "cmn/typedefs.h"
 
-namespace Common {
+namespace Cmn {
 
     uint32_t CRC32( uint32_t crc, const void * data, uint32_t size );
     uint32_t CRC32( const char * string );
 
-} // namespace Common
+} // namespace Cmn
 
 #endif // __COMMON_CRC32_H__

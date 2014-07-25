@@ -9,7 +9,7 @@
     PLAT_WARNING_DISABLE_MSVC( 4996 ) // Deprecated functions
 #endif
 
-namespace Common {
+namespace Cmn {
 
     void TraceMessage( const char * format, ... )
     {

@@ -30,7 +30,7 @@ namespace Profiler {
 
     void Logger::CreateEvent(const Token * token, RegionEnding ending)
     {
-        time_t t = Common::GetCounter();
+        time_t t = Cmn::GetCounter();
 
         std::lock_guard< std::mutex > auto_lock( mMutex );
 
@@ -81,7 +81,7 @@ namespace Profiler {
 
         if (fs.is_open() == true)
         {
-            uint64_t freq = Common::GetCounterFrequency();
+            uint64_t freq = Cmn::GetCounterFrequency();
 
             fs.flags(std::ios::left);
             fs << std::setw(128) << "Region name" << " ";

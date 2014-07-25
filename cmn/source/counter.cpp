@@ -5,7 +5,7 @@
 
     #include <windows.h>
 
-    namespace Common {
+    namespace Cmn {
 
         uint64_t GetCounter()
         {
@@ -21,7 +21,7 @@
             return static_cast< uint64_t >( freq.QuadPart );
         }
 
-    } // namespace Common
+    } // namespace Cmn
 
 #else
 

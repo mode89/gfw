@@ -3,12 +3,12 @@
 
 #include "cmn/typedefs.h"
 
-namespace Common {
+namespace Cmn {
 
     uint64_t GetCounter();
 
     uint64_t GetCounterFrequency();
 
-} // namespace Common
+} // namespace Cmn
 
 #endif // __COMMON_COUNTER_H__

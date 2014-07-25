@@ -2,7 +2,7 @@
 
 #include "gfw_tests.h"
 
-using namespace Common;
+using namespace Cmn;
 using namespace GFW;
 
 void GfwTests::SetUp()

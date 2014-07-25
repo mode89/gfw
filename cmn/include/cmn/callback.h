@@ -1,7 +1,7 @@
 #ifndef __COMMON_CALLBACK_H__
 #define __COMMON_CALLBACK_H__
 
-namespace Common
+namespace Cmn
 {
 	// Callback interface
 	class ICallback
@@ -34,6 +34,6 @@ namespace Common
 	#define Callback(receiver, type, action) \
 		CallbackTemplate<type>(receiver, &type::action)
 
-} // namespace Common
+} // namespace Cmn
 
 #endif // __COMMON_CALLBACK_H__

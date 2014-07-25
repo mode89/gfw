@@ -18,7 +18,7 @@
 
 namespace GFW {
 
-    using namespace Common;
+    using namespace Cmn;
 
     Context::Context( IDrawingContextIn dc, DeviceIn d )
         : ADeviceChild( d )

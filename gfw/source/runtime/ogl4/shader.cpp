@@ -11,7 +11,7 @@
 
 namespace GFW {
 
-    using namespace Common;
+    using namespace Cmn;
 
     Shader::Shader( const void * binary, ShaderStage stage, DeviceIn device )
         : ADeviceChild( device )
