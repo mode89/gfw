@@ -13,8 +13,8 @@ include_directories( ${GFW_ROOT}/include/base ${GFW_ROOT}/include/shared )
 target_link_libraries( gfw_runtime-tests gfw_runtime )
 
 find_package( cmn CONFIG )
-target_link_libraries( gfw_runtime-tests ${COMMON_LIBS} )
-include_directories( ${COMMON_INCLUDE_DIRS} )
+target_link_libraries( gfw_runtime-tests ${CMN_LIBS} )
+include_directories( ${CMN_INCLUDE_DIRS} )
 
 find_package( gtest CONFIG )
 target_link_libraries( gfw_runtime-tests ${GTEST_LIBS} )

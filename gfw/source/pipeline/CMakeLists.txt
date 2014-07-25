@@ -35,8 +35,8 @@ target_link_libraries( gfw_pipeline ${ANTLR_LIBS} )
 include_directories( ${ANTLR_INCLUDE_DIRS} )
 
 find_package( cmn CONFIG )
-target_link_libraries( gfw_pipeline ${COMMON_LIBS} )
-include_directories( ${COMMON_INCLUDE_DIRS} )
+target_link_libraries( gfw_pipeline ${CMN_LIBS} )
+include_directories( ${CMN_INCLUDE_DIRS} )
 
 find_package( boost CONFIG )
 include_directories( ${BOOST_INCLUDE_DIRS} )

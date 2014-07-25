@@ -16,8 +16,8 @@ include_directories(
     )
 
 find_package( cmn CONFIG )
-target_link_libraries( gfw_pipeline-tests ${COMMON_LIBS} )
-include_directories( ${COMMON_INCLUDE_DIRS} )
+target_link_libraries( gfw_pipeline-tests ${CMN_LIBS} )
+include_directories( ${CMN_INCLUDE_DIRS} )
 
 find_package( gtest CONFIG )
 target_link_libraries( gfw_pipeline-tests ${GTEST_LIBS} )

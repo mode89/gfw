@@ -13,7 +13,7 @@ include_directories(
     )
 
 find_package( cmn CONFIG )
-include_directories( ${COMMON_INCLUDE_DIRS} )
+include_directories( ${CMN_INCLUDE_DIRS} )
 
 find_package( boost CONFIG )
 target_link_libraries( gfw_fxc

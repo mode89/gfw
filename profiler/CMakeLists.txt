@@ -11,5 +11,5 @@ add_library(profiler ${PROFILER_SOURCE_FILES} ${PROFILER_HEADER_FILES})
 include_directories(include)
 
 find_package(cmn CONFIG)
-target_link_libraries(profiler ${COMMON_LIBS})
-include_directories(${COMMON_INCLUDE_DIRS})
+target_link_libraries(profiler ${CMN_LIBS})
+include_directories(${CMN_INCLUDE_DIRS})

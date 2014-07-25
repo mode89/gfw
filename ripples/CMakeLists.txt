@@ -8,8 +8,8 @@ add_executable( ripples ${RIPPLES_SOURCE_FILES} )
 include_directories( include )
 
 find_package( cmn CONFIG )
-target_link_libraries( ripples ${COMMON_LIBS} )
-include_directories( ${COMMON_INCLUDE_DIRS} )
+target_link_libraries( ripples ${CMN_LIBS} )
+include_directories( ${CMN_INCLUDE_DIRS} )
 
 find_package( gfw CONFIG )
 target_link_libraries( ripples ${GFW_LIBS} )

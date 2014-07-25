@@ -45,8 +45,8 @@ include_directories(
     )
 
 find_package( cmn CONFIG )
-target_link_libraries( gfw_runtime ${COMMON_LIBS} )
-include_directories( ${COMMON_INCLUDE_DIRS} )
+target_link_libraries( gfw_runtime ${CMN_LIBS} )
+include_directories( ${CMN_INCLUDE_DIRS} )
 
 find_package( boost CONFIG )
 target_link_libraries( gfw_runtime boost-serialization )
