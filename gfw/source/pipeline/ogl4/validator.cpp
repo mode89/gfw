@@ -7,7 +7,7 @@
 #include "opengl/wglext.h"
 #include <windows.h>
 
-#define TRACE_GL( func, ... )   \
+#define VGL( func, ... )   \
     func( __VA_ARGS__ );        \
     if ( glGetError() )         \
     {                           \
@@ -161,20 +161,20 @@ PLAT_WARNING_POP
                 TRACE_FAIL();
             }
 
-            uint32_t shader = TRACE_GL( glCreateShader, shaderType );
-            TRACE_GL( glShaderSource, shader, 1, &source, NULL );
-            TRACE_GL( glCompileShader, shader );
+            uint32_t shader = VGL( glCreateShader, shaderType );
+            VGL( glShaderSource, shader, 1, &source, NULL );
+            VGL( glCompileShader, shader );
 
-            TRACE_GL( glGetShaderiv, shader, GL_COMPILE_STATUS, &compileStatus );
+            VGL( glGetShaderiv, shader, GL_COMPILE_STATUS, &compileStatus );
 
             if ( compileStatus == GL_FALSE )
             {
                 char infoLog[1024] = { 0 };
-                TRACE_GL( glGetShaderInfoLog, shader, sizeof( infoLog ), NULL, infoLog );
+                VGL( glGetShaderInfoLog, shader, sizeof( infoLog ), NULL, infoLog );
                 TRACE_MSG( "Shader compilation log:\n%s", infoLog );
             }
 
-            TRACE_GL( glDeleteShader, shader );
+            VGL( glDeleteShader, shader );
         }
         wglMakeCurrent( sHdc, NULL );
 
