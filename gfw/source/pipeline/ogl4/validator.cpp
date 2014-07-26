@@ -171,7 +171,7 @@ PLAT_WARNING_POP
             {
                 char infoLog[1024] = { 0 };
                 VGL( glGetShaderInfoLog, shader, sizeof( infoLog ), NULL, infoLog );
-                TRACE_MSG( "Shader compilation log:\n%s", infoLog );
+                CMN_MSG( "Shader compilation log:\n%s", infoLog );
             }
 
             VGL( glDeleteShader, shader );

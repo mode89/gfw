@@ -22,7 +22,7 @@ namespace Profiler {
 
     Logger::~Logger()
     {
-        TRACE_MSG( "Processing profile data..." );
+        CMN_MSG( "Processing profile data..." );
 
         Process();
         Dump();

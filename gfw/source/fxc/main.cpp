@@ -83,27 +83,27 @@ int main( int argc, const char * argv[] )
     }
 
     try {
-        TRACE_MSG( "GFW Effect Compiler" );
-        TRACE_MSG( "\tEffect file: %s", fxFile.c_str() );
-        TRACE_MSG( "\tOutput file: %s", outputFile.c_str() );
+        CMN_MSG( "GFW Effect Compiler" );
+        CMN_MSG( "\tEffect file: %s", fxFile.c_str() );
+        CMN_MSG( "\tOutput file: %s", outputFile.c_str() );
 
         EffectBinary effectBinary;
 
-        TRACE_MSG( "\tBuild started" );
+        CMN_MSG( "\tBuild started" );
 
         EffectBuilder effectBuilder;
         effectBuilder.Build( effectBinary, fxFile );
 
-        TRACE_MSG( "\tBuild completed" );
+        CMN_MSG( "\tBuild completed" );
 
         std::ofstream fileStream( outputFile, std::ios_base::out | std::ios_base::binary );
         {
-            TRACE_MSG( "\tSerialization" );
+            CMN_MSG( "\tSerialization" );
 
             boost::archive::binary_oarchive archive( fileStream );
             archive << effectBinary;
 
-            TRACE_MSG( "\tSerialization completed" );
+            CMN_MSG( "\tSerialization completed" );
         }
         fileStream.close();
     }

@@ -71,7 +71,7 @@
 
 // Messages
 
-#define TRACE_MSG( ... ) \
+#define CMN_MSG( ... ) \
     Cmn::TraceMessage( __VA_ARGS__ ); \
     Cmn::TraceMessage( "\n" )
 
