@@ -1,5 +1,5 @@
-#ifndef __COMMON_CALLBACK_H__
-#define __COMMON_CALLBACK_H__
+#ifndef __CMN_CALLBACK_H__
+#define __CMN_CALLBACK_H__
 
 namespace Cmn
 {
@@ -36,4 +36,4 @@ namespace Cmn
 
 } // namespace Cmn
 
-#endif // __COMMON_CALLBACK_H__
+#endif // __CMN_CALLBACK_H__

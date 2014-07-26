@@ -1,5 +1,5 @@
-#ifndef __COMMON_COUNTER_H__
-#define __COMMON_COUNTER_H__
+#ifndef __CMN_COUNTER_H__
+#define __CMN_COUNTER_H__
 
 #include "cmn/typedefs.h"
 
@@ -11,4 +11,4 @@ namespace Cmn {
 
 } // namespace Cmn
 
-#endif // __COMMON_COUNTER_H__
+#endif // __CMN_COUNTER_H__

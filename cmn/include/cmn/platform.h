@@ -1,5 +1,5 @@
-#ifndef __COMMON_PLATFORM_H__
-#define __COMMON_PLATFORM_H__
+#ifndef __CMN_PLATFORM_H__
+#define __CMN_PLATFORM_H__
 
 #if defined( WIN32 ) || defined( __MINGW32__ )
     #define CMN_WIN32	1
@@ -62,4 +62,4 @@
     #define CMN_WARNING_DISABLE_GCC( warn )    CMN_PRAGMA( GCC diagnostic ignored "-W" #warn )
 #endif
 
-#endif // __COMMON_PLATFORM_H__
+#endif // __CMN_PLATFORM_H__

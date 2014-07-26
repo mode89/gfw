@@ -1,5 +1,5 @@
-#ifndef __COMMON_SHARED_PTR_TYPEDEFS_H__
-#define __COMMON_SHARED_PTR_TYPEDEFS_H__
+#ifndef __CMN_SHARED_PTR_TYPEDEFS_H__
+#define __CMN_SHARED_PTR_TYPEDEFS_H__
 
 #define SHARED_PTR_TYPEDEFS( T ) \
     typedef       std::shared_ptr <       T >            T ## Ref; \
@@ -11,4 +11,4 @@
     class T; \
     SHARED_PTR_TYPEDEFS( T ) \
 
-#endif // __COMMON_SHARED_PTR_TYPEDEFS_H__
+#endif // __CMN_SHARED_PTR_TYPEDEFS_H__

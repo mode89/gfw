@@ -1,5 +1,5 @@
-#ifndef __COMMON_CRC32_H__
-#define __COMMON_CRC32_H__
+#ifndef __CMN_CRC32_H__
+#define __CMN_CRC32_H__
 
 #include "cmn/typedefs.h"
 
@@ -10,4 +10,4 @@ namespace Cmn {
 
 } // namespace Cmn
 
-#endif // __COMMON_CRC32_H__
+#endif // __CMN_CRC32_H__

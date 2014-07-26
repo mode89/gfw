@@ -1,5 +1,5 @@
-#ifndef __COMMON_TYPEDEFS_H__
-#define __COMMON_TYPEDEFS_H__
+#ifndef __CMN_TYPEDEFS_H__
+#define __CMN_TYPEDEFS_H__
 
 typedef char                    char8_t;
 typedef signed char             int8_t;
@@ -24,4 +24,4 @@ typedef unsigned char           bool8_t;
 #define NULL 0
 #endif // NULL
 
-#endif // __COMMON_TYPEDEFS_H__
+#endif // __CMN_TYPEDEFS_H__
