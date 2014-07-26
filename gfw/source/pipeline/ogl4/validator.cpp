@@ -178,7 +178,7 @@ PLAT_WARNING_POP
         }
         wglMakeCurrent( sHdc, NULL );
 
-        TRACE_THROW_IF( compileStatus == GL_FALSE,
+        CMN_THROW_IF( compileStatus == GL_FALSE,
             ShaderBuilderException::ValidationError() );
     }
 

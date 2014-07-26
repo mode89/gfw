@@ -85,7 +85,7 @@
     CMN_DEBUG_BREAK(); \
     throw type
 
-#define TRACE_THROW_IF( expr, type ) \
+#define CMN_THROW_IF( expr, type ) \
     if ( expr ) \
     { \
         CMN_THROW( type ); \

@@ -27,25 +27,25 @@ namespace GFW {
         std::shared_ptr< ANTLR3_INPUT_STREAM > inputStream(
             antlr3FileStreamNew( filePathString, ANTLR3_ENC_8BIT ),
             [] ( ANTLR3_INPUT_STREAM * stream ) { stream->close( stream ); } );
-        TRACE_THROW_IF( !inputStream, EffectBuilderException::ParsingError() );
+        CMN_THROW_IF( !inputStream, EffectBuilderException::ParsingError() );
 
         std::shared_ptr< FXLexer > lexer(
             FXLexerNew( inputStream.get() ),
             [] ( FXLexer * lexer ) { lexer->free( lexer ); } );
-        TRACE_THROW_IF( !lexer, EffectBuilderException::ParsingError() );
+        CMN_THROW_IF( !lexer, EffectBuilderException::ParsingError() );
 
         std::shared_ptr< ANTLR3_COMMON_TOKEN_STREAM > tokenStream(
             antlr3CommonTokenStreamSourceNew( ANTLR3_SIZE_HINT, TOKENSOURCE( lexer.get() ) ),
             [] ( ANTLR3_COMMON_TOKEN_STREAM * stream ) { stream->free( stream ); } );
-        TRACE_THROW_IF( !tokenStream, EffectBuilderException::ParsingError() );
+        CMN_THROW_IF( !tokenStream, EffectBuilderException::ParsingError() );
 
         std::shared_ptr< FXParser > parser(
             FXParserNew( tokenStream.get() ),
             [] ( FXParser * parser ) { parser->free( parser ); } );
-        TRACE_THROW_IF( !parser, EffectBuilderException::ParsingError() );
+        CMN_THROW_IF( !parser, EffectBuilderException::ParsingError() );
 
         FXParser_translation_unit_return ast = parser->translation_unit( parser.get() );
-        TRACE_THROW_IF( parser->pParser->rec->state->errorCount != 0, EffectBuilderException::ParsingError() );
+        CMN_THROW_IF( parser->pParser->rec->state->errorCount != 0, EffectBuilderException::ParsingError() );
 
         return std::make_shared< ParseTree >( ast.tree );
     }

@@ -169,11 +169,11 @@ namespace GFW {
                 const ParseTree & samplerObjectId = tree.GetFirstChildWithType( TOKEN_SAMPLER_OBJECT_ID )->GetChild();
 
                 SymbolReferenceVec textureSymbol;
-                TRACE_THROW_IF( !mSymbolTable.LookupSymbolByName( textureObjectId.GetText(), textureSymbol ),
+                CMN_THROW_IF( !mSymbolTable.LookupSymbolByName( textureObjectId.GetText(), textureSymbol ),
                     ShaderBuilderException::UndefinedTextureObject( textureObjectId.GetText().c_str() ) );
 
                 SymbolReferenceVec samplerSymbol;
-                TRACE_THROW_IF( !mSymbolTable.LookupSymbolByName( samplerObjectId.GetText(), samplerSymbol ),
+                CMN_THROW_IF( !mSymbolTable.LookupSymbolByName( samplerObjectId.GetText(), samplerSymbol ),
                     ShaderBuilderException::UndefinedTextureObject( textureObjectId.GetText().c_str() ) );
 
                 TextureSamplerPair textureSamplerPair( textureSymbol[0], samplerSymbol[0] );
@@ -249,7 +249,7 @@ namespace GFW {
             }
             else
             {
-                TRACE_THROW_IF( semantic == "", ShaderBuilderException::ParameterWithoutSemantic() );
+                CMN_THROW_IF( semantic == "", ShaderBuilderException::ParameterWithoutSemantic() );
 
                 Handler( mStream, isInput, type, mNames, semantic );
             }
@@ -560,7 +560,7 @@ namespace GFW {
         // Query entry point's symbol
 
         SymbolReferenceVec entryPointReference;
-        TRACE_THROW_IF( !mSymbolTable.LookupSymbolByName(shaderName, entryPointReference),
+        CMN_THROW_IF( !mSymbolTable.LookupSymbolByName(shaderName, entryPointReference),
             ShaderBuilderException::UndefinedEntry( shaderName.c_str() ) );
 
         const Symbol * entryPoint = entryPointReference[0];
