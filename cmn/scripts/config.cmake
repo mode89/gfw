@@ -25,10 +25,11 @@ if( CMN_ENABLE_CXX11 )
     endif()
 endif()
 
-# VS2012 doesn't support correctly the tuples yet
-
-if (MSVC)
-    add_definitions(/D _VARIADIC_MAX=10)
+# Define _VARIADIC_MAX preprocessor variable
+if( CMN_MSVC_DEFINE_VARIADIC_MAX )
+    if( MSVC )
+        add_definitions( /D _VARIADIC_MAX=${CMN_DEFINE_VARIADIC_MAX} )
+    endif()
 endif()
 
 # Enable multithreaded compiling
