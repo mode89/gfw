@@ -40,10 +40,9 @@ if( CMN_MULTITHREADED_BUILD )
     endif()
 endif()
 
-# Warnings
-
-    if ( MSVC )
-
+# Enable additional warnings
+if( CMN_MORE_WARNINGS )
+    if( MSVC )
         string( CONCAT WFLAGS
             "/Wall "    # Enable all warnings
             "/WX "      # Treat all compiler warnings as errors
@@ -62,10 +61,8 @@ endif()
             "/wd4711 "  # Function 'function' selected for inline expansion
             "/wd4820 "  # 'bytes' bytes padding added after construct 'member_name'
             "/wd4826 "  # Conversion from 'type1' to 'type2' is sign-extended.
-            )
-
-    elseif ( MINGW )
-
+        )
+    elseif( MINGW )
         string( CONCAT WFLAGS
             "-Wall "    # Enable most of the warnings
             "-Wextra "  # Enable extra warnings
@@ -77,12 +74,12 @@ endif()
             "-Wno-unknown-pragmas "         # Unrecognized #pragma
             "-Wno-unused-but-set-variable " # Local variable is assigned to, but otherwise not used
             "-Wno-unused-parameter "        # Unreferenced formal parameter
-            )
-
+        )
     endif()
 
     set( CMAKE_C_FLAGS          "${CMAKE_C_FLAGS} ${WFLAGS}" )
     set( CMAKE_CXX_FLAGS        "${CMAKE_CXX_FLAGS} ${WFLAGS}" )
+endif()
 
 # Macroses
 

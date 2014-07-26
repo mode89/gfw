@@ -8,6 +8,7 @@ set( GFW_PLATFORM ogl4 )
 set( CMN_STATIC_LINK_STD_LIBS true )
 set( CMN_ENABLE_CXX11 true )
 set( CMN_MULTITHREADED_BUILD true )
+set( CMN_MORE_WARNINGS true )
 set( CMN_MSVC_DEFINE_VARIADIC_MAX 10 ) # MSVC doesn't support tuples
 
 include( cmn/scripts/config.cmake )
