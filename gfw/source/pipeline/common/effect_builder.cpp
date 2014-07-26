@@ -101,7 +101,7 @@ namespace GFW {
                     mShaderBuilder.lock()->Build( shaderBinary, name, profile );
                 } catch ( std::exception  e ) {
                     CMN_ERR( e.what() );
-                    TRACE_THROW( EffectBuilderException::ShaderBuilderError( name.c_str() ) );
+                    CMN_THROW( EffectBuilderException::ShaderBuilderError( name.c_str() ) );
                 } catch ( ... ) {
                     CMN_ERR( "Unrocegnized ShaderBuilder exception." );
                 }

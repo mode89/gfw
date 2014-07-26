@@ -115,7 +115,7 @@ namespace Profiler {
         }
         else
         {
-            TRACE_THROW("Cannot open %s", mOutputFileName);
+            CMN_THROW( "Cannot open %s", mOutputFileName );
         }
     }
 

@@ -12,7 +12,7 @@ namespace Profiler {
             {
                 if (e->ending == REGION_BEGIN)
                 {
-                    TRACE_THROW( "Wrong ending of the event" );
+                    CMN_THROW( "Wrong ending of the event" );
                 }
 
                 if (mName == NULL)
@@ -34,7 +34,7 @@ namespace Profiler {
             {
                 if (e->ending == REGION_END)
                 {
-                    TRACE_THROW( "Wrong ending of the event" );
+                    CMN_THROW( "Wrong ending of the event" );
                 }
 
                 mHits ++;

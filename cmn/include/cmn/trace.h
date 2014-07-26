@@ -81,14 +81,14 @@
 
 // Exceptions
 
-#define TRACE_THROW( type ) \
+#define CMN_THROW( type ) \
     CMN_DEBUG_BREAK(); \
     throw type
 
 #define TRACE_THROW_IF( expr, type ) \
     if ( expr ) \
     { \
-        TRACE_THROW( type ); \
+        CMN_THROW( type ); \
     }
 
 namespace Cmn {
