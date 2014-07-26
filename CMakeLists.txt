@@ -1,13 +1,11 @@
 project( MASTER )
 cmake_minimum_required( VERSION 2.8 )
 
-# Include common utils
-
-include( cmake/common.cmake )
-
 # Global configuration
 
 set( GFW_PLATFORM ogl4 )
+
+include( cmn/scripts/config.cmake )
 
 # Add necessary projects to the build tree
 
