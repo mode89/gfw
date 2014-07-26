@@ -28,7 +28,7 @@ endif()
 # Define _VARIADIC_MAX preprocessor variable
 if( CMN_MSVC_DEFINE_VARIADIC_MAX )
     if( MSVC )
-        add_definitions( /D _VARIADIC_MAX=${CMN_DEFINE_VARIADIC_MAX} )
+        add_definitions( /D _VARIADIC_MAX=${CMN_MSVC_DEFINE_VARIADIC_MAX} )
     endif()
 endif()
 
