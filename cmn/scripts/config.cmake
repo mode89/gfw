@@ -1,15 +1,16 @@
 # Setup common packages search path
 
-set(CMAKE_PREFIX_PATH ${CMAKE_CURRENT_SOURCE_DIR})
+set( CMAKE_PREFIX_PATH ${CMAKE_CURRENT_SOURCE_DIR} )
 
 if (CMAKE_COMPILER_IS_GNUCXX)
     execute_process(COMMAND g++ -dumpversion OUTPUT_VARIABLE GXX_VERSION)
 endif()
 
-# Static link MinGW std libs
-
-if (MINGW)
-    set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
+# Static link standard libs
+if( CMN_STATIC_LINK_STD_LIBS )
+    if ( MINGW )
+        set( CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++" )
+    endif()
 endif()
 
 # Enable C++11
