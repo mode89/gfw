@@ -7,6 +7,7 @@ set( GFW_PLATFORM ogl4 )
 
 set( CMN_STATIC_LINK_STD_LIBS true )
 set( CMN_ENABLE_CXX11 true )
+set( CMN_MULTITHREADED_BUILD true )
 
 include( cmn/scripts/config.cmake )
 
