@@ -44,7 +44,7 @@ namespace GFW {
             VGL( glGetShaderInfoLog, shader, infoLogLength, NULL, infoLog );
 
             infoLog[infoLogLength] = 0;
-            TRACE_ERR("Cannot compile the shader\n\n%s\n", infoLog);
+            CMN_ERR( "Cannot compile the shader\n\n%s\n", infoLog );
 
             delete infoLog;
 
@@ -71,7 +71,7 @@ namespace GFW {
             char * infoLog = new char8_t [infoLogLength + 1];
             VGL( glGetProgramInfoLog, program, infoLogLength, NULL, infoLog );
 
-            TRACE_ERR("Cannot link the program\n\n%s\n", infoLog);
+            CMN_ERR( "Cannot link the program\n\n%s\n", infoLog );
 
             delete infoLog;
 

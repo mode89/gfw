@@ -100,10 +100,10 @@ namespace GFW {
                 try {
                     mShaderBuilder.lock()->Build( shaderBinary, name, profile );
                 } catch ( std::exception  e ) {
-                    TRACE_ERR( e.what() );
+                    CMN_ERR( e.what() );
                     TRACE_THROW( EffectBuilderException::ShaderBuilderError( name.c_str() ) );
                 } catch ( ... ) {
-                    TRACE_ERR( "Unrocegnized ShaderBuilder exception." );
+                    CMN_ERR( "Unrocegnized ShaderBuilder exception." );
                 }
 
                 PassBinary & pass = mEffectBinary->mTechniques.back().mPasses.back();

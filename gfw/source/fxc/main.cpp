@@ -59,7 +59,7 @@ int main( int argc, const char * argv[] )
             }
             else
             {
-                TRACE_ERR( "Missed filename after -fx option" );
+                CMN_ERR( "Missed filename after -fx option" );
                 return -1;
             }
         }
@@ -71,13 +71,13 @@ int main( int argc, const char * argv[] )
             }
             else
             {
-                TRACE_ERR( "Missed filename after -o option" );
+                CMN_ERR( "Missed filename after -o option" );
                 return -1;
             }
         }
         else
         {
-            TRACE_ERR( "Unknown command line argument '%s'", arg );
+            CMN_ERR( "Unknown command line argument '%s'", arg );
             return -1;
         }
     }
@@ -108,10 +108,10 @@ int main( int argc, const char * argv[] )
         fileStream.close();
     }
     catch ( std::exception e ) {
-        TRACE_ERR( e.what() );
+        CMN_ERR( e.what() );
     }
     catch ( ... ) {
-        TRACE_ERR( "Unrecognized exception." );
+        CMN_ERR( "Unrecognized exception." );
     }
 
     return 0;

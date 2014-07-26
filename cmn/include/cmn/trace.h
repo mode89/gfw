@@ -75,7 +75,7 @@
     Cmn::TraceMessage( __VA_ARGS__ ); \
     Cmn::TraceMessage( "\n" )
 
-#define TRACE_ERR( ... ) \
+#define CMN_ERR( ... ) \
     Cmn::TraceError( __VA_ARGS__ ); \
     Cmn::TraceError( "\n" )
 
