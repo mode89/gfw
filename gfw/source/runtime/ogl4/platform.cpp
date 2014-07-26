@@ -76,7 +76,7 @@ namespace GFW {
         bool retVal = true;
 
         mLibrary = LoadLibrary("opengl32.dll");
-        TRACE_ASSERT_AND(mLibrary != NULL, retVal);
+        CMN_ASSERT_AND( mLibrary != NULL, retVal );
 
         // Load Windows specific functions
 
@@ -84,32 +84,32 @@ PLAT_WARNING_PUSH
 PLAT_WARNING_DISABLE_MSVC( 4191 ) // Unsafe cast from PROC
 
         wglGetProcAddress = reinterpret_cast<PFNWGLGETPROCADDRESS>(GetProcAddress(mLibrary, "wglGetProcAddress"));
-        TRACE_ASSERT_AND(wglGetProcAddress != NULL, retVal);
+        CMN_ASSERT_AND( wglGetProcAddress != NULL, retVal );
 
         wglCreateContext = reinterpret_cast<PFNWGLCREATECONTEXT>(GetProcAddress(mLibrary, "wglCreateContext"));
-        TRACE_ASSERT_AND(wglCreateContext != NULL, retVal);
+        CMN_ASSERT_AND( wglCreateContext != NULL, retVal );
 
         wglMakeCurrent = reinterpret_cast<PFNWGLMAKECURRENT>(GetProcAddress(mLibrary, "wglMakeCurrent"));
-        TRACE_ASSERT_AND(wglMakeCurrent != NULL, retVal);
+        CMN_ASSERT_AND( wglMakeCurrent != NULL, retVal );
 
         wglDeleteContext = reinterpret_cast<PFNWGLDELETECONTEXT>(GetProcAddress(mLibrary, "wglDeleteContext"));
-        TRACE_ASSERT_AND(wglDeleteContext != NULL, retVal);
+        CMN_ASSERT_AND( wglDeleteContext != NULL, retVal );
 
         wglGetCurrentContext = reinterpret_cast<PFNWGLGETCURRENTCONTEXT>(GetProcAddress(mLibrary, "wglGetCurrentContext"));
-        TRACE_ASSERT_AND(wglGetCurrentContext != NULL, retVal);
+        CMN_ASSERT_AND( wglGetCurrentContext != NULL, retVal );
 
         wglShareLists = reinterpret_cast<PFNWGLSHARELISTS>(GetProcAddress(mLibrary, "wglShareLists"));
-        TRACE_ASSERT_AND(wglShareLists != NULL, retVal);
+        CMN_ASSERT_AND( wglShareLists != NULL, retVal );
 
         // Create empty window
 
         HWND hWnd = CreateWindow("STATIC", "Window",
             WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
             0, 0, 16, 16, NULL, NULL, GetModuleHandle(NULL), NULL);
-        TRACE_ASSERT_AND(hWnd != NULL, retVal);
+        CMN_ASSERT_AND( hWnd != NULL, retVal );
 
         HDC hDC = GetDC(hWnd);
-        TRACE_ASSERT_AND(hDC != NULL, retVal);
+        CMN_ASSERT_AND( hDC != NULL, retVal );
 
         // Create temp rendering context
 
@@ -117,21 +117,21 @@ PLAT_WARNING_DISABLE_MSVC( 4191 ) // Unsafe cast from PROC
         ZeroMemory(&pfd, sizeof(pfd));
 
         int pixelFormat = ChoosePixelFormat(hDC, &pfd);
-        TRACE_ASSERT_AND(pixelFormat != 0, retVal);
+        CMN_ASSERT_AND( pixelFormat != 0, retVal );
 
         int res = SetPixelFormat(hDC, pixelFormat, &pfd);
-        TRACE_ASSERT_AND(res != FALSE, retVal);
+        CMN_ASSERT_AND( res != FALSE, retVal );
 
         HGLRC hRC = wglCreateContext(hDC);
-        TRACE_ASSERT_AND(hRC != NULL, retVal);
+        CMN_ASSERT_AND( hRC != NULL, retVal );
 
         res = wglMakeCurrent(hDC, hRC);
-        TRACE_ASSERT_AND(res != FALSE, retVal);
+        CMN_ASSERT_AND( res != FALSE, retVal );
 
         // Load Windows specific extensions
 
         wglChoosePixelFormat = reinterpret_cast<PFNWGLCHOOSEPIXELFORMAT>(wglGetProcAddress("wglChoosePixelFormatARB"));
-        TRACE_ASSERT_AND(wglChoosePixelFormat != NULL, retVal);
+        CMN_ASSERT_AND( wglChoosePixelFormat != NULL, retVal );
 
         // Load core functions
 
@@ -150,16 +150,16 @@ PLAT_WARNING_POP
         // Release resources
 
         res = wglMakeCurrent(hDC, 0);
-        TRACE_ASSERT_AND( res != 0, retVal );
+        CMN_ASSERT_AND( res != 0, retVal );
 
         res = wglDeleteContext(hRC);
-        TRACE_ASSERT_AND( res != 0, retVal );
+        CMN_ASSERT_AND( res != 0, retVal );
 
         res = ReleaseDC(hWnd, hDC);
-        TRACE_ASSERT_AND( res != 0, retVal );
+        CMN_ASSERT_AND( res != 0, retVal );
 
         res = DestroyWindow(hWnd);
-        TRACE_ASSERT_AND( res != 0, retVal );
+        CMN_ASSERT_AND( res != 0, retVal );
 
         return retVal;
     }

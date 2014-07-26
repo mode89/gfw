@@ -55,7 +55,7 @@
             CMN_DEBUG_BREAK(); \
         }
 
-    #define TRACE_ASSERT_AND( expr, var ) \
+    #define CMN_ASSERT_AND( expr, var ) \
         var = var && ( expr ); \
         if ( !var ) \
         { \
@@ -66,7 +66,7 @@
 #else
     #define CMN_ASSERT( expr )
     #define CMN_ASSERT_MSG( expr, ... )
-    #define TRACE_ASSERT_AND( expr, var )
+    #define CMN_ASSERT_AND( expr, var )
 #endif // PLAT_DEBUG
 
 // Messages
