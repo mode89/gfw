@@ -123,7 +123,7 @@
     F(PFNGLDRAWBUFFERSPROC,                 glDrawBuffers) \
     F(PFNGLCHECKFRAMEBUFFERSTATUSPROC,      glCheckFramebufferStatus) \
 
-#ifdef PLAT_WIN32
+#ifdef CMN_WIN32
 
     typedef PROC  (WINAPI *  PFNWGLGETPROCADDRESS)(LPCSTR);
     typedef HGLRC (WINAPI *  PFNWGLCREATECONTEXT)(HDC);

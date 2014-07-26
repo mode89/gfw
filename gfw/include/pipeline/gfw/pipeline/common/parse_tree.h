@@ -3,10 +3,10 @@
 
 #include "cmn/platform.h"
 
-PLAT_WARNING_PUSH
-PLAT_WARNING_DISABLE_MSVC( 4548 4625 4626 4640 )
+CMN_WARNING_PUSH
+CMN_WARNING_DISABLE_MSVC( 4548 4625 4626 4640 )
 #include "boost/filesystem.hpp"
-PLAT_WARNING_POP
+CMN_WARNING_POP
 
 #include <memory>
 #include <string>

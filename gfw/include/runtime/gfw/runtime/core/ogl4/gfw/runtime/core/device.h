@@ -8,10 +8,10 @@
 #include "gfw/base/render_target.h"
 #include "gfw/runtime/core/types_fwd.h"
 
-PLAT_WARNING_PUSH
-PLAT_WARNING_DISABLE_MSVC( 4265 )
+CMN_WARNING_PUSH
+CMN_WARNING_DISABLE_MSVC( 4265 )
 #include <mutex>
-PLAT_WARNING_POP
+CMN_WARNING_POP
 
 namespace GFW {
 
@@ -65,7 +65,7 @@ namespace GFW {
         Device & operator= ( const Device & );
 
     private:
-        static PLAT_THREAD_LOCAL
+        static CMN_THREAD_LOCAL
         IContext*                   mCurrentContext;
 
         const DeviceParams          mParams;

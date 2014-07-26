@@ -50,7 +50,7 @@ namespace GFW {
         RenderingContext    mPrevContext;
     };
 
-    PLAT_THREAD_LOCAL IContext * Device::mCurrentContext = NULL;
+    CMN_THREAD_LOCAL IContext * Device::mCurrentContext = NULL;
 
     Device::Device(const DeviceParams & params)
         : mParams(params)
@@ -77,7 +77,7 @@ namespace GFW {
         mDefaultContext = std::make_shared<Context>( mDrawingContext, shared_from_this() );
 
         const uint8_t * extensions = glGetString(GL_EXTENSIONS);
-        PLAT_UNUSED( extensions );
+        CMN_UNUSED( extensions );
     }
 
     Device::~Device()

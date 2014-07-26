@@ -36,7 +36,7 @@ namespace GFW {
         uint32_t                mHash;
         ShaderReflectionRef     mReflection;
 
-#if PLAT_DEBUG
+#if CMN_DEBUG
         char *                  mSource;
 #endif
     };

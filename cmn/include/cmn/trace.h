@@ -7,10 +7,10 @@
 
 // Software breakpoint
 
-#if PLAT_DEBUG
-    #if PLAT_COMPILER_MSVC
+#if CMN_DEBUG
+    #if CMN_COMPILER_MSVC
         #define CMN_DEBUG_BREAK()     __debugbreak()
-    #elif PLAT_COMPILER_MINGW
+    #elif CMN_COMPILER_MINGW
         #define CMN_DEBUG_BREAK()     asm("int $3")
     #endif // Determine the compiler
 #else
@@ -19,7 +19,7 @@
 
 // Failing
 
-#if PLAT_DEBUG
+#if CMN_DEBUG
     #define CMN_FAIL_MSG( ... ) \
         Cmn::TraceError( "%s(%d) : Failed : ", __FILE__, __LINE__ ); \
         Cmn::TraceError( __VA_ARGS__ ); \
@@ -33,11 +33,11 @@
 #else
     #define CMN_FAIL_MSG( ... )
     #define CMN_FAIL()
-#endif // PLAT_DEBUG
+#endif // CMN_DEBUG
 
 // Assertion
 
-#if PLAT_DEBUG
+#if CMN_DEBUG
     #define CMN_ASSERT( expr ) \
         if ( !( expr ) ) \
         { \
@@ -67,7 +67,7 @@
     #define CMN_ASSERT( expr )
     #define CMN_ASSERT_MSG( expr, ... )
     #define CMN_ASSERT_AND( expr, var )
-#endif // PLAT_DEBUG
+#endif // CMN_DEBUG
 
 // Messages
 

@@ -9,7 +9,7 @@
 
 namespace GFW {
 
-#if defined(PLAT_WIN32)
+#if defined(CMN_WIN32)
 
 #define F(type, func) type func = NULL;
     OPENGL_FUNCTIONS_CORE
@@ -80,8 +80,8 @@ namespace GFW {
 
         // Load Windows specific functions
 
-PLAT_WARNING_PUSH
-PLAT_WARNING_DISABLE_MSVC( 4191 ) // Unsafe cast from PROC
+CMN_WARNING_PUSH
+CMN_WARNING_DISABLE_MSVC( 4191 ) // Unsafe cast from PROC
 
         wglGetProcAddress = reinterpret_cast<PFNWGLGETPROCADDRESS>(GetProcAddress(mLibrary, "wglGetProcAddress"));
         CMN_ASSERT_AND( wglGetProcAddress != NULL, retVal );
@@ -145,7 +145,7 @@ PLAT_WARNING_DISABLE_MSVC( 4191 ) // Unsafe cast from PROC
         OPENGL_FUNCTIONS_EXT
 #undef F
 
-PLAT_WARNING_POP
+CMN_WARNING_POP
 
         // Release resources
 

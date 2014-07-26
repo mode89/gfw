@@ -1,7 +1,7 @@
 #include "cmn/platform.h"
 #include "cmn/counter.h"
 
-#if PLAT_WIN32
+#if CMN_WIN32
 
     #include <windows.h>
 

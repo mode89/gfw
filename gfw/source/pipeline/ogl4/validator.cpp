@@ -60,8 +60,8 @@ namespace GFW {
 
             // Load Windows specific functions
 
-PLAT_WARNING_PUSH
-PLAT_WARNING_DISABLE_MSVC( 4191 ) // Unsafe conversion from FARPROC
+CMN_WARNING_PUSH
+CMN_WARNING_DISABLE_MSVC( 4191 ) // Unsafe conversion from FARPROC
 
             wglGetProcAddress = reinterpret_cast<PFNWGLGETPROCADDRESS>( GetProcAddress( sLibrary, "wglGetProcAddress" ) );
             CMN_ASSERT( wglGetProcAddress != NULL );
@@ -114,7 +114,7 @@ PLAT_WARNING_DISABLE_MSVC( 4191 ) // Unsafe conversion from FARPROC
             OPENGL_FUNCTIONS_EXT
 #undef F
 
-PLAT_WARNING_POP
+CMN_WARNING_POP
 
             // Release resources
 

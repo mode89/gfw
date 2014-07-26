@@ -18,7 +18,7 @@ namespace GFW {
         , mStage( stage )
         , mHandle( 0 )
         , mHash( 0 )
-#if PLAT_DEBUG
+#if CMN_DEBUG
         , mSource( nullptr )
 #endif
     {
@@ -88,12 +88,12 @@ namespace GFW {
 
         mReflection = std::make_shared<ShaderReflection>( mHandle, device );
 
-#if PLAT_DEBUG
-PLAT_WARNING_PUSH
-PLAT_WARNING_DISABLE_MSVC( 4996 )
+#if CMN_DEBUG
+CMN_WARNING_PUSH
+CMN_WARNING_DISABLE_MSVC( 4996 )
         mSource = new char [ std::strlen( source ) + 1 ];
         std::strcpy( mSource, source );
-PLAT_WARNING_POP
+CMN_WARNING_POP
 #endif
     }
 
@@ -104,7 +104,7 @@ PLAT_WARNING_POP
             VGL( glDeleteProgram, mHandle );
         }
 
-#if PLAT_DEBUG
+#if CMN_DEBUG
         if ( mSource != NULL )
         {
             delete[] mSource;

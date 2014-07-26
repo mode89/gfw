@@ -3,10 +3,10 @@
 
 #include "cmn/platform.h"
 
-PLAT_WARNING_PUSH
-PLAT_WARNING_DISABLE_MSVC( 4625 4626 )
+CMN_WARNING_PUSH
+CMN_WARNING_DISABLE_MSVC( 4625 4626 )
 #include "gtest/gtest.h"
-PLAT_WARNING_POP
+CMN_WARNING_POP
 
 #include "gfw/gfw.h"
 

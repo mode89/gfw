@@ -4,9 +4,9 @@
 #include <cstdio>
 #include <iostream>
 
-#if PLAT_COMPILER_MSVC
+#if CMN_COMPILER_MSVC
     #include <windows.h>
-    PLAT_WARNING_DISABLE_MSVC( 4996 ) // Deprecated functions
+    CMN_WARNING_DISABLE_MSVC( 4996 ) // Deprecated functions
 #endif
 
 namespace Cmn {

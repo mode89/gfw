@@ -1,12 +1,12 @@
 #include "cmn/platform.h"
 
-PLAT_WARNING_PUSH
-PLAT_WARNING_DISABLE_MSVC( 4242 4244 4265 4365 4619 4625 4626 4640 )
-PLAT_WARNING_DISABLE_GCC( unused-local-typedefs )
+CMN_WARNING_PUSH
+CMN_WARNING_DISABLE_MSVC( 4242 4244 4265 4365 4619 4625 4626 4640 )
+CMN_WARNING_DISABLE_GCC( unused-local-typedefs )
 #include "boost/archive/binary_iarchive.hpp"
 #include "boost/serialization/list.hpp"
 #include "boost/serialization/vector.hpp"
-PLAT_WARNING_POP
+CMN_WARNING_POP
 
 #include "cmn/trace.h"
 #include "gfw/base/buffer.h"

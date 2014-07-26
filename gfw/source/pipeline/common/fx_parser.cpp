@@ -2,9 +2,9 @@
 
 #include "cmn/platform.h"
 
-PLAT_WARNING_DISABLE_MSVC( 4365 )
-PLAT_WARNING_DEFAULT_MSVC( 4505 )
-PLAT_WARNING_DISABLE_GCC( unused-but-set-variable )
-PLAT_WARNING_DISABLE_GCC( unused-function )
-PLAT_WARNING_DISABLE_GCC( unused-variable )
+CMN_WARNING_DISABLE_MSVC( 4365 )
+CMN_WARNING_DEFAULT_MSVC( 4505 )
+CMN_WARNING_DISABLE_GCC( unused-but-set-variable )
+CMN_WARNING_DISABLE_GCC( unused-function )
+CMN_WARNING_DISABLE_GCC( unused-variable )
 #include "FXParser.c"

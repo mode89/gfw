@@ -9,9 +9,9 @@
 #if PROFILING
 
     // Define macro to produce function signature
-    #if PLAT_COMPILER_MSVC
+    #if CMN_COMPILER_MSVC
         #define PROFILER_FUNC_SIG   __FUNCSIG__
-    #elif PLAT_COMPILER_MINGW
+    #elif CMN_COMPILER_MINGW
         #define PROFILER_FUNC_SIG   __PRETTY_FUNCTION__
     #endif
 

@@ -87,7 +87,7 @@ D3DVERTEXELEMENT9 g_aVertDecl[] =
 // Desc: Encapsulates a mesh object in the scene by grouping its world matrix
 //       with the mesh.
 //-----------------------------------------------------------------------------
-PLAT_WARNING_DISABLE_MSVC( 4324 )
+CMN_WARNING_DISABLE_MSVC( 4324 )
 struct CObj
 {
     CDXUTXFileMesh m_Mesh;
