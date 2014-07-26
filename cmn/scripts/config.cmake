@@ -2,8 +2,9 @@
 
 set( CMAKE_PREFIX_PATH ${CMAKE_CURRENT_SOURCE_DIR} )
 
-if (CMAKE_COMPILER_IS_GNUCXX)
-    execute_process(COMMAND g++ -dumpversion OUTPUT_VARIABLE GXX_VERSION)
+# Obtain GCC version
+if( CMAKE_COMPILER_IS_GNUCXX )
+    execute_process( COMMAND g++ -dumpversion OUTPUT_VARIABLE CMN_GXX_VERSION )
 endif()
 
 # Static link standard libs
@@ -14,9 +15,14 @@ if( CMN_STATIC_LINK_STD_LIBS )
 endif()
 
 # Enable C++11
-
-if (MINGW AND ((GXX_VERSION VERSION_GREATER "4.7.0") OR (GXX_VERSION VERSION_EQUAL "4.7.0")))
-    set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11" )
+if( CMN_ENABLE_CXX11 )
+    if( MINGW )
+        if( ( CMN_GXX_VERSION VERSION_GREATER "4.7.0" ) OR ( CMN_GXX_VERSION VERSION_EQUAL "4.7.0" ) )
+            set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11" )
+        else()
+            message( WARNING "CMN_CXX11_ENABLED is set but C++11 specification is not supported." )
+        endif()
+    endif()
 endif()
 
 # VS2012 doesn't support correctly the tuples yet
