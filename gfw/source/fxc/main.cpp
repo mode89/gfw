@@ -107,7 +107,7 @@ int main( int argc, const char * argv[] )
         }
         fileStream.close();
     }
-    catch ( std::exception e ) {
+    catch ( std::exception & e ) {
         CMN_ERR( e.what() );
     }
     catch ( ... ) {
