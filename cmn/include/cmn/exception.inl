@@ -3,8 +3,6 @@
     CMN_WARNING_PUSH
     CMN_WARNING_DISABLE_MSVC( 4996 ) // Deprecated function
 
-    #define STRINGIFY( val ) #val
-
     #define C( code, message ) \
         class code : public std::exception \
         { \
@@ -12,7 +10,7 @@
             template < typename ... Args > \
             code( Args ... args ) { \
                 char buffer[ 4096 ]; \
-                std::sprintf( buffer, message, args... ); \
+                std::sprintf( buffer, CMN_STRINGIFY2( EXCEPTION_NAMESPACE ) "::" #code " : " message, args... ); \
                 mWhat = buffer; \
             } \
             const char * what() const throw() { \
@@ -26,7 +24,6 @@
         EXCEPTION_CODES
     };
 
-    #undef STRINGIFY
     #undef C
 
     CMN_WARNING_POP
