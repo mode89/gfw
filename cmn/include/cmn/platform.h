@@ -36,7 +36,8 @@
 // If variable is unused use this macro
 #define CMN_UNUSED( var )  ( ( void ) var )
 
-#define CMN_STRINGIFY( val )   #val
+#define CMN_STRINGIFY( val ) #val
+#define CMN_STRINGIFY2( val ) CMN_STRINGIFY( val )
 
 // Overriding pragma
 #if defined( CMN_COMPILER_MSVC )
