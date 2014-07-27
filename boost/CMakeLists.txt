@@ -18,38 +18,36 @@ if ( BOOST_FOUND )
     # Warnings
 
         if ( MSVC )
-            string( CONCAT CMAKE_CXX_FLAGS
-                ${CMAKE_CXX_FLAGS}
-                " /wd4061"  # Enumerator 'value' in switch of enum 'enum' is not explicitly handled by a case label
-                " /wd4100"  # Unreferenced formal parameter
-                " /wd4127"  # Conditional expression is constant
-                " /wd4191"  # Unsafe conversion
-                " /wd4242"  # Conversion from 'type1' to 'type2'; possible loss of data
-                " /wd4244"  # 'return' : conversion from 'type1' to 'type2'; possible loss of data
-                " /wd4245"  # 'argument' : conversion from 'type1' to 'type2'; signed/unsigned mismatch
-                " /wd4263"  # Member function doesn't override any base class virtual member function
-                " /wd4264"  # No override available for virtual member function from base; function is hidden
-                " /wd4265"  # Class has virtual functions, but destructor is not virtual
-                " /wd4310"  # Cast truncates constant value
-                " /wd4365"  # Signed/unsigned mismatch during conversion
-                " /wd4512"  # Assignment operator could not be generated
-                " /wd4548"  # Expression before comma has no effect; expected expression with side-effect
-                " /wd4571"  # catch(...) semantics has changed since VC++ 7.1; structured exceptions are no longer caught
-                " /wd4619"  # Disabling warning that doesn't exist
-                " /wd4625"  # Copy constuctor could not be generated because a base class copy constructor is not accessible
-                " /wd4626"  # Assignment operator could not be generated because a base class assignment operator is not accessible
-                " /wd4640"  # Construction of local static object is not thread-safe
-                " /wd4702"  # Unreachable code
-                " /wd4709"  # Comma operator within array index expression
-                " /wd4996"  # Deprecated function
-                )
+            add_compile_options(
+                /wd4061     # Enumerator 'value' in switch of enum 'enum' is not explicitly handled by a case label
+                /wd4100     # Unreferenced formal parameter
+                /wd4127     # Conditional expression is constant
+                /wd4191     # Unsafe conversion
+                /wd4242     # Conversion from 'type1' to 'type2'; possible loss of data
+                /wd4244     # 'return' : conversion from 'type1' to 'type2'; possible loss of data
+                /wd4245     # 'argument' : conversion from 'type1' to 'type2'; signed/unsigned mismatch
+                /wd4263     # Member function doesn't override any base class virtual member function
+                /wd4264     # No override available for virtual member function from base; function is hidden
+                /wd4265     # Class has virtual functions, but destructor is not virtual
+                /wd4310     # Cast truncates constant value
+                /wd4365     # Signed/unsigned mismatch during conversion
+                /wd4512     # Assignment operator could not be generated
+                /wd4548     # Expression before comma has no effect; expected expression with side-effect
+                /wd4571     # catch(...) semantics has changed since VC++ 7.1; structured exceptions are no longer caught
+                /wd4619     # Disabling warning that doesn't exist
+                /wd4625     # Copy constuctor could not be generated because a base class copy constructor is not accessible
+                /wd4626     # Assignment operator could not be generated because a base class assignment operator is not accessible
+                /wd4640     # Construction of local static object is not thread-safe
+                /wd4702     # Unreachable code
+                /wd4709     # Comma operator within array index expression
+                /wd4996     # Deprecated function
+            )
         elseif( MINGW )
-            string( CONCAT CMAKE_CXX_FLAGS
-                ${CMAKE_CXX_FLAGS}
-                " -Wno-reorder"                 # Members must appear in initializer list in the same order as they apear in class
-                " -Wno-unknown-pragmas"         # Unrecognized #pragma
-                " -Wno-unused-but-set-variable" # Local variable is assigned to, but otherwise unused
-                " -Wno-unused-local-typedefs"   # Typedef locally defined in a function is not used
+            add_compile_options(
+                -Wno-reorder                    # Members must appear in initializer list in the same order as they apear in class
+                -Wno-unknown-pragmas            # Unrecognized #pragma
+                -Wno-unused-but-set-variable    # Local variable is assigned to, but otherwise unused
+                -Wno-unused-local-typedefs      # Typedef locally defined in a function is not used
                 )
         endif()
 

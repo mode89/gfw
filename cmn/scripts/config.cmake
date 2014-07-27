@@ -43,42 +43,39 @@ endif()
 # Enable additional warnings
 if( CMN_MORE_WARNINGS )
     if( MSVC )
-        string( CONCAT WFLAGS
-            "/Wall "    # Enable all warnings
-            "/WX "      # Treat all compiler warnings as errors
+        add_compile_options(
+            /Wall       # Enable all warnings
+            /WX         # Treat all compiler warnings as errors
 
             # Disabling specific warnings
-            "/wd4061 "  # Enumerator 'value' in switch of enum 'enum' is not explicitly handled by a case label
-            "/wd4062 "  # Enumerator 'value' in switch of enum 'enum' is not handled
-            "/wd4100 "  # Unreferenced formal parameter
-            "/wd4350 "  # behavior change: 'member1' called instead of 'member2'
-            "/wd4365 "  # '=' : conversion from 'type1' to 'type2', signed/unsigned mismatch
-            "/wd4514 "  # Unreferenced inline function has been removed
-            "/wd4571 "  # catch(...) semantics changed since VC++ 7.1; structured exceptions are no longer caught
-            "/wd4640 "  # Construction of local static object is not threa-safe
-            "/wd4668 "  # 'symbol' is not defined as a preprocessor macro, replacing with '0' for 'directives'
-            "/wd4710 "  # Function not inlined
-            "/wd4711 "  # Function 'function' selected for inline expansion
-            "/wd4820 "  # 'bytes' bytes padding added after construct 'member_name'
-            "/wd4826 "  # Conversion from 'type1' to 'type2' is sign-extended.
+            /wd4061     # Enumerator 'value' in switch of enum 'enum' is not explicitly handled by a case label
+            /wd4062     # Enumerator 'value' in switch of enum 'enum' is not handled
+            /wd4100     # Unreferenced formal parameter
+            /wd4350     # behavior change: 'member1' called instead of 'member2'
+            /wd4365     # '=' : conversion from 'type1' to 'type2', signed/unsigned mismatch
+            /wd4514     # Unreferenced inline function has been removed
+            /wd4571     # catch(...) semantics changed since VC++ 7.1; structured exceptions are no longer caught
+            /wd4640     # Construction of local static object is not threa-safe
+            /wd4668     # 'symbol' is not defined as a preprocessor macro, replacing with '0' for 'directives'
+            /wd4710     # Function not inlined
+            /wd4711     # Function 'function' selected for inline expansion
+            /wd4820     # 'bytes' bytes padding added after construct 'member_name'
+            /wd4826     # Conversion from 'type1' to 'type2' is sign-extended.
         )
     elseif( MINGW )
-        string( CONCAT WFLAGS
-            "-Wall "    # Enable most of the warnings
-            "-Wextra "  # Enable extra warnings
-            "-Werror "  # Treat all compiler warnings as errors
+        add_compile_options(
+            -Wall       # Enable most of the warnings
+            -Wextra     # Enable extra warnings
+            -Werror     # Treat all compiler warnings as errors
 
             # Disabling specific warnings
-            "-Wno-sequence-point "          # Violations of sequence point rules
-            "-Wno-switch "                  # Enumeration value not handled in switch
-            "-Wno-unknown-pragmas "         # Unrecognized #pragma
-            "-Wno-unused-but-set-variable " # Local variable is assigned to, but otherwise not used
-            "-Wno-unused-parameter "        # Unreferenced formal parameter
+            -Wno-sequence-point             # Violations of sequence point rules
+            -Wno-switch                     # Enumeration value not handled in switch
+            -Wno-unknown-pragmas            # Unrecognized #pragma
+            -Wno-unused-but-set-variable    # Local variable is assigned to, but otherwise not used
+            -Wno-unused-parameter           # Unreferenced formal parameter
         )
     endif()
-
-    set( CMAKE_C_FLAGS          "${CMAKE_C_FLAGS} ${WFLAGS}" )
-    set( CMAKE_CXX_FLAGS        "${CMAKE_CXX_FLAGS} ${WFLAGS}" )
 endif()
 
 # Macroses
