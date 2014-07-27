@@ -22,10 +22,8 @@ namespace GFW {
 
     std::shared_ptr< const ParseTree > CreateParseTree( const boost::filesystem::path & filePath )
     {
-        pANTLR3_UINT8 filePathString = (pANTLR3_UINT8) filePath.c_str();
-
         std::shared_ptr< ANTLR3_INPUT_STREAM > inputStream(
-            antlr3FileStreamNew( filePathString, ANTLR3_ENC_8BIT ),
+            antlr3FileStreamNew( ( pANTLR3_UINT8 ) filePath.string().c_str(), ANTLR3_ENC_8BIT ),
             [] ( ANTLR3_INPUT_STREAM * stream ) { if ( stream ) stream->close( stream ); } );
         CMN_THROW_IF( !inputStream, EffectBuilderException::ParsingError() );
 
