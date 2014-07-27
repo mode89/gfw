@@ -109,9 +109,11 @@ int main( int argc, const char * argv[] )
     }
     catch ( std::exception & e ) {
         CMN_ERR( e.what() );
+        return -1;
     }
     catch ( ... ) {
         CMN_ERR( "Unrecognized exception." );
+        return -1;
     }
 
     return 0;
