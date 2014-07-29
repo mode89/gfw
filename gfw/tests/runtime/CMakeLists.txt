@@ -23,9 +23,8 @@ include_directories( ${GTEST_INCLUDE_DIRS} )
 # Post build
 
     if( NOT DEFINED GFW_RUNTIME_TESTS_POST_BUILD )
-        # Only MSVC supports toolsets
-        if( MSVC )
-            set( TOOLSET -T ${CMAKE_GENERATOR_TOOLSET} )
+        if( ${CMAKE_GENERATOR_TOOLSET} )
+            set( TOOLSET_OPTION -T ${CMAKE_GENERATOR_TOOLSET} )
         endif()
 
         # Invoke post-build step
@@ -37,7 +36,7 @@ include_directories( ${GTEST_INCLUDE_DIRS} )
                 -DGFW_RUNTIME_TESTS_OUTPUT_DIR="${CMAKE_CURRENT_BINARY_DIR}"
                 -DCMAKE_BUILD_TYPE=Release
                 -G ${CMAKE_GENERATOR}
-                ${TOOLSET}
+                ${TOOLSET_OPTION}
                 ${CMAKE_SOURCE_DIR}
             COMMAND ${CMAKE_COMMAND} -E chdir post-build ${CMAKE_COMMAND}
                 --build .
