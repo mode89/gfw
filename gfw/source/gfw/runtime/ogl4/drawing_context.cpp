@@ -1,7 +1,6 @@
 #include "cmn/trace.h"
 
 #include "gfw/runtime/ogl4/drawing_context.h"
-#include "gfw/runtime/ogl4/platform.h"
 #include "gfw/runtime/ogl4/functions.h"
 
 #include "opengl/wglext.h"
@@ -36,7 +35,6 @@ namespace GFW {
         Initialize();
 
     private:
-        IPlatformRef    mPlatform;
         HWND            mWindow;
         HDC             mDC;
         HGLRC           mDefaultContext;
@@ -67,12 +65,6 @@ namespace GFW {
 
     void DrawingContext::Initialize()
     {
-        mPlatform = IPlatform::Acquire();
-        if (mPlatform.get())
-        {
-            CMN_THROW( "Failed to acquire OpenGL platform" );
-        }
-
         mDC = GetDC(mWindow);
         if (mDC == NULL)
         {
