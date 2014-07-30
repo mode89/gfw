@@ -2,8 +2,8 @@
 #define __GFW_BASE_SHADER_REFLECT_H__
 
 #include "gfw/device_child.h"
+#include "gfw/semantic.h"
 #include "gfw/types_fwd.h"
-#include "gfw/shared/semantic.h"
 
 namespace GFW {
 

@@ -8,8 +8,8 @@
 #include "gfw/shader_stage.h"
 #include "gfw/vertex_attribute.h"
 
-#include "gfw/runtime/core/limits.h"
-#include "gfw/runtime/core/types_fwd.h"
+#include "gfw/runtime/ogl4/limits.h"
+#include "gfw/runtime/ogl4/types_fwd.h"
 
 #include <map>
 

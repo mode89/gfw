@@ -3,7 +3,7 @@
 
 #include "gfw/texture.h"
 #include "gfw/runtime/common/device_child.h"
-#include "gfw/runtime/core/types_fwd.h"
+#include "gfw/runtime/ogl4/types_fwd.h"
 
 namespace GFW {
 

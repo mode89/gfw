@@ -1,56 +1,49 @@
 project( GFW_RUNTIME )
 
-file( GLOB TEMP_LIST ${GFW_ROOT}/source/runtime/common/*.cpp )
-list( APPEND GFW_RUNTIME_SOURCE_FILES ${TEMP_LIST} )
-source_group( "source\\common" FILES ${TEMP_LIST} )
+# Source files
 
-file( GLOB TEMP_LIST ${GFW_ROOT}/source/runtime/${GFW_PLATFORM}/*.cpp )
-list( APPEND GFW_RUNTIME_SOURCE_FILES ${TEMP_LIST} )
-source_group( "source\\core" FILES ${TEMP_LIST} )
+    file( GLOB TEMP_LIST ${GFW_ROOT}/include/gfw/*.* )
+    list( APPEND GFW_RUNTIME_SOURCE_FILES ${TEMP_LIST} )
+    source_group( "base" FILES ${TEMP_LIST} )
 
-file( GLOB TEMP_LIST ${GFW_ROOT}/source/runtime/win/*.cpp )
-list( APPEND GFW_RUNTIME_SOURCE_FILES ${TEMP_LIST} )
-source_group( "source\\win" FILES ${TEMP_LIST} )
+    file( GLOB TEMP_LIST common/*.* )
+    list( APPEND GFW_RUNTIME_SOURCE_FILES ${TEMP_LIST} )
+    source_group( "common" FILES ${TEMP_LIST} )
 
-file( GLOB TEMP_LIST ${GFW_ROOT}/include/base/gfw/*.h )
-list( APPEND GFW_RUNTIME_SOURCE_FILES ${TEMP_LIST} )
-source_group( "include" FILES ${TEMP_LIST} )
+    file( GLOB TEMP_LIST ${GFW_PLATFORM}/*.* )
+    list( APPEND GFW_RUNTIME_SOURCE_FILES ${TEMP_LIST} )
+    source_group( "${GFW_PLATFORM}" FILES ${TEMP_LIST} )
 
-file( GLOB TEMP_LIST ${GFW_ROOT}/include/base/gfw/base/*.h )
-list( APPEND GFW_RUNTIME_SOURCE_FILES ${TEMP_LIST} )
-source_group( "include\\base" FILES ${TEMP_LIST} )
+    file( GLOB TEMP_LIST win/*.* )
+    list( APPEND GFW_RUNTIME_SOURCE_FILES ${TEMP_LIST} )
+    source_group( "win" FILES ${TEMP_LIST} )
 
-file( GLOB TEMP_LIST ${GFW_ROOT}/include/runtime/gfw/runtime/common/*.h )
-list( APPEND GFW_RUNTIME_SOURCE_FILES ${TEMP_LIST} )
-source_group( "include\\common" FILES ${TEMP_LIST} )
+    file( GLOB TEMP_LIST ../shared/*.* )
+    list( APPEND GFW_RUNTIME_SOURCE_FILES ${TEMP_LIST} )
+    source_group( "shared" FILES ${TEMP_LIST} )
 
-file( GLOB TEMP_LIST ${GFW_ROOT}/include/runtime/gfw/runtime/common/*.inl )
-list( APPEND GFW_RUNTIME_SOURCE_FILES ${TEMP_LIST} )
-source_group( "include\\common" FILES ${TEMP_LIST} )
+# Includes
 
-file( GLOB TEMP_LIST ${GFW_ROOT}/include/runtime/gfw/runtime/core/${GFW_PLATFORM}/gfw/runtime/core/*.h )
-list( APPEND GFW_RUNTIME_SOURCE_FILES ${TEMP_LIST} )
-source_group( "include\\core" FILES ${TEMP_LIST} )
-
-file( GLOB TEMP_LIST ${GFW_ROOT}/include/shared/gfw/shared/*.h )
-list( APPEND GFW_RUNTIME_SOURCE_FILES ${TEMP_LIST} )
-source_group( "include\\shared" FILES ${TEMP_LIST} )
-
-add_library( gfw_runtime ${GFW_RUNTIME_SOURCE_FILES} )
-include_directories(
-    ${GFW_ROOT}/include/base
-    ${GFW_ROOT}/include/runtime
-    ${GFW_ROOT}/include/runtime/gfw/runtime/core/${GFW_PLATFORM}
-    ${GFW_ROOT}/include/shared
+    include_directories(
+        ${GFW_ROOT}/include
+        ${GFW_ROOT}/source
     )
 
-find_package( cmn CONFIG )
-target_link_libraries( gfw_runtime ${CMN_LIBS} )
-include_directories( ${CMN_INCLUDE_DIRS} )
+# Target
 
-find_package( boost CONFIG )
-target_link_libraries( gfw_runtime boost-serialization )
-include_directories( ${BOOST_INCLUDE_DIRS} )
-add_definitions( ${BOOST_DEFINITIONS} )
+    add_library( gfw_runtime ${GFW_RUNTIME_SOURCE_FILES} )
 
-include( ${GFW_ROOT}/scripts/${GFW_PLATFORM}/build.cmake )
+# Dependencies
+
+    find_package( cmn CONFIG )
+    target_link_libraries( gfw_runtime ${CMN_LIBS} )
+    include_directories( ${CMN_INCLUDE_DIRS} )
+
+    find_package( boost CONFIG )
+    target_link_libraries( gfw_runtime boost-serialization )
+    include_directories( ${BOOST_INCLUDE_DIRS} )
+    add_definitions( ${BOOST_DEFINITIONS} )
+
+# Platform-specific build script
+
+    include( ${GFW_PLATFORM}/build.cmake )

@@ -2,7 +2,7 @@
 #include "gfw/device.h"
 #include "gfw/context.h"
 #include "gfw/runtime/common/pass.h"
-#include "gfw/runtime/core/device.h"
+#include "gfw/runtime/ogl4/device.h"
 #include "gfw/shared/pass.h"
 
 namespace GFW {

@@ -1,8 +1,8 @@
 #include "cmn/trace.h"
 #include "gfw/runtime/common/device_child.inl"
-#include "gfw/runtime/core/blend_state.h"
-#include "gfw/runtime/core/device.h"
-#include "gfw/runtime/core/functions.h"
+#include "gfw/runtime/ogl4/blend_state.h"
+#include "gfw/runtime/ogl4/device.h"
+#include "gfw/runtime/ogl4/functions.h"
 
 namespace GFW {
 

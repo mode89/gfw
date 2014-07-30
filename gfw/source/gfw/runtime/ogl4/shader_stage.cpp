@@ -1,8 +1,8 @@
 #include "cmn/trace.h"
 
 #include "gfw/shader_stage.h"
-#include "gfw/runtime/core/functions.h"
-#include "gfw/runtime/core/shader_stage.h"
+#include "gfw/runtime/ogl4/functions.h"
+#include "gfw/runtime/ogl4/shader_stage.h"
 
 namespace GFW {
 

@@ -4,7 +4,7 @@
 #include "gfw/pass.h"
 #include "gfw/shader_stage.h"
 #include "gfw/runtime/common/shader_table.h"
-#include "gfw/runtime/core/types_fwd.h"
+#include "gfw/runtime/ogl4/types_fwd.h"
 #include "gfw/shared/types_fwd.h"
 
 namespace GFW {

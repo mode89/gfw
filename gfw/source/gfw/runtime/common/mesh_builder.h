@@ -2,7 +2,7 @@
 #define __GFW_RUNTIME_COMMON_MESH_BUILDER_H__
 
 #include "gfw/mesh_builder.h"
-#include "gfw/runtime/core/limits.h"
+#include "gfw/runtime/ogl4/limits.h" // TODO platform dependency
 
 namespace GFW {
 

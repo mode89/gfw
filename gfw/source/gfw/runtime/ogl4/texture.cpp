@@ -1,8 +1,8 @@
 #include "cmn/trace.h"
-#include "gfw/runtime/core/device.h"
-#include "gfw/runtime/core/format.h"
-#include "gfw/runtime/core/functions.h"
-#include "gfw/runtime/core/texture.h"
+#include "gfw/runtime/ogl4/device.h"
+#include "gfw/runtime/ogl4/format.h"
+#include "gfw/runtime/ogl4/functions.h"
+#include "gfw/runtime/ogl4/texture.h"
 #include "gfw/runtime/common/device_child.inl"
 
 namespace GFW {

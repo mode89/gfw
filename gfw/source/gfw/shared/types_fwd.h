@@ -15,8 +15,6 @@ namespace GFW {
     struct EffectDesc;
     struct ShaderDesc;
 
-    enum ShaderStage : int32_t;
-
 } // namespace GFW
 
 #endif // __GFW_SHARED_TYPES_FWD_H__

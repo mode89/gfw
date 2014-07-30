@@ -3,7 +3,6 @@
 
 #include "gfw/device_child.h"
 #include "gfw/types_fwd.h"
-#include "gfw/shared/types_fwd.h"
 
 namespace GFW {
 

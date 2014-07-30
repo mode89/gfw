@@ -1,7 +1,7 @@
 #include "cmn/trace.h"
 
-#include "gfw/runtime/core/platform.h"
-#include "gfw/runtime/core/functions.h"
+#include "gfw/runtime/ogl4/platform.h"
+#include "gfw/runtime/ogl4/functions.h"
 
 #if defined(PLATFORM_WIN32)
     #include <windows.h>

@@ -2,8 +2,8 @@
 
 #include "gfw/runtime/common/format.h"
 
-#include "gfw/runtime/core/format.h"
-#include "gfw/runtime/core/functions.h"
+#include "gfw/runtime/ogl4/format.h"
+#include "gfw/runtime/ogl4/functions.h"
 
 namespace GFW {
 

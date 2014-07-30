@@ -6,7 +6,7 @@
 #include "gfw/context.h"
 #include "gfw/device.h"
 #include "gfw/render_target.h"
-#include "gfw/runtime/core/types_fwd.h"
+#include "gfw/runtime/ogl4/types_fwd.h"
 
 CMN_WARNING_PUSH
 CMN_WARNING_DISABLE_MSVC( 4265 )

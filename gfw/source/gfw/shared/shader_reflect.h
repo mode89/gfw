@@ -3,7 +3,7 @@
 
 #include "cmn/typedefs.h"
 
-#include "gfw/shared/semantic.h"
+#include "gfw/semantic.h"
 
 namespace GFW {
 

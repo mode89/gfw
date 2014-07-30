@@ -3,16 +3,16 @@
 #include "gfw/device_child.h"
 #include "gfw/resource.h"
 
-#include "gfw/runtime/core/buffer.h"
-#include "gfw/runtime/core/context.h"
-#include "gfw/runtime/core/device.h"
-#include "gfw/runtime/core/drawing_context.h"
-#include "gfw/runtime/core/functions.h"
-#include "gfw/runtime/core/input_layout.h"
-#include "gfw/runtime/core/render_target.h"
-#include "gfw/runtime/core/shader.h"
-#include "gfw/runtime/core/shader_reflect.h"
-#include "gfw/runtime/core/texture.h"
+#include "gfw/runtime/ogl4/buffer.h"
+#include "gfw/runtime/ogl4/context.h"
+#include "gfw/runtime/ogl4/device.h"
+#include "gfw/runtime/ogl4/drawing_context.h"
+#include "gfw/runtime/ogl4/functions.h"
+#include "gfw/runtime/ogl4/input_layout.h"
+#include "gfw/runtime/ogl4/render_target.h"
+#include "gfw/runtime/ogl4/shader.h"
+#include "gfw/runtime/ogl4/shader_reflect.h"
+#include "gfw/runtime/ogl4/texture.h"
 
 #define AUTO_LOCK_CONTEXT   AutoLock __auto_lock_context(mDrawingContext.get(), mMutex, mContextGL)
 

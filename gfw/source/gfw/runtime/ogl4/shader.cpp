@@ -1,10 +1,10 @@
 #include "cmn/trace.h"
 #include "cmn/crc32.h"
-#include "gfw/runtime/core/device.h"
-#include "gfw/runtime/core/shader.h"
-#include "gfw/runtime/core/shader_reflect.h"
-#include "gfw/runtime/core/shader_stage.h"
-#include "gfw/runtime/core/functions.h"
+#include "gfw/runtime/ogl4/device.h"
+#include "gfw/runtime/ogl4/shader.h"
+#include "gfw/runtime/ogl4/shader_reflect.h"
+#include "gfw/runtime/ogl4/shader_stage.h"
+#include "gfw/runtime/ogl4/functions.h"
 #include "gfw/runtime/common/device_child.inl"
 
 #include <cstring>

@@ -2,7 +2,7 @@
 #define __GFW_RUNTIME_CORE_DRAWING_CONTEXT_H__
 
 #include "gfw/types_fwd.h"
-#include "gfw/runtime/core/types_fwd.h"
+#include "gfw/runtime/ogl4/types_fwd.h"
 
 namespace GFW {
 

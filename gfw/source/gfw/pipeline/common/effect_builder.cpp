@@ -3,7 +3,7 @@
 #include "gfw/pipeline/common/effect_builder_exception.h"
 #include "gfw/pipeline/common/parse_tree.h"
 #include "gfw/pipeline/common/symbol_table.h"
-#include "gfw/pipeline/shader_builder.h"
+#include "gfw/pipeline/ogl4/shader_builder.h" // TODO inverse the dependency by using IShaderBuilder
 #include "gfw/shared/effect.h"
 #include "gfw/shared/pass.h"
 #include "gfw/shared/shader.h"

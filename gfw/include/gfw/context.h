@@ -2,7 +2,6 @@
 #define __GFW_BASE_CONTEXT_H__
 
 #include "gfw/types_fwd.h"
-#include "gfw/shared/types_fwd.h"
 
 namespace GFW {
 

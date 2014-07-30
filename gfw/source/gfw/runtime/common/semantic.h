@@ -1,7 +1,7 @@
 #ifndef __GFW_SHARED_SEMANTIC_H__
 #define __GFW_SHARED_SEMANTIC_H__
 
-#include "gfw/shared/semantic.h"
+#include "gfw/semantic.h"
 
 namespace GFW {
 

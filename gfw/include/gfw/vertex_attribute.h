@@ -2,7 +2,7 @@
 #define __GFW_BASE_VERTEX_ATTRIBUTE_H__
 
 #include "gfw/format.h"
-#include "gfw/shared/semantic.h"
+#include "gfw/semantic.h"
 
 namespace GFW {
 

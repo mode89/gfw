@@ -4,7 +4,7 @@
 #include "gfw/render_target.h"
 #include "gfw/types_fwd.h"
 #include "gfw/runtime/common/device_child.h"
-#include "gfw/runtime/core/types_fwd.h"
+#include "gfw/runtime/ogl4/types_fwd.h"
 
 namespace GFW {
 

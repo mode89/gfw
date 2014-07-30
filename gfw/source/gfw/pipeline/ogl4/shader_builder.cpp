@@ -3,9 +3,9 @@
 #include "gfw/pipeline/common/parse_tree.h"
 #include "gfw/pipeline/common/symbol.h"
 #include "gfw/pipeline/common/symbol_table.h"
-#include "gfw/pipeline/shader_builder.h"
-#include "gfw/pipeline/shader_builder_exception.h"
-#include "gfw/pipeline/validator.h"
+#include "gfw/pipeline/ogl4/shader_builder.h"
+#include "gfw/pipeline/ogl4/shader_builder_exception.h"
+#include "gfw/pipeline/ogl4/validator.h"
 #include "gfw/shared/shader.h"
 
 #include <algorithm>

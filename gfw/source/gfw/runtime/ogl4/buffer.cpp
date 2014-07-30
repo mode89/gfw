@@ -4,10 +4,10 @@
 
 #include "gfw/runtime/common/device_child.inl"
 
-#include "gfw/runtime/core/buffer.h"
-#include "gfw/runtime/core/device.h"
-#include "gfw/runtime/core/functions.h"
-#include "gfw/runtime/core/resource.h"
+#include "gfw/runtime/ogl4/buffer.h"
+#include "gfw/runtime/ogl4/device.h"
+#include "gfw/runtime/ogl4/functions.h"
+#include "gfw/runtime/ogl4/resource.h"
 
 namespace GFW {
 
