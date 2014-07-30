@@ -3,7 +3,7 @@
 
 #include "gfw/draw_params.h"
 #include "gfw/mesh.h"
-#include "gfw/runtime/ogl4/limits.h" // TODO platform dependency
+#include GFW_PLATFORM_LIMITS_H
 
 namespace GFW {
 
