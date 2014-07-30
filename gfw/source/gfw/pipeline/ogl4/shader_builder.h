@@ -1,6 +1,8 @@
 #ifndef __GFW_PIPELINE_OGL4_SHADER_BUILDER_H__
 #define __GFW_PIPELINE_OGL4_SHADER_BUILDER_H__
 
+#include "gfw/pipeline/common/shader_builder.h"
+
 #include <set>
 #include <string>
 #include <unordered_map>
@@ -16,7 +18,7 @@ namespace GFW {
     typedef std::pair< const Symbol *, const Symbol * > TextureSamplerPair;
     typedef std::set< TextureSamplerPair > TextureSamplerPairSet;
 
-    class ShaderBuilder
+    class ShaderBuilder : public IShaderBuilder
     {
     public:
         void

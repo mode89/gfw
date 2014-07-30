@@ -505,6 +505,11 @@ namespace GFW {
         ShaderStage mStage;
     };
 
+    std::shared_ptr< IShaderBuilder > CreateShaderBuilder( const ParseTree & tree, const SymbolTable & symbolTable )
+    {
+        return std::make_shared< ShaderBuilder >( tree, symbolTable );
+    }
+
     ShaderBuilder::ShaderBuilder( const ParseTree & tree, const SymbolTable & symbolTable )
         : mParseTree( tree )
         , mSymbolTable( symbolTable )

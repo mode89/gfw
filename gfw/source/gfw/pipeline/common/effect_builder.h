@@ -11,9 +11,10 @@ CMN_WARNING_POP
 
 namespace GFW {
 
+    class IShaderBuilder;
+
     class EffectBinary;
     class ShaderBinary;
-    class ShaderBuilder;
     class ShaderTable;
     class ParseTree;
 
@@ -40,7 +41,7 @@ namespace GFW {
         typedef std::list< std::shared_ptr< ShaderBinary > > ShaderTable;
 
         EffectBinary *                      mEffectBinary;
-        std::weak_ptr< ShaderBuilder >      mShaderBuilder;
+        std::weak_ptr< IShaderBuilder >     mShaderBuilder;
         std::weak_ptr< ShaderTable >        mShaderTable;
     };
 
