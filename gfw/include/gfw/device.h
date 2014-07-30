@@ -6,6 +6,21 @@
 
 namespace GFW {
 
+    struct DeviceParams
+    {
+        WindowHandle    windowHandle;       // Platform specific window handle
+        uint32_t        backBufferWidth;
+        uint32_t        backBufferHeight;
+        Format          backBufferFormat;
+
+        DeviceParams()
+            : windowHandle(NULL)
+            , backBufferWidth(0)
+            , backBufferHeight(0)
+            , backBufferFormat(FORMAT_UNKNOWN)
+        {}
+    };
+
     class IDevice
     {
     public:
@@ -44,23 +59,6 @@ namespace GFW {
         ~IDevice() { }
     };
 	SHARED_PTR_TYPEDEFS(IDevice);
-
-    struct DeviceParams
-    {
-        WindowHandle    windowHandle;       // Platform specific window handle
-        uint32_t        backBufferWidth;
-        uint32_t        backBufferHeight;
-        Format          backBufferFormat;
-
-        DeviceParams()
-            : windowHandle(NULL)
-            , backBufferWidth(0)
-            , backBufferHeight(0)
-            , backBufferFormat(FORMAT_UNKNOWN)
-        {}
-    };
-
-    IDeviceRef CreateDevice(DeviceParams &);
 
 } // namespace GFW
 

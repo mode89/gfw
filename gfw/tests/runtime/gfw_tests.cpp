@@ -15,6 +15,10 @@ void GfwTests::SetUp()
 
     mWindow = CreateDefaultWindow(windowDesc);
 
+    // Create GFW factory
+
+    mFactory = CreateFactory();
+
     // Create a graphical mDevice
 
     DeviceParams deviceParams;
@@ -23,15 +27,11 @@ void GfwTests::SetUp()
     deviceParams.backBufferFormat   = FORMAT_RGBA8_UNORM;
     deviceParams.windowHandle       = mWindow;
 
-    mDevice = CreateDevice(deviceParams);
+    mDevice = mFactory->CreateDevice( deviceParams );
 
     mDefaultRenderTarget = mDevice->GetDefaultRenderTarget();
 
     mContext = mDevice->GetDefaultContext();
-
-    // Create a factory
-
-    mFactory = CreateFactory(mDevice);
 
     // Create clear parameters
 
@@ -44,9 +44,9 @@ void GfwTests::SetUp()
 
 void GfwTests::TearDown()
 {
-    mFactory.reset();
     mContext.reset();
     mDevice.reset();
+    mFactory.reset();
 
     DestroyDefaultWindow(mWindow);
 }

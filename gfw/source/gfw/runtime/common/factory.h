@@ -6,23 +6,19 @@
 
 namespace GFW {
 
-    class Factory : public IFactory
+    class AFactory : public IFactory
     {
     public:
         virtual IEffectRef
-        CreateEffect(const char * fileName);
+        CreateEffect( IDeviceIn, const char * fileName );
 
         virtual IMeshBuilderRef
         CreateMeshBuilder();
 
     public:
-        Factory( IDeviceIn );
-        ~Factory();
-
-    private:
-        std::weak_ptr<IDevice>  mDevice;
+        AFactory();
+        ~AFactory();
     };
-    SHARED_PTR_TYPEDEFS(IFactory);
 
 } // namespace GFW
 

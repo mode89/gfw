@@ -4,7 +4,7 @@ using namespace GFW;
 
 TEST_F(GfwTests, Texture)
 {
-    IEffectRef effect = mFactory->CreateEffect( "draw.fxc" );
+    IEffectRef effect = mFactory->CreateEffect( mDevice, "draw.fxc" );
     ConstITechniqueRef technique = effect->GetTechnique( "DrawTexturedQuad" );
 
     const uint32_t width  = 32;

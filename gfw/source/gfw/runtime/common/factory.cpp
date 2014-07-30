@@ -26,23 +26,17 @@ CMN_WARNING_POP
 
 namespace GFW {
 
-    IFactoryRef CreateFactory( IDeviceIn device )
-    {
-        return std::make_shared<Factory>( device );
-    }
-
-    Factory::Factory( IDeviceIn device )
-        : mDevice( device )
+    AFactory::AFactory()
     {
 
     }
 
-    Factory::~Factory()
+    AFactory::~AFactory()
     {
 
     }
 
-    IEffectRef Factory::CreateEffect( const char * fileName )
+    IEffectRef AFactory::CreateEffect( IDeviceIn device, const char * fileName )
     {
         CMN_ASSERT( fileName != NULL );
 
@@ -54,12 +48,12 @@ namespace GFW {
         EffectBinary effectBinary;
         archive >> effectBinary;
 
-        return std::make_shared<Effect>( effectBinary, mDevice.lock() );
+        return std::make_shared< Effect >( effectBinary, device );
     }
 
-    IMeshBuilderRef Factory::CreateMeshBuilder()
+    IMeshBuilderRef AFactory::CreateMeshBuilder()
     {
-        return std::make_shared<MeshBuilder>();
+        return std::make_shared< MeshBuilder >();
     }
 
 } // namespace GFW

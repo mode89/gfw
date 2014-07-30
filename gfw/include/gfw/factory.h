@@ -8,8 +8,11 @@ namespace GFW {
     class IFactory
     {
     public:
+        virtual IDeviceRef
+        CreateDevice( const DeviceParams & ) = 0;
+
         virtual IEffectRef
-        CreateEffect(const char * fileName) = 0;
+        CreateEffect( IDeviceIn, const char * fileName ) = 0;
 
         virtual IMeshBuilderRef
         CreateMeshBuilder() = 0;
@@ -17,10 +20,10 @@ namespace GFW {
         virtual
         ~IFactory() {}
     };
-    SHARED_PTR_TYPEDEFS(IFactory);
+    SHARED_PTR_TYPEDEFS( IFactory );
 
     IFactoryRef
-    CreateFactory( IDeviceIn );
+    CreateFactory();
 
 } // namespace GFW
 

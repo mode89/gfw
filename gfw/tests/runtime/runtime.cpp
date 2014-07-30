@@ -28,7 +28,7 @@ TEST_F( GfwTests, DrawColored )
 {
     // Create effect
 
-    IEffectRef         effect    = mFactory->CreateEffect( "draw.fxc" );
+    IEffectRef         effect    = mFactory->CreateEffect( mDevice, "draw.fxc" );
 	ConstITechniqueRef technique = effect->GetTechnique( "DrawColoredVertices" );
 
     // Create geometry
@@ -95,7 +95,7 @@ TEST_F(GfwTests, DrawIndexed)
 {
     // Create effect
 
-    IEffectRef effect = mFactory->CreateEffect( "draw.fxc" );
+    IEffectRef effect = mFactory->CreateEffect( mDevice, "draw.fxc" );
     ConstITechniqueRef technique = effect->GetTechnique( "DrawColoredVertices" );
 
     // Create geometry
@@ -173,7 +173,7 @@ TEST_F(GfwTests, DrawIndexed)
 
 TEST_F(GfwTests, DrawScreenQuad)
 {
-    IEffectRef effect = mFactory->CreateEffect( "draw.fxc" );
+    IEffectRef effect = mFactory->CreateEffect( mDevice, "draw.fxc" );
     ConstITechniqueRef tech = effect->GetTechnique( "DrawRedQuad" );
 
     for (int i = 0; i < 60; ++ i)
@@ -199,7 +199,7 @@ TEST_F(GfwTests, DrawScreenQuad)
 
 TEST_F(GfwTests, Reflect)
 {
-    IEffectRef effect = mFactory->CreateEffect( "draw.fxc" );
+    IEffectRef effect = mFactory->CreateEffect( mDevice, "draw.fxc" );
 }
 
 struct Vertex
@@ -211,7 +211,7 @@ struct Vertex
 
 TEST_F(GfwTests, CreateMesh)
 {
-    IEffectRef effect = mFactory->CreateEffect( "draw.fxc" );
+    IEffectRef effect = mFactory->CreateEffect( mDevice, "draw.fxc" );
 
     float    xLeft     = -1.0f;
     float    yBottom   = -1.0f;
@@ -417,7 +417,7 @@ TEST_F(GfwTests, RenderTarget)
 
     // Create effect
 
-    IEffectRef fx = mFactory->CreateEffect( "draw.fxc" );
+    IEffectRef fx = mFactory->CreateEffect( mDevice, "draw.fxc" );
     ConstITechniqueRef techDrawRed = fx->GetTechnique( "DrawRed" );
     ConstITechniqueRef techDrawTexturedQuad = fx->GetTechnique( "DrawTexturedQuad" );
 
