@@ -11,6 +11,10 @@ namespace GFW {
     class SwapChain : public ISwapChain
     {
     public:
+        virtual void
+        Present();
+
+    public:
         NativeContextRef
         CreateContext();
 
@@ -22,9 +26,6 @@ namespace GFW {
 
         void
         ShareLists( NativeContext *, NativeContext * );
-
-        void
-        SwapBuffers();
 
     public:
         SwapChain( const SwapChainDesc &, const WindowHandle & );

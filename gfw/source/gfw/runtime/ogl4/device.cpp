@@ -156,16 +156,6 @@ namespace GFW {
         return static_cast< Context * >( mCurrentContext )->shared_from_this();
     }
 
-    void Device::Present()
-    {
-        AUTO_LOCK_CONTEXT;
-
-        // VGL( glBlitFramebuffer, 0, 0, mParams.backBufferWidth, mParams.backBufferHeight,
-        //    0, 0, mParams.backBufferWidth, mParams.backBufferHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST );
-
-        mSwapChain->SwapBuffers();
-    }
-
     void Device::LockContext( IContextIn context )
     {
         // No need to lock the mutex, because reference to the current context is hold in a thread local storage

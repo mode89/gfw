@@ -45,9 +45,6 @@ namespace GFW {
         virtual ConstIRenderTargetRef
         GetDefaultRenderTarget() const { return mDefaultRenderTarget; }
 
-        virtual void
-        Present();
-
     public:
         Device( const DeviceParams &, ISwapChainIn );
         ~Device();

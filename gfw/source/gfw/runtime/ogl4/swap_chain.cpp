@@ -90,7 +90,7 @@ namespace GFW {
         CMN_ASSERT( res == TRUE ); CMN_UNUSED( res );
     }
 
-    void SwapChain::SwapBuffers()
+    void SwapChain::Present()
     {
         BOOL res = ::SwapBuffers( static_cast< HDC >( mDC.get() ) );
         CMN_ASSERT( res == TRUE ); CMN_UNUSED( res );

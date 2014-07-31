@@ -41,10 +41,6 @@ namespace GFW {
         virtual ConstIRenderTargetRef
         GetDefaultRenderTarget() const = 0;
 
-        // TODO move to ISwapChain
-        virtual void
-        Present() = 0;
-
     public:
         virtual
         ~IDevice() { }

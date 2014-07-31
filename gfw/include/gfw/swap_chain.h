@@ -10,6 +10,9 @@ namespace GFW {
     class ISwapChain
     {
     public:
+        virtual void
+        Present() = 0;
+
         virtual
         ~ISwapChain() {}
     };
