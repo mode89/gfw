@@ -14,36 +14,21 @@
 #include "gfw/runtime/ogl4/shader_reflect.h"
 #include "gfw/runtime/ogl4/texture.h"
 
-#define AUTO_LOCK_CONTEXT   AutoLock __auto_lock_context(mDrawingContext.get(), mMutex, mContextGL)
+#define AUTO_LOCK_CONTEXT \
+    /* Lock the mutex */ \
+    std::lock_guard< std::mutex > __autoLock_mutex( mMutex ); \
+    /* Save current context */ \
+    NativeContext * __autoLock_prevContext = mSwapChain->GetCurrentContext(); \
+    /* Set new context */ \
+    mSwapChain->MakeCurrent( mNativeContext.get() ); \
+    /* Restore context on leaving scope */ \
+    std::shared_ptr< void > __autoLock_context( nullptr, \
+        [ this, __autoLock_prevContext ] ( void * ) { \
+            mSwapChain->MakeCurrent( __autoLock_prevContext ); \
+        } )
 
 namespace GFW {
 
-    class AutoLock
-    {
-    public:
-        AutoLock(IDrawingContext * dc, std::mutex & mutex, RenderingContext nativeContext)
-            : mDrawingContext(dc)
-            , mMutex(mutex)
-            , mPrevContext(NULL)
-        {
-            mMutex.lock();
-            mPrevContext = mDrawingContext->GetCurrentContext();
-            mDrawingContext->MakeCurrent(nativeContext);
-        }
-
-        ~AutoLock()
-        {
-            mDrawingContext->MakeCurrent(mPrevContext);
-            mMutex.unlock();
-        }
-
-        AutoLock & operator= ( const AutoLock & );
-
-    private:
-        IDrawingContext *   mDrawingContext;
-        std::mutex &        mMutex;
-        RenderingContext    mPrevContext;
-    };
 
     CMN_THREAD_LOCAL IContext * Device::mCurrentContext = NULL;
 
