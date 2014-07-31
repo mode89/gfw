@@ -1,8 +1,7 @@
+#include "cmn/scope_exit.h"
 #include "cmn/trace.h"
-
 #include "gfw/device_child.h"
 #include "gfw/resource.h"
-
 #include "gfw/runtime/ogl4/buffer.h"
 #include "gfw/runtime/ogl4/context.h"
 #include "gfw/runtime/ogl4/device.h"
@@ -22,8 +21,8 @@
     /* Set new context */ \
     mSwapChain->MakeCurrent( mNativeContext.get() ); \
     /* Restore context on leaving scope */ \
-    std::shared_ptr< void > __autoLock_context( nullptr, \
-        [ this, __autoLock_prevContext ] ( void * ) { \
+    auto __autoLock_scopeExit = Cmn::MakeScopeExit( \
+        [ this, __autoLock_prevContext ] () { \
             mSwapChain->MakeCurrent( __autoLock_prevContext ); \
         } )
 
