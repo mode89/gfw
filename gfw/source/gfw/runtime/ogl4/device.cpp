@@ -160,6 +160,11 @@ namespace GFW {
             DEVICE_CHILD_DELETER( RenderTarget ) );
     }
 
+    IContextRef Device::GetCurrentContext() const
+    {
+        return static_cast< Context * >( mCurrentContext )->shared_from_this();
+    }
+
     void Device::Present()
     {
         AUTO_LOCK_CONTEXT;

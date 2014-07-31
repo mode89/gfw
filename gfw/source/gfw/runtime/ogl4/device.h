@@ -36,9 +36,8 @@ namespace GFW {
         virtual IRenderTargetRef
         CreateRenderTarget( ConstITextureIn, const RenderTargetDesc & );
 
-        // TODO not allowed construction of IContextRef from pointer
         virtual IContextRef
-        GetCurrentContext() const { return IContextRef( mCurrentContext ); }
+        GetCurrentContext() const;
 
         virtual IContextRef
         GetDefaultContext() const { return mDefaultContext; }
