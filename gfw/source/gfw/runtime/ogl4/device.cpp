@@ -89,13 +89,33 @@ namespace GFW {
 
     IContextRef Device::CreateContext()
     {
-        AUTO_LOCK_CONTEXT;
+        // AUTO_LOCK_CONTEXT is not necessary because the context is constucted in its own native context
+        std::lock_guard< std::mutex > lock( mMutex );
 
         NativeContextRef nativeContext = mSwapChain->CreateContext();
         mSwapChain->ShareLists( mNativeContext.get(), nativeContext.get() );
 
-        // TODO consturct/delete Context in it's native context
-        return std::make_shared<Context>( nativeContext, shared_from_this() );
+        // Constuct the context in its own native context
+        mSwapChain->MakeCurrent( nativeContext.get() );
+        auto onScopeExit = Cmn::MakeScopeExit( [ this ] () {
+                mSwapChain->MakeCurrent( nullptr );
+            } );
+
+        Context * context = new Context( nativeContext, shared_from_this() );
+
+        return std::shared_ptr< Context >( context,
+            [ this ] ( Context * ctx ) {
+                if ( ctx )
+                {
+                    // Delete the context in its own native context
+                    mSwapChain->MakeCurrent( ctx->GetNativeContext().get() );
+                    auto onScopeExit = Cmn::MakeScopeExit( [ this ] () {
+                            mSwapChain->MakeCurrent( nullptr );
+                        } );
+
+                    delete ctx;
+                }
+            } );
     }
 
     IShaderRef Device::CreateShader( ShaderStage stage, const void * shaderBinary )
