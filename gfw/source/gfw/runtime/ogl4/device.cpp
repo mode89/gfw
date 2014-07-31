@@ -133,17 +133,8 @@ namespace GFW {
     IBufferRef Device::CreateBuffer( const BufferDesc & desc, const void * initialData )
     {
         AUTO_LOCK_CONTEXT;
-
-        BufferRef buffer( new Buffer( desc, shared_from_this() ),
+        return BufferRef( new Buffer( desc, initialData, shared_from_this() ),
             DEVICE_CHILD_DELETER( Buffer ) );
-
-        // TODO initialize at constructor
-        if (buffer->Init(initialData) != 0)
-        {
-            return buffer;
-        }
-
-        return nullptr;
     }
 
     ITextureRef Device::CreateTexture( const TextureDesc & desc, const void * initialData /*= 0*/ )

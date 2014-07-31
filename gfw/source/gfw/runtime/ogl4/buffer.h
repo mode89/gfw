@@ -23,9 +23,6 @@ namespace GFW {
         UpdateSubresource(const void * data, uint32_t subResourceIndex = 0);
 
     public:
-        bool
-        Init(const void * initialData);
-
         uint32_t
         GetHandle() const       { return mHandle; }
 
@@ -33,7 +30,7 @@ namespace GFW {
         GetTarget() const       { return mTarget; }
 
     public:
-        Buffer( const BufferDesc &, DeviceIn );
+        Buffer( const BufferDesc &, const void * initialData, DeviceIn );
         ~Buffer();
 
     private:

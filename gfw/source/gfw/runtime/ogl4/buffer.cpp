@@ -24,13 +24,21 @@ namespace GFW {
         return 0;
     }
 
-    Buffer::Buffer(const BufferDesc & desc, DeviceIn device)
-        : ADeviceChild(device)
-        , mDesc(desc)
-        , mHandle(0)
-        , mTarget(0)
+    Buffer::Buffer( const BufferDesc & desc, const void * initialData, DeviceIn device )
+        : ADeviceChild( device )
+        , mDesc( desc )
+        , mHandle( 0 )
+        , mTarget( 0 )
     {
+        VGL( glGenBuffers, 1, &mHandle );
+        CMN_ASSERT( mHandle != 0 );
 
+        mTarget = GetBufferTarget( mDesc.type );
+        uint32_t usage  = GetOGLUsage( mDesc.usage );
+
+        VGL( glBindBuffer, mTarget, mHandle );
+        VGL( glBufferData, mTarget, mDesc.size, initialData, usage );
+        VGL( glBindBuffer, mTarget, 0 );
     }
 
     Buffer::~Buffer()
@@ -41,27 +49,7 @@ namespace GFW {
         }
     }
 
-    bool Buffer::Init( const void * initialData )
-    {
-        VGL( glGenBuffers, 1, &mHandle );
-        CMN_ASSERT( mHandle != 0 );
-
-        if (mHandle != 0)
-        {
-            mTarget = GetBufferTarget(mDesc.type);
-            uint32_t usage  = GetOGLUsage(mDesc.usage);
-
-            VGL( glBindBuffer, mTarget, mHandle );
-            VGL( glBufferData, mTarget, mDesc.size, initialData, usage );
-            VGL( glBindBuffer, mTarget, 0 );
-
-            return true;
-        }
-
-        return false;
-    }
-
-    void * Buffer::Map(uint32_t mapFlags)
+    void * Buffer::Map( uint32_t mapFlags )
     {
         CMN_ASSERT( (mapFlags & (MAP_FLAG_READ | MAP_FLAG_WRITE)) != 0 );
         CMN_ASSERT( mDevice.lock()->GetCurrentContext() );
