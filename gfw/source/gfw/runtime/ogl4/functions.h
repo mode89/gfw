@@ -5,21 +5,21 @@
 
 #include "opengl/glcorearb.h"
 
-#if TRACE_ASSERT_ENABLED
+#if CMN_DEBUG
     #define VGL( func, ... ) \
         ( func != NULL ) ? func( __VA_ARGS__ ) : ( throw -1 ) ; \
         { \
-            TRACE_ASSERT_MESSAGE_FORMATED( func != NULL, "Function %s() is not supported by the hardware", #func ); \
+            CMN_ASSERT_MSG( func != NULL, "Function %s() is not supported by the hardware", #func ); \
             \
             unsigned int errorCode = glGetError(); \
             if ( errorCode != 0 ) \
             { \
-                TRACE_ASSERT_MESSAGE_FORMATED( errorCode != 0, "Function %s() failed with code %x", #func, errorCode ); \
+                CMN_ASSERT_MSG( errorCode != 0, "Function %s() failed with code %x", #func, errorCode ); \
             } \
         }
 #else
     #define VGL( func, ...)  func(__VA_ARGS__ )
-#endif // TRACE_ASSERT_ENABLED
+#endif // CMN_DEBUG
 
 #define OPENGL_FUNCTIONS_CORE \
     F(PFNGLGETERRORPROC,                    glGetError) \

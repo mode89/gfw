@@ -300,7 +300,7 @@ namespace GFW {
         }
         VGL( glDrawBuffers, mRenderTargetsCount, drawBuffers );
 
-#ifdef TRACE_ASSERT_ENABLED
+#ifdef CMN_DEBUG
         int32_t status  = VGL( glCheckFramebufferStatus, GL_DRAW_FRAMEBUFFER );
         CMN_ASSERT( status == GL_FRAMEBUFFER_COMPLETE );
 #endif
