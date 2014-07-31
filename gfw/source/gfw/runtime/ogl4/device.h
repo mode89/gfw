@@ -36,6 +36,7 @@ namespace GFW {
         virtual IRenderTargetRef
         CreateRenderTarget( ConstITextureIn, const RenderTargetDesc & );
 
+        // TODO not allowed construction of IContextRef from pointer
         virtual IContextRef
         GetCurrentContext() const { return IContextRef( mCurrentContext ); }
 
@@ -49,35 +50,36 @@ namespace GFW {
         Present();
 
     public:
-        Device( const DeviceParams & );
+        Device( const DeviceParams &, ISwapChainIn );
         ~Device();
 
         void
         InitializeSwapChain();
 
         void
-        LockContext(IContextRef);
+        LockContext( IContextIn );
 
         void
-        UnlockContext(IContextRef);
+        UnlockContext( IContextIn );
 
         Device( const Device & );
         Device & operator= ( const Device & );
 
     private:
         static CMN_THREAD_LOCAL
-        IContext*                   mCurrentContext;
+        IContext *                  mCurrentContext;
 
         const DeviceParams          mParams;
 
-        IDrawingContextRef          mDrawingContext;
-        RenderingContext            mContextGL;
+        SwapChainRef                mSwapChain;
+
+        NativeContextRef            mNativeContext;
 
         std::mutex                  mMutex;
         IContextRef                 mDefaultContext;
 
         IRenderTargetRef            mDefaultRenderTarget;
-        uint32_t                    mResolveFramebuffer;
+        //uint32_t                    mResolveFramebuffer;
     };
     SHARED_PTR_TYPEDEFS( Device );
 

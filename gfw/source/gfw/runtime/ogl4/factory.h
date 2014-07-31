@@ -8,8 +8,11 @@ namespace GFW {
     class Factory : public AFactory
     {
     public:
+        virtual ISwapChainRef
+        CreateSwapChain( const SwapChainDesc &, const WindowHandle & );
+
         virtual IDeviceRef
-        CreateDevice( const DeviceParams & );
+        CreateDevice( const DeviceParams &, ISwapChainIn );
 
         Factory();
         ~Factory();

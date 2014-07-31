@@ -6,12 +6,12 @@
 #include "gfw/runtime/ogl4/buffer.h"
 #include "gfw/runtime/ogl4/context.h"
 #include "gfw/runtime/ogl4/device.h"
-#include "gfw/runtime/ogl4/drawing_context.h"
 #include "gfw/runtime/ogl4/functions.h"
 #include "gfw/runtime/ogl4/input_layout.h"
 #include "gfw/runtime/ogl4/render_target.h"
 #include "gfw/runtime/ogl4/shader.h"
 #include "gfw/runtime/ogl4/shader_reflect.h"
+#include "gfw/runtime/ogl4/swap_chain.h"
 #include "gfw/runtime/ogl4/texture.h"
 
 #define AUTO_LOCK_CONTEXT \
@@ -29,53 +29,39 @@
 
 namespace GFW {
 
+    CMN_THREAD_LOCAL IContext * Device::mCurrentContext = nullptr;
 
-    CMN_THREAD_LOCAL IContext * Device::mCurrentContext = NULL;
-
-    Device::Device(const DeviceParams & params)
-        : mParams(params)
-        , mContextGL(NULL)
+    Device::Device( const DeviceParams & params, ISwapChainIn swapChain )
+        : mParams( params )
+        , mSwapChain( std::static_pointer_cast< SwapChain >( swapChain ) )
+        , mNativeContext( mSwapChain->CreateContext() )
     {
-        CMN_ASSERT( mParams.backBufferFormat != FORMAT_UNKNOWN );
-
-        mDrawingContext = CreateDrawingContext(mParams.windowHandle);
-        if (mDrawingContext.get())
-        {
-            CMN_THROW( "Failed to create a drawing context" );
-        }
-
-        mContextGL = mDrawingContext->CreateContext();
-        if (mContextGL == NULL)
-        {
-            CMN_THROW( "Cannot create a rendering context" );
-        }
-
         AUTO_LOCK_CONTEXT;
 
         InitializeSwapChain();
 
-        mDefaultContext = std::make_shared<Context>( mDrawingContext, shared_from_this() );
+        mDefaultContext = CreateContext();
 
+        // TODO #if defined( CMN_DEBUG )
         const uint8_t * extensions = glGetString(GL_EXTENSIONS);
         CMN_UNUSED( extensions );
     }
 
     Device::~Device()
     {
+        /*
         if (mResolveFramebuffer != 0)
         {
             VGL( glDeleteFramebuffers, 1, &mResolveFramebuffer );
         }
-
-        if (mDrawingContext && mContextGL != NULL)
-        {
-            mDrawingContext->MakeCurrent(NULL);
-            mDrawingContext->DeleteContext(mContextGL);
-        }
+        */
     }
 
     void Device::InitializeSwapChain()
     {
+        // TODO not sure that we need an additional buffer, since we have SwapChain object
+
+        /*
         TextureDesc defaultRenderTargetTextureDesc;
         defaultRenderTargetTextureDesc.format       = mParams.backBufferFormat;
         defaultRenderTargetTextureDesc.width        = mParams.backBufferWidth;
@@ -98,28 +84,32 @@ namespace GFW {
 
         VGL( glBindFramebuffer, GL_DRAW_FRAMEBUFFER, 0 );
         VGL( glDrawBuffer, GL_LEFT );
+        */
     }
 
     IContextRef Device::CreateContext()
     {
         AUTO_LOCK_CONTEXT;
 
-        return std::make_shared<Context>( mDrawingContext, shared_from_this() );
+        NativeContextRef nativeContext = mSwapChain->CreateContext();
+        mSwapChain->ShareLists( mNativeContext.get(), nativeContext.get() );
+
+        // TODO consturct/delete Context in it's native context
+        return std::make_shared<Context>( nativeContext, shared_from_this() );
     }
 
     IShaderRef Device::CreateShader( ShaderStage stage, const void * shaderBinary )
     {
         AUTO_LOCK_CONTEXT;
-
+        // TODO set deleter which calls destructor in a device's native context
         return std::make_shared<Shader>( shaderBinary, stage, shared_from_this() );
     }
 
     IInputLayoutRef Device::CreateInputLayout( uint32_t attrCnt, VertexAttribute attrs[], ConstIShaderIn shader )
     {
-        CMN_ASSERT( shader );
-
         AUTO_LOCK_CONTEXT;
-
+        CMN_ASSERT( shader );
+        // TODO set deleter which calls destructor in a device's native context
         return std::make_shared<InputLayout>( attrCnt, attrs, shader, shared_from_this() );
     }
 
@@ -127,27 +117,29 @@ namespace GFW {
     {
         AUTO_LOCK_CONTEXT;
 
+        // TODO set deleter which calls destructor in a device's native context
         BufferRef buffer = std::make_shared<Buffer>( desc, shared_from_this() );
 
+        // TODO initialize at constructor
         if (buffer->Init(initialData) != 0)
         {
             return buffer;
         }
 
-        return NULL;
+        return nullptr;
     }
 
     ITextureRef Device::CreateTexture( const TextureDesc & desc, const void * initialData /*= 0*/ )
     {
         AUTO_LOCK_CONTEXT;
-
+        // TODO set deleter which calls destructor in a device's native context
         return std::make_shared<Texture>( desc, initialData, shared_from_this() );
     }
 
     IRenderTargetRef Device::CreateRenderTarget( ConstITextureIn texture, const RenderTargetDesc & desc )
     {
         AUTO_LOCK_CONTEXT;
-
+        // TODO set deleter which calls destructor in a device's native context
         return std::make_shared<RenderTarget>( texture, desc, shared_from_this() );
     }
 
@@ -155,24 +147,28 @@ namespace GFW {
     {
         AUTO_LOCK_CONTEXT;
 
-        VGL( glBlitFramebuffer, 0, 0, mParams.backBufferWidth, mParams.backBufferHeight,
-            0, 0, mParams.backBufferWidth, mParams.backBufferHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST );
+        // VGL( glBlitFramebuffer, 0, 0, mParams.backBufferWidth, mParams.backBufferHeight,
+        //    0, 0, mParams.backBufferWidth, mParams.backBufferHeight, GL_COLOR_BUFFER_BIT, GL_NEAREST );
 
-        mDrawingContext->SwapBuffers();
+        mSwapChain->SwapBuffers();
     }
 
-    void Device::LockContext(IContextRef context)
+    void Device::LockContext( IContextIn context )
     {
+        // No need to lock the mutex, because reference to the current context is hold in a thread local storage
         CMN_ASSERT( context );
-        CMN_ASSERT( mCurrentContext == NULL );
+        CMN_ASSERT( mCurrentContext == nullptr ); // The same thread cannot lock multiple contexts
+        mSwapChain->MakeCurrent( std::static_pointer_cast< Context >( context )->GetNativeContext().get() );
         mCurrentContext = context.get();
     }
 
-    void Device::UnlockContext(IContextRef context)
+    void Device::UnlockContext( IContextIn context )
     {
+        // No need to lock the mutex, see LockContext()
         CMN_ASSERT( context );
         CMN_ASSERT( mCurrentContext == context.get() );
-        mCurrentContext = NULL;
+        mSwapChain->MakeCurrent( nullptr );
+        mCurrentContext = nullptr;
     }
 
 } // namespace GFW

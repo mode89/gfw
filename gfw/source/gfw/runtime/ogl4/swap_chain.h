@@ -1,28 +1,41 @@
-#ifndef __GFW_RUNTIME_CORE_DRAWING_CONTEXT_H__
-#define __GFW_RUNTIME_CORE_DRAWING_CONTEXT_H__
+#ifndef __GFW_RUNTIME_OGL4_SWAP_CHAIN_H__
+#define __GFW_RUNTIME_OGL4_SWAP_CHAIN_H__
 
+#include "gfw/swap_chain.h"
 #include "gfw/types_fwd.h"
 #include "gfw/runtime/ogl4/types_fwd.h"
+#include <windows.h>
 
 namespace GFW {
 
-    typedef void * RenderingContext;
-
-    class IDrawingContext
+    class SwapChain : public ISwapChain
     {
     public:
-        virtual RenderingContext    CreateContext() = 0;
-        virtual void                DeleteContext(RenderingContext) = 0;
-        virtual void                MakeCurrent(RenderingContext) = 0;
-        virtual RenderingContext    GetCurrentContext() = 0;
-        virtual void                SwapBuffers() = 0;
+        NativeContextRef
+        CreateContext();
 
-        virtual                     ~IDrawingContext()  {}
+        void
+        MakeCurrent( NativeContext * );
+        
+        NativeContext *
+        GetCurrentContext();
+
+        void
+        ShareLists( NativeContext *, NativeContext * );
+
+        void
+        SwapBuffers();
+
+    public:
+        SwapChain( const SwapChainDesc &, const WindowHandle & );
+        ~SwapChain();
+
+    private:
+        WindowHandle                mWindow;
+        std::shared_ptr< void >     mDC;
     };
-    SHARED_PTR_TYPEDEFS(IDrawingContext);
-
-    IDrawingContextRef CreateDrawingContext(WindowHandle);
+    SHARED_PTR_TYPEDEFS( SwapChain );
 
 } // namespace GFW
 
-#endif // __GFW_RUNTIME_CORE_DRAWING_CONTEXT_H__
+#endif // __GFW_RUNTIME_OGL4_SWAP_CHAIN_H__

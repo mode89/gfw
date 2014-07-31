@@ -2,6 +2,7 @@
 #include "gfw/runtime/ogl4/device.h"
 #include "gfw/runtime/ogl4/factory.h"
 #include "gfw/runtime/ogl4/functions.h"
+#include "gfw/runtime/ogl4/swap_chain.h"
 
 #if defined( CMN_WIN32 )
     #include <windows.h>
@@ -133,9 +134,14 @@ CMN_WARNING_POP
 #endif
     }
 
-    IDeviceRef Factory::CreateDevice( const DeviceParams & deviceParams )
+    ISwapChainRef Factory::CreateSwapChain( const SwapChainDesc & desc, const WindowHandle & window )
     {
-        return std::make_shared< Device >( deviceParams );
+        return std::make_shared< SwapChain >( desc, window );
+    }
+
+    IDeviceRef Factory::CreateDevice( const DeviceParams & deviceParams, ISwapChainIn swapChain )
+    {
+        return std::make_shared< Device >( deviceParams, swapChain );
     }
 
 } // namespace GFW

@@ -6,7 +6,6 @@
 #include "gfw/runtime/ogl4/buffer.h"
 #include "gfw/runtime/ogl4/context.h"
 #include "gfw/runtime/ogl4/device.h"
-#include "gfw/runtime/ogl4/drawing_context.h"
 #include "gfw/runtime/ogl4/format.h"
 #include "gfw/runtime/ogl4/functions.h"
 #include "gfw/runtime/ogl4/input_layout.h"
@@ -20,10 +19,9 @@ namespace GFW {
 
     using namespace Cmn;
 
-    Context::Context( IDrawingContextIn dc, DeviceIn d )
+    Context::Context( NativeContextIn nativeContext, DeviceIn d )
         : ADeviceChild( d )
-        , mDrawingContext(dc)
-        , mContextGL(NULL)
+        , mNativeContext( nativeContext )
         , mScreenQuadBuffer(0)
         , mProgramPipeline(0)
         , mEnabledVertexAttributesMask(0)
@@ -33,55 +31,34 @@ namespace GFW {
         , mDrawFramebuffer(0)
         , mDelayedClearState(false)
     {
-        mContextGL = mDrawingContext->CreateContext();
+        VGL( glGenProgramPipelines, 1, &mProgramPipeline );
+        CMN_ASSERT( mProgramPipeline != 0 );
+        VGL( glBindProgramPipeline, mProgramPipeline );
 
-        // Create context specific objects
+        VGL( glGenFramebuffers, 1, &mDrawFramebuffer );
+        CMN_ASSERT( mDrawFramebuffer != -1 );
+        VGL( glBindFramebuffer, GL_DRAW_FRAMEBUFFER, mDrawFramebuffer );
 
-        RenderingContext currentContext = mDrawingContext->GetCurrentContext();
-        mDrawingContext->MakeCurrent(mContextGL);
-        {
-            VGL( glGenProgramPipelines, 1, &mProgramPipeline );
-            CMN_ASSERT( mProgramPipeline != 0 );
-            VGL( glBindProgramPipeline, mProgramPipeline );
-
-            VGL( glGenFramebuffers, 1, &mDrawFramebuffer );
-            CMN_ASSERT( mDrawFramebuffer != -1 );
-            VGL( glBindFramebuffer, GL_DRAW_FRAMEBUFFER, mDrawFramebuffer );
-
-            InitScreenQuad();
-        }
-        mDrawingContext->MakeCurrent(currentContext);
+        InitScreenQuad();
 
         ClearState();
     }
 
     Context::~Context()
     {
-        // Delete context specific objects
-
-        RenderingContext currentContext = mDrawingContext->GetCurrentContext();
-        mDrawingContext->MakeCurrent(mContextGL);
+        if (mProgramPipeline != 0)
         {
-            if (mProgramPipeline != 0)
-            {
-                VGL( glDeleteProgramPipelines, 1, &mProgramPipeline );
-            }
-
-            if (mDrawFramebuffer != 0)
-            {
-                VGL( glDeleteFramebuffers, 1, &mDrawFramebuffer );
-            }
-
-            if (mScreenQuadBuffer)
-            {
-                VGL( glDeleteBuffers, 1, &mScreenQuadBuffer );
-            }
+            VGL( glDeleteProgramPipelines, 1, &mProgramPipeline );
         }
-        mDrawingContext->MakeCurrent(currentContext);
 
-        if (mContextGL != NULL)
+        if (mDrawFramebuffer != 0)
         {
-            mDrawingContext->DeleteContext(mContextGL);
+            VGL( glDeleteFramebuffers, 1, &mDrawFramebuffer );
+        }
+
+        if (mScreenQuadBuffer)
+        {
+            VGL( glDeleteBuffers, 1, &mScreenQuadBuffer );
         }
     }
 
@@ -150,7 +127,7 @@ namespace GFW {
         FlushState();
 
         VGL( glBindBuffer, GL_ARRAY_BUFFER, mScreenQuadBuffer );
-        VGL( glVertexAttribPointer, 0, 2, GL_FLOAT, GL_TRUE, 2 * sizeof(float), NULL );
+        VGL( glVertexAttribPointer, 0, 2, GL_FLOAT, GL_TRUE, 2 * sizeof(float), nullptr );
         VGL( glEnableVertexAttribArray, 0 );
         VGL( glBindBuffer, GL_ARRAY_BUFFER, 0 );
 
@@ -403,8 +380,8 @@ namespace GFW {
     void Context::BeginScene()
     {
         mDevice.lock()->LockContext( shared_from_this() );
-        mDrawingContext->MakeCurrent(mContextGL);
 
+        // TODO not necessary since construction is performed in an owned native context
         if (mDelayedClearState)
         {
             ClearState();
@@ -415,8 +392,6 @@ namespace GFW {
     void Context::EndScene()
     {
         ClearState();
-
-        mDrawingContext->MakeCurrent(NULL);
         mDevice.lock()->UnlockContext( shared_from_this() );
     }
 

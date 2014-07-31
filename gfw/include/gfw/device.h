@@ -8,17 +8,6 @@ namespace GFW {
 
     struct DeviceParams
     {
-        WindowHandle    windowHandle;       // Platform specific window handle
-        uint32_t        backBufferWidth;
-        uint32_t        backBufferHeight;
-        Format          backBufferFormat;
-
-        DeviceParams()
-            : windowHandle(NULL)
-            , backBufferWidth(0)
-            , backBufferHeight(0)
-            , backBufferFormat(FORMAT_UNKNOWN)
-        {}
     };
 
     class IDevice
@@ -45,12 +34,14 @@ namespace GFW {
         virtual IContextRef
         GetCurrentContext() const = 0;
 
+        // TODO rename GetImmediateContext()
         virtual IContextRef
         GetDefaultContext() const = 0;
 
         virtual ConstIRenderTargetRef
         GetDefaultRenderTarget() const = 0;
 
+        // TODO move to ISwapChain
         virtual void
         Present() = 0;
 
@@ -58,7 +49,7 @@ namespace GFW {
         virtual
         ~IDevice() { }
     };
-	SHARED_PTR_TYPEDEFS(IDevice);
+	SHARED_PTR_TYPEDEFS( IDevice );
 
 } // namespace GFW
 

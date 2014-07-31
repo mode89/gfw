@@ -61,8 +61,11 @@ namespace GFW {
         void
         FlushState();
 
+        NativeContextRef
+        GetNativeContext() const { return mNativeContext; }
+
     public:
-        Context( IDrawingContextIn, DeviceIn );
+        Context( NativeContextIn, DeviceIn );
         ~Context();
 
     private:
@@ -72,9 +75,7 @@ namespace GFW {
     private:
         typedef std::map < uint32_t, uint32_t > tMapProgs;
 
-        IDrawingContextRef          mDrawingContext;
-
-        RenderingContext            mContextGL;
+        NativeContextRef            mNativeContext;
 
         uint32_t                    mScreenQuadBuffer;
 

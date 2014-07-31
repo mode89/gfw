@@ -29,6 +29,7 @@ namespace GFW {
     SHARED_PTR_FORWARD_TYPEDEFS( IShaderReflection );
     SHARED_PTR_FORWARD_TYPEDEFS( IShaderResource );
     SHARED_PTR_FORWARD_TYPEDEFS( IShaderVariable );
+    SHARED_PTR_FORWARD_TYPEDEFS( ISwapChain );
     SHARED_PTR_FORWARD_TYPEDEFS( ITechnique );
     SHARED_PTR_FORWARD_TYPEDEFS( ITexture );
 
@@ -48,11 +49,13 @@ namespace GFW {
     struct ShaderResourceDesc;
     struct ShaderVariableDesc;
     struct SubResIdx;
+    struct SwapChainDesc;
     struct VertexAttribute;
 
-    typedef void * WindowHandle;
+    typedef void * WindowHandle; // TODO use shader_ptr< void >
 
     enum ShaderStage : int32_t;
+    // TODO add forward declaration for Semantic enumeration
 
 } // namespace GFW
 

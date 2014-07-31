@@ -22,6 +22,7 @@
 #include "gfw/shader.h"
 #include "gfw/shader_reflect.h"
 #include "gfw/shader_stage.h"
+#include "gfw/swap_chain.h"
 #include "gfw/technique.h"
 #include "gfw/texture.h"
 #include "gfw/vertex_attribute.h"

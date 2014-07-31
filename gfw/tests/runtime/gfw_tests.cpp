@@ -19,15 +19,15 @@ void GfwTests::SetUp()
 
     mFactory = CreateFactory();
 
+    // Create a swap chain
+
+    SwapChainDesc swapChainDesc;
+    ISwapChainRef swapChain = mFactory->CreateSwapChain( swapChainDesc, mWindow );
+
     // Create a graphical mDevice
 
     DeviceParams deviceParams;
-    deviceParams.backBufferWidth    = kWindowWidth;
-    deviceParams.backBufferHeight   = kwindowHeight;
-    deviceParams.backBufferFormat   = FORMAT_RGBA8_UNORM;
-    deviceParams.windowHandle       = mWindow;
-
-    mDevice = mFactory->CreateDevice( deviceParams );
+    mDevice = mFactory->CreateDevice( deviceParams, swapChain );
 
     mDefaultRenderTarget = mDevice->GetDefaultRenderTarget();
 

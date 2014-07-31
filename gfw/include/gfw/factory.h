@@ -8,8 +8,11 @@ namespace GFW {
     class IFactory
     {
     public:
+        virtual ISwapChainRef
+        CreateSwapChain( const SwapChainDesc &, const WindowHandle & ) = 0;
+
         virtual IDeviceRef
-        CreateDevice( const DeviceParams & ) = 0;
+        CreateDevice( const DeviceParams &, ISwapChainIn ) = 0;
 
         virtual IEffectRef
         CreateEffect( IDeviceIn, const char * fileName ) = 0;
