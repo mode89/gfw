@@ -26,6 +26,16 @@
             mSwapChain->MakeCurrent( __autoLock_prevContext ); \
         } )
 
+// Allows destruct a child in a specific native context
+#define DEVICE_CHILD_DELETER( typeName ) \
+    [ this ] ( typeName * child ) { \
+        mSwapChain->MakeCurrent( mNativeContext.get() ); \
+        auto scopeExit = Cmn::MakeScopeExit( [ this ] () { \
+                mSwapChain->MakeCurrent( nullptr ); \
+            } ); \
+        delete child; \
+    }
+
 namespace GFW {
 
     CMN_THREAD_LOCAL IContext * Device::mCurrentContext = nullptr;
@@ -101,44 +111,31 @@ namespace GFW {
                 mSwapChain->MakeCurrent( nullptr );
             } );
 
-        Context * context = new Context( nativeContext, shared_from_this() );
-
-        return std::shared_ptr< Context >( context,
-            [ this ] ( Context * ctx ) {
-                if ( ctx )
-                {
-                    // Delete the context in its own native context
-                    mSwapChain->MakeCurrent( ctx->GetNativeContext().get() );
-                    auto onScopeExit = Cmn::MakeScopeExit( [ this ] () {
-                            mSwapChain->MakeCurrent( nullptr );
-                        } );
-
-                    delete ctx;
-                }
-            } );
+        return ContextRef( new Context( nativeContext, shared_from_this() ),
+            DEVICE_CHILD_DELETER( Context ) );
     }
 
     IShaderRef Device::CreateShader( ShaderStage stage, const void * shaderBinary )
     {
         AUTO_LOCK_CONTEXT;
-        // TODO set deleter which calls destructor in a device's native context
-        return std::make_shared<Shader>( shaderBinary, stage, shared_from_this() );
+        return ShaderRef( new Shader( shaderBinary, stage, shared_from_this() ),
+            DEVICE_CHILD_DELETER( Shader ) );
     }
 
     IInputLayoutRef Device::CreateInputLayout( uint32_t attrCnt, VertexAttribute attrs[], ConstIShaderIn shader )
     {
         AUTO_LOCK_CONTEXT;
         CMN_ASSERT( shader );
-        // TODO set deleter which calls destructor in a device's native context
-        return std::make_shared<InputLayout>( attrCnt, attrs, shader, shared_from_this() );
+        return InputLayoutRef( new InputLayout( attrCnt, attrs, shader, shared_from_this() ),
+            DEVICE_CHILD_DELETER( InputLayout ) );
     }
 
     IBufferRef Device::CreateBuffer( const BufferDesc & desc, const void * initialData )
     {
         AUTO_LOCK_CONTEXT;
 
-        // TODO set deleter which calls destructor in a device's native context
-        BufferRef buffer = std::make_shared<Buffer>( desc, shared_from_this() );
+        BufferRef buffer( new Buffer( desc, shared_from_this() ),
+            DEVICE_CHILD_DELETER( Buffer ) );
 
         // TODO initialize at constructor
         if (buffer->Init(initialData) != 0)
@@ -152,15 +149,15 @@ namespace GFW {
     ITextureRef Device::CreateTexture( const TextureDesc & desc, const void * initialData /*= 0*/ )
     {
         AUTO_LOCK_CONTEXT;
-        // TODO set deleter which calls destructor in a device's native context
-        return std::make_shared<Texture>( desc, initialData, shared_from_this() );
+        return TextureRef( new Texture( desc, initialData, shared_from_this() ),
+            DEVICE_CHILD_DELETER( Texture ) );
     }
 
     IRenderTargetRef Device::CreateRenderTarget( ConstITextureIn texture, const RenderTargetDesc & desc )
     {
         AUTO_LOCK_CONTEXT;
-        // TODO set deleter which calls destructor in a device's native context
-        return std::make_shared<RenderTarget>( texture, desc, shared_from_this() );
+        return RenderTargetRef( new RenderTarget( texture, desc, shared_from_this() ),
+            DEVICE_CHILD_DELETER( RenderTarget ) );
     }
 
     void Device::Present()
