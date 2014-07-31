@@ -18,11 +18,6 @@
 
 namespace GFW {
 
-    IDeviceRef CreateDevice(DeviceParams & params)
-    {
-        return std::static_pointer_cast<IDevice>( std::make_shared<Device>( params ) );
-    }
-
     class AutoLock
     {
     public:
