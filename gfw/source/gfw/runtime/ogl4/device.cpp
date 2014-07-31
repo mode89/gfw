@@ -42,9 +42,10 @@ namespace GFW {
 
         mDefaultContext = CreateContext();
 
-        // TODO #if defined( CMN_DEBUG )
+#if defined( CMN_DEBUG )
         const uint8_t * extensions = glGetString(GL_EXTENSIONS);
         CMN_UNUSED( extensions );
+#endif
     }
 
     Device::~Device()
