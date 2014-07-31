@@ -29,7 +29,6 @@ namespace GFW {
         , mNextActiveTextureUnit(0)
         , mRenderTargetsCount(0)
         , mDrawFramebuffer(0)
-        , mDelayedClearState(false)
     {
         VGL( glGenProgramPipelines, 1, &mProgramPipeline );
         CMN_ASSERT( mProgramPipeline != 0 );
@@ -155,12 +154,6 @@ namespace GFW {
 
     void Context::ClearState()
     {
-        if ( mDevice.lock()->GetCurrentContext().get() != this)
-        {
-            mDelayedClearState = true;
-            return;
-        }
-
         // Detach shaders
 
         for (int stage = 0; stage < ShaderStage::COUNT; ++ stage)
@@ -380,13 +373,6 @@ namespace GFW {
     void Context::BeginScene()
     {
         mDevice.lock()->LockContext( shared_from_this() );
-
-        // TODO not necessary since construction is performed in an owned native context
-        if (mDelayedClearState)
-        {
-            ClearState();
-            mDelayedClearState = false;
-        }
     }
 
     void Context::EndScene()

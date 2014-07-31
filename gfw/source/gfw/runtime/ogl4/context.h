@@ -97,8 +97,6 @@ namespace GFW {
         ConstRenderTargetRef        mRenderTargets[MAX_RENDER_TARGETS];
         uint32_t                    mRenderTargetsCount;
         uint32_t                    mDrawFramebuffer;
-
-        bool                        mDelayedClearState;
     };
 
 } // namespace GFW
