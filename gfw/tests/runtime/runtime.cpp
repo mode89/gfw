@@ -18,9 +18,7 @@ TEST_F(GfwTests, Clear)
         }
         mContext->EndScene();
 
-        mDevice->Present();
-
-        Wait();
+        Present();
     }
 }
 
@@ -85,9 +83,7 @@ TEST_F( GfwTests, DrawColored )
         }
         mContext->EndScene();
 
-        mDevice->Present();
-
-        Wait();
+        Present();
     }
 }
 
@@ -165,9 +161,7 @@ TEST_F(GfwTests, DrawIndexed)
         }
         mContext->EndScene();
 
-        mDevice->Present();
-
-        Wait();
+        Present();
     }
 }
 
@@ -191,9 +185,7 @@ TEST_F(GfwTests, DrawScreenQuad)
         }
         mContext->EndScene();
 
-        mDevice->Present();
-
-        Wait();
+        Present();
     }
 }
 
@@ -317,9 +309,7 @@ TEST_F(GfwTests, CreateMesh)
         }
         mContext->EndScene();
 
-        mDevice->Present();
-
-        Wait();
+        Present();
     }
 }
 
@@ -491,8 +481,6 @@ TEST_F(GfwTests, RenderTarget)
         }
         mContext->EndScene();
 
-        mDevice->Present();
-
-        Wait();
+        Present();
     }
 }

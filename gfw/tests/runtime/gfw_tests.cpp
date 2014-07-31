@@ -22,12 +22,12 @@ void GfwTests::SetUp()
     // Create a swap chain
 
     SwapChainDesc swapChainDesc;
-    ISwapChainRef swapChain = mFactory->CreateSwapChain( swapChainDesc, mWindow );
+    mSwapChain = mFactory->CreateSwapChain( swapChainDesc, mWindow );
 
     // Create a graphical mDevice
 
     DeviceParams deviceParams;
-    mDevice = mFactory->CreateDevice( deviceParams, swapChain );
+    mDevice = mFactory->CreateDevice( deviceParams, mSwapChain );
 
     mDefaultRenderTarget = mDevice->GetDefaultRenderTarget();
 
@@ -51,10 +51,12 @@ void GfwTests::TearDown()
     DestroyDefaultWindow(mWindow);
 }
 
-void GfwTests::Wait()
+void GfwTests::Present()
 {
-    static uint64_t freq = GetCounterFrequency();
+    mSwapChain->Present();
 
+    // Wait certain time
+    static uint64_t freq = GetCounterFrequency();
     uint64_t timeStart = GetCounter();
     while ((GetCounter() - timeStart) < (freq / 120));
 }

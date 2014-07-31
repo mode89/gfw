@@ -41,8 +41,6 @@ TEST_F(GfwTests, Texture)
         }
         mContext->EndScene();
 
-        mDevice->Present();
-
-        Wait();
+        Present();
     }
 }

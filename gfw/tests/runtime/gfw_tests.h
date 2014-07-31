@@ -24,10 +24,11 @@ public:
     void SetUp();
     void TearDown();
 
-    void Wait();
+    void Present();
 
 protected:
     GFW::WindowHandle           mWindow;
+    GFW::ISwapChainRef          mSwapChain;
     GFW::IDeviceRef             mDevice;
     GFW::ConstIRenderTargetRef  mDefaultRenderTarget;
     GFW::IContextRef            mContext;
