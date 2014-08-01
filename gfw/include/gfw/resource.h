@@ -42,6 +42,13 @@ namespace GFW {
         MAP_FLAG_WRITE = (1 << 1)
     };
 
+    enum MapType : uint32_t
+    {
+        READ = 0,
+        WRITE,
+        READ_WRITE,
+    };
+
     struct ResourceDesc
     {
         Usage       usage;

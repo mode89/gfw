@@ -54,6 +54,7 @@ namespace GFW {
 
     typedef void * WindowHandle; // TODO use shader_ptr< void >
 
+    enum MapType : uint32_t;
     enum ShaderStage : int32_t;
     // TODO add forward declaration for Semantic enumeration
 
