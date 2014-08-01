@@ -3,7 +3,7 @@
 
 using namespace GFW;
 
-TEST_F(GfwTests, Clear)
+TEST_F( Test, Clear )
 {
     // Main loop
 
@@ -23,7 +23,7 @@ TEST_F(GfwTests, Clear)
     }
 }
 
-TEST_F( GfwTests, DrawColored )
+TEST_F( Test, DrawColored )
 {
     // Create effect
 
@@ -88,7 +88,7 @@ TEST_F( GfwTests, DrawColored )
     }
 }
 
-TEST_F(GfwTests, DrawIndexed)
+TEST_F( Test, DrawIndexed )
 {
     // Create effect
 
@@ -166,7 +166,7 @@ TEST_F(GfwTests, DrawIndexed)
     }
 }
 
-TEST_F(GfwTests, DrawScreenQuad)
+TEST_F( Test, DrawScreenQuad )
 {
     IEffectRef effect = mFactory->CreateEffect( mDevice, "draw.fxc" );
     ConstITechniqueRef tech = effect->GetTechnique( "DrawRedQuad" );
@@ -190,7 +190,7 @@ TEST_F(GfwTests, DrawScreenQuad)
     }
 }
 
-TEST_F(GfwTests, Reflect)
+TEST_F( Test, Reflect )
 {
     IEffectRef effect = mFactory->CreateEffect( mDevice, "draw.fxc" );
 }
@@ -202,7 +202,7 @@ struct Vertex
     float z;
 };
 
-TEST_F(GfwTests, CreateMesh)
+TEST_F( Test, CreateMesh )
 {
     IEffectRef effect = mFactory->CreateEffect( mDevice, "draw.fxc" );
 
@@ -314,7 +314,7 @@ TEST_F(GfwTests, CreateMesh)
     }
 }
 
-TEST_F(GfwTests, MapBuffer)
+TEST_F( Test, MapBuffer )
 {
     static const uint32_t kDataCount = 100;
 
@@ -360,7 +360,7 @@ TEST_F(GfwTests, MapBuffer)
     }
 }
 
-TEST_F(GfwTests, UpdateBuffer)
+TEST_F( Test, UpdateBuffer )
 {
     static const uint32_t kDataCount = 100;
 
@@ -400,7 +400,7 @@ TEST_F(GfwTests, UpdateBuffer)
     }
 }
 
-TEST_F(GfwTests, RenderTarget)
+TEST_F( Test, RenderTarget )
 {
     // Get default render target
 

@@ -32,7 +32,7 @@ public:
     GfwPipelineTests & operator= ( const GfwPipelineTests & );
 };
 
-TEST_F(GfwPipelineTests, Draw)
+TEST_F( GfwPipelineTests, Draw )
 {
     EffectBinary  effectBinary;
     EffectBuilder effectBuilder;

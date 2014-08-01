@@ -3,7 +3,7 @@
 
 using namespace GFW;
 
-TEST_F(GfwTests, Texture)
+TEST_F( Test, Texture )
 {
     IEffectRef effect = mFactory->CreateEffect( mDevice, "draw.fxc" );
     ConstITechniqueRef technique = effect->GetTechnique( "DrawTexturedQuad" );

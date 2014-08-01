@@ -10,16 +10,16 @@ CMN_WARNING_POP
 
 #include "gfw/gfw.h"
 
-class GfwTests : public testing::Test
+class Test : public testing::Test
 {
 private:
     static const uint32_t kWindowWidth  = 800;
     static const uint32_t kwindowHeight = 600;
 
 public:
-    GfwTests() {}
-    GfwTests( const GfwTests & );
-    GfwTests & operator= ( const GfwTests & );
+    Test() {}
+    Test( const Test & );
+    Test & operator= ( const Test & );
 
     void SetUp();
     void TearDown();

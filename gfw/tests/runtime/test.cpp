@@ -5,7 +5,7 @@
 using namespace Cmn;
 using namespace GFW;
 
-void GfwTests::SetUp()
+void Test::SetUp()
 {
     // Create a window
 
@@ -42,7 +42,7 @@ void GfwTests::SetUp()
     mClearParams.color[3] = 1.0f;
 }
 
-void GfwTests::TearDown()
+void Test::TearDown()
 {
     mContext.reset();
     mDevice.reset();
@@ -51,7 +51,7 @@ void GfwTests::TearDown()
     DestroyDefaultWindow(mWindow);
 }
 
-void GfwTests::Present()
+void Test::Present()
 {
     mSwapChain->Present();
 
