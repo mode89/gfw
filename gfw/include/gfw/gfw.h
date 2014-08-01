@@ -26,6 +26,5 @@
 #include "gfw/technique.h"
 #include "gfw/texture.h"
 #include "gfw/vertex_attribute.h"
-#include "gfw/window.h"
 
 #endif // __GFW_H__

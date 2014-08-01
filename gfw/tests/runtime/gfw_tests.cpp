@@ -1,6 +1,6 @@
 #include "cmn/counter.h"
-
 #include "gfw_tests.h"
+#include "window.h"
 
 using namespace Cmn;
 using namespace GFW;

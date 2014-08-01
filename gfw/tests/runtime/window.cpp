@@ -1,6 +1,6 @@
 #include "cmn/trace.h"
 
-#include "gfw/window.h"
+#include "window.h"
 
 #include <windows.h>
 
@@ -95,7 +95,7 @@ namespace GFW {
     uint32_t        WindowClass::mRefCounter = 0;
     const char *    WindowClass::kName       = "gfw_default_windows";
 
-    WindowHandle CreateDefaultWindow(const WindowDesc & desc)
+    void * CreateDefaultWindow(const WindowDesc & desc)
     {
         HINSTANCE hInst = GetModuleHandle(NULL);
 
@@ -172,7 +172,7 @@ namespace GFW {
         return handle;
     }
 
-    void DestroyDefaultWindow(const WindowHandle handle)
+    void DestroyDefaultWindow( void * handle )
     {
         CMN_ASSERT( handle != NULL );
         if (handle != NULL)
@@ -186,7 +186,7 @@ namespace GFW {
         }
     }
 
-    bool ProcessDefaultWindow(const WindowHandle handle)
+    bool ProcessDefaultWindow( void * handle )
     {
         MSG msg;
 
