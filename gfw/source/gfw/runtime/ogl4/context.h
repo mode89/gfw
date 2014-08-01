@@ -57,6 +57,15 @@ namespace GFW {
         virtual void
         ClearState();
 
+        virtual void *
+        Map( IResourceIn, const SubResourceIndex &, MapType );
+
+        virtual void
+        Unmap( IResourceIn, const SubResourceIndex & );
+
+        virtual void
+        UpdateSubresource( IResourceIn, const SubResourceIndex &, const void * data );
+
     public:
         void
         FlushState();

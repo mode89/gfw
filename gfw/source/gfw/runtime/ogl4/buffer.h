@@ -7,7 +7,7 @@
 
 namespace GFW {
 
-    class Buffer: public ADeviceChild<IBuffer>
+    class Buffer: public ADeviceChild< IBuffer >
     {
     public:
         virtual const BufferDesc &
@@ -17,13 +17,13 @@ namespace GFW {
         GetType() const { return RESOURCE_TYPE_BUFFER; }
 
         virtual void *
-        Map(uint32_t mapFlags);
+        Map( const SubResourceIndex &, MapType );
 
         virtual void
-        Unmap();
+        Unmap( const SubResourceIndex & );
 
         virtual void
-        UpdateSubresource(const void * data, uint32_t subResourceIndex = 0);
+        UpdateSubresource( const SubResourceIndex &, const void * data );
 
     public:
         uint32_t

@@ -47,6 +47,15 @@ namespace GFW {
         virtual void
         ClearState() = 0;
 
+        virtual void *
+        Map( IResourceIn, const SubResourceIndex &, MapType ) = 0;
+
+        virtual void
+        Unmap( IResourceIn, const SubResourceIndex & ) = 0;
+
+        virtual void
+        UpdateSubresource( IResourceIn, const SubResourceIndex &, const void * data ) = 0;
+
     public:
         virtual
         ~IContext() { }

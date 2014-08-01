@@ -380,4 +380,50 @@ namespace GFW {
         mDevice.lock()->UnlockContext( shared_from_this() );
     }
 
+    void * Context::Map( IResourceIn resource, const SubResourceIndex & index, MapType mapType )
+    {
+        switch ( resource->GetType() )
+        {
+        case RESOURCE_TYPE_BUFFER:
+            {
+                BufferRef buffer = std::static_pointer_cast< Buffer >( resource );
+                return buffer->Map( index, mapType ); 
+            }
+        default:
+            CMN_FAIL();
+        }
+
+        return nullptr;
+    }
+
+    void Context::Unmap( IResourceIn resource, const SubResourceIndex & index )
+    {
+        switch ( resource->GetType() )
+        {
+        case RESOURCE_TYPE_BUFFER:
+            {
+                BufferRef buffer = std::static_pointer_cast< Buffer >( resource );
+                buffer->Unmap( index );
+            }
+            break;
+        default:
+            CMN_FAIL();
+        }
+    }
+
+    void Context::UpdateSubresource( IResourceIn resource, const SubResourceIndex & index, const void * data )
+    {
+        switch ( resource->GetType() )
+        {
+        case RESOURCE_TYPE_BUFFER:
+            {
+                BufferRef buffer = std::static_pointer_cast< Buffer >( resource );
+                buffer->UpdateSubresource( index, data );
+            }
+            break;
+        default:
+            CMN_FAIL();
+        }
+    }
+
 } // namespace GFW

@@ -36,12 +36,6 @@ namespace GFW {
         {}
     };
 
-    enum MapFlags
-    {
-        MAP_FLAG_READ  = (1 << 0),
-        MAP_FLAG_WRITE = (1 << 1)
-    };
-
     enum MapType : uint32_t
     {
         MAP_TYPE_UNKNOWN = 0,
@@ -71,14 +65,6 @@ namespace GFW {
     class IResource : public IDeviceChild
     {
     public:
-        virtual void *
-        Map(uint32_t mapFlags) = 0;
-
-        virtual void
-        Unmap() = 0;
-
-        virtual void
-        UpdateSubresource(const void * data, uint32_t subResourceIndex = 0) = 0;
         virtual const ResourceDesc &
         GetDesc() const = 0;
 

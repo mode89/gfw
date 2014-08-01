@@ -2,7 +2,6 @@
 
 #include "gfw/context.h"
 
-
 #include "gfw/runtime/ogl4/buffer.h"
 #include "gfw/runtime/ogl4/device.h"
 #include "gfw/runtime/ogl4/functions.h"
@@ -48,23 +47,25 @@ namespace GFW {
         }
     }
 
-    void * Buffer::Map( uint32_t mapFlags )
+    void * Buffer::Map( const SubResourceIndex & index, MapType mapType )
     {
-        CMN_ASSERT( (mapFlags & (MAP_FLAG_READ | MAP_FLAG_WRITE)) != 0 );
-        CMN_ASSERT( mDevice.lock()->GetCurrentContext() );
+        CMN_ASSERT( index.mipSlice == 0 ); // Buffer doesn't have mip slices
+        CMN_ASSERT( index.arraySlice == 0 ); // Buffer doesn't have array slices
 
         uint32_t access = 0;
-        if (mapFlags & MAP_FLAG_READ && mapFlags & MAP_FLAG_WRITE)
+        switch ( mapType )
         {
-            access = GL_READ_WRITE;
-        }
-        else if (mapFlags & MAP_FLAG_READ)
-        {
+        case MAP_TYPE_READ:
             access = GL_READ_ONLY;
-        }
-        else if (mapFlags & MAP_FLAG_WRITE)
-        {
+            break;
+        case MAP_TYPE_WRITE:
             access = GL_WRITE_ONLY;
+            break;
+        case MAP_TYPE_READ_WRITE:
+            access = GL_READ_WRITE;
+            break;
+        default:
+            CMN_FAIL(); // Undefined map-type
         }
 
         VGL( glBindBuffer, mTarget, mHandle );
@@ -74,18 +75,20 @@ namespace GFW {
         return retVal;
     }
 
-    void Buffer::Unmap()
+    void Buffer::Unmap( const SubResourceIndex & index )
     {
-        CMN_ASSERT( mDevice.lock()->GetCurrentContext() );
+        CMN_ASSERT( index.mipSlice == 0 ); // Buffer doesn't have mip slices
+        CMN_ASSERT( index.arraySlice == 0 ); // Buffer doesn't have array slices
 
         VGL( glBindBuffer, mTarget, mHandle );
         VGL( glUnmapBuffer, mTarget );
         VGL( glBindBuffer, mTarget, 0 );
     }
 
-    void Buffer::UpdateSubresource(const void * data, uint32_t subResourceIndex)
+    void Buffer::UpdateSubresource( const SubResourceIndex & index, const void * data )
     {
-        CMN_ASSERT( mDevice.lock()->GetCurrentContext() );
+        CMN_ASSERT( index.mipSlice == 0 ); // Buffer doesn't have mip slices
+        CMN_ASSERT( index.arraySlice == 0 ); // Buffer doesn't have array slices
 
         uint32_t usage = GetOGLUsage(mDesc.usage);
 
