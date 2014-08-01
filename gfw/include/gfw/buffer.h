@@ -29,7 +29,7 @@ namespace GFW {
     {
     public:
         virtual const BufferDesc &
-        GetDesc() = 0;
+        GetDesc() const = 0;
     };
     SHARED_PTR_TYPEDEFS(IBuffer);
 

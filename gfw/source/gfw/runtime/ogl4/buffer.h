@@ -11,7 +11,7 @@ namespace GFW {
     {
     public:
         virtual const BufferDesc &
-        GetDesc()       { return mDesc; }
+        GetDesc() const { return mDesc; }
 
         virtual void *
         Map(uint32_t mapFlags);
