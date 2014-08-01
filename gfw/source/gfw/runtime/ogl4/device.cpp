@@ -112,7 +112,15 @@ namespace GFW {
             } );
 
         return ContextRef( new Context( nativeContext, shared_from_this() ),
-            DEVICE_CHILD_DELETER( Context ) );
+            // Make sure that the context will be deleted in its own native context
+            [ this, nativeContext ] ( Context * ctx ) {
+                mSwapChain->MakeCurrent( nativeContext.get() );
+                auto scopeExit = Cmn::MakeScopeExit(
+                    [ this ] () {
+                        mSwapChain->MakeCurrent( nullptr );
+                    } );
+                delete ctx;
+            } );
     }
 
     IShaderRef Device::CreateShader( ShaderStage stage, const void * shaderBinary )
