@@ -134,7 +134,7 @@ CMN_WARNING_POP
 #endif
     }
 
-    ISwapChainRef Factory::CreateSwapChain( const SwapChainDesc & desc, const WindowHandle & window )
+    ISwapChainRef Factory::CreateSwapChain( const SwapChainDesc & desc, WindowHandleIn window )
     {
         return std::make_shared< SwapChain >( desc, window );
     }

@@ -9,13 +9,13 @@
 
 namespace GFW {
 
-    SwapChain::SwapChain( const SwapChainDesc & desc, const WindowHandle & window )
+    SwapChain::SwapChain( const SwapChainDesc & desc, WindowHandleIn window )
         : mWindow( window )
     {
-        mDC = std::shared_ptr< void >( GetDC( static_cast< HWND >( mWindow ) ),
+        mDC = std::shared_ptr< void >( GetDC( static_cast< HWND >( mWindow.get() ) ),
             [ this ] ( void * dc ) {
                 BOOL res = ReleaseDC(
-                    static_cast< HWND >( mWindow ),
+                    static_cast< HWND >( mWindow.get() ),
                     static_cast< HDC >( dc ) );
                 CMN_ASSERT( res == TRUE ); CMN_UNUSED( res );
             } );

@@ -28,11 +28,11 @@ namespace GFW {
         ShareLists( NativeContext *, NativeContext * );
 
     public:
-        SwapChain( const SwapChainDesc &, const WindowHandle & );
+        SwapChain( const SwapChainDesc &, WindowHandleIn );
         ~SwapChain();
 
     private:
-        WindowHandle                mWindow;
+        WindowHandleRef             mWindow;
         std::shared_ptr< void >     mDC;
     };
     SHARED_PTR_TYPEDEFS( SwapChain );

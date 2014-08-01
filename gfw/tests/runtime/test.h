@@ -28,7 +28,7 @@ public:
     void Present();
 
 protected:
-    GFW::WindowHandle           mWindow;
+    GFW::WindowHandleRef        mWindow;
     GFW::ISwapChainRef          mSwapChain;
     GFW::IDeviceRef             mDevice;
     GFW::ConstIRenderTargetRef  mDefaultRenderTarget;

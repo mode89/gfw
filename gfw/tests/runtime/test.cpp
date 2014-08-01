@@ -13,7 +13,13 @@ void Test::SetUp()
     windowDesc.width  = kWindowWidth;
     windowDesc.height = kwindowHeight;
 
-    mWindow = CreateDefaultWindow(windowDesc);
+    mWindow = WindowHandleRef( CreateDefaultWindow( windowDesc ),
+        [] ( WindowHandle * handle ) {
+            if ( handle )
+            {
+                DestroyDefaultWindow( handle );
+            }
+        } );
 
     // Create GFW factory
 
@@ -45,15 +51,16 @@ void Test::SetUp()
 void Test::TearDown()
 {
     mContext.reset();
+    mDefaultRenderTarget.reset();
     mDevice.reset();
+    mSwapChain.reset();
     mFactory.reset();
-
-    DestroyDefaultWindow(mWindow);
+    mWindow.reset();
 }
 
 void Test::Tick()
 {
-    ProcessDefaultWindow( mWindow );
+    ProcessDefaultWindow( mWindow.get() );
 }
 
 void Test::Present()

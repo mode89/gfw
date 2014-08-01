@@ -52,12 +52,13 @@ namespace GFW {
     struct SwapChainDesc;
     struct VertexAttribute;
 
-    typedef void * WindowHandle; // TODO use shader_ptr< void >
-
     enum MapType : uint32_t;
     enum ResourceType : uint32_t;
     enum ShaderStage : int32_t;
     enum Semantic : int32_t;
+
+    typedef void WindowHandle;
+    SHARED_PTR_TYPEDEFS( WindowHandle );
 
 } // namespace GFW
 

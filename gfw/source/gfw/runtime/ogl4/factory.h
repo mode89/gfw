@@ -9,7 +9,7 @@ namespace GFW {
     {
     public:
         virtual ISwapChainRef
-        CreateSwapChain( const SwapChainDesc &, const WindowHandle & );
+        CreateSwapChain( const SwapChainDesc &, WindowHandleIn );
 
         virtual IDeviceRef
         CreateDevice( const DeviceParams &, ISwapChainIn );

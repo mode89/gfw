@@ -34,7 +34,6 @@ namespace GFW {
         virtual IContextRef
         GetCurrentContext() const = 0;
 
-        // TODO rename GetImmediateContext()
         virtual IContextRef
         GetDefaultContext() const = 0;
 
