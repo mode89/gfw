@@ -51,6 +51,11 @@ void Test::TearDown()
     DestroyDefaultWindow(mWindow);
 }
 
+void Test::Tick()
+{
+    ProcessDefaultWindow( mWindow );
+}
+
 void Test::Present()
 {
     mSwapChain->Present();

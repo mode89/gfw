@@ -24,6 +24,7 @@ public:
     void SetUp();
     void TearDown();
 
+    void Tick();
     void Present();
 
 protected:

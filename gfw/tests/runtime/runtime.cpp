@@ -9,7 +9,7 @@ TEST_F( Test, Clear )
 
     for (int i = 0; i < 60; ++ i)
     {
-        ProcessDefaultWindow(mWindow);
+        Tick();
 
         mContext->BeginScene();
         {
@@ -67,7 +67,7 @@ TEST_F( Test, DrawColored )
 
     for (int i = 0; i < 60; ++ i)
     {
-        ProcessDefaultWindow(mWindow);
+        Tick();
 
         mContext->BeginScene();
         {
@@ -144,7 +144,7 @@ TEST_F( Test, DrawIndexed )
 
     for (int i = 0; i < 60; ++ i)
     {
-        ProcessDefaultWindow(mWindow);
+        Tick();
 
         mContext->BeginScene();
         {
@@ -173,7 +173,7 @@ TEST_F( Test, DrawScreenQuad )
 
     for (int i = 0; i < 60; ++ i)
     {
-        ProcessDefaultWindow(mWindow);
+        Tick();
 
         mContext->BeginScene();
         {
@@ -297,7 +297,7 @@ TEST_F( Test, CreateMesh )
 
     for (int i = 0; i < 60; ++ i)
     {
-        ProcessDefaultWindow(mWindow);
+        Tick();
 
         mContext->BeginScene();
         {
@@ -454,7 +454,7 @@ TEST_F( Test, RenderTarget )
 
     for (int i = 0; i < 60; ++ i)
     {
-        ProcessDefaultWindow(mWindow);
+        Tick();
 
         mContext->BeginScene();
         {

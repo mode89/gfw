@@ -29,7 +29,7 @@ TEST_F( Test, Texture )
 
     for (int i = 0; i < 60; ++ i)
     {
-        ProcessDefaultWindow(mWindow);
+        Tick();
 
         mContext->BeginScene();
         {
