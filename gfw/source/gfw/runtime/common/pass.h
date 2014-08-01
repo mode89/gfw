@@ -24,7 +24,7 @@ namespace GFW {
 
     private:
         std::weak_ptr<IDevice>  mDevice;
-        ConstIShaderRef         mShaders[ ShaderStage::COUNT ];
+        ConstIShaderRef         mShaders[ SHADER_STAGE_COUNT ];
     };
     SHARED_PTR_TYPEDEFS( Pass );
 

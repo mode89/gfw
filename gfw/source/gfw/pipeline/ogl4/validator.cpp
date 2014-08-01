@@ -151,10 +151,10 @@ CMN_WARNING_POP
             uint32_t shaderType = 0;
             switch ( stage )
             {
-            case ShaderStage::VERTEX:
+            case SHADER_STAGE_VERTEX:
                 shaderType = GL_VERTEX_SHADER;
                 break;
-            case ShaderStage::PIXEL:
+            case SHADER_STAGE_PIXEL:
                 shaderType = GL_FRAGMENT_SHADER;
                 break;
             default:

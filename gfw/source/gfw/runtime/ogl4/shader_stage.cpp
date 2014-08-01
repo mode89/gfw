@@ -10,9 +10,9 @@ namespace GFW {
     {
         switch (stage)
         {
-        case ShaderStage::VERTEX:
+        case SHADER_STAGE_VERTEX:
             return GL_VERTEX_SHADER;
-        case ShaderStage::PIXEL:
+        case SHADER_STAGE_PIXEL:
             return GL_FRAGMENT_SHADER;
         default:
             CMN_FAIL();
@@ -25,9 +25,9 @@ namespace GFW {
     {
         switch (stage)
         {
-        case ShaderStage::VERTEX:
+        case SHADER_STAGE_VERTEX:
             return GL_VERTEX_SHADER_BIT;
-        case ShaderStage::PIXEL:
+        case SHADER_STAGE_PIXEL:
             return GL_FRAGMENT_SHADER_BIT;
         default:
             CMN_FAIL();

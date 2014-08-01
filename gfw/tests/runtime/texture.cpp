@@ -35,7 +35,7 @@ TEST_F(GfwTests, Texture)
             mContext->SetRenderTargets(1, &mDefaultRenderTarget);
             mContext->Clear(mClearParams);
 
-            mContext->SetTexture( ShaderStage::PIXEL, 0, texture );
+            mContext->SetTexture( SHADER_STAGE_PIXEL, 0, texture );
             technique->Dispatch();
             mContext->DrawScreenQuad();
         }

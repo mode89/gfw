@@ -10,7 +10,7 @@ namespace GFW {
     Pass::Pass( const PassBinary & binary, const ShaderTable & shaderMap, IDeviceIn device )
         : mDevice( device )
     {
-        for ( uint32_t stage = 0; stage < ShaderStage::COUNT; ++ stage )
+        for ( uint32_t stage = 0; stage < SHADER_STAGE_COUNT; ++ stage )
         {
             const ShaderBinary * shaderBinary = binary.mShaders[ stage ];
             ShaderTable::const_iterator shaderIt = shaderMap.find( shaderBinary );
@@ -29,7 +29,7 @@ namespace GFW {
         IContextRef context = IDeviceRef( mDevice )->GetCurrentContext();
         CMN_ASSERT( context );
 
-        for ( uint32_t stage = 0; stage< ShaderStage::COUNT; ++ stage )
+        for ( uint32_t stage = 0; stage< SHADER_STAGE_COUNT; ++ stage )
         {
             context->SetShader( static_cast<ShaderStage>( stage ), mShaders[stage] );
         }

@@ -8,9 +8,9 @@ namespace GFW {
     {
         switch (stage)
         {
-        case ShaderStage::VERTEX:
+        case SHADER_STAGE_VERTEX:
             return "VERTEX";
-        case ShaderStage::PIXEL:
+        case SHADER_STAGE_PIXEL:
             return "PIXEL";
         default:
             CMN_FAIL_MSG( "Unknown stage" );

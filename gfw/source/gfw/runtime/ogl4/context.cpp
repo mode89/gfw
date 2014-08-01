@@ -91,8 +91,8 @@ namespace GFW {
 
     void Context::SetShader( ShaderStage stage, ConstIShaderIn shader )
     {
-        CMN_ASSERT( stage > ShaderStage::UNKNOWN );
-        CMN_ASSERT( stage < ShaderStage::COUNT );
+        CMN_ASSERT( stage > SHADER_STAGE_UNKNOWN );
+        CMN_ASSERT( stage < SHADER_STAGE_COUNT );
         CMN_ASSERT( shader );
         CMN_ASSERT( stage == shader->GetStage() );
 
@@ -155,7 +155,7 @@ namespace GFW {
     {
         // Detach shaders
 
-        for (int stage = 0; stage < ShaderStage::COUNT; ++ stage)
+        for (int stage = 0; stage < SHADER_STAGE_COUNT; ++ stage)
         {
             uint32_t stageBit = GetOGLShaderStageBit(static_cast<ShaderStage>(stage));
             VGL( glUseProgramStages, mProgramPipeline, stageBit, 0 );
@@ -187,7 +187,7 @@ namespace GFW {
 
         // Detach textures
 
-        for (uint32_t stage = 0; stage < ShaderStage::COUNT; ++ stage)
+        for (uint32_t stage = 0; stage < SHADER_STAGE_COUNT; ++ stage)
         {
             for (uint32_t slot = 0; slot < MAX_BIND_TEXTURES; ++ slot)
             {
@@ -225,7 +225,7 @@ namespace GFW {
     {
         // Setup shaders
 
-        for (int stage = 0; stage < ShaderStage::COUNT; ++ stage)
+        for (int stage = 0; stage < SHADER_STAGE_COUNT; ++ stage)
         {
             ConstShaderRef shader = mShaders[stage];
             uint32_t stageBit = GetOGLShaderStageBit(static_cast<ShaderStage>(stage));
@@ -313,7 +313,7 @@ namespace GFW {
     void Context::SetTexture( int32_t stage, uint32_t slot, ConstITextureIn texture )
     {
         CMN_ASSERT( stage >= 0 );
-        CMN_ASSERT( stage < ShaderStage::COUNT );
+        CMN_ASSERT( stage < SHADER_STAGE_COUNT );
         CMN_ASSERT( slot < MAX_BIND_TEXTURES );
         CMN_ASSERT( texture );
 

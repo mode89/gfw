@@ -88,7 +88,7 @@ namespace GFW {
 
         uint32_t                    mScreenQuadBuffer;
 
-        ConstShaderRef              mShaders[ ShaderStage::COUNT ];
+        ConstShaderRef              mShaders[ SHADER_STAGE_COUNT ];
         uint32_t                    mProgramPipeline;
 
         ConstInputLayoutRef         mInputLayout;
@@ -98,7 +98,7 @@ namespace GFW {
 
         ConstBufferRef              mIndexBuffer;
 
-        int32_t                     mTextureUnits[ ShaderStage::COUNT ][ MAX_BIND_TEXTURES ];
+        int32_t                     mTextureUnits[ SHADER_STAGE_COUNT ][ MAX_BIND_TEXTURES ];
         ConstTextureRef             mActiveTextures[MAX_BIND_TEXTURES];
         uint32_t                    mActiveTexturesDirtyMask;
         uint32_t                    mNextActiveTextureUnit;

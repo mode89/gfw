@@ -12,7 +12,7 @@ namespace GFW {
     {
     public:
         std::string             mName;
-        const ShaderBinary *    mShaders[ ShaderStage::COUNT ];
+        const ShaderBinary *    mShaders[ SHADER_STAGE_COUNT ];
 
         template < class Archive > void
         serialize( Archive & ar, unsigned version )

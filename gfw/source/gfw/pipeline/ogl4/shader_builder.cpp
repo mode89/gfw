@@ -283,7 +283,7 @@ namespace GFW {
         {
             if ( !isInput )
             {
-                if ( mStage == ShaderStage::VERTEX && semantic == "SV_POSITION" )
+                if ( mStage == SHADER_STAGE_VERTEX && semantic == "SV_POSITION" )
                 {
                     // Equivalent gl_Position
                     return;
@@ -291,7 +291,7 @@ namespace GFW {
                 else
                 {
                     // OpenGL doesn't allow output blocks in fragment shader
-                    stream << ( ( mStage == ShaderStage::PIXEL ) ? "out " : "    " );
+                    stream << ( ( mStage == SHADER_STAGE_PIXEL ) ? "out " : "    " );
                     stream << typeName << ' ' << semantic;
                 }
                 stream << ';' << std::endl;
@@ -314,7 +314,7 @@ namespace GFW {
         {
             if ( isInput )
             {
-                if ( mStage == ShaderStage::PIXEL && semantic == "SV_POSITION" )
+                if ( mStage == SHADER_STAGE_PIXEL && semantic == "SV_POSITION" )
                 {
                     // Equivalent gl_FragCoord;
                     return;
@@ -322,7 +322,7 @@ namespace GFW {
                 else
                 {
                     // OpenGL doesn't allow input blocks in vertex shader
-                    stream << ( ( mStage == ShaderStage::VERTEX ) ? "in " : "    " );
+                    stream << ( ( mStage == SHADER_STAGE_VERTEX ) ? "in " : "    " );
                     stream << typeName << ' ' << semantic << ';' << std::endl;
                 }
             }
@@ -344,7 +344,7 @@ namespace GFW {
         {
             if ( !isInput )
             {
-                if ( mStage == ShaderStage::VERTEX && semantic == "SV_POSITION" )
+                if ( mStage == SHADER_STAGE_VERTEX && semantic == "SV_POSITION" )
                 {
                     stream << "out gl_PerVertex { " << typeName << " gl_Position; };" << std::endl;
                 }
@@ -395,12 +395,12 @@ namespace GFW {
 
                 stream << " = ";
 
-                if ( mStage == ShaderStage::VERTEX )
+                if ( mStage == SHADER_STAGE_VERTEX )
                 {
                     // OpenGL doesn't allow input blocks in vertex shader
                     stream << semantic;
                 }
-                else if ( mStage == ShaderStage::PIXEL && semantic == "SV_POSITION" )
+                else if ( mStage == SHADER_STAGE_PIXEL && semantic == "SV_POSITION" )
                 {
                     stream << "gl_FragCoord";
                 }
@@ -476,11 +476,11 @@ namespace GFW {
             {
                 stream << "    ";
 
-                if ( mStage == ShaderStage::VERTEX && semantic == "SV_POSITION" )
+                if ( mStage == SHADER_STAGE_VERTEX && semantic == "SV_POSITION" )
                 {
                     stream << "gl_Position";
                 }
-                else if ( mStage == ShaderStage::PIXEL )
+                else if ( mStage == SHADER_STAGE_PIXEL )
                 {
                     // OpenGL doesn't allow output blocks in fragment shader
                     stream << semantic;
@@ -575,15 +575,15 @@ namespace GFW {
         ShaderStage stage;
         if ( profile == "vs_4_0" )
         {
-            stage = ShaderStage::VERTEX;
+            stage = SHADER_STAGE_VERTEX;
         }
         else if ( profile == "ps_4_0" )
         {
-            stage = ShaderStage::PIXEL;
+            stage = SHADER_STAGE_PIXEL;
         }
         else
         {
-            stage = ShaderStage::UNKNOWN;
+            stage = SHADER_STAGE_UNKNOWN;
         }
 
         // Construct the shader's code
@@ -626,7 +626,7 @@ namespace GFW {
         std::stringstream inputDecls;
         EnumInputsOutputs( entryPoint, ExpandInputAsGlobalDeclaration( inputDecls, mSymbolTable, stage ) );
 
-        if ( stage == ShaderStage::VERTEX )
+        if ( stage == SHADER_STAGE_VERTEX )
         {
             // OpenGL doesn't allow input blocks in vertex shader
             source << inputDecls.str();
@@ -648,7 +648,7 @@ namespace GFW {
         std::stringstream outputDecls;
         EnumInputsOutputs( entryPoint, ExpandOutputAsGlobalDeclaration( outputDecls, mSymbolTable, stage ) );
 
-        if ( stage == ShaderStage::PIXEL )
+        if ( stage == SHADER_STAGE_PIXEL )
         {
             // OpenGL doesn't allow output blocks in fragment shader
             source << outputDecls.str();

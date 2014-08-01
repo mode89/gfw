@@ -112,10 +112,10 @@ namespace GFW {
                 switch ( shaderType.GetTokenType() )
                 {
                 case TOKEN_SET_VERTEX_SHADER:
-                    pass.mShaders[ ShaderStage::VERTEX ] = &shaderBinary;
+                    pass.mShaders[ SHADER_STAGE_VERTEX ] = &shaderBinary;
                     break;
                 case TOKEN_SET_PIXEL_SHADER:
-                    pass.mShaders[ ShaderStage::PIXEL ] = &shaderBinary;
+                    pass.mShaders[ SHADER_STAGE_PIXEL ] = &shaderBinary;
                     break;
                 default:
                     CMN_FAIL();
