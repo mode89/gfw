@@ -3,7 +3,6 @@
 #include "gfw/runtime/ogl4/format.h"
 #include "gfw/runtime/ogl4/functions.h"
 #include "gfw/runtime/ogl4/texture.h"
-#include "gfw/runtime/common/device_child.inl"
 
 namespace GFW {
 

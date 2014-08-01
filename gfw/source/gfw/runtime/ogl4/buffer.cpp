@@ -2,7 +2,6 @@
 
 #include "gfw/context.h"
 
-#include "gfw/runtime/common/device_child.inl"
 
 #include "gfw/runtime/ogl4/buffer.h"
 #include "gfw/runtime/ogl4/device.h"

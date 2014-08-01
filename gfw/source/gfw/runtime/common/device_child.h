@@ -15,8 +15,12 @@ namespace GFW {
         GetDevice() const { return std::static_pointer_cast<IDevice>( mDevice.lock() ); }
 
     public:
-        ADeviceChild( DeviceIn device );
-        ~ADeviceChild();
+        ADeviceChild( DeviceIn device )
+            : mDevice( device )
+        {}
+
+        ~ADeviceChild()
+        {}
 
     protected:
         std::weak_ptr< Device > mDevice;

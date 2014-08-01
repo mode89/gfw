@@ -8,7 +8,6 @@
 #include "gfw/runtime/ogl4/shader.h"
 #include "gfw/runtime/ogl4/shader_reflect.h"
 
-#include "gfw/runtime/common/device_child.inl"
 
 namespace GFW {
 
