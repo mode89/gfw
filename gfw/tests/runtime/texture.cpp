@@ -1,4 +1,4 @@
-#include "gfw_tests.h"
+#include "test.h"
 #include "window.h"
 
 using namespace GFW;
