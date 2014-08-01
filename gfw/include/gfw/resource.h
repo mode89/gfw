@@ -71,6 +71,8 @@ namespace GFW {
 
         virtual void
         UpdateSubresource(const void * data, uint32_t subResourceIndex = 0) = 0;
+        virtual const ResourceDesc &
+        GetDesc() const = 0;
 
         virtual
         ~IResource() {}
