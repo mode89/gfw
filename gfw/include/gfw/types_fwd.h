@@ -48,7 +48,7 @@ namespace GFW {
     struct ShaderParameterDesc;
     struct ShaderResourceDesc;
     struct ShaderVariableDesc;
-    struct SubResIdx;
+    struct SubResourceIndex;
     struct SwapChainDesc;
     struct VertexAttribute;
 

@@ -20,14 +20,19 @@ namespace GFW {
         CPU_ACCESS_WRITE = (1 << 1)     // Only staging resources
     };
 
-    struct SubResIdx
+    struct SubResourceIndex
     {
-        uint32_t    mip;
-        uint32_t    slice;
+        uint32_t    mipSlice;
+        uint32_t    arraySlice;
 
-        SubResIdx(uint32_t m, uint32_t s)
-            : mip(m)
-            , slice(s)
+        SubResourceIndex()
+            : mipSlice( 0 )
+            , arraySlice( 0 )
+        {}
+
+        SubResourceIndex( uint32_t m, uint32_t s )
+            : mipSlice( m )
+            , arraySlice( s )
         {}
     };
 
