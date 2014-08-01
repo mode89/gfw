@@ -1,6 +1,8 @@
 #ifndef __GFW_BASE_SEMANTIC_H__
 #define __GFW_BASE_SEMANTIC_H__
 
+#include <cstdint>
+
 namespace GFW {
 
 #define BUILD_SEMANTIC(name, index) \
@@ -22,7 +24,7 @@ namespace GFW {
     S(NORMAL) \
     S(COLOR) \
 
-    enum Semantic
+    enum Semantic : int32_t
     {
         SEMANTIC_UNKNOWN = -1,
 #define S(name) BUILD_SEMANTIC_INDICES( name )

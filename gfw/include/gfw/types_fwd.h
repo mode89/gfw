@@ -57,7 +57,7 @@ namespace GFW {
     enum MapType : uint32_t;
     enum ResourceType : uint32_t;
     enum ShaderStage : int32_t;
-    // TODO add forward declaration for Semantic enumeration
+    enum Semantic : int32_t;
 
 } // namespace GFW
 
