@@ -13,6 +13,9 @@ namespace GFW {
         virtual const BufferDesc &
         GetDesc() const { return mDesc; }
 
+        virtual ResourceType
+        GetType() const { return RESOURCE_TYPE_BUFFER; }
+
         virtual void *
         Map(uint32_t mapFlags);
 

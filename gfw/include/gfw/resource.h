@@ -49,6 +49,13 @@ namespace GFW {
         READ_WRITE,
     };
 
+    enum ResourceType : uint32_t
+    {
+        RESOURCE_TYPE_UNKNOWN = 0,
+        RESOURCE_TYPE_BUFFER,
+        RESOURCE_TYPE_TEXTURE,
+    };
+
     struct ResourceDesc
     {
         Usage       usage;
@@ -73,6 +80,9 @@ namespace GFW {
         UpdateSubresource(const void * data, uint32_t subResourceIndex = 0) = 0;
         virtual const ResourceDesc &
         GetDesc() const = 0;
+
+        virtual ResourceType
+        GetType() const = 0;
 
         virtual
         ~IResource() {}

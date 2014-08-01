@@ -13,6 +13,9 @@ namespace GFW {
         virtual const TextureDesc &
         GetDesc() const { return mDesc; }
 
+        virtual ResourceType
+        GetType() const { return RESOURCE_TYPE_TEXTURE; }
+
         virtual void *
         Map(uint32_t mapFlags);
 
