@@ -1,3 +1,6 @@
+# Using add_compile_options() requires
+cmake_minimum_required( VERSION 3.0 )
+
 # Setup common packages search path
 
 set( CMAKE_PREFIX_PATH ${CMAKE_CURRENT_SOURCE_DIR} )
