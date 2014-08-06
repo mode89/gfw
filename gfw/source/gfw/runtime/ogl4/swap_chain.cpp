@@ -1,10 +1,9 @@
 #include "cmn/trace.h"
-
+#include "gfw/texture.h"
+#include "gfw/runtime/ogl4/render_target.h"
 #include "gfw/runtime/ogl4/swap_chain.h"
 #include "gfw/runtime/ogl4/functions.h"
-
 #include "opengl/wglext.h"
-
 #include <windows.h>
 
 namespace GFW {
@@ -52,6 +51,20 @@ namespace GFW {
             pixelFormat,
             &pfd );
         CMN_THROW_IF( res == FALSE, "Failed to set pixel format" );
+
+        // Create render target
+
+        RECT windowRect;
+        res = GetClientRect( static_cast< HWND >( window.get() ), &windowRect );
+        CMN_ASSERT( res == TRUE );
+
+        TextureDesc textureDesc;
+        textureDesc.width  = windowRect.right - windowRect.left;
+        textureDesc.height = windowRect.bottom - windowRect.top;
+
+        RenderTargetDesc renderTargetDesc;
+
+        mRenderTarget = std::make_shared< RenderTarget >( textureDesc, renderTargetDesc );
     }
 
     SwapChain::~SwapChain()

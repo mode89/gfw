@@ -34,6 +34,7 @@ namespace GFW {
     private:
         WindowHandleRef             mWindow;
         std::shared_ptr< void >     mDC;
+        RenderTargetRef             mRenderTarget;
     };
     SHARED_PTR_TYPEDEFS( SwapChain );
 
