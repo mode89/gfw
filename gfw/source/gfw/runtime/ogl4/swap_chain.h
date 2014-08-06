@@ -14,6 +14,9 @@ namespace GFW {
         virtual void
         Present();
 
+        virtual ConstIRenderTargetRef
+        GetBuffer() const;
+
     public:
         NativeContextRef
         CreateContext();

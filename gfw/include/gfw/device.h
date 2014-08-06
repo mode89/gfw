@@ -37,9 +37,6 @@ namespace GFW {
         virtual IContextRef
         GetDefaultContext() const = 0;
 
-        virtual ConstIRenderTargetRef
-        GetDefaultRenderTarget() const = 0;
-
     public:
         virtual
         ~IDevice() { }

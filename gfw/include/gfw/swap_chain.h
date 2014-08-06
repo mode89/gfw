@@ -1,6 +1,8 @@
 #ifndef __GFW_SWAP_CHAIN_H__
 #define __GFW_SWAP_CHAIN_H__
 
+#include "gfw/types_fwd.h"
+
 namespace GFW {
 
     struct SwapChainDesc
@@ -12,6 +14,9 @@ namespace GFW {
     public:
         virtual void
         Present() = 0;
+
+        virtual ConstIRenderTargetRef
+        GetBuffer() const = 0;
 
         virtual
         ~ISwapChain() {}

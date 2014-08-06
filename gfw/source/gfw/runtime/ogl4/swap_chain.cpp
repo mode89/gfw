@@ -109,4 +109,9 @@ namespace GFW {
         CMN_ASSERT( res == TRUE ); CMN_UNUSED( res );
     }
 
+    ConstIRenderTargetRef SwapChain::GetBuffer() const
+    {
+        return std::static_pointer_cast< IRenderTarget >( mRenderTarget );
+    }
+
 } // namespace GFW

@@ -42,9 +42,6 @@ namespace GFW {
         virtual IContextRef
         GetDefaultContext() const { return mDefaultContext; }
 
-        virtual ConstIRenderTargetRef
-        GetDefaultRenderTarget() const { return mDefaultRenderTarget; }
-
     public:
         Device( const DeviceParams &, ISwapChainIn );
         ~Device();

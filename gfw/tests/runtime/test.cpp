@@ -35,7 +35,7 @@ void Test::SetUp()
     DeviceParams deviceParams;
     mDevice = mFactory->CreateDevice( deviceParams, mSwapChain );
 
-    mDefaultRenderTarget = mDevice->GetDefaultRenderTarget();
+    mDefaultRenderTarget = mSwapChain->GetBuffer();
 
     mContext = mDevice->GetDefaultContext();
 
