@@ -14,6 +14,9 @@ namespace GFW {
         virtual const RenderTargetDesc &
         GetDesc() const { return mDesc; }
 
+        virtual const TextureDesc &
+        GetTextureDesc() const { return *mTextureDesc; }
+
         virtual ConstITextureRef
         GetTexture() const;
 

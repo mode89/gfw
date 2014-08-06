@@ -24,6 +24,9 @@ namespace GFW {
         virtual const RenderTargetDesc &
         GetDesc() const = 0;
 
+        virtual const TextureDesc &
+        GetTextureDesc() const = 0;
+
         virtual ConstITextureRef
         GetTexture() const = 0;
 

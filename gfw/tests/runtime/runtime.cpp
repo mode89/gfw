@@ -443,7 +443,7 @@ TEST_F( Test, RenderTarget )
 
     // Create offscreen render target
 
-    const TextureDesc & rtTexDesc = defaultRenderTarget->GetTexture()->GetDesc();
+    const TextureDesc & rtTexDesc = mDefaultRenderTarget->GetTextureDesc();
     ITextureRef rtTex = mDevice->CreateTexture(rtTexDesc);
 
     RenderTargetDesc rtDesc;
@@ -472,7 +472,7 @@ TEST_F( Test, RenderTarget )
 
             // Draw screen quad with texture
 
-            mContext->SetRenderTargets(1, &defaultRenderTarget);
+            mContext->SetRenderTargets( 1, &mDefaultRenderTarget );
             mContext->Clear(mClearParams);
 
             mContext->SetTexture( SHADER_STAGE_PIXEL, 0, rtTex);
