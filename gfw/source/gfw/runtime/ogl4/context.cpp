@@ -1,5 +1,6 @@
 #include "cmn/trace.h"
 #include "cmn/crc32.h"
+#include "gfw/runtime/common/device_child.inl"
 #include "gfw/runtime/common/format.h"
 #include "gfw/runtime/common/semantic.h"
 #include "gfw/runtime/ogl4/buffer.h"

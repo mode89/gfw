@@ -5,6 +5,7 @@
 #include "gfw/runtime/ogl4/shader_reflect.h"
 #include "gfw/runtime/ogl4/shader_stage.h"
 #include "gfw/runtime/ogl4/functions.h"
+#include "gfw/runtime/common/device_child.inl"
 
 #include <cstring>
 
