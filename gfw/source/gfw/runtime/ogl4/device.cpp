@@ -158,7 +158,9 @@ namespace GFW {
     IRenderTargetRef Device::CreateRenderTarget( ConstITextureIn texture, const RenderTargetDesc & desc )
     {
         AUTO_LOCK_CONTEXT;
-        return RenderTargetRef( new RenderTarget( texture, desc, shared_from_this() ),
+        return RenderTargetRef( new RenderTarget(
+                std::static_pointer_cast< const Texture >( texture ),
+                desc, shared_from_this() ),
             DEVICE_CHILD_DELETER( RenderTarget ) );
     }
 

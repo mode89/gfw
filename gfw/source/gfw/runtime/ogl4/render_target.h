@@ -8,7 +8,7 @@
 
 namespace GFW {
 
-    class RenderTarget : public ADeviceChild<IRenderTarget>
+    class RenderTarget : public ADeviceChild< IRenderTarget >
     {
     public:
         virtual const RenderTargetDesc &
@@ -18,7 +18,7 @@ namespace GFW {
         GetTexture() const;
 
     public:
-        RenderTarget( ConstITextureIn, const RenderTargetDesc &, DeviceIn );
+        RenderTarget( ConstTextureIn, const RenderTargetDesc &, DeviceIn );
         ~RenderTarget();
 
     private:

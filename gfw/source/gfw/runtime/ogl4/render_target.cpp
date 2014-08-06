@@ -5,10 +5,10 @@
 
 namespace GFW {
 
-    RenderTarget::RenderTarget( ConstITextureIn texture, const RenderTargetDesc & desc, DeviceIn device )
+    RenderTarget::RenderTarget( ConstTextureIn texture, const RenderTargetDesc & desc, DeviceIn device )
         : ADeviceChild( device )
         , mDesc( desc )
-        , mTexture( std::static_pointer_cast< const Texture >( texture ) )
+        , mTexture( texture )
     {
 
     }
