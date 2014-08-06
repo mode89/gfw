@@ -144,7 +144,9 @@ CMN_WARNING_POP
 
     IDeviceRef Factory::CreateDevice( const DeviceParams & deviceParams, ISwapChainIn swapChain )
     {
-        return std::make_shared< Device >( deviceParams, swapChain );
+        DeviceRef device = std::make_shared< Device >( deviceParams, swapChain );
+        device->InitializeChildren(); // shared_from_this() cannot be called from constructor
+        return device;
     }
 
 } // namespace GFW

@@ -49,6 +49,10 @@ namespace GFW {
         Device( const DeviceParams &, ISwapChainIn );
         ~Device();
 
+        // shared_from_this() cannot be called from constructor
+        void
+        InitializeChildren();
+
         void
         InitializeSwapChain();
 

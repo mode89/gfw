@@ -49,8 +49,6 @@ namespace GFW {
 
         InitializeSwapChain();
 
-        mDefaultContext = CreateContext();
-
 #if defined( CMN_DEBUG )
         const uint8_t * extensions = glGetString(GL_EXTENSIONS);
         CMN_UNUSED( extensions );
@@ -65,6 +63,11 @@ namespace GFW {
             VGL( glDeleteFramebuffers, 1, &mResolveFramebuffer );
         }
         */
+    }
+
+    void Device::InitializeChildren()
+    {
+        mDefaultContext = CreateContext();
     }
 
     void Device::InitializeSwapChain()
