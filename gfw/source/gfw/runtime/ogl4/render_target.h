@@ -18,12 +18,24 @@ namespace GFW {
         GetTexture() const;
 
     public:
+        bool
+        IsSwapChain() const { return mIsSwapChain; }
+
+    public:
         RenderTarget( ConstTextureIn, const RenderTargetDesc &, DeviceIn );
+        RenderTarget( const TextureDesc &, const RenderTargetDesc & ); // Swap-chain's buffer
         ~RenderTarget();
 
     private:
         RenderTargetDesc    mDesc;
         ConstTextureRef     mTexture;
+
+        bool                mIsSwapChain;
+        const TextureDesc * mTextureDesc;
+
+    private:
+        RenderTarget( const RenderTarget & );
+        RenderTarget & operator= ( const RenderTarget & );
     };
     SHARED_PTR_TYPEDEFS(RenderTarget);
 
