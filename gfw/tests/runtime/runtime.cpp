@@ -402,10 +402,6 @@ TEST_F( Test, UpdateBuffer )
 
 TEST_F( Test, RenderTarget )
 {
-    // Get default render target
-
-    ConstIRenderTargetRef defaultRenderTarget = mDevice->GetDefaultRenderTarget();
-
     // Create effect
 
     IEffectRef fx = mFactory->CreateEffect( mDevice, "draw.fxc" );
@@ -432,7 +428,7 @@ TEST_F( Test, RenderTarget )
     vertexAttribs.semantic = SEMANTIC_POSITION0;
     vertexAttribs.format   = FORMAT_RG32_FLOAT;
     vertexAttribs.stride   = 8;
-    IInputLayoutRef inputLayout = mDevice->CreateInputLayout( 1, &vertexAttribs, techDrawRed->GetShader(SHADER_STAGE_VERTEX) );
+    IInputLayoutRef inputLayout = mDevice->CreateInputLayout( 1, &vertexAttribs, techDrawRed->GetShader( SHADER_STAGE_VERTEX ) );
 
     // Define draw params
 
@@ -444,11 +440,11 @@ TEST_F( Test, RenderTarget )
     // Create offscreen render target
 
     const TextureDesc & rtTexDesc = mDefaultRenderTarget->GetTextureDesc();
-    ITextureRef rtTex = mDevice->CreateTexture(rtTexDesc);
+    ITextureRef rtTex = mDevice->CreateTexture( rtTexDesc );
 
     RenderTargetDesc rtDesc;
     rtDesc.format = rtTexDesc.format;
-    IRenderTargetRef renderTarget = mDevice->CreateRenderTarget(rtTex, rtDesc);
+    IRenderTargetRef renderTarget = mDevice->CreateRenderTarget( rtTex, rtDesc );
 
     // Main loop
 
@@ -473,7 +469,7 @@ TEST_F( Test, RenderTarget )
             // Draw screen quad with texture
 
             mContext->SetRenderTargets( 1, &mDefaultRenderTarget );
-            mContext->Clear(mClearParams);
+            mContext->Clear( mClearParams );
 
             mContext->SetTexture( SHADER_STAGE_PIXEL, 0, rtTex);
 
