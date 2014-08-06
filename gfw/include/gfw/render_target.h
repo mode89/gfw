@@ -1,5 +1,5 @@
-#ifndef __GFW_GRAPHICS_BASE_RENDER_TARGET_H__
-#define __GFW_GRAPHICS_BASE_RENDER_TARGET_H__
+#ifndef __GFW_RENDER_TARGET_H__
+#define __GFW_RENDER_TARGET_H__
 
 #include "gfw/device_child.h"
 #include "gfw/format.h"
@@ -13,8 +13,8 @@ namespace GFW {
         uint32_t    resourceIndex;
 
         RenderTargetDesc()
-            : format(FORMAT_UNKNOWN)
-            , resourceIndex(0)
+            : format( FORMAT_UNKNOWN )
+            , resourceIndex( 0 )
         {}
     };
 
@@ -34,8 +34,8 @@ namespace GFW {
         virtual
         ~IRenderTarget() {}
     };
-    SHARED_PTR_TYPEDEFS(IRenderTarget);
+    SHARED_PTR_TYPEDEFS( IRenderTarget );
 
 } // namespace GFW
 
-#endif // __GFW_GRAPHICS_BASE_RENDER_TARGET_H__
+#endif // __GFW_RENDER_TARGET_H__
