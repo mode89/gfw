@@ -1,5 +1,5 @@
-#ifndef __GFW_GRAPHICS_BASE_TEXTURE_H__
-#define __GFW_GRAPHICS_BASE_TEXTURE_H__
+#ifndef __GFW_TEXTURE_H__
+#define __GFW_TEXTURE_H__
 
 #include "gfw/format.h"
 #include "gfw/resource.h"
@@ -15,10 +15,10 @@ namespace GFW {
         Format      format;
 
         TextureDesc()
-            : width(0)
-            , height(0)
-            , mipLevels(0)
-            , format(FORMAT_UNKNOWN)
+            : width( 0 )
+            , height( 0 )
+            , mipLevels( 0 )
+            , format( FORMAT_UNKNOWN )
         {}
     };
 
@@ -31,8 +31,8 @@ namespace GFW {
         virtual
         ~ITexture() {}
     };
-    SHARED_PTR_TYPEDEFS(ITexture);
+    SHARED_PTR_TYPEDEFS( ITexture );
 
 } // namespace GFW
 
-#endif // __GFW_GRAPHICS_BASE_TEXTURE_H__
+#endif // __GFW_TEXTURE_H__
