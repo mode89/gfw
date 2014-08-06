@@ -18,4 +18,9 @@ namespace GFW {
 
     }
 
+    ConstITextureRef RenderTarget::GetTexture() const
+    {
+        return mTexture;
+    }
+
 } // namespace GFW

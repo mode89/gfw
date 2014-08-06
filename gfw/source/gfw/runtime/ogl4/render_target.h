@@ -15,7 +15,7 @@ namespace GFW {
         GetDesc() const { return mDesc; }
 
         virtual ConstITextureRef
-        GetTexture() const { return std::static_pointer_cast<const ITexture>( mTexture ); }
+        GetTexture() const;
 
     public:
         RenderTarget( ConstITextureIn, const RenderTargetDesc &, DeviceIn );
