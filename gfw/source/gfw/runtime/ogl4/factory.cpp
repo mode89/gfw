@@ -33,11 +33,14 @@ namespace GFW {
 CMN_WARNING_PUSH
 CMN_WARNING_DISABLE_MSVC( 4191 ) // Unsafe cast from PROC
 
+        // Check if need to load OpenGL functions
+        bool loadApi = ( sLibrary == nullptr );
+
         // LoadLibrary() implements reference counting, that's why it safe to call it at each construction
         sLibrary = LoadLibrary( "opengl32.dll" );
         CMN_ASSERT( sLibrary != nullptr );
 
-        if ( sLibrary == nullptr )
+        if ( loadApi )
         {
             // Load Windows specific functions
 
