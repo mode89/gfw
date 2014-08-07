@@ -349,7 +349,7 @@ namespace GFW {
 
         if (textureUnit == -1)
         {
-            CMN_ASSERT( mActiveTextures[mNextActiveTextureUnit].get() );
+            CMN_ASSERT( !mActiveTextures[mNextActiveTextureUnit] );
 
             textureUnit = mNextActiveTextureUnit;
             mActiveTextures[mNextActiveTextureUnit] = std::static_pointer_cast<const Texture>( texture );
