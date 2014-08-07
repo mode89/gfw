@@ -213,13 +213,16 @@ namespace GFW {
 
         // Detach render targets
 
-        for (uint32_t i = 0; i < mRenderTargetsCount; ++ i)
+        if ( mRenderTargetsCount )
         {
-            VGL( glFramebufferTexture, GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, 0, 0 );
-            mRenderTargets[i].reset();
+            for ( uint32_t i = 0; i < mRenderTargetsCount; ++ i )
+            {
+                mRenderTargets[ i ].reset();
+            }
+            mRenderTargetsCount = 0;
+
+            mDirtyFlags.renderTargets = true;
         }
-        VGL( glDrawBuffer, GL_NONE );
-        mRenderTargetsCount = 0;
     }
 
     void Context::FlushState()
@@ -290,26 +293,43 @@ namespace GFW {
 
         // Bind render targets
 
-        if ( mRenderTargets[ 0 ]->IsSwapChain() )
+        if ( mDirtyFlags.renderTargets )
         {
-            VGL( glBindFramebuffer, GL_DRAW_FRAMEBUFFER, 0 );
-        }
-        else
-        {
-            uint32_t drawBuffers[ MAX_RENDER_TARGETS ];
-            for (uint32_t i = 0; i < mRenderTargetsCount; ++ i)
+            if ( mRenderTargetsCount > 0 )
             {
-                ConstRenderTargetRef rt = mRenderTargets[ i ];
-                ConstTextureRef rtTex   = std::static_pointer_cast< const Texture >( rt->GetTexture() );
-                VGL( glFramebufferTexture, GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, rtTex->GetHandle(), rt->GetDesc().resourceIndex );
-                drawBuffers[ i ] = GL_COLOR_ATTACHMENT0 + i;
-            }
-            VGL( glDrawBuffers, mRenderTargetsCount, drawBuffers );
+                if ( mRenderTargets[ 0 ]->IsSwapChain() )
+                {
+                    CMN_ASSERT( mRenderTargetsCount == 1 ); // Swap-chain cannot be mixed with custom render targets
+                    VGL( glBindFramebuffer, GL_DRAW_FRAMEBUFFER, 0 );
+                }
+                else
+                {
+                    VGL( glBindFramebuffer, GL_DRAW_FRAMEBUFFER, mDrawFramebuffer );
+
+                    uint32_t drawBuffers[ MAX_RENDER_TARGETS ];
+                    for (uint32_t i = 0; i < mRenderTargetsCount; ++ i)
+                    {
+                        ConstRenderTargetRef rt = mRenderTargets[ i ];
+                        CMN_ASSERT( rt->IsSwapChain() == false ); // Swap-chain cannot be mixed with custom render targets
+
+                        ConstTextureRef rtTex   = std::static_pointer_cast< const Texture >( rt->GetTexture() );
+                        VGL( glFramebufferTexture, GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, rtTex->GetHandle(), rt->GetDesc().resourceIndex );
+                        drawBuffers[ i ] = GL_COLOR_ATTACHMENT0 + i;
+                    }
+                    VGL( glDrawBuffers, mRenderTargetsCount, drawBuffers );
 
 #ifdef CMN_DEBUG
-            int32_t status  = VGL( glCheckFramebufferStatus, GL_DRAW_FRAMEBUFFER );
-            CMN_ASSERT( status == GL_FRAMEBUFFER_COMPLETE );
+                    int32_t status  = VGL( glCheckFramebufferStatus, GL_DRAW_FRAMEBUFFER );
+                    CMN_ASSERT( status == GL_FRAMEBUFFER_COMPLETE );
 #endif
+                }
+            }
+            else
+            {
+                VGL( glBindFramebuffer, GL_DRAW_FRAMEBUFFER, 0 );
+            }
+
+            mDirtyFlags.renderTargets = false;
         }
     }
 
@@ -375,6 +395,8 @@ namespace GFW {
         }
 
         mRenderTargetsCount = count;
+
+        mDirtyFlags.renderTargets = true;
     }
 
     void Context::BeginScene()

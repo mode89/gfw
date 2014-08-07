@@ -82,9 +82,20 @@ namespace GFW {
         InitScreenQuad();
 
     private:
+        struct DirtyFlags
+        {
+            bool renderTargets : 1;
+
+            DirtyFlags()
+                : renderTargets( false )
+            {}
+        };
+
         typedef std::map < uint32_t, uint32_t > tMapProgs;
 
         NativeContextRef            mNativeContext;
+
+        DirtyFlags                  mDirtyFlags;
 
         uint32_t                    mScreenQuadBuffer;
 
