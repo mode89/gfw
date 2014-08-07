@@ -91,8 +91,6 @@ namespace GFW {
             {}
         };
 
-        typedef std::map < uint32_t, uint32_t > tMapProgs;
-
         NativeContextRef            mNativeContext;
 
         DirtyFlags                  mDirtyFlags;
