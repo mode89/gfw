@@ -82,39 +82,48 @@ namespace GFW {
         InitScreenQuad();
 
     private:
-        struct DirtyFlags
-        {
-            bool renderTargets : 1;
 
-            DirtyFlags()
-                : renderTargets( false )
-            {}
-        };
+        NativeContextRef                mNativeContext;
 
-        NativeContextRef            mNativeContext;
+        uint32_t                        mScreenQuadBuffer;
 
-        DirtyFlags                  mDirtyFlags;
+        // Dirty states
 
-        uint32_t                    mScreenQuadBuffer;
+            struct DirtyFlags
+            {
+                bool renderTargets : 1;
 
-        ConstShaderRef              mShaders[ SHADER_STAGE_COUNT ];
-        uint32_t                    mProgramPipeline;
+                DirtyFlags()
+                    : renderTargets( false )
+                {}
+            }                           mDirtyFlags;
 
-        ConstInputLayoutRef         mInputLayout;
-        uint32_t                    mEnabledVertexAttributesMask;
+        // Shaders
 
-        ConstBufferRef              mVertexBuffers[MAX_BIND_VERTEX_BUFFERS];
+            ConstShaderRef              mShaders[ SHADER_STAGE_COUNT ];
+            uint32_t                    mProgramPipeline;
 
-        ConstBufferRef              mIndexBuffer;
+        // Input buffers
 
-        int32_t                     mTextureUnits[ SHADER_STAGE_COUNT ][ MAX_BIND_TEXTURES ];
-        ConstTextureRef             mActiveTextures[MAX_BIND_TEXTURES];
-        uint32_t                    mActiveTexturesDirtyMask;
-        uint32_t                    mNextActiveTextureUnit;
+            ConstInputLayoutRef         mInputLayout;
+            uint32_t                    mEnabledVertexAttributesMask;
 
-        ConstRenderTargetRef        mRenderTargets[MAX_RENDER_TARGETS];
-        uint32_t                    mRenderTargetsCount;
-        uint32_t                    mDrawFramebuffer;
+            ConstBufferRef              mVertexBuffers[ MAX_BIND_VERTEX_BUFFERS ];
+
+            ConstBufferRef              mIndexBuffer;
+
+        // Textures
+
+            int32_t                     mTextureUnits[ SHADER_STAGE_COUNT ][ MAX_BIND_TEXTURES ];
+            ConstTextureRef             mActiveTextures[ MAX_BIND_TEXTURES ];
+            uint32_t                    mActiveTexturesDirtyMask;
+            uint32_t                    mNextActiveTextureUnit;
+
+        // Render targets
+
+            ConstRenderTargetRef        mRenderTargets[MAX_RENDER_TARGETS];
+            uint32_t                    mRenderTargetsCount;
+            uint32_t                    mDrawFramebuffer;
     };
 
 } // namespace GFW

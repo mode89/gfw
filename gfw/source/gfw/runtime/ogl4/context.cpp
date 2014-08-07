@@ -22,13 +22,21 @@ namespace GFW {
     Context::Context( NativeContextIn nativeContext, DeviceIn d )
         : ADeviceChild( d )
         , mNativeContext( nativeContext )
-        , mScreenQuadBuffer(0)
-        , mProgramPipeline(0)
-        , mEnabledVertexAttributesMask(0)
-        , mActiveTexturesDirtyMask(0)
-        , mNextActiveTextureUnit(0)
-        , mRenderTargetsCount(0)
-        , mDrawFramebuffer(0)
+        , mScreenQuadBuffer( 0 )
+        , mDirtyFlags()
+        , mShaders()
+        , mProgramPipeline( 0 )
+        , mInputLayout()
+        , mEnabledVertexAttributesMask( 0 )
+        , mVertexBuffers()
+        , mIndexBuffer()
+        // mTextureUnits()
+        , mActiveTextures()
+        , mActiveTexturesDirtyMask( 0 )
+        , mNextActiveTextureUnit( 0 )
+        , mRenderTargets()
+        , mRenderTargetsCount( 0 )
+        , mDrawFramebuffer( 0 )
     {
         VGL( glGenProgramPipelines, 1, &mProgramPipeline );
         CMN_ASSERT( mProgramPipeline != 0 );
@@ -79,7 +87,7 @@ namespace GFW {
 
     void Context::SetInputLayout( ConstIInputLayoutIn layout )
     {
-        mInputLayout = std::static_pointer_cast<const InputLayout>( layout );
+        mInputLayout = std::static_pointer_cast< const InputLayout >( layout );
     }
 
     void Context::SetVertexBuffer( uint32_t slot, ConstIBufferIn buf )
@@ -87,7 +95,7 @@ namespace GFW {
         CMN_ASSERT( slot < MAX_BIND_VERTEX_BUFFERS );
         CMN_ASSERT( buf );
 
-        mVertexBuffers[slot] = std::static_pointer_cast<const Buffer>( buf );
+        mVertexBuffers[ slot ] = std::static_pointer_cast< const Buffer >( buf );
     }
 
     void Context::SetShader( ShaderStage stage, ConstIShaderIn shader )
@@ -97,20 +105,20 @@ namespace GFW {
         CMN_ASSERT( shader );
         CMN_ASSERT( stage == shader->GetStage() );
 
-        mShaders[stage] = std::static_pointer_cast<const Shader>( shader );
+        mShaders[ stage ] = std::static_pointer_cast< const Shader >( shader );
     }
 
     void Context::Clear(const ClearParams & cp)
     {
         uint32_t mask = 0;
 
-        if (cp.mask & CLEAR_COLOR)
+        if ( cp.mask & CLEAR_COLOR )
         {
-            VGL( glClearColor, cp.color[0], cp.color[1], cp.color[2], cp.color[3] );
+            VGL( glClearColor, cp.color[ 0 ], cp.color[ 1 ], cp.color[ 2 ], cp.color[ 3 ] );
             mask |= GL_COLOR_BUFFER_BIT;
         }
 
-		if (cp.mask & CLEAR_DEPTH)
+		if ( cp.mask & CLEAR_DEPTH )
 		{
 			VGL( glClearDepth, cp.depth );
 			mask |= GL_DEPTH_BUFFER_BIT;
@@ -126,7 +134,7 @@ namespace GFW {
         FlushState();
 
         VGL( glBindBuffer, GL_ARRAY_BUFFER, mScreenQuadBuffer );
-        VGL( glVertexAttribPointer, 0, 2, GL_FLOAT, GL_TRUE, 2 * sizeof(float), nullptr );
+        VGL( glVertexAttribPointer, 0, 2, GL_FLOAT, GL_TRUE, 2 * sizeof( float ), nullptr );
         VGL( glEnableVertexAttribArray, 0 );
         VGL( glBindBuffer, GL_ARRAY_BUFFER, 0 );
 
@@ -137,7 +145,7 @@ namespace GFW {
     {
         FlushState();
 
-        uint32_t mode = GetOGLDrawMode(dp.primTop);
+        uint32_t mode = GetOGLDrawMode( dp.primTop );
         VGL( glDrawArrays, mode, dp.vertexStart, dp.vertexCount );
     }
 
@@ -149,7 +157,7 @@ namespace GFW {
         uint32_t type     = GetOGLType(dp.indexType);
         uint32_t typeSize = GetTypeSize(dp.indexType);
 
-        VGL( glDrawElements, mode, dp.indexCount, type, reinterpret_cast<void*>(typeSize * dp.indexStart ));
+        VGL( glDrawElements, mode, dp.indexCount, type, reinterpret_cast< void* >( typeSize * dp.indexStart ) );
     }
 
     void Context::ClearState()
@@ -158,17 +166,17 @@ namespace GFW {
 
         for (int stage = 0; stage < SHADER_STAGE_COUNT; ++ stage)
         {
-            uint32_t stageBit = GetOGLShaderStageBit(static_cast<ShaderStage>(stage));
+            uint32_t stageBit = GetOGLShaderStageBit( static_cast< ShaderStage >( stage ) );
             VGL( glUseProgramStages, mProgramPipeline, stageBit, 0 );
 
-            mShaders[stage].reset();
+            mShaders[ stage ].reset();
         }
 
         // Detach buffers
 
         for (uint32_t i = 0; i < MAX_BIND_VERTEX_BUFFERS; ++ i)
         {
-            mVertexBuffers[i].reset();
+            mVertexBuffers[ i ].reset();
         }
 
         VGL( glBindBuffer, GL_ELEMENT_ARRAY_BUFFER, 0 );
@@ -192,17 +200,17 @@ namespace GFW {
         {
             for (uint32_t slot = 0; slot < MAX_BIND_TEXTURES; ++ slot)
             {
-                mTextureUnits[stage][slot] = -1;
+                mTextureUnits[ stage ][ slot ] = -1;
             }
         }
 
         for (uint32_t texUnit = 0; texUnit < MAX_BIND_TEXTURES; ++ texUnit)
         {
-            if (mActiveTextures[texUnit])
+            if (mActiveTextures[ texUnit ])
             {
                 VGL( glActiveTexture, GL_TEXTURE0 + texUnit );
                 VGL( glBindTexture, GL_TEXTURE_2D, 0 );
-                mActiveTextures[texUnit].reset();
+                mActiveTextures[ texUnit ].reset();
             }
         }
 
@@ -229,7 +237,7 @@ namespace GFW {
     {
         // Setup shaders
 
-        for (int stage = 0; stage < SHADER_STAGE_COUNT; ++ stage)
+        for ( int stage = 0; stage < SHADER_STAGE_COUNT; ++ stage )
         {
             ConstShaderRef shader = mShaders[ stage ];
             uint32_t stageBit = GetOGLShaderStageBit( static_cast< ShaderStage >( stage ) );
@@ -238,11 +246,11 @@ namespace GFW {
 
         // Bind buffers
 
-        if (mInputLayout)
+        if ( mInputLayout )
         {
-            for (uint32_t attrIndex = 0, mask = mInputLayout->GetEnabledAttributesMask(); mask; ++ attrIndex, mask >>= 1)
+            for ( uint32_t attrIndex = 0, mask = mInputLayout->GetEnabledAttributesMask(); mask; ++ attrIndex, mask >>= 1 )
             {
-                if (mask & 1)
+                if ( mask & 1 )
                 {
                     CMN_ASSERT( attrIndex < MAX_INPUT_ATTRIBUTES );
 
@@ -254,7 +262,7 @@ namespace GFW {
 
                     int32_t size = GetFormatElementNumber( attr.format );
                     Type type    = GetFormatElementType( attr.format );
-                    VGL( glVertexAttribPointer, attrIndex, size, GetOGLType( type ), GL_FALSE, attr.stride, reinterpret_cast< void* >( attr.offset ));
+                    VGL( glVertexAttribPointer, attrIndex, size, GetOGLType( type ), GL_FALSE, attr.stride, reinterpret_cast< void* >( attr.offset ) );
                     VGL( glEnableVertexAttribArray, attrIndex );
 
                     VGL( glBindBuffer, GL_ARRAY_BUFFER, 0 );
@@ -271,7 +279,7 @@ namespace GFW {
             }
             mEnabledVertexAttributesMask = mInputLayout->GetEnabledAttributesMask();
 
-            if (mIndexBuffer)
+            if ( mIndexBuffer )
             {
                 VGL( glBindBuffer, GL_ELEMENT_ARRAY_BUFFER, mIndexBuffer->GetHandle() );
             }
@@ -279,9 +287,9 @@ namespace GFW {
 
         // Bind textures
 
-        for (uint32_t unit = 0, mask = mActiveTexturesDirtyMask; mask; mask >>= 1, ++ unit)
+        for ( uint32_t unit = 0, mask = mActiveTexturesDirtyMask; mask; mask >>= 1, ++ unit )
         {
-            if (mask & 1)
+            if ( mask & 1 )
             {
                 VGL( glActiveTexture, GL_TEXTURE0 + unit );
                 VGL( glBindTexture, GL_TEXTURE_2D, mActiveTextures[ unit ]->GetHandle() );
@@ -335,7 +343,7 @@ namespace GFW {
 
     void Context::SetIndexBuffer( ConstIBufferIn buffer )
     {
-        mIndexBuffer = std::static_pointer_cast<const Buffer>( buffer );
+        mIndexBuffer = std::static_pointer_cast< const Buffer >( buffer );
     }
 
     void Context::SetTexture( ShaderStage stage, uint32_t slot, ConstITextureIn texture )
@@ -345,39 +353,39 @@ namespace GFW {
         CMN_ASSERT( slot < MAX_BIND_TEXTURES );
         CMN_ASSERT( texture );
 
-        int32_t & textureUnit = mTextureUnits[stage][slot];
+        int32_t & textureUnit = mTextureUnits[ stage ][ slot ];
 
         if (textureUnit == -1)
         {
-            CMN_ASSERT( !mActiveTextures[mNextActiveTextureUnit] );
+            CMN_ASSERT( !mActiveTextures[ mNextActiveTextureUnit ] );
 
             textureUnit = mNextActiveTextureUnit;
-            mActiveTextures[mNextActiveTextureUnit] = std::static_pointer_cast<const Texture>( texture );
+            mActiveTextures[mNextActiveTextureUnit] = std::static_pointer_cast< const Texture >( texture );
             mActiveTexturesDirtyMask |= (1 << mNextActiveTextureUnit);
 
             // Find a free texture unit
 
-            uint32_t unit = (mNextActiveTextureUnit + 1) % MAX_BIND_TEXTURES;
-            while (mActiveTextures[unit] && unit != mNextActiveTextureUnit)
+            uint32_t unit = ( mNextActiveTextureUnit + 1 ) % MAX_BIND_TEXTURES;
+            while ( mActiveTextures[ unit ] && unit != mNextActiveTextureUnit )
             {
-                unit = (++ unit) % MAX_BIND_TEXTURES;
+                unit = ( ++ unit ) % MAX_BIND_TEXTURES;
             }
             mNextActiveTextureUnit = unit;
         }
         else
         {
-            if (mActiveTextures[textureUnit] != texture)
+            if (mActiveTextures[ textureUnit ] != texture)
             {
                 // Unbind a previous texture
-                if ((mActiveTexturesDirtyMask & (1 << textureUnit)) == 0)
+                if ( ( mActiveTexturesDirtyMask & ( 1 << textureUnit ) ) == 0)
                 {
                     VGL( glActiveTexture, GL_TEXTURE0 + textureUnit );
                     VGL( glBindTexture, GL_TEXTURE_2D, 0 );
                     VGL( glActiveTexture, GL_TEXTURE0 + MAX_BIND_TEXTURES );
                 }
 
-                mActiveTextures[textureUnit] = std::static_pointer_cast<const Texture>( texture );
-                mActiveTexturesDirtyMask |= (1 << textureUnit);
+                mActiveTextures[ textureUnit ] = std::static_pointer_cast< const Texture >( texture );
+                mActiveTexturesDirtyMask |= ( 1 << textureUnit );
             }
         }
     }
