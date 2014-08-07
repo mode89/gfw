@@ -696,6 +696,7 @@ namespace GFW {
 
         const std::string & sourceString = source.str();
         shaderBinary.mData.insert( shaderBinary.mData.begin(), sourceString.begin(), sourceString.end() );
+        shaderBinary.mData.push_back( 0 ); // Null-termination of the string
     }
 
     bool ShaderBuilder::CollectVariables( const ParseTree & tree )
