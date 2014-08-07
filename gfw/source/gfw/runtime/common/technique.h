@@ -23,7 +23,7 @@ namespace GFW {
         GetShader( ShaderStage, uint32_t pass ) const;
 
     public:
-        Technique( const TechniqueBinary &, const ShaderTable &, IDeviceIn );
+        Technique( const TechniqueBinary &, ShaderTable &, IDeviceIn );
         ~Technique();
 
     private:

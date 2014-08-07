@@ -11,11 +11,13 @@ namespace GFW {
 
     Effect::Effect( const EffectBinary & effectBinary, IDeviceIn device )
     {
+        ShaderTable shaderTable;
+
         mDesc.techniqueCount = effectBinary.mTechniques.size();
         mTechniques.reserve( mDesc.techniqueCount );
         for ( auto techniqueBinary : effectBinary.mTechniques )
         {
-            TechniqueRef technique = std::make_shared<Technique>( techniqueBinary, mShaderTable, device );
+            TechniqueRef technique = std::make_shared<Technique>( techniqueBinary, shaderTable, device );
 
             mTechniques.push_back( technique );
             mTechniqueMap[ techniqueBinary.mName ] = technique;

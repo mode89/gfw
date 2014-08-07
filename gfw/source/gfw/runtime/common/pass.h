@@ -19,7 +19,7 @@ namespace GFW {
         GetShader( ShaderStage stage ) const { return mShaders[ stage ]; }
 
     public:
-        Pass( const PassBinary &, const ShaderTable &, IDeviceIn );
+        Pass( const PassBinary &, ShaderTable &, IDeviceIn );
         ~Pass();
 
     private:

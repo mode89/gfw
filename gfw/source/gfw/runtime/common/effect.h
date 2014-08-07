@@ -38,8 +38,6 @@ namespace GFW {
         EffectDesc      mDesc;
 
         TechniqueVec    mTechniques;
-        ShaderTable     mShaderTable;
-
         TechniqueMap    mTechniqueMap;
     };
     SHARED_PTR_TYPEDEFS(Effect);
