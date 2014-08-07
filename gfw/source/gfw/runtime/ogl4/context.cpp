@@ -228,8 +228,8 @@ namespace GFW {
 
         for (int stage = 0; stage < SHADER_STAGE_COUNT; ++ stage)
         {
-            ConstShaderRef shader = mShaders[stage];
-            uint32_t stageBit = GetOGLShaderStageBit(static_cast<ShaderStage>(stage));
+            ConstShaderRef shader = mShaders[ stage ];
+            uint32_t stageBit = GetOGLShaderStageBit( static_cast< ShaderStage >( stage ) );
             VGL( glUseProgramStages, mProgramPipeline, stageBit, shader ? shader->GetHandle() : 0 );
         }
 
@@ -243,22 +243,22 @@ namespace GFW {
                 {
                     CMN_ASSERT( attrIndex < MAX_INPUT_ATTRIBUTES );
 
-                    const VertexAttribute & attr = mInputLayout->GetAttribute(attrIndex);
+                    const VertexAttribute & attr = mInputLayout->GetAttribute( attrIndex );
                     CMN_ASSERT( attr.semantic != SEMANTIC_UNKNOWN );
                     CMN_ASSERT( mVertexBuffers[attr.bufSlot] );
 
-                    VGL( glBindBuffer, GL_ARRAY_BUFFER, mVertexBuffers[attr.bufSlot]->GetHandle() );
+                    VGL( glBindBuffer, GL_ARRAY_BUFFER, mVertexBuffers[ attr.bufSlot ]->GetHandle() );
 
-                    int32_t size = GetFormatElementNumber(attr.format);
-                    Type type    = GetFormatElementType(attr.format);
-                    VGL( glVertexAttribPointer, attrIndex, size, GetOGLType(type), GL_FALSE, attr.stride, reinterpret_cast<void*>(attr.offset ));
+                    int32_t size = GetFormatElementNumber( attr.format );
+                    Type type    = GetFormatElementType( attr.format );
+                    VGL( glVertexAttribPointer, attrIndex, size, GetOGLType( type ), GL_FALSE, attr.stride, reinterpret_cast< void* >( attr.offset ));
                     VGL( glEnableVertexAttribArray, attrIndex );
 
                     VGL( glBindBuffer, GL_ARRAY_BUFFER, 0 );
                 }
             }
 
-            for (uint32_t attrIndex = 0, mask = (mEnabledVertexAttributesMask & !mInputLayout->GetEnabledAttributesMask()); mask;
+            for (uint32_t attrIndex = 0, mask = ( mEnabledVertexAttributesMask & !mInputLayout->GetEnabledAttributesMask() ); mask;
                 ++ attrIndex, mask >>= 1)
             {
                 if (mask & 1)
@@ -281,7 +281,7 @@ namespace GFW {
             if (mask & 1)
             {
                 VGL( glActiveTexture, GL_TEXTURE0 + unit );
-                VGL( glBindTexture, GL_TEXTURE_2D, mActiveTextures[unit]->GetHandle() );
+                VGL( glBindTexture, GL_TEXTURE_2D, mActiveTextures[ unit ]->GetHandle() );
             }
         }
         mActiveTexturesDirtyMask = 0;
@@ -296,13 +296,13 @@ namespace GFW {
         }
         else
         {
-            uint32_t drawBuffers[MAX_RENDER_TARGETS];
+            uint32_t drawBuffers[ MAX_RENDER_TARGETS ];
             for (uint32_t i = 0; i < mRenderTargetsCount; ++ i)
             {
-                ConstRenderTargetRef rt = mRenderTargets[i];
-                ConstTextureRef rtTex   = std::static_pointer_cast<const Texture>( rt->GetTexture() );
+                ConstRenderTargetRef rt = mRenderTargets[ i ];
+                ConstTextureRef rtTex   = std::static_pointer_cast< const Texture >( rt->GetTexture() );
                 VGL( glFramebufferTexture, GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, rtTex->GetHandle(), rt->GetDesc().resourceIndex );
-                drawBuffers[i] = GL_COLOR_ATTACHMENT0 + i;
+                drawBuffers[ i ] = GL_COLOR_ATTACHMENT0 + i;
             }
             VGL( glDrawBuffers, mRenderTargetsCount, drawBuffers );
 
