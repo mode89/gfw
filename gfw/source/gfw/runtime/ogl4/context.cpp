@@ -290,20 +290,27 @@ namespace GFW {
 
         // Bind render targets
 
-        uint32_t drawBuffers[MAX_RENDER_TARGETS];
-        for (uint32_t i = 0; i < mRenderTargetsCount; ++ i)
+        if ( mRenderTargets[ 0 ]->IsSwapChain() )
         {
-            ConstRenderTargetRef rt = mRenderTargets[i];
-            ConstTextureRef rtTex   = std::static_pointer_cast<const Texture>( rt->GetTexture() );
-            VGL( glFramebufferTexture, GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, rtTex->GetHandle(), rt->GetDesc().resourceIndex );
-            drawBuffers[i] = GL_COLOR_ATTACHMENT0 + i;
+            VGL( glBindFramebuffer, GL_DRAW_FRAMEBUFFER, 0 );
         }
-        VGL( glDrawBuffers, mRenderTargetsCount, drawBuffers );
+        else
+        {
+            uint32_t drawBuffers[MAX_RENDER_TARGETS];
+            for (uint32_t i = 0; i < mRenderTargetsCount; ++ i)
+            {
+                ConstRenderTargetRef rt = mRenderTargets[i];
+                ConstTextureRef rtTex   = std::static_pointer_cast<const Texture>( rt->GetTexture() );
+                VGL( glFramebufferTexture, GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, rtTex->GetHandle(), rt->GetDesc().resourceIndex );
+                drawBuffers[i] = GL_COLOR_ATTACHMENT0 + i;
+            }
+            VGL( glDrawBuffers, mRenderTargetsCount, drawBuffers );
 
 #ifdef CMN_DEBUG
-        int32_t status  = VGL( glCheckFramebufferStatus, GL_DRAW_FRAMEBUFFER );
-        CMN_ASSERT( status == GL_FRAMEBUFFER_COMPLETE );
+            int32_t status  = VGL( glCheckFramebufferStatus, GL_DRAW_FRAMEBUFFER );
+            CMN_ASSERT( status == GL_FRAMEBUFFER_COMPLETE );
 #endif
+        }
     }
 
     void Context::SetIndexBuffer( ConstIBufferIn buffer )
