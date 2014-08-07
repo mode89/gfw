@@ -31,7 +31,7 @@ namespace GFW {
         SetIndexBuffer( ConstIBufferIn );
 
         virtual void
-        SetTexture( int32_t stage, uint32_t slot, ConstITextureIn );
+        SetTexture( ShaderStage stage, uint32_t slot, ConstITextureIn );
 
         virtual void
         SetRenderTargets( uint32_t cpunt, ConstIRenderTargetRef rt[] );

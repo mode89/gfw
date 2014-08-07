@@ -338,7 +338,7 @@ namespace GFW {
         mIndexBuffer = std::static_pointer_cast<const Buffer>( buffer );
     }
 
-    void Context::SetTexture( int32_t stage, uint32_t slot, ConstITextureIn texture )
+    void Context::SetTexture( ShaderStage stage, uint32_t slot, ConstITextureIn texture )
     {
         CMN_ASSERT( stage >= 0 );
         CMN_ASSERT( stage < SHADER_STAGE_COUNT );
