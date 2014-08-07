@@ -61,6 +61,7 @@ namespace GFW {
         TextureDesc textureDesc;
         textureDesc.width  = windowRect.right - windowRect.left;
         textureDesc.height = windowRect.bottom - windowRect.top;
+        textureDesc.format = FORMAT_RGBA8_UNORM;
 
         RenderTargetDesc renderTargetDesc;
 
