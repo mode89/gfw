@@ -364,14 +364,14 @@ namespace GFW {
 
     void Context::SetRenderTargets( uint32_t count, ConstIRenderTargetRef rt[] )
     {
-        for (uint32_t i = 0; i < count; ++ i)
+        for ( uint32_t i = 0; i < count; ++ i )
         {
-            mRenderTargets[i] = std::static_pointer_cast<const RenderTarget>( rt[i] );
+            mRenderTargets[ i ] = std::static_pointer_cast< const RenderTarget >( rt[ i ] );
         }
 
-        for (uint32_t i = count; i < mRenderTargetsCount; ++ i)
+        for ( uint32_t i = count; i < mRenderTargetsCount; ++ i )
         {
-            mRenderTargets[i].reset();
+            mRenderTargets[ i ].reset();
         }
 
         mRenderTargetsCount = count;
