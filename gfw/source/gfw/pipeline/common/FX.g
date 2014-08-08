@@ -83,7 +83,7 @@ cbuffer_member_list
     ;
 
 register_binding
-    : T_COLON T_REGISTER T_LPAREN T_ID T_RPAREN
+    : T_COLON T_REGISTER T_LPAREN T_REGISTER_ID T_RPAREN
     ;
 
 struct_definition
@@ -498,6 +498,9 @@ T_FLOAT43               : 'float4x3' ;
 T_FLOAT44               : 'float4x4' ;
 
 // B a s e   t o k e n s
+
+T_REGISTER_ID
+    : ( 'b' | 't' | 'c' | 's' | 'u' ) ( '0' | '1'..'9' '0'..'9'* ) ;
 
 T_ID
     :   LETTER ( LETTER | '0'..'9' )*
