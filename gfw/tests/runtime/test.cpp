@@ -9,11 +9,18 @@ void Test::SetUp()
 {
     // Create a window
 
+    const ::testing::TestInfo * testInfo =
+        ::testing::UnitTest::GetInstance()->current_test_info();
+    std::string windowTitle =
+        std::string( testInfo->test_case_name() ) +
+        std::string( "::" ) +
+        std::string( testInfo->name() );
+
     WindowDesc windowDesc;
     windowDesc.width  = kWindowWidth;
     windowDesc.height = kwindowHeight;
 
-    mWindow = WindowHandleRef( CreateDefaultWindow( "Default Window", windowDesc ),
+    mWindow = WindowHandleRef( CreateDefaultWindow( windowTitle, windowDesc ),
         [] ( WindowHandle * handle ) {
             if ( handle )
             {
