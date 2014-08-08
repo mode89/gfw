@@ -22,106 +22,106 @@
 #endif // CMN_DEBUG
 
 #define OPENGL_FUNCTIONS_CORE \
-    F(PFNGLGETERRORPROC,                    glGetError) \
-    F(PFNGLGETSTRINGPROC,                   glGetString) \
-    F(PFNGLCLEARCOLORPROC,                  glClearColor) \
-    F(PFNGLCLEARDEPTHPROC,                  glClearDepth) \
-    F(PFNGLCLEARPROC,                       glClear) \
-    F(PFNGLDRAWARRAYSPROC,                  glDrawArrays) \
-    F(PFNGLDRAWELEMENTSPROC,                glDrawElements) \
-    F(PFNGLFLUSHPROC,                       glFlush) \
-    F(PFNGLFINISHPROC,                      glFinish) \
-    F(PFNGLENABLEPROC,                      glEnable) \
-    F(PFNGLDISABLEPROC,                     glDisable) \
+    F( PFNGLGETERRORPROC,                                   glGetError ) \
+    F( PFNGLGETSTRINGPROC,                                  glGetString ) \
+    F( PFNGLCLEARCOLORPROC,                                 glClearColor ) \
+    F( PFNGLCLEARDEPTHPROC,                                 glClearDepth ) \
+    F( PFNGLCLEARPROC,                                      glClear ) \
+    F( PFNGLDRAWARRAYSPROC,                                 glDrawArrays ) \
+    F( PFNGLDRAWELEMENTSPROC,                               glDrawElements ) \
+    F( PFNGLFLUSHPROC,                                      glFlush ) \
+    F( PFNGLFINISHPROC,                                     glFinish ) \
+    F( PFNGLENABLEPROC,                                     glEnable ) \
+    F( PFNGLDISABLEPROC,                                    glDisable ) \
     \
-    F(PFNGLTEXIMAGE2DPROC,                  glTexImage2D) \
-    F(PFNGLTEXPARAMETERIPROC,               glTexParameteri) \
+    F( PFNGLTEXIMAGE2DPROC,                                 glTexImage2D ) \
+    F( PFNGLTEXPARAMETERIPROC,                              glTexParameteri ) \
     \
-    F(PFNGLDRAWBUFFERPROC,                  glDrawBuffer) \
-    F(PFNGLREADBUFFERPROC,                  glReadBuffer) \
+    F( PFNGLDRAWBUFFERPROC,                                 glDrawBuffer ) \
+    F( PFNGLREADBUFFERPROC,                                 glReadBuffer ) \
 
 #define OPENGL_FUNCTIONS_EXT \
-    F(PFNGLCREATESHADERPROC,                glCreateShader) \
-    F(PFNGLDELETESHADERPROC,                glDeleteShader) \
-    F(PFNGLSHADERSOURCEPROC,                glShaderSource) \
-    F(PFNGLCOMPILESHADERPROC,               glCompileShader) \
-    F(PFNGLGETSHADERIVPROC,                 glGetShaderiv) \
-    F(PFNGLGETSHADERINFOLOGPROC,            glGetShaderInfoLog) \
+    F( PFNGLCREATESHADERPROC,                               glCreateShader ) \
+    F( PFNGLDELETESHADERPROC,                               glDeleteShader ) \
+    F( PFNGLSHADERSOURCEPROC,                               glShaderSource ) \
+    F( PFNGLCOMPILESHADERPROC,                              glCompileShader ) \
+    F( PFNGLGETSHADERIVPROC,                                glGetShaderiv ) \
+    F( PFNGLGETSHADERINFOLOGPROC,                           glGetShaderInfoLog ) \
     \
-    F(PFNGLCREATEPROGRAMPROC,               glCreateProgram) \
-    F(PFNGLDELETEPROGRAMPROC,               glDeleteProgram) \
-    F(PFNGLATTACHSHADERPROC,                glAttachShader) \
-    F(PFNGLDETACHSHADERPROC,                glDetachShader) \
-    F(PFNGLLINKPROGRAMPROC,                 glLinkProgram) \
-    F(PFNGLUSEPROGRAMPROC,                  glUseProgram) \
-    F(PFNGLGETPROGRAMIVPROC,                glGetProgramiv) \
-    F(PFNGLGETPROGRAMINFOLOGPROC,           glGetProgramInfoLog) \
-    F(PFNGLPROGRAMPARAMETERIPROC,           glProgramParameteri) \
-    F(PFNGLGETPROGRAMINTERFACEIVPROC,       glGetProgramInterfaceiv) \
-    F(PFNGLGETPROGRAMRESOURCENAMEPROC,      glGetProgramResourceName) \
-    F(PFNGLGETPROGRAMRESOURCELOCATIONPROC,  glGetProgramResourceLocation) \
-    F(PFNGLGETPROGRAMRESOURCEIVPROC,        glGetProgramResourceiv) \
+    F( PFNGLCREATEPROGRAMPROC,                              glCreateProgram ) \
+    F( PFNGLDELETEPROGRAMPROC,                              glDeleteProgram ) \
+    F( PFNGLATTACHSHADERPROC,                               glAttachShader ) \
+    F( PFNGLDETACHSHADERPROC,                               glDetachShader ) \
+    F( PFNGLLINKPROGRAMPROC,                                glLinkProgram ) \
+    F( PFNGLUSEPROGRAMPROC,                                 glUseProgram ) \
+    F( PFNGLGETPROGRAMIVPROC,                               glGetProgramiv ) \
+    F( PFNGLGETPROGRAMINFOLOGPROC,                          glGetProgramInfoLog ) \
+    F( PFNGLPROGRAMPARAMETERIPROC,                          glProgramParameteri ) \
+    F( PFNGLGETPROGRAMINTERFACEIVPROC,                      glGetProgramInterfaceiv ) \
+    F( PFNGLGETPROGRAMRESOURCENAMEPROC,                     glGetProgramResourceName ) \
+    F( PFNGLGETPROGRAMRESOURCELOCATIONPROC,                 glGetProgramResourceLocation ) \
+    F( PFNGLGETPROGRAMRESOURCEIVPROC,                       glGetProgramResourceiv ) \
     \
-    F(PFNGLGENPROGRAMPIPELINESPROC,         glGenProgramPipelines) \
-    F(PFNGLDELETEPROGRAMPIPELINESPROC,      glDeleteProgramPipelines) \
-    F(PFNGLBINDPROGRAMPIPELINEPROC,         glBindProgramPipeline) \
-    F(PFNGLUSEPROGRAMSTAGESPROC,            glUseProgramStages) \
+    F( PFNGLGENPROGRAMPIPELINESPROC,                        glGenProgramPipelines ) \
+    F( PFNGLDELETEPROGRAMPIPELINESPROC,                     glDeleteProgramPipelines ) \
+    F( PFNGLBINDPROGRAMPIPELINEPROC,                        glBindProgramPipeline ) \
+    F( PFNGLUSEPROGRAMSTAGESPROC,                           glUseProgramStages ) \
     \
-    F(PFNGLGETATTRIBLOCATIONPROC,           glGetAttribLocation) \
+    F( PFNGLGETATTRIBLOCATIONPROC,                          glGetAttribLocation ) \
     \
-    F(PFNGLGENBUFFERSPROC,                  glGenBuffers) \
-    F(PFNGLDELETEBUFFERSPROC,               glDeleteBuffers) \
-    F(PFNGLBINDBUFFERPROC,                  glBindBuffer) \
-    F(PFNGLBUFFERDATAPROC,                  glBufferData) \
-    F(PFNGLBUFFERSUBDATAPROC,               glBufferSubData) \
-    F(PFNGLMAPBUFFERPROC,                   glMapBuffer) \
-    F(PFNGLMAPBUFFERRANGEPROC,              glMapBufferRange) \
-    F(PFNGLUNMAPBUFFERPROC,                 glUnmapBuffer) \
+    F( PFNGLGENBUFFERSPROC,                                 glGenBuffers ) \
+    F( PFNGLDELETEBUFFERSPROC,                              glDeleteBuffers ) \
+    F( PFNGLBINDBUFFERPROC,                                 glBindBuffer ) \
+    F( PFNGLBUFFERDATAPROC,                                 glBufferData ) \
+    F( PFNGLBUFFERSUBDATAPROC,                              glBufferSubData ) \
+    F( PFNGLMAPBUFFERPROC,                                  glMapBuffer ) \
+    F( PFNGLMAPBUFFERRANGEPROC,                             glMapBufferRange ) \
+    F( PFNGLUNMAPBUFFERPROC,                                glUnmapBuffer ) \
     \
-    F(PFNGLVERTEXATTRIBPOINTERPROC,         glVertexAttribPointer) \
-    F(PFNGLENABLEVERTEXATTRIBARRAYPROC,     glEnableVertexAttribArray) \
-    F(PFNGLDISABLEVERTEXATTRIBARRAYPROC,    glDisableVertexAttribArray) \
+    F( PFNGLVERTEXATTRIBPOINTERPROC,                        glVertexAttribPointer ) \
+    F( PFNGLENABLEVERTEXATTRIBARRAYPROC,                    glEnableVertexAttribArray ) \
+    F( PFNGLDISABLEVERTEXATTRIBARRAYPROC,                   glDisableVertexAttribArray ) \
     \
-    F(PFNGLENABLEIPROC,                     glEnablei) \
-    F(PFNGLDISABLEIPROC,                    glDisablei) \
+    F( PFNGLENABLEIPROC,                                    glEnablei ) \
+    F( PFNGLDISABLEIPROC,                                   glDisablei ) \
     \
-    F(PFNGLBLENDFUNCSEPARATEIPROC,          glBlendFuncSeparatei) \
-    F(PFNGLBLENDEQUATIONSEPARATEIPROC,      glBlendEquationSeparatei) \
-    F(PFNGLCOLORMASKIPROC,                  glColorMaski) \
-    F(PFNGLBLENDCOLORPROC,                  glBlendColor) \
+    F( PFNGLBLENDFUNCSEPARATEIPROC,                         glBlendFuncSeparatei ) \
+    F( PFNGLBLENDEQUATIONSEPARATEIPROC,                     glBlendEquationSeparatei ) \
+    F( PFNGLCOLORMASKIPROC,                                 glColorMaski ) \
+    F( PFNGLBLENDCOLORPROC,                                 glBlendColor ) \
     \
-    F(PFNGLDEPTHFUNCPROC,                   glDepthFunc) \
-    F(PFNGLDEPTHMASKPROC,                   glDepthMask) \
-    F(PFNGLSTENCILOPPROC,                   glStencilOp) \
-    F(PFNGLSTENCILOPSEPARATEPROC,           glStencilOpSeparate) \
-    F(PFNGLSTENCILFUNCPROC,                 glStencilFunc) \
-    F(PFNGLSTENCILFUNCSEPARATEPROC,         glStencilFuncSeparate) \
-    F(PFNGLSTENCILMASKPROC,                 glStencilMask) \
-    F(PFNGLSTENCILMASKSEPARATEPROC,         glStencilMaskSeparate) \
+    F( PFNGLDEPTHFUNCPROC,                                  glDepthFunc ) \
+    F( PFNGLDEPTHMASKPROC,                                  glDepthMask ) \
+    F( PFNGLSTENCILOPPROC,                                  glStencilOp ) \
+    F( PFNGLSTENCILOPSEPARATEPROC,                          glStencilOpSeparate ) \
+    F( PFNGLSTENCILFUNCPROC,                                glStencilFunc ) \
+    F( PFNGLSTENCILFUNCSEPARATEPROC,                        glStencilFuncSeparate ) \
+    F( PFNGLSTENCILMASKPROC,                                glStencilMask ) \
+    F( PFNGLSTENCILMASKSEPARATEPROC,                        glStencilMaskSeparate ) \
     \
-    F(PFNGLPOLYGONMODEPROC,                 glPolygonMode) \
-    F(PFNGLPOLYGONOFFSETPROC,               glPolygonOffset) \
-    F(PFNGLCULLFACEPROC,                    glCullFace) \
-    F(PFNGLFRONTFACEPROC,                   glFrontFace) \
+    F( PFNGLPOLYGONMODEPROC,                                glPolygonMode ) \
+    F( PFNGLPOLYGONOFFSETPROC,                              glPolygonOffset ) \
+    F( PFNGLCULLFACEPROC,                                   glCullFace ) \
+    F( PFNGLFRONTFACEPROC,                                  glFrontFace ) \
     \
-    F(PFNGLGENSAMPLERSPROC,                 glGenSamplers) \
-    F(PFNGLDELETESAMPLERSPROC,              glDeleteSamplers) \
-    F(PFNGLSAMPLERPARAMETERIPROC,           glSamplerParameteri) \
-    F(PFNGLSAMPLERPARAMETERFVPROC,          glSamplerParameterfv) \
-    F(PFNGLSAMPLERPARAMETERFPROC,           glSamplerParameterf) \
+    F( PFNGLGENSAMPLERSPROC,                                glGenSamplers ) \
+    F( PFNGLDELETESAMPLERSPROC,                             glDeleteSamplers ) \
+    F( PFNGLSAMPLERPARAMETERIPROC,                          glSamplerParameteri ) \
+    F( PFNGLSAMPLERPARAMETERFVPROC,                         glSamplerParameterfv ) \
+    F( PFNGLSAMPLERPARAMETERFPROC,                          glSamplerParameterf ) \
     \
-    F(PFNGLGENTEXTURESPROC,                 glGenTextures) \
-    F(PFNGLDELETETEXTURESPROC,              glDeleteTextures) \
-    F(PFNGLACTIVETEXTUREPROC,               glActiveTexture) \
-    F(PFNGLBINDTEXTUREPROC,                 glBindTexture) \
+    F( PFNGLGENTEXTURESPROC,                                glGenTextures ) \
+    F( PFNGLDELETETEXTURESPROC,                             glDeleteTextures ) \
+    F( PFNGLACTIVETEXTUREPROC,                              glActiveTexture ) \
+    F( PFNGLBINDTEXTUREPROC,                                glBindTexture ) \
     \
-    F(PFNGLGENFRAMEBUFFERSPROC,             glGenFramebuffers) \
-    F(PFNGLDELETEFRAMEBUFFERSPROC,          glDeleteFramebuffers) \
-    F(PFNGLBINDFRAMEBUFFERPROC,             glBindFramebuffer) \
-    F(PFNGLFRAMEBUFFERTEXTUREPROC,          glFramebufferTexture) \
-    F(PFNGLBLITFRAMEBUFFERPROC,             glBlitFramebuffer) \
-    F(PFNGLDRAWBUFFERSPROC,                 glDrawBuffers) \
-    F(PFNGLCHECKFRAMEBUFFERSTATUSPROC,      glCheckFramebufferStatus) \
+    F( PFNGLGENFRAMEBUFFERSPROC,                            glGenFramebuffers ) \
+    F( PFNGLDELETEFRAMEBUFFERSPROC,                         glDeleteFramebuffers ) \
+    F( PFNGLBINDFRAMEBUFFERPROC,                            glBindFramebuffer ) \
+    F( PFNGLFRAMEBUFFERTEXTUREPROC,                         glFramebufferTexture ) \
+    F( PFNGLBLITFRAMEBUFFERPROC,                            glBlitFramebuffer ) \
+    F( PFNGLDRAWBUFFERSPROC,                                glDrawBuffers ) \
+    F( PFNGLCHECKFRAMEBUFFERSTATUSPROC,                     glCheckFramebufferStatus ) \
 
 #ifdef CMN_WIN32
 
