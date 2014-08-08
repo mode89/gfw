@@ -61,6 +61,7 @@
     F( PFNGLGETPROGRAMRESOURCENAMEPROC,                     glGetProgramResourceName ) \
     F( PFNGLGETPROGRAMRESOURCELOCATIONPROC,                 glGetProgramResourceLocation ) \
     F( PFNGLGETPROGRAMRESOURCEIVPROC,                       glGetProgramResourceiv ) \
+    F( PFNGLPROGRAMUNIFORMHANDLEUI64ARBPROC,                glProgramUniformHandleui64ARB ) \
     \
     F( PFNGLGENPROGRAMPIPELINESPROC,                        glGenProgramPipelines ) \
     F( PFNGLDELETEPROGRAMPIPELINESPROC,                     glDeleteProgramPipelines ) \
@@ -114,6 +115,10 @@
     F( PFNGLDELETETEXTURESPROC,                             glDeleteTextures ) \
     F( PFNGLACTIVETEXTUREPROC,                              glActiveTexture ) \
     F( PFNGLBINDTEXTUREPROC,                                glBindTexture ) \
+    F( PFNGLGETTEXTUREHANDLEARBPROC,                        glGetTextureHandleARB ) \
+    F( PFNGLGETTEXTURESAMPLERHANDLEARBPROC,                 glGetTextureSamplerHandlerARB ) \
+    F( PFNGLMAKETEXTUREHANDLERESIDENTARBPROC,               glMakeTextureHandleResidentARB ) \
+    F( PFNGLMAKETEXTUREHANDLENONRESIDENTARBPROC,            glMakeTextureHandleNonResidentARB ) \
     \
     F( PFNGLGENFRAMEBUFFERSPROC,                            glGenFramebuffers ) \
     F( PFNGLDELETEFRAMEBUFFERSPROC,                         glDeleteFramebuffers ) \
