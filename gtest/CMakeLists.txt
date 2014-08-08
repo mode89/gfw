@@ -12,6 +12,10 @@ cmake_minimum_required(VERSION 2.8)
             /wd4626     # Assignment operator could not be generated because a base class assignment operator is inaccessible
             /wd4640     # Construction of local static object is not thread-safe
         )
+    elseif ( MINGW )
+        add_compile_options(
+            -Wno-unused-variable
+        )
     endif()
 
 # Target
