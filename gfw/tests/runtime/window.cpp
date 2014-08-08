@@ -95,7 +95,7 @@ namespace GFW {
     uint32_t        WindowClass::mRefCounter = 0;
     const char *    WindowClass::kName       = "gfw_default_windows";
 
-    void * CreateDefaultWindow(const WindowDesc & desc)
+    void * CreateDefaultWindow( const std::string & windowTitle, const WindowDesc & desc)
     {
         HINSTANCE hInst = GetModuleHandle(NULL);
 
@@ -149,7 +149,7 @@ namespace GFW {
         HWND handle = CreateWindowEx(
             dwExStyle,
             wndClass->GetName(),
-            "Default Window",
+            windowTitle.c_str(),
             dwStyle | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
             0, 0,
             windowRect.right - windowRect.left,

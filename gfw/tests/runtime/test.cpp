@@ -13,7 +13,7 @@ void Test::SetUp()
     windowDesc.width  = kWindowWidth;
     windowDesc.height = kwindowHeight;
 
-    mWindow = WindowHandleRef( CreateDefaultWindow( windowDesc ),
+    mWindow = WindowHandleRef( CreateDefaultWindow( "Default Window", windowDesc ),
         [] ( WindowHandle * handle ) {
             if ( handle )
             {

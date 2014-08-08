@@ -1,6 +1,8 @@
 #ifndef __GFW_TESTS_RUNTIME_WINDOW_H__
 #define __GFW_TESTS_RUNTIME_WINDOW_H__
 
+#include <string>
+
 namespace GFW {
 
     struct WindowDesc
@@ -17,7 +19,7 @@ namespace GFW {
     };
 
     void *
-    CreateDefaultWindow( const WindowDesc & );
+    CreateDefaultWindow( const std::string & windowTitle, const WindowDesc & );
 
     void
     DestroyDefaultWindow( void * windowHandle );
