@@ -33,7 +33,7 @@ cmake_minimum_required( VERSION 2.8 )
 # Post build
 
     if( NOT DEFINED GFW_RUNTIME_TESTS_POST_BUILD )
-        if( ${CMAKE_GENERATOR_TOOLSET} )
+        if( CMAKE_GENERATOR_TOOLSET )
             set( TOOLSET_OPTION -T ${CMAKE_GENERATOR_TOOLSET} )
         endif()
 
