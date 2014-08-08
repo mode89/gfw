@@ -16,10 +16,11 @@ namespace Cmn {
             mF();
         }
 
-        ScopeExit & operator= ( const ScopeExit & ) = delete;
-
     private:
         const F & mF;
+
+        const ScopeExit &
+        operator= ( const ScopeExit & );
     };
 
     template < typename F >
