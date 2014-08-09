@@ -1,0 +1,17 @@
+gfw
+    common
+        tracking assigned registers at Symbol
+    ogl4
+        serialize shader's source into ShaderBinary::mData
+        serialize texture-sampler register pairs into ShaderBinary::mData
+        using bindless textures
+    tests
+        fix all tests
+        add windowless tests
+            Test
+            GraphicsTest
+        enable auto-testing
+            add libpng package
+    samples
+        convert .x files to another format
+        port shadow map
