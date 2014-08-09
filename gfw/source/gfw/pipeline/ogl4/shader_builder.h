@@ -12,8 +12,9 @@ namespace GFW {
 
     class ParseTree;
     class ShaderBinary;
-    class Symbol;
     class SymbolTable;
+
+    struct Symbol;
 
     typedef std::pair< const Symbol *, const Symbol * > TextureSamplerPair;
     typedef std::set< TextureSamplerPair > TextureSamplerPairSet;

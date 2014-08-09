@@ -8,12 +8,12 @@ namespace GFW {
 
     static bool SymbolLessByName( const Symbol * l, const Symbol * r )
     {
-        return l->GetName() < r->GetName();
+        return *l->name < *r->name;
     }
 
     static bool SymbolLessByTreeAddress( const Symbol * l, const Symbol * r )
     {
-        return &l->GetTree() < &r->GetTree();
+        return l->tree < r->tree;
     }
 
     class CollectReferencedSymbolsVisitor
@@ -42,7 +42,7 @@ namespace GFW {
 
     bool Symbol::RefersTo( const Symbol * symbol ) const
     {
-        return std::binary_search( mReferences.begin(), mReferences.end(), symbol );
+        return std::binary_search( references.begin(), references.end(), symbol );
     }
 
     SymbolTable::SymbolTable( const ParseTree & tree )
@@ -50,33 +50,31 @@ namespace GFW {
         tree.TraverseDFS( *this, &SymbolTable::CollectSymbol );
 
         // Mapping by name
-
-        for ( SymbolVec::iterator it = mSymbols.begin(); it != mSymbols.end(); ++ it )
+        for ( Symbol & symbol : mSymbols )
         {
-            mSymbolsByName.push_back( &(*it) );
+            mSymbolsByName.push_back( &symbol );
         }
         std::sort( mSymbolsByName.begin(), mSymbolsByName.end(), SymbolLessByName );
 
         // Mapping by tree address
-
-        for ( SymbolVec::iterator it = mSymbols.begin(); it != mSymbols.end(); ++ it )
+        for ( Symbol & symbol : mSymbols )
         {
-            mSymbolsByTreeAddress.push_back( &(*it) );
+            mSymbolsByTreeAddress.push_back( &symbol );
         }
-        std::sort( mSymbolsByTreeAddress.begin(), mSymbolsByTreeAddress.end(), SymbolLessByName );
+        std::sort( mSymbolsByTreeAddress.begin(), mSymbolsByTreeAddress.end(), SymbolLessByTreeAddress );
 
         // Collect immediate references (variable by function, function by function, etc)
 
         for ( SymbolVec::iterator it = mSymbols.begin(); it != mSymbols.end(); ++ it )
         {
             Symbol & symbol = *it;
-            symbol.mReferences.push_back( &symbol );
-            switch ( it->GetTokenType() )
+            symbol.references.push_back( &symbol );
+            switch ( symbol.tree->GetTokenType() )
             {
             case TOKEN_FUNCTION_DEFINITION:
                 {
-                    CollectReferencedSymbolsVisitor collectReferencedSymbolsVisitor( *this, symbol.mReferences );
-                    symbol.GetTree().TraverseDFS( collectReferencedSymbolsVisitor );
+                    CollectReferencedSymbolsVisitor collectReferencedSymbolsVisitor( *this, symbol.references );
+                    symbol.tree->TraverseDFS( collectReferencedSymbolsVisitor );
                 }
                 break;
             }
@@ -95,22 +93,22 @@ namespace GFW {
             Symbol & symbol = *it;
 
             // Start with immediate references
-            SymbolReferenceVec newReferences = symbol.mReferences;
+            SymbolReferenceVec newReferences = symbol.references;
             while (!newReferences.empty())
             {
                 // Sort known references to be able to search through them
-                std::sort( symbol.mReferences.begin(), symbol.mReferences.end() );
+                std::sort( symbol.references.begin(), symbol.references.end() );
 
                 // Enumerate through new references
                 SymbolReferenceVec nextNewReferences;
                 for ( SymbolReferenceVec::iterator processingIt = newReferences.begin(); processingIt != newReferences.end(); ++ processingIt )
                 {
                     // Enumerate through immediate references of the new references
-                    SymbolReferenceVec indirectReferences = (*processingIt)->mReferences;
+                    SymbolReferenceVec indirectReferences = (*processingIt)->references;
                     for ( SymbolReferenceVec::iterator indirectIt = indirectReferences.begin(); indirectIt != indirectReferences.end(); ++ indirectIt )
                     {
                         // If the reference is not known then we will process it during the next iteration
-                        if ( !std::binary_search(symbol.mReferences.begin(), symbol.mReferences.end(), *indirectIt) )
+                        if ( !std::binary_search(symbol.references.begin(), symbol.references.end(), *indirectIt) )
                         {
                             nextNewReferences.push_back( *indirectIt );
                         }
@@ -119,11 +117,11 @@ namespace GFW {
                 newReferences = nextNewReferences;
 
                 // Add new references to the known references
-                symbol.mReferences.insert( symbol.mReferences.end(), nextNewReferences.begin(), nextNewReferences.end() );
+                symbol.references.insert( symbol.references.end(), nextNewReferences.begin(), nextNewReferences.end() );
             }
 
             // Sort references to be able to search through them
-            std::sort( symbol.mReferences.begin(), symbol.mReferences.end() );
+            std::sort( symbol.references.begin(), symbol.references.end() );
         }
     }
 
@@ -133,8 +131,13 @@ namespace GFW {
         {
         case TOKEN_VARIABLE_DEFINITION:
             {
-                Symbol symbol( tree );
-                symbol.SetVariable();
+                Symbol symbol;
+
+                symbol.tree = &tree;
+                const ParseTree * symbolName = tree.GetFirstChildWithType( TOKEN_SYMBOL_NAME );
+                symbol.name = symbolName ? &symbolName->GetChild().GetText() : nullptr;
+
+                symbol.isVariable = true;
 
                 // if register is assigned explicitly
                 const ParseTree * registerId = tree.GetFirstChildWithType( TOKEN_REGISTER_ID );
@@ -144,23 +147,23 @@ namespace GFW {
                     switch ( registerName[0] )
                     {
                     case 'b':
-                        symbol.mRegisterType = Symbol::REGISTER_TYPE_CBUFFER;
+                        symbol.registerType = Symbol::REGISTER_TYPE_CBUFFER;
                         break;
                     case 't':
-                        symbol.mRegisterType = Symbol::REGISTER_TYPE_TEXTURE;
+                        symbol.registerType = Symbol::REGISTER_TYPE_TEXTURE;
                         break;
                     case 's':
-                        symbol.mRegisterType = Symbol::REGISTER_TYPE_SAMPLER;
+                        symbol.registerType = Symbol::REGISTER_TYPE_SAMPLER;
                         break;
                     case 'u':
-                        symbol.mRegisterType = Symbol::REGISTER_TYPE_UAV;
+                        symbol.registerType = Symbol::REGISTER_TYPE_UAV;
                         break;
                     default:
-                        symbol.mRegisterType = Symbol::REGISTER_TYPE_UNKNOWN;
+                        symbol.registerType = Symbol::REGISTER_TYPE_UNKNOWN;
                         CMN_FAIL();
                         return true;
                     }
-                    symbol.mRegisterIndex = std::atoi( ++ registerName );
+                    symbol.registerIndex = std::atoi( ++ registerName );
                 }
 
                 AddSymbol( symbol );
@@ -168,12 +171,17 @@ namespace GFW {
             return false;
         case TOKEN_FUNCTION_DEFINITION:
             {
-                Symbol symbol( tree );
-                symbol.SetFunction();
+                Symbol symbol;
+
+                symbol.tree = &tree;
+                const ParseTree * symbolName = tree.GetFirstChildWithType( TOKEN_SYMBOL_NAME );
+                symbol.name = symbolName ? &symbolName->GetChild().GetText() : nullptr;
+
+                symbol.isFunction = true;
 
                 // Remember a return type
 
-                symbol.mType = &tree.GetChild();
+                symbol.type = &tree.GetChild();
 
                 // Remember arguments
 
@@ -184,7 +192,7 @@ namespace GFW {
                     {
                         if ( args->GetChild(i).GetTokenType() == TOKEN_ARGUMENT )
                         {
-                            symbol.mArgs.push_back( &args->GetChild(i) );
+                            symbol.args.push_back( &args->GetChild(i) );
                         }
                     }
                 }
@@ -194,7 +202,7 @@ namespace GFW {
                 const ParseTree * semantic = tree.GetFirstChildWithType( TOKEN_SEMANTIC );
                 if ( semantic )
                 {
-                    symbol.mSemantic = &semantic->GetChild().GetText();
+                    symbol.semantic = &semantic->GetChild().GetText();
                 }
 
                 AddSymbol( symbol );
@@ -202,16 +210,27 @@ namespace GFW {
             return false;
         case TOKEN_STATE_OBJECT_DEFINITION:
             {
-                Symbol symbol( tree );
-                symbol.SetStateObject();
-                symbol.SetVariable();
+                Symbol symbol;
+
+                symbol.tree = &tree;
+                const ParseTree * symbolName = tree.GetFirstChildWithType( TOKEN_SYMBOL_NAME );
+                symbol.name = symbolName ? &symbolName->GetChild().GetText() : nullptr;
+
+                symbol.isStateObject = true;
+                symbol.isVariable = true;
+
                 AddSymbol( symbol );
             }
             return false;
         case TOKEN_STRUCT_DEFINITION:
             {
-                Symbol symbol( tree );
-                symbol.SetStruct();
+                Symbol symbol;
+
+                symbol.tree = &tree;
+                const ParseTree * symbolName = tree.GetFirstChildWithType( TOKEN_SYMBOL_NAME );
+                symbol.name = symbolName ? &symbolName->GetChild().GetText() : nullptr;
+
+                symbol.isStruct = true;
 
                 // Remember members
 
@@ -220,7 +239,7 @@ namespace GFW {
                     const ParseTree * child = &tree.GetChild(i);
                     if ( child->GetTokenType() == TOKEN_STRUCT_MEMBER_DECLARATION )
                     {
-                        symbol.mMembers.push_back( child );
+                        symbol.members.push_back( child );
                     }
                 }
 
@@ -234,12 +253,12 @@ namespace GFW {
     bool SymbolTable::LookupSymbolByName( const std::string & name, SymbolReferenceVec & result ) const
     {
         Symbol symbol;
-        symbol.mName = &name;
+        symbol.name = &name;
 
         SymbolReferenceVec::const_iterator it = lower_bound( mSymbolsByName.begin(), mSymbolsByName.end(), &symbol, SymbolLessByName );
         if ( it != mSymbolsByName.end() )
         {
-            for (; it != mSymbolsByName.end() && (*it)->GetName() == name; ++ it )
+            for (; it != mSymbolsByName.end() && *(*it)->name == name; ++ it )
             {
                 result.push_back( *it );
             }
@@ -251,7 +270,7 @@ namespace GFW {
     const Symbol * SymbolTable::LookupSymbolByTree( const ParseTree & tree ) const
     {
         Symbol symbol;
-        symbol.mTree = &tree;
+        symbol.tree = &tree;
 
         SymbolReferenceVec::const_iterator it = lower_bound( mSymbolsByTreeAddress.begin(), mSymbolsByTreeAddress.end(),
             &symbol, SymbolLessByTreeAddress );
