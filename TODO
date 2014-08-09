@@ -2,6 +2,7 @@ gfw
     common
         % tracking assigned registers at Symbol
     ogl4
+        assign registers to variables
         serialize shader's source into ShaderBinary::mData
         serialize texture-sampler register pairs into ShaderBinary::mData
         using bindless textures
