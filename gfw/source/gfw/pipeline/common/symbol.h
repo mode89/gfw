@@ -5,12 +5,6 @@
 
 #include <vector>
 
-#define SYMBOL_FLAGS \
-    F( Function ) \
-    F( StateObject ) \
-    F( Struct ) \
-    F( Variable ) \
-
 namespace GFW {
 
     struct Symbol;
