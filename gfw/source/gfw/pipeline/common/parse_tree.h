@@ -24,6 +24,7 @@ namespace GFW {
     T( FUNCTION_DEFINITION ) \
     T( ID ) \
     T( PASS_DEFINITION ) \
+    T( REGISTER_ID ) \
     T( SAMPLER_OBJECT_ID ) \
     T( SEMANTIC ) \
     T( SET_PIXEL_SHADER ) \

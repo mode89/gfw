@@ -1,6 +1,6 @@
+#include "cmn/trace.h"
 #include "gfw/pipeline/common/parse_tree.h"
 #include "gfw/pipeline/common/symbol_table.h"
-
 #include <algorithm>
 #include <cstring>
 
@@ -135,6 +135,34 @@ namespace GFW {
             {
                 Symbol symbol( tree );
                 symbol.SetVariable();
+
+                // if register is assigned explicitly
+                const ParseTree * registerId = tree.GetFirstChildWithType( TOKEN_REGISTER_ID );
+                if ( registerId )
+                {
+                    const char * registerName = registerId->GetText().c_str();
+                    switch ( registerName[0] )
+                    {
+                    case 'b':
+                        symbol.mRegisterType = Symbol::REGISTER_TYPE_CBUFFER;
+                        break;
+                    case 't':
+                        symbol.mRegisterType = Symbol::REGISTER_TYPE_TEXTURE;
+                        break;
+                    case 's':
+                        symbol.mRegisterType = Symbol::REGISTER_TYPE_SAMPLER;
+                        break;
+                    case 'u':
+                        symbol.mRegisterType = Symbol::REGISTER_TYPE_UAV;
+                        break;
+                    default:
+                        symbol.mRegisterType = Symbol::REGISTER_TYPE_UNKNOWN;
+                        CMN_FAIL();
+                        return true;
+                    }
+                    symbol.mRegisterIndex = std::atoi( ++ registerName );
+                }
+
                 AddSymbol( symbol );
             }
             return false;

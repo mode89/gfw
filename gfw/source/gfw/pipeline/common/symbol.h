@@ -21,12 +21,23 @@ namespace GFW {
         typedef std::vector< const ParseTree * > ParseTreeVec;
 
     public:
+        enum RegisterType
+        {
+            REGISTER_TYPE_UNKNOWN = 0,
+            REGISTER_TYPE_CBUFFER,
+            REGISTER_TYPE_TEXTURE,
+            REGISTER_TYPE_SAMPLER,
+            REGISTER_TYPE_UAV,
+        };
+
         Symbol()
             : mTree( nullptr )
             , mName( nullptr )
             , mFlags( 0 )
             , mType( nullptr )
             , mSemantic( nullptr )
+            , mRegisterType( REGISTER_TYPE_UNKNOWN )
+            , mRegisterIndex( 0 )
         {}
 
         Symbol( const ParseTree & tree )
@@ -35,6 +46,8 @@ namespace GFW {
             , mFlags( 0 )
             , mType( nullptr )
             , mSemantic( nullptr )
+            , mRegisterType( REGISTER_TYPE_UNKNOWN )
+            , mRegisterIndex( 0 )
         {
             const ParseTree * symbolName = tree.GetFirstChildWithType( TOKEN_SYMBOL_NAME );
             mName = symbolName ? &symbolName->GetChild().GetText() : nullptr;
@@ -98,6 +111,8 @@ namespace GFW {
         ParseTreeVec        mArgs;          // Function arguments
         ParseTreeVec        mMembers;       // Members of a struct
         const std::string * mSemantic;
+        RegisterType        mRegisterType;
+        uint32_t            mRegisterIndex;
 
         friend class SymbolTable;
     };
