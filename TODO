@@ -1,6 +1,7 @@
 gfw
     common
         % tracking assigned registers at Symbol
+        implement SymbolTable as unordered_multiset
     ogl4
         assign registers to variables
         serialize shader's source into ShaderBinary::mData
