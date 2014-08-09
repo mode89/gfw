@@ -97,6 +97,18 @@ namespace GFW {
             }
         }
 
+        template < typename Callback, typename Context > void
+        TraverseDFS( Callback & callback, Context & context ) const
+        {
+            if ( callback( *this, context ) )
+            {
+                for ( uint32_t i = 0; i < mChildCount; ++ i )
+                {
+                    mChildren[i].TraverseDFS( callback, context );
+                }
+            }
+        }
+
         template < class Delegator > void
         TraverseDFS( Delegator & delegator, bool (Delegator::*visitor)( const ParseTree & ) ) const
         {
