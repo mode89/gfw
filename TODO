@@ -1,6 +1,6 @@
 gfw
     common
-        tracking assigned registers at Symbol
+        % tracking assigned registers at Symbol
     ogl4
         serialize shader's source into ShaderBinary::mData
         serialize texture-sampler register pairs into ShaderBinary::mData
