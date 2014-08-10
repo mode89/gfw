@@ -3,12 +3,18 @@
 
 #include "gfw/pipeline/common/parse_tree.h"
 
+#include <string>
 #include <vector>
+#include <unordered_map>
 
 namespace GFW {
 
     struct Symbol;
-    typedef std::vector< const Symbol * > SymbolReferenceVec;
+    typedef std::list< Symbol > SymbolTable;
+    typedef std::unordered_multimap< std::string, const Symbol * > NameSymbolMap;
+    typedef std::unordered_map< const ParseTree *, const Symbol * > ParseTreeSymbolMap;
+
+    void ConstructSymbolTable( SymbolTable &, const ParseTree & );
 
     struct Symbol
     {
@@ -23,16 +29,13 @@ namespace GFW {
             REGISTER_TYPE_UAV,
         };
 
-        bool
-        RefersTo( const Symbol * ) const;
-
-        const std::string * name;
+        const char *        name;
         const ParseTree *   tree;
-        SymbolReferenceVec  references;    // Symbols referenced by this symbol (i.e. global variables by a function)
+        NameSymbolMap       references;    // All symbols referenced by this symbol (directly and indirectly)
         const ParseTree *   type;          // Object type or function return type
         ParseTreeVec        args;          // Function arguments
         ParseTreeVec        members;       // Members of a struct
-        const std::string * semantic;
+        const char *        semantic;
         RegisterType        registerType;
         uint32_t            registerIndex;
 

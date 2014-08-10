@@ -12,9 +12,6 @@ namespace GFW {
 
     class ParseTree;
     class ShaderBinary;
-    class SymbolTable;
-
-    struct Symbol;
 
     typedef std::pair< const Symbol *, const Symbol * > TextureSamplerPair;
     typedef std::set< TextureSamplerPair > TextureSamplerPairSet;
@@ -40,7 +37,7 @@ namespace GFW {
         typedef std::unordered_map< const Symbol *, TextureSamplerPairSet > FunctionTextureSamplerMap;
 
         const ParseTree &           mParseTree;
-        const SymbolTable &         mSymbolTable;
+        NameSymbolMap               mNameSymbolMap;
 
         ParseTreeMap                mVariables;
         FunctionTextureSamplerMap   mFunctionTextureSamplerMap;

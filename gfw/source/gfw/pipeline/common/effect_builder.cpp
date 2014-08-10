@@ -2,8 +2,8 @@
 #include "gfw/pipeline/common/effect_builder.h"
 #include "gfw/pipeline/common/effect_builder_exception.h"
 #include "gfw/pipeline/common/parse_tree.h"
-#include "gfw/pipeline/common/symbol_table.h"
 #include "gfw/pipeline/common/shader_builder.h"
+#include "gfw/pipeline/common/symbol.h"
 #include "gfw/shared/effect.h"
 #include "gfw/shared/pass.h"
 #include "gfw/shared/shader.h"
@@ -22,7 +22,8 @@ namespace GFW {
         std::shared_ptr< const ParseTree > tree = CreateParseTree( filePath );
 
         // Collect symbols
-        SymbolTable symbolTable( *tree );
+        SymbolTable symbolTable;
+        ConstructSymbolTable( symbolTable, *tree );
 
         // Construct shader builder
         std::shared_ptr< IShaderBuilder > shaderBuilder = CreateShaderBuilder( *tree, symbolTable );

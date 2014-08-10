@@ -1,34 +1,32 @@
 #include "cmn/trace.h"
 #include "gfw/pipeline/common/parse_tree.h"
-#include "gfw/pipeline/common/symbol_table.h"
+#include "gfw/pipeline/common/symbol.h"
 #include <algorithm>
 #include <cstring>
 
 namespace GFW {
 
-    static bool SymbolLessByName( const Symbol * l, const Symbol * r )
-    {
-        return *l->name < *r->name;
-    }
-
-    static bool SymbolLessByTreeAddress( const Symbol * l, const Symbol * r )
-    {
-        return l->tree < r->tree;
-    }
+    static bool CollectSymbol( const ParseTree &, SymbolTable & );
 
     class CollectReferencedSymbolsVisitor
     {
     public:
-        CollectReferencedSymbolsVisitor( const SymbolTable & symbolTable, SymbolReferenceVec & references )
-            : mSymbolTable( symbolTable )
-            , mReferences( references )
-        {}
+        CollectReferencedSymbolsVisitor( const SymbolTable & symbolTable, NameSymbolMap & references )
+            : mReferences( references )
+        {
+            // Map symbols by name
+            for ( auto & symbol : symbolTable )
+            {
+                mNameSymbolMap.emplace( std::make_pair( symbol.name, &symbol ) );
+            }
+        }
 
         bool operator() ( const ParseTree & tree )
         {
             if ( tree.GetTokenType() == TOKEN_ID )
             {
-                mSymbolTable.LookupSymbolByName( tree.GetText(), mReferences );
+                auto range = mNameSymbolMap.equal_range( tree.GetText() );
+                mReferences.insert( range.first, range.second );
             }
             return true;
         }
@@ -36,44 +34,23 @@ namespace GFW {
         CollectReferencedSymbolsVisitor operator= ( const CollectReferencedSymbolsVisitor & );
 
     private:
-        const SymbolTable &  mSymbolTable;
-        SymbolReferenceVec & mReferences;
+        NameSymbolMap   mNameSymbolMap;
+        NameSymbolMap & mReferences;
     };
 
-    bool Symbol::RefersTo( const Symbol * symbol ) const
+    void ConstructSymbolTable( SymbolTable & symbolTable, const ParseTree & tree )
     {
-        return std::binary_search( references.begin(), references.end(), symbol );
-    }
-
-    SymbolTable::SymbolTable( const ParseTree & tree )
-    {
-        tree.TraverseDFS( *this, &SymbolTable::CollectSymbol );
-
-        // Mapping by name
-        for ( Symbol & symbol : mSymbols )
-        {
-            mSymbolsByName.push_back( &symbol );
-        }
-        std::sort( mSymbolsByName.begin(), mSymbolsByName.end(), SymbolLessByName );
-
-        // Mapping by tree address
-        for ( Symbol & symbol : mSymbols )
-        {
-            mSymbolsByTreeAddress.push_back( &symbol );
-        }
-        std::sort( mSymbolsByTreeAddress.begin(), mSymbolsByTreeAddress.end(), SymbolLessByTreeAddress );
+        tree.TraverseDFS( CollectSymbol, symbolTable );
 
         // Collect immediate references (variable by function, function by function, etc)
-
-        for ( SymbolVec::iterator it = mSymbols.begin(); it != mSymbols.end(); ++ it )
+        for ( auto & symbol : symbolTable )
         {
-            Symbol & symbol = *it;
-            symbol.references.push_back( &symbol );
+            symbol.references.emplace( std::make_pair( symbol.name, &symbol ) );
             switch ( symbol.tree->GetTokenType() )
             {
             case TOKEN_FUNCTION_DEFINITION:
                 {
-                    CollectReferencedSymbolsVisitor collectReferencedSymbolsVisitor( *this, symbol.references );
+                    CollectReferencedSymbolsVisitor collectReferencedSymbolsVisitor( symbolTable, symbol.references );
                     symbol.tree->TraverseDFS( collectReferencedSymbolsVisitor );
                 }
                 break;
@@ -87,45 +64,35 @@ namespace GFW {
         // of the current symbol. Then find all immediate references for these new references, and
         // process all new references the same way as the first new references (add to the current
         // symbol, find immediate references for them). Do it until there is no more new references.
-
-        for ( SymbolVec::iterator it = mSymbols.begin(); it != mSymbols.end(); ++ it )
+        for ( auto & symbol : symbolTable )
         {
-            Symbol & symbol = *it;
-
             // Start with immediate references
-            SymbolReferenceVec newReferences = symbol.references;
-            while (!newReferences.empty())
+            NameSymbolMap newReferences = symbol.references;
+            while ( !newReferences.empty() )
             {
-                // Sort known references to be able to search through them
-                std::sort( symbol.references.begin(), symbol.references.end() );
-
                 // Enumerate through new references
-                SymbolReferenceVec nextNewReferences;
-                for ( SymbolReferenceVec::iterator processingIt = newReferences.begin(); processingIt != newReferences.end(); ++ processingIt )
+                NameSymbolMap nextNewReferences;
+                for ( auto & processing : newReferences )
                 {
                     // Enumerate through immediate references of the new references
-                    SymbolReferenceVec indirectReferences = (*processingIt)->references;
-                    for ( SymbolReferenceVec::iterator indirectIt = indirectReferences.begin(); indirectIt != indirectReferences.end(); ++ indirectIt )
+                    for ( auto & indirect : processing.second->references )
                     {
                         // If the reference is not known then we will process it during the next iteration
-                        if ( !std::binary_search(symbol.references.begin(), symbol.references.end(), *indirectIt) )
+                        if ( symbol.references.count( indirect.second->name ) == 0 )
                         {
-                            nextNewReferences.push_back( *indirectIt );
+                            nextNewReferences.insert( indirect );
                         }
                     }
                 }
                 newReferences = nextNewReferences;
 
                 // Add new references to the known references
-                symbol.references.insert( symbol.references.end(), nextNewReferences.begin(), nextNewReferences.end() );
+                symbol.references.insert( nextNewReferences.begin(), nextNewReferences.end() );
             }
-
-            // Sort references to be able to search through them
-            std::sort( symbol.references.begin(), symbol.references.end() );
         }
     }
 
-    bool SymbolTable::CollectSymbol( const ParseTree & tree )
+    bool CollectSymbol( const ParseTree & tree, SymbolTable & symbolTable )
     {
         switch ( tree.GetTokenType() )
         {
@@ -135,7 +102,7 @@ namespace GFW {
 
                 symbol.tree = &tree;
                 const ParseTree * symbolName = tree.GetFirstChildWithType( TOKEN_SYMBOL_NAME );
-                symbol.name = symbolName ? &symbolName->GetChild().GetText() : nullptr;
+                symbol.name = symbolName ? symbolName->GetChild().GetText().c_str() : nullptr;
 
                 symbol.isVariable = true;
 
@@ -166,7 +133,7 @@ namespace GFW {
                     symbol.registerIndex = std::atoi( ++ registerName );
                 }
 
-                AddSymbol( symbol );
+                symbolTable.push_back( symbol );
             }
             return false;
         case TOKEN_FUNCTION_DEFINITION:
@@ -175,7 +142,7 @@ namespace GFW {
 
                 symbol.tree = &tree;
                 const ParseTree * symbolName = tree.GetFirstChildWithType( TOKEN_SYMBOL_NAME );
-                symbol.name = symbolName ? &symbolName->GetChild().GetText() : nullptr;
+                symbol.name = symbolName ? symbolName->GetChild().GetText().c_str() : nullptr;
 
                 symbol.isFunction = true;
 
@@ -200,12 +167,9 @@ namespace GFW {
                 // Remember an output semantic
 
                 const ParseTree * semantic = tree.GetFirstChildWithType( TOKEN_SEMANTIC );
-                if ( semantic )
-                {
-                    symbol.semantic = &semantic->GetChild().GetText();
-                }
+                symbol.semantic = semantic ? semantic->GetChild().GetText().c_str() : nullptr;
 
-                AddSymbol( symbol );
+                symbolTable.push_back( symbol );
             }
             return false;
         case TOKEN_STATE_OBJECT_DEFINITION:
@@ -214,12 +178,12 @@ namespace GFW {
 
                 symbol.tree = &tree;
                 const ParseTree * symbolName = tree.GetFirstChildWithType( TOKEN_SYMBOL_NAME );
-                symbol.name = symbolName ? &symbolName->GetChild().GetText() : nullptr;
+                symbol.name = symbolName ? symbolName->GetChild().GetText().c_str() : nullptr;
 
                 symbol.isStateObject = true;
                 symbol.isVariable = true;
 
-                AddSymbol( symbol );
+                symbolTable.push_back( symbol );
             }
             return false;
         case TOKEN_STRUCT_DEFINITION:
@@ -228,7 +192,7 @@ namespace GFW {
 
                 symbol.tree = &tree;
                 const ParseTree * symbolName = tree.GetFirstChildWithType( TOKEN_SYMBOL_NAME );
-                symbol.name = symbolName ? &symbolName->GetChild().GetText() : nullptr;
+                symbol.name = symbolName ? symbolName->GetChild().GetText().c_str() : nullptr;
 
                 symbol.isStruct = true;
 
@@ -243,44 +207,11 @@ namespace GFW {
                     }
                 }
 
-                AddSymbol( symbol );
+                symbolTable.push_back( symbol );
             }
             return false;
         }
         return true;
-    }
-
-    bool SymbolTable::LookupSymbolByName( const std::string & name, SymbolReferenceVec & result ) const
-    {
-        Symbol symbol;
-        symbol.name = &name;
-
-        SymbolReferenceVec::const_iterator it = lower_bound( mSymbolsByName.begin(), mSymbolsByName.end(), &symbol, SymbolLessByName );
-        if ( it != mSymbolsByName.end() )
-        {
-            for (; it != mSymbolsByName.end() && *(*it)->name == name; ++ it )
-            {
-                result.push_back( *it );
-            }
-        }
-
-        return !result.empty();
-    }
-
-    const Symbol * SymbolTable::LookupSymbolByTree( const ParseTree & tree ) const
-    {
-        Symbol symbol;
-        symbol.tree = &tree;
-
-        SymbolReferenceVec::const_iterator it = lower_bound( mSymbolsByTreeAddress.begin(), mSymbolsByTreeAddress.end(),
-            &symbol, SymbolLessByTreeAddress );
-
-        return ( it != mSymbolsByTreeAddress.end() ) ? *it : NULL;
-    }
-
-    void SymbolTable::AddSymbol( const Symbol & symbol )
-    {
-        mSymbols.push_back( symbol );
     }
 
 } // namesspace GFW

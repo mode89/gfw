@@ -2,7 +2,6 @@
 #include "gfw/shader_stage.h"
 #include "gfw/pipeline/common/parse_tree.h"
 #include "gfw/pipeline/common/symbol.h"
-#include "gfw/pipeline/common/symbol_table.h"
 #include "gfw/pipeline/ogl4/shader_builder.h"
 #include "gfw/pipeline/ogl4/shader_builder_exception.h"
 #include "gfw/pipeline/ogl4/validator.h"
@@ -15,47 +14,34 @@
 
 namespace GFW {
 
-    inline static bool CompareTreesByRef( const ParseTree & t1, const ParseTree & t2 )
-    {
-        return &t1 < &t2;
-    }
-
-    inline static bool LessByTreeRef( const Symbol * ls, const Symbol * rs )
-    {
-        return ls->tree < rs->tree;
-    }
-
     class ConstructSourceVisitor
     {
     public:
         ConstructSourceVisitor(
             std::stringstream & source,
             const TextureSamplerPairSet & textureSamplerPairSet,
-            const SymbolTable & symbolTable,
+            const NameSymbolMap & nameSymbolMap,
             const Symbol * entryPoint )
             : mSource( source )
             , mLine( 1 )
             , mRow( 0 )
             , mTextureSamplerPairSet( textureSamplerPairSet )
         {
-            for ( auto it = symbolTable.begin(); it != symbolTable.end(); ++ it )
+            for ( auto & it : nameSymbolMap )
             {
-                const Symbol & symbol = *it;
-                if ( !entryPoint->RefersTo( &symbol ) )
+                const Symbol & symbol = *it.second;
+                if ( entryPoint->references.count( symbol.name ) == 0 )
                 {
-                    mSkipSymbols.push_back( &symbol );
+                    mSkipSymbols.insert( std::make_pair( symbol.tree, &symbol ) );
                 }
             }
-            std::sort( mSkipSymbols.begin(), mSkipSymbols.end(), LessByTreeRef );
         }
 
         bool operator() ( const ParseTree & tree )
         {
             // If an unused symbol
             {
-                Symbol symbol;
-                symbol.tree = &tree;
-                if ( std::binary_search( mSkipSymbols.begin(), mSkipSymbols.end(), &symbol, LessByTreeRef ) )
+                if ( mSkipSymbols.find( &tree ) != mSkipSymbols.end() )
                 {
                     AdvancePosition( tree );
                     return false;
@@ -68,14 +54,14 @@ namespace GFW {
                 if ( tree.GetChild().GetTokenType() == TOKEN_TEXTURE2D )
                 {
                     PutLeadingWhitespaces( tree );
-                    for ( TextureSamplerPairSet::iterator it = mTextureSamplerPairSet.begin(); it != mTextureSamplerPairSet.end(); ++ it )
+                    for ( auto & textureSampler : mTextureSamplerPairSet )
                     {
-                        if ( it->first->tree == &tree )
+                        if ( textureSampler.first->tree == &tree )
                         {
                             mSource << "uniform sampler2D _sampler_"
-                                    << *it->first->name
+                                    << std::string( textureSampler.first->name )
                                     << "_"
-                                    << *it->second->name
+                                    << std::string( textureSampler.second->name )
                                     << ";";
                         }
                     }
@@ -149,16 +135,16 @@ namespace GFW {
         uint32_t                        mRow;
 
         const TextureSamplerPairSet &   mTextureSamplerPairSet;
-        SymbolReferenceVec              mSkipSymbols;
+        ParseTreeSymbolMap              mSkipSymbols;
     };
 
     class CollectTextureSampleExpressionsVisitor
     {
     public:
         CollectTextureSampleExpressionsVisitor(
-            const SymbolTable & symbolTable,
+            const NameSymbolMap & nameSymbolMap,
             TextureSamplerPairSet & textureSamplerPairSet )
-            : mSymbolTable( symbolTable )
+            : mNameSymbolMap( nameSymbolMap )
             , mTextureSamplerPairSet( textureSamplerPairSet )
         {}
 
@@ -169,15 +155,15 @@ namespace GFW {
                 const ParseTree & textureObjectId = tree.GetFirstChildWithType( TOKEN_TEXTURE_OBJECT_ID )->GetChild();
                 const ParseTree & samplerObjectId = tree.GetFirstChildWithType( TOKEN_SAMPLER_OBJECT_ID )->GetChild();
 
-                SymbolReferenceVec textureSymbol;
-                CMN_THROW_IF( !mSymbolTable.LookupSymbolByName( textureObjectId.GetText(), textureSymbol ),
+                auto textureSymbol = mNameSymbolMap.find( textureObjectId.GetText() );
+                CMN_THROW_IF( textureSymbol == mNameSymbolMap.end(),
                     ShaderBuilderException::UndefinedTextureObject( textureObjectId.GetText().c_str() ) );
 
-                SymbolReferenceVec samplerSymbol;
-                CMN_THROW_IF( !mSymbolTable.LookupSymbolByName( samplerObjectId.GetText(), samplerSymbol ),
+                auto samplerSymbol = mNameSymbolMap.find( samplerObjectId.GetText() );
+                CMN_THROW_IF( samplerSymbol == mNameSymbolMap.end(),
                     ShaderBuilderException::UndefinedTextureObject( textureObjectId.GetText().c_str() ) );
 
-                TextureSamplerPair textureSamplerPair( textureSymbol[0], samplerSymbol[0] );
+                TextureSamplerPair textureSamplerPair( textureSymbol->second, samplerSymbol->second );
                 mTextureSamplerPairSet.insert( textureSamplerPair );
 
                 return false;
@@ -188,7 +174,7 @@ namespace GFW {
         CollectTextureSampleExpressionsVisitor & operator= ( const CollectTextureSampleExpressionsVisitor & );
 
     private:
-        const SymbolTable &     mSymbolTable;
+        const NameSymbolMap &   mNameSymbolMap;
         TextureSamplerPairSet & mTextureSamplerPairSet;
     };
 
@@ -199,7 +185,8 @@ namespace GFW {
 
         if ( entryPoint->type->GetTokenType() != TOKEN_VOID )
         {
-            handler( false, entryPoint->type->GetText(), "retval", *entryPoint->semantic );
+            handler( false, entryPoint->type->GetText(), "retval",
+                entryPoint->semantic ? entryPoint->semantic : "" );
         }
 
         // Process arguments
@@ -221,9 +208,9 @@ namespace GFW {
     class ExpandInputOutput
     {
     public:
-        ExpandInputOutput( std::ostream & stream, const SymbolTable & symbolTable )
+        ExpandInputOutput( std::ostream & stream, const NameSymbolMap & nameSymbolMap )
             : mStream( stream )
-            , mSymbolTable( symbolTable )
+            , mNameSymbolMap( nameSymbolMap )
         {}
 
         virtual ~ExpandInputOutput() {}
@@ -232,10 +219,11 @@ namespace GFW {
         {
             mNames.push_back( name );
 
-            SymbolReferenceVec typeSymbol;
-            if ( mSymbolTable.LookupSymbolByName( type, typeSymbol ) && typeSymbol[0]->isStruct )
+            auto typeSymbolIt = mNameSymbolMap.find( type );
+            if ( typeSymbolIt != mNameSymbolMap.end() && typeSymbolIt->second->isStruct )
             {
-                auto & members = typeSymbol[0]->members;
+                auto & typeSymbol = typeSymbolIt->second;
+                auto & members = typeSymbol->members;
                 for ( auto it = members.begin(); it != members.end(); ++ it )
                 {
                     const ParseTree * m = *it;
@@ -267,16 +255,16 @@ namespace GFW {
         Handler( std::ostream &, bool isInput, const std::string & type, const Names &, const std::string & semantic ) const = 0;
 
     private:
-        std::ostream &      mStream;
-        const SymbolTable & mSymbolTable;
-        mutable Names       mNames;
+        std::ostream &          mStream;
+        const NameSymbolMap &   mNameSymbolMap;
+        mutable Names           mNames;
     };
 
     class ExpandOutputAsGlobalDeclaration : public ExpandInputOutput
     {
     public:
-        ExpandOutputAsGlobalDeclaration( std::ostream & stream, const SymbolTable & symboTable, ShaderStage stage )
-            : ExpandInputOutput( stream, symboTable )
+        ExpandOutputAsGlobalDeclaration( std::ostream & stream, const NameSymbolMap & nameSymbolMap, ShaderStage stage )
+            : ExpandInputOutput( stream, nameSymbolMap )
             , mStage( stage )
         {}
 
@@ -306,8 +294,8 @@ namespace GFW {
     class ExpandInputAsGlobalDeclaration : public ExpandInputOutput
     {
     public:
-        ExpandInputAsGlobalDeclaration( std::ostream & stream, const SymbolTable & symboTable, ShaderStage stage )
-            : ExpandInputOutput( stream, symboTable )
+        ExpandInputAsGlobalDeclaration( std::ostream & stream, const NameSymbolMap & nameSymbolMap, ShaderStage stage )
+            : ExpandInputOutput( stream, nameSymbolMap )
             , mStage( stage )
         {}
 
@@ -336,8 +324,8 @@ namespace GFW {
     class ExpandInputOutputAsBuiltinDeclaration : public ExpandInputOutput
     {
     public:
-        ExpandInputOutputAsBuiltinDeclaration( std::ostream & stream, const SymbolTable & symbolTable, ShaderStage stage )
-            : ExpandInputOutput( stream, symbolTable )
+        ExpandInputOutputAsBuiltinDeclaration( std::ostream & stream, const NameSymbolMap & nameSymbolMap, ShaderStage stage )
+            : ExpandInputOutput( stream, nameSymbolMap )
             , mStage( stage )
         {}
 
@@ -377,8 +365,8 @@ namespace GFW {
     class AssignInput : public ExpandInputOutput
     {
     public:
-        AssignInput( std::ostream & stream, const SymbolTable & symbolTable, ShaderStage stage )
-            : ExpandInputOutput( stream, symbolTable )
+        AssignInput( std::ostream & stream, const NameSymbolMap & nameSymbolMap, ShaderStage stage )
+            : ExpandInputOutput( stream, nameSymbolMap )
             , mStage( stage )
         {}
 
@@ -424,7 +412,7 @@ namespace GFW {
         ExpandInputOutputAsEntryPointArgument( std::ostream & stream, const Symbol * entryPoint )
             : mStream( stream )
             , mIsVoid( entryPoint->type->GetTokenType() == TOKEN_VOID )
-            , mEntryName( *entryPoint->name )
+            , mEntryName( entryPoint->name )
             , mInputsOutputsNumber( entryPoint->args.size() + ( mIsVoid ? 0 : 1 ) )
             , mInputsOutputsCounter( 0 )
         {}
@@ -458,7 +446,7 @@ namespace GFW {
     private:
         std::ostream &      mStream;
         bool                mIsVoid;
-        const std::string & mEntryName;
+        const char *        mEntryName;
         uint32_t            mInputsOutputsNumber;
         mutable uint32_t    mInputsOutputsCounter;
     };
@@ -466,8 +454,8 @@ namespace GFW {
     class AssignOutput : public ExpandInputOutput
     {
     public:
-        AssignOutput( std::ostream & stream, const SymbolTable & symbolTable, ShaderStage stage )
-            : ExpandInputOutput( stream, symbolTable )
+        AssignOutput( std::ostream & stream, const NameSymbolMap & nameSymbolMap, ShaderStage stage )
+            : ExpandInputOutput( stream, nameSymbolMap )
             , mStage( stage )
         {}
 
@@ -513,43 +501,45 @@ namespace GFW {
 
     ShaderBuilder::ShaderBuilder( const ParseTree & tree, const SymbolTable & symbolTable )
         : mParseTree( tree )
-        , mSymbolTable( symbolTable )
     {
         AcquireValidator();
 
-        mParseTree.TraverseDFS( *this, &ShaderBuilder::CollectVariables );
-
-        // Collect immediate references to sampling expressions
-
-        for ( SymbolTable::const_iterator it = mSymbolTable.begin(); it != mSymbolTable.end(); ++ it )
+        // Build name-symbol map
+        for ( auto & symbol : symbolTable )
         {
-            if ( it->isFunction )
-            {
-                const Symbol * functionSymbol = &(*it);
-                TextureSamplerPairSet & textureSamplerPairSet = mFunctionTextureSamplerMap[functionSymbol];
-                CollectTextureSampleExpressionsVisitor collectTextureSampleExpressions( mSymbolTable, textureSamplerPairSet );
-                it->tree->TraverseDFS( collectTextureSampleExpressions );
-            }
+            mNameSymbolMap.insert( std::make_pair( symbol.name, &symbol ) );
         }
 
-        // Collect indirect references to sampling expressions
+        mParseTree.TraverseDFS( *this, &ShaderBuilder::CollectVariables );
 
-        for ( SymbolTable::const_iterator it = mSymbolTable.begin(); it != mSymbolTable.end(); ++ it )
+        // Build list of referenced texture-sampler pairs for each function
         {
-            if ( it->isFunction )
+            // Collect immediate references to sampling expressions
+            for ( auto & symbol : symbolTable )
             {
-                const Symbol * functionSymbol = &(*it);
-                TextureSamplerPairSet & functionTextureSamplerPairSet = mFunctionTextureSamplerMap[functionSymbol];
-                for ( SymbolReferenceVec::const_iterator refIt = functionSymbol->references.begin();
-                      refIt != functionSymbol->references.end(); ++ refIt )
+                if ( symbol.isFunction )
                 {
-                    const Symbol * referencedFunctionSymbol = *refIt;
-                    if ( referencedFunctionSymbol->isFunction && referencedFunctionSymbol != functionSymbol )
+                    TextureSamplerPairSet & textureSamplerPairSet = mFunctionTextureSamplerMap[ &symbol ];
+                    CollectTextureSampleExpressionsVisitor collectTextureSampleExpressions( mNameSymbolMap, textureSamplerPairSet );
+                    symbol.tree->TraverseDFS( collectTextureSampleExpressions );
+                }
+            }
+
+            // Collect indirect references to sampling expressions
+            for ( auto & symbol : symbolTable )
+            {
+                if ( symbol.isFunction )
+                {
+                    TextureSamplerPairSet & functionTextureSamplerPairSet = mFunctionTextureSamplerMap[ &symbol ];
+                    for ( auto & referencedSymbolIt : symbol.references )
                     {
-                        TextureSamplerPairSet & referencedFunctionTextureSamplerPairSet =
-                            mFunctionTextureSamplerMap[referencedFunctionSymbol];
-                        functionTextureSamplerPairSet.insert( referencedFunctionTextureSamplerPairSet.begin(),
-                            referencedFunctionTextureSamplerPairSet.end() );
+                        if ( referencedSymbolIt.second->isFunction && referencedSymbolIt.second != &symbol )
+                        {
+                            TextureSamplerPairSet & referencedFunctionTextureSamplerPairSet =
+                                mFunctionTextureSamplerMap[ referencedSymbolIt.second ];
+                            functionTextureSamplerPairSet.insert( referencedFunctionTextureSamplerPairSet.begin(),
+                                referencedFunctionTextureSamplerPairSet.end() );
+                        }
                     }
                 }
             }
@@ -565,11 +555,11 @@ namespace GFW {
     {
         // Query entry point's symbol
 
-        SymbolReferenceVec entryPointReference;
-        CMN_THROW_IF( !mSymbolTable.LookupSymbolByName(shaderName, entryPointReference),
+        auto entryPointIt = mNameSymbolMap.find( shaderName );
+        CMN_THROW_IF( entryPointIt == mNameSymbolMap.end(),
             ShaderBuilderException::UndefinedEntry( shaderName.c_str() ) );
 
-        const Symbol * entryPoint = entryPointReference[0];
+        const Symbol * entryPoint = entryPointIt->second;
 
         // Translate the profile
 
@@ -613,19 +603,19 @@ namespace GFW {
                 << std::endl;
 
         const TextureSamplerPairSet & textureSamplerPairSet = mFunctionTextureSamplerMap[entryPoint];
-        ConstructSourceVisitor constructSource( source, textureSamplerPairSet, mSymbolTable, entryPoint );
+        ConstructSourceVisitor constructSource( source, textureSamplerPairSet, mNameSymbolMap, entryPoint );
         mParseTree.TraverseDFS( constructSource );
         source << std::endl << std::endl;
 
         // Declare built-in variables
 
-        EnumInputsOutputs( entryPoint, ExpandInputOutputAsBuiltinDeclaration( source, mSymbolTable, stage ) );
+        EnumInputsOutputs( entryPoint, ExpandInputOutputAsBuiltinDeclaration( source, mNameSymbolMap, stage ) );
         source << std::endl;
 
         // Declare inputs
 
         std::stringstream inputDecls;
-        EnumInputsOutputs( entryPoint, ExpandInputAsGlobalDeclaration( inputDecls, mSymbolTable, stage ) );
+        EnumInputsOutputs( entryPoint, ExpandInputAsGlobalDeclaration( inputDecls, mNameSymbolMap, stage ) );
 
         if ( stage == SHADER_STAGE_VERTEX )
         {
@@ -647,7 +637,7 @@ namespace GFW {
         // Declare outputs
 
         std::stringstream outputDecls;
-        EnumInputsOutputs( entryPoint, ExpandOutputAsGlobalDeclaration( outputDecls, mSymbolTable, stage ) );
+        EnumInputsOutputs( entryPoint, ExpandOutputAsGlobalDeclaration( outputDecls, mNameSymbolMap, stage ) );
 
         if ( stage == SHADER_STAGE_PIXEL )
         {
@@ -676,7 +666,7 @@ namespace GFW {
 
             // Assign the inputs
 
-            EnumInputsOutputs( entryPoint, AssignInput( source, mSymbolTable, stage ) );
+            EnumInputsOutputs( entryPoint, AssignInput( source, mNameSymbolMap, stage ) );
 
             // Call the entry point
 
@@ -684,7 +674,7 @@ namespace GFW {
 
             // Assign outputs
 
-            EnumInputsOutputs( entryPoint, AssignOutput( source, mSymbolTable, stage ) );
+            EnumInputsOutputs( entryPoint, AssignOutput( source, mNameSymbolMap, stage ) );
         }
         source << "}\n";
 
