@@ -240,7 +240,7 @@ namespace GFW {
             {
                 CMN_THROW_IF( semantic == "", ShaderBuilderException::ParameterWithoutSemantic() );
 
-                Handler( mStream, isInput, type, mNames, semantic );
+                DoExpand( mStream, isInput, type, mNames, semantic );
             }
 
             mNames.pop_back();
@@ -252,7 +252,7 @@ namespace GFW {
         typedef std::vector< std::string > Names;
 
         virtual void
-        Handler( std::ostream &, bool isInput, const std::string & type, const Names &, const std::string & semantic ) const = 0;
+        DoExpand( std::ostream &, bool isInput, const std::string & type, const Names &, const std::string & semantic ) const = 0;
 
     private:
         std::ostream &          mStream;
@@ -268,7 +268,7 @@ namespace GFW {
             , mStage( stage )
         {}
 
-        void Handler( std::ostream & stream, bool isInput, const std::string & typeName, const Names & names, const std::string & semantic ) const
+        void DoExpand( std::ostream & stream, bool isInput, const std::string & typeName, const Names & names, const std::string & semantic ) const
         {
             if ( !isInput )
             {
@@ -299,7 +299,7 @@ namespace GFW {
             , mStage( stage )
         {}
 
-        void Handler( std::ostream & stream, bool isInput, const std::string & typeName, const Names & names, const std::string & semantic ) const
+        void DoExpand( std::ostream & stream, bool isInput, const std::string & typeName, const Names & names, const std::string & semantic ) const
         {
             if ( isInput )
             {
@@ -329,7 +329,7 @@ namespace GFW {
             , mStage( stage )
         {}
 
-        void Handler( std::ostream & stream, bool isInput, const std::string & typeName, const Names & names, const std::string & semantic ) const
+        void DoExpand( std::ostream & stream, bool isInput, const std::string & typeName, const Names & names, const std::string & semantic ) const
         {
             if ( !isInput )
             {
@@ -370,7 +370,7 @@ namespace GFW {
             , mStage( stage )
         {}
 
-        void Handler( std::ostream & stream, bool isInput, const std::string & typeName, const Names & names, const std::string & semantic ) const
+        void DoExpand( std::ostream & stream, bool isInput, const std::string & typeName, const Names & names, const std::string & semantic ) const
         {
             if ( isInput )
             {
@@ -459,7 +459,7 @@ namespace GFW {
             , mStage( stage )
         {}
 
-        void Handler( std::ostream & stream, bool isInput, const std::string & typeName, const Names & names, const std::string & semantic ) const
+        void DoExpand( std::ostream & stream, bool isInput, const std::string & typeName, const Names & names, const std::string & semantic ) const
         {
             if ( !isInput )
             {
