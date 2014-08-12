@@ -138,6 +138,9 @@ namespace GFW {
                 case TOKEN_TEXTURE2D:
                     symbol.isTexture = true;
                     break;
+                case TOKEN_SAMPLERSTATE:
+                    symbol.isSamplerState = true;
+                    break;
                 }
 
                 symbolTable.push_back( symbol );

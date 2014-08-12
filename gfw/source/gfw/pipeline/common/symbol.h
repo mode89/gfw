@@ -40,6 +40,7 @@ namespace GFW {
         int                 registerIndex;
 
         bool                isFunction : 1;
+        bool                isSamplerState : 1;
         bool                isStateObject : 1;
         bool                isStruct : 1;
         bool                isTexture : 1;
@@ -56,6 +57,7 @@ namespace GFW {
             , registerType( REGISTER_TYPE_UNKNOWN )
             , registerIndex( -1 )
             , isFunction( false )
+            , isSamplerState( false )
             , isStateObject( false )
             , isStruct( false )
             , isTexture( false )
