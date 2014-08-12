@@ -6,6 +6,9 @@ namespace GFW {
     #define EXCEPTION_NAMESPACE ShaderBuilderException
 
     #define EXCEPTION_CODES \
+        C( AssignedSameRegister, "The same register cannot be assigned to multiple variables: '%s', '%s'." ) \
+        C( ExceededSamplerRegistersLimit, "Exceeded smapler registers limit." ) \
+        C( ExceededTextureRegistersLimit, "Exceeded texture registers limit." ) \
         C( ParameterWithoutSemantic, "Input/output parameter wihtout semantic is not allowed." ) \
         C( UndefinedEntry, "Failed to find shader entry point '%s'." ) \
         C( UndefinedTextureObject, "Failed to find texture object '%s' in the global scope." ) \

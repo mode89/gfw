@@ -3,7 +3,8 @@ gfw
         % tracking assigned registers at Symbol
         % implement SymbolTable as unordered_multiset
     ogl4
-        assign registers to variables
+        % assign registers to variables
+            % textures & samplers
         % serialize shader's source into ShaderBinary::mData
         serialize texture-sampler register pairs into ShaderBinary::mData
         using bindless textures

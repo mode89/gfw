@@ -13,6 +13,7 @@ CMN_WARNING_POP
 #include "gfw/pipeline/ogl4/shader_builder.h"
 #include "gfw/pipeline/ogl4/shader_builder_exception.h"
 #include "gfw/pipeline/ogl4/validator.h"
+#include "gfw/runtime/ogl4/limits.h"
 #include "gfw/shared/shader.h"
 #include "gfw/shared/ogl4/shader.h"
 
@@ -585,6 +586,75 @@ namespace GFW {
         {
             stage = SHADER_STAGE_UNKNOWN;
         }
+
+        // Assign registers
+
+            const Symbol * textureRegisterSymbolMap[ MAX_BIND_TEXTURES ];
+            std::memset( textureRegisterSymbolMap, sizeof( textureRegisterSymbolMap ), 0 );
+            const Symbol * samplerRegisterSymbolMap[ MAX_BIND_TEXTURES ];
+            std::memset( samplerRegisterSymbolMap, sizeof( samplerRegisterSymbolMap ), 0 );
+
+            // Map explicitly assigned variables
+            for ( auto it : mNameSymbolMap )
+            {
+                const Symbol & symbol = *it.second;
+                if ( symbol.registerIndex != -1 )
+                {
+                    int index = symbol.registerIndex;
+                    if ( symbol.isTexture )
+                    {
+                        CMN_THROW_IF( index >= MAX_BIND_TEXTURES,
+                            ShaderBuilderException::ExceededTextureRegistersLimit() );
+                        CMN_THROW_IF( textureRegisterSymbolMap[ index ],
+                            ShaderBuilderException::AssignedSameRegister( symbol.name,
+                                textureRegisterSymbolMap[ index ]->name ) );
+                        textureRegisterSymbolMap[ index ] = &symbol;
+                    }
+                    else if ( symbol.isSamplerState )
+                    {
+                        CMN_THROW_IF( index >= MAX_BIND_TEXTURES,
+                            ShaderBuilderException::ExceededSamplerRegistersLimit() );
+                        CMN_THROW_IF( samplerRegisterSymbolMap[ index ],
+                            ShaderBuilderException::AssignedSameRegister( symbol.name,
+                                samplerRegisterSymbolMap[ index ]->name ) );
+                        samplerRegisterSymbolMap[ index ] = &symbol;
+                    }
+                }
+            }
+
+            // Map not assigned variables
+            for ( auto it : mNameSymbolMap )
+            {
+                const Symbol & symbol = *it.second;
+                if ( symbol.registerIndex == -1 )
+                {
+                    int index = -1;
+                    if ( symbol.isTexture )
+                    {
+                        for ( int i = 0; i < MAX_BIND_TEXTURES; ++ i )
+                        {
+                            if ( textureRegisterSymbolMap[ i ] == nullptr )
+                            {
+                                index = i;
+                                break;
+                            }
+                        }
+                        CMN_THROW_IF( index == -1, ShaderBuilderException::ExceededTextureRegistersLimit() );
+                    }
+                    else if ( symbol.isSamplerState )
+                    {
+                        for ( int i = 0; i < MAX_BIND_TEXTURES; ++ i )
+                        {
+                            if ( samplerRegisterSymbolMap[ i ] == nullptr )
+                            {
+                                index = i;
+                                break;
+                            }
+                        }
+                        CMN_THROW_IF( index == -1, ShaderBuilderException::ExceededSamplerRegistersLimit() );
+                    }
+                }
+            }
 
         // Construct the shader's code
 
