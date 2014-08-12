@@ -589,10 +589,15 @@ namespace GFW {
 
         // Assign registers
 
+            typedef std::unordered_map< std::string, uint32_t > SymbolNameRegisterIndexMap;
+
             const Symbol * textureRegisterSymbolMap[ MAX_BIND_TEXTURES ];
             std::memset( textureRegisterSymbolMap, sizeof( textureRegisterSymbolMap ), 0 );
+            SymbolNameRegisterIndexMap textureNameRegisterMap;
+
             const Symbol * samplerRegisterSymbolMap[ MAX_BIND_TEXTURES ];
             std::memset( samplerRegisterSymbolMap, sizeof( samplerRegisterSymbolMap ), 0 );
+            SymbolNameRegisterIndexMap samplerNameRegisterMap;
 
             // Map explicitly assigned variables
             for ( auto it : mNameSymbolMap )
@@ -609,6 +614,7 @@ namespace GFW {
                             ShaderBuilderException::AssignedSameRegister( symbol.name,
                                 textureRegisterSymbolMap[ index ]->name ) );
                         textureRegisterSymbolMap[ index ] = &symbol;
+                        textureNameRegisterMap[ symbol.name ] = index;
                     }
                     else if ( symbol.isSamplerState )
                     {
@@ -618,6 +624,7 @@ namespace GFW {
                             ShaderBuilderException::AssignedSameRegister( symbol.name,
                                 samplerRegisterSymbolMap[ index ]->name ) );
                         samplerRegisterSymbolMap[ index ] = &symbol;
+                        samplerNameRegisterMap[ symbol.name ] = index;
                     }
                 }
             }
@@ -641,6 +648,7 @@ namespace GFW {
                         }
                         CMN_THROW_IF( index == -1, ShaderBuilderException::ExceededTextureRegistersLimit() );
                         textureRegisterSymbolMap[ index ] = &symbol;
+                        textureNameRegisterMap[ symbol.name ] = index;
                     }
                     else if ( symbol.isSamplerState )
                     {
@@ -654,6 +662,7 @@ namespace GFW {
                         }
                         CMN_THROW_IF( index == -1, ShaderBuilderException::ExceededSamplerRegistersLimit() );
                         samplerRegisterSymbolMap[ index ] = &symbol;
+                        samplerNameRegisterMap[ symbol.name ] = index;
                     }
                 }
             }
