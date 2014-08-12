@@ -133,6 +133,13 @@ namespace GFW {
                     symbol.registerIndex = std::atoi( ++ registerName );
                 }
 
+                switch ( tree.GetChild().GetTokenType() )
+                {
+                case TOKEN_TEXTURE2D:
+                    symbol.isTexture = true;
+                    break;
+                }
+
                 symbolTable.push_back( symbol );
             }
             return false;

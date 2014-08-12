@@ -42,6 +42,7 @@ namespace GFW {
         bool                isFunction : 1;
         bool                isStateObject : 1;
         bool                isStruct : 1;
+        bool                isTexture : 1;
         bool                isVariable : 1;
 
         Symbol()
@@ -57,6 +58,7 @@ namespace GFW {
             , isFunction( false )
             , isStateObject( false )
             , isStruct( false )
+            , isTexture( false )
             , isVariable( false )
         {}
     };
