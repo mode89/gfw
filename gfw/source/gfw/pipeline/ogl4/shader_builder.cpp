@@ -600,7 +600,7 @@ namespace GFW {
                 const Symbol & symbol = *it.second;
                 if ( symbol.registerIndex != -1 )
                 {
-                    int index = symbol.registerIndex;
+                    unsigned index = symbol.registerIndex;
                     if ( symbol.isTexture )
                     {
                         CMN_THROW_IF( index >= MAX_BIND_TEXTURES,
@@ -640,6 +640,7 @@ namespace GFW {
                             }
                         }
                         CMN_THROW_IF( index == -1, ShaderBuilderException::ExceededTextureRegistersLimit() );
+                        textureRegisterSymbolMap[ index ] = &symbol;
                     }
                     else if ( symbol.isSamplerState )
                     {
@@ -652,6 +653,7 @@ namespace GFW {
                             }
                         }
                         CMN_THROW_IF( index == -1, ShaderBuilderException::ExceededSamplerRegistersLimit() );
+                        samplerRegisterSymbolMap[ index ] = &symbol;
                     }
                 }
             }
