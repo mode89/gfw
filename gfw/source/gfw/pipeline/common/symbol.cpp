@@ -45,16 +45,8 @@ namespace GFW {
         // Collect immediate references (variable by function, function by function, etc)
         for ( auto & symbol : symbolTable )
         {
-            symbol.references.emplace( std::make_pair( symbol.name, &symbol ) );
-            switch ( symbol.tree->GetTokenType() )
-            {
-            case TOKEN_FUNCTION_DEFINITION:
-                {
-                    CollectReferencedSymbolsVisitor collectReferencedSymbolsVisitor( symbolTable, symbol.references );
-                    symbol.tree->TraverseDFS( collectReferencedSymbolsVisitor );
-                }
-                break;
-            }
+            CollectReferencedSymbolsVisitor collectReferencedSymbolsVisitor( symbolTable, symbol.references );
+            symbol.tree->TraverseDFS( collectReferencedSymbolsVisitor );
         }
 
         // Calculate indirect references
