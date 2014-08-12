@@ -37,7 +37,7 @@ namespace GFW {
         ParseTreeVec        members;       // Members of a struct
         const char *        semantic;
         RegisterType        registerType;
-        uint32_t            registerIndex;
+        int                 registerIndex;
 
         bool                isFunction : 1;
         bool                isStateObject : 1;
@@ -54,7 +54,7 @@ namespace GFW {
             , members()
             , semantic( nullptr )
             , registerType( REGISTER_TYPE_UNKNOWN )
-            , registerIndex( 0 )
+            , registerIndex( -1 )
             , isFunction( false )
             , isStateObject( false )
             , isStruct( false )
