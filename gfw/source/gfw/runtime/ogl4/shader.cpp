@@ -5,6 +5,8 @@ CMN_WARNING_PUSH
 CMN_WARNING_DISABLE_MSVC( 4242 4244 4265 4310 4619 4625 4626 )
 CMN_WARNING_DISABLE_GCC( unused-local-typedefs )
 #include "boost/archive/binary_iarchive.hpp"
+#include "boost/serialization/utility.hpp"
+#include "boost/serialization/vector.hpp"
 CMN_WARNING_POP
 
 #include "cmn/crc32.h"

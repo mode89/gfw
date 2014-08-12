@@ -6,7 +6,7 @@ gfw
         % assign registers to variables
             % textures & samplers
         % serialize shader's source into ShaderBinary::mData
-        serialize texture-sampler register pairs into ShaderBinary::mData
+        % serialize texture-sampler pairs into ShaderBinary::mData
         using bindless textures
     tests
         fix all tests

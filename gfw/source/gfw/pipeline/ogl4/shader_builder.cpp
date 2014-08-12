@@ -5,6 +5,8 @@ CMN_WARNING_PUSH
 CMN_WARNING_DISABLE_MSVC( 4242 4265 4310 4619 4625 4626 )
 CMN_WARNING_DISABLE_GCC( unused-local-typedefs )
 #include "boost/archive/binary_oarchive.hpp"
+#include "boost/serialization/utility.hpp"
+#include "boost/serialization/vector.hpp"
 CMN_WARNING_POP
 
 #include "gfw/shader_stage.h"
@@ -777,6 +779,13 @@ namespace GFW {
 
         ShaderBinaryOgl4 shaderBinaryOgl4;
         shaderBinaryOgl4.mSource = std::move( source.str() );
+
+        for ( auto & textureSampler : mFunctionTextureSamplerMap[ entryPoint ] )
+        {
+            shaderBinaryOgl4.mTextureSamplerPairs.emplace_back(
+                textureSampler.first->name,
+                textureSampler.second->name );
+        }
 
         std::ostringstream archiveStream;
         boost::archive::binary_oarchive archive( archiveStream );
