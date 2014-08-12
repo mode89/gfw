@@ -592,15 +592,15 @@ namespace GFW {
             typedef std::unordered_map< std::string, uint32_t > SymbolNameRegisterIndexMap;
 
             const Symbol * textureRegisterSymbolMap[ MAX_BIND_TEXTURES ];
-            std::memset( textureRegisterSymbolMap, sizeof( textureRegisterSymbolMap ), 0 );
+            std::memset( textureRegisterSymbolMap, 0, sizeof( textureRegisterSymbolMap ) );
             SymbolNameRegisterIndexMap textureNameRegisterMap;
 
             const Symbol * samplerRegisterSymbolMap[ MAX_BIND_TEXTURES ];
-            std::memset( samplerRegisterSymbolMap, sizeof( samplerRegisterSymbolMap ), 0 );
+            std::memset( samplerRegisterSymbolMap, 0, sizeof( samplerRegisterSymbolMap ) );
             SymbolNameRegisterIndexMap samplerNameRegisterMap;
 
             // Map explicitly assigned variables
-            for ( auto it : mNameSymbolMap )
+            for ( auto it : entryPoint->references )
             {
                 const Symbol & symbol = *it.second;
                 if ( symbol.registerIndex != -1 )
@@ -630,7 +630,7 @@ namespace GFW {
             }
 
             // Map not assigned variables
-            for ( auto it : mNameSymbolMap )
+            for ( auto it : entryPoint->references )
             {
                 const Symbol & symbol = *it.second;
                 if ( symbol.registerIndex == -1 )
@@ -638,7 +638,7 @@ namespace GFW {
                     int index = -1;
                     if ( symbol.isTexture )
                     {
-                        for ( int i = 0; i < MAX_BIND_TEXTURES; ++ i )
+                        for ( uint32_t i = 0; i < MAX_BIND_TEXTURES; ++ i )
                         {
                             if ( textureRegisterSymbolMap[ i ] == nullptr )
                             {
@@ -652,7 +652,7 @@ namespace GFW {
                     }
                     else if ( symbol.isSamplerState )
                     {
-                        for ( int i = 0; i < MAX_BIND_TEXTURES; ++ i )
+                        for ( uint32_t i = 0; i < MAX_BIND_TEXTURES; ++ i )
                         {
                             if ( samplerRegisterSymbolMap[ i ] == nullptr )
                             {
