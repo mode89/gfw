@@ -1,4 +1,12 @@
+#include "cmn/platform.h"
 #include "cmn/trace.h"
+
+CMN_WARNING_PUSH
+CMN_WARNING_DISABLE_MSVC( 4242 4244 4265 4310 4619 4625 4626 )
+CMN_WARNING_DISABLE_GCC( unused-local-typedefs )
+#include "boost/archive/binary_iarchive.hpp"
+CMN_WARNING_POP
+
 #include "cmn/crc32.h"
 #include "gfw/runtime/ogl4/device.h"
 #include "gfw/runtime/ogl4/shader.h"
@@ -6,8 +14,9 @@
 #include "gfw/runtime/ogl4/shader_stage.h"
 #include "gfw/runtime/ogl4/functions.h"
 #include "gfw/runtime/common/device_child.inl"
-
-#include <cstring>
+#include "gfw/shared/ogl4/shader.h"
+#include <functional>
+#include <sstream>
 
 namespace GFW {
 
@@ -18,16 +27,18 @@ namespace GFW {
         , mStage( stage )
         , mHandle( 0 )
         , mHash( 0 )
-#if CMN_DEBUG
-        , mSource( nullptr )
-#endif
     {
         uint32_t shader = VGL( glCreateShader, GetOGLShaderType( stage ) );
         CMN_ASSERT( shader != 0 );
 
         const ShaderBinary * shaderBinary = static_cast< const ShaderBinary * >( binary );
-        const char * source = reinterpret_cast< const char * >( shaderBinary->mData.data() );
-        const char * strings[] = { source };
+        std::istringstream archiveStream( shaderBinary->mData );
+        boost::archive::binary_iarchive archive( archiveStream );
+        ShaderBinaryOgl4 shaderBinaryOgl4;
+        archive >> shaderBinaryOgl4;
+
+        const std::string & source = shaderBinaryOgl4.mSource;
+        const char * strings[] = { source.c_str() };
         VGL( glShaderSource, shader, 1, strings, NULL );
 
         VGL( glCompileShader, shader );
@@ -83,16 +94,15 @@ namespace GFW {
 
         mHandle = program;
 
-        uint32_t sourceLength = strlen(source);
-        mHash = CRC32(0, source, sourceLength);
+        std::hash< std::string > hasher;
+        mHash = hasher( source );
 
         mReflection = std::make_shared<ShaderReflection>( mHandle, device );
 
 #if CMN_DEBUG
 CMN_WARNING_PUSH
 CMN_WARNING_DISABLE_MSVC( 4996 )
-        mSource = new char [ std::strlen( source ) + 1 ];
-        std::strcpy( mSource, source );
+        mSource = source;
 CMN_WARNING_POP
 #endif
     }
@@ -103,13 +113,6 @@ CMN_WARNING_POP
         {
             VGL( glDeleteProgram, mHandle );
         }
-
-#if CMN_DEBUG
-        if ( mSource != NULL )
-        {
-            delete[] mSource;
-        }
-#endif
     }
 
 } // namespace GFW

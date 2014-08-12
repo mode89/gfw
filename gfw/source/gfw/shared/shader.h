@@ -1,7 +1,7 @@
 #ifndef __GFW_SHARED_SHADER_H__
 #define __GFW_SHARED_SHADER_H__
 
-#include <vector>
+#include <string>
 
 namespace GFW {
 
@@ -31,7 +31,7 @@ namespace GFW {
 
     class ShaderBinary
     {
-        typedef std::vector< uint8_t > BinaryData;
+        typedef std::string BinaryData;
 
     public:
         ShaderDesc  mDesc;

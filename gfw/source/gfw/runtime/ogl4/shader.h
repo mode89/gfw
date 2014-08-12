@@ -4,6 +4,7 @@
 #include "gfw/shader.h"
 #include "gfw/runtime/common/device_child.h"
 #include "gfw/runtime/ogl4/types_fwd.h"
+#include <string>
 
 namespace GFW {
 
@@ -37,7 +38,7 @@ namespace GFW {
         ShaderReflectionRef     mReflection;
 
 #if CMN_DEBUG
-        char *                  mSource;
+        std::string             mSource;
 #endif
     };
     SHARED_PTR_TYPEDEFS(Shader);

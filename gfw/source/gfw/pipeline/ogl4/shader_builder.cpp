@@ -1,4 +1,12 @@
+#include "cmn/platform.h"
 #include "cmn/trace.h"
+
+CMN_WARNING_PUSH
+CMN_WARNING_DISABLE_MSVC( 4242 4265 4310 4619 4625 4626 )
+CMN_WARNING_DISABLE_GCC( unused-local-typedefs )
+#include "boost/archive/binary_oarchive.hpp"
+CMN_WARNING_POP
+
 #include "gfw/shader_stage.h"
 #include "gfw/pipeline/common/parse_tree.h"
 #include "gfw/pipeline/common/symbol.h"
@@ -6,6 +14,7 @@
 #include "gfw/pipeline/ogl4/shader_builder_exception.h"
 #include "gfw/pipeline/ogl4/validator.h"
 #include "gfw/shared/shader.h"
+#include "gfw/shared/ogl4/shader.h"
 
 #include <algorithm>
 #include <cstring>
@@ -685,9 +694,14 @@ namespace GFW {
         shaderBinary.mDesc.inputsCount = entryPoint->args.size();
         shaderBinary.mStage = stage;
 
-        const std::string & sourceString = source.str();
-        shaderBinary.mData.insert( shaderBinary.mData.begin(), sourceString.begin(), sourceString.end() );
-        shaderBinary.mData.push_back( 0 ); // Null-termination of the string
+        ShaderBinaryOgl4 shaderBinaryOgl4;
+        shaderBinaryOgl4.mSource = std::move( source.str() );
+
+        std::ostringstream archiveStream;
+        boost::archive::binary_oarchive archive( archiveStream );
+        archive << shaderBinaryOgl4;
+
+        shaderBinary.mData = std::move( archiveStream.str() );
     }
 
     bool ShaderBuilder::CollectVariables( const ParseTree & tree )
