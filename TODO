@@ -17,7 +17,7 @@ gfw
             flip default render target while Present()
         refactor state-objects
     tests
-        fix all tests
+        % fix all tests
         add windowless tests
             Test
             GraphicsTest
