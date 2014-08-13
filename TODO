@@ -9,6 +9,7 @@ gfw
         % serialize shader's source into ShaderBinary::mData
         % serialize texture-sampler pairs into ShaderBinary::mData
         % using bindless textures
+        constant buffers
         refactor state-objects
     tests
         fix all tests
