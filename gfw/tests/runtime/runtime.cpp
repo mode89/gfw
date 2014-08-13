@@ -405,7 +405,7 @@ TEST_F( Test, RenderTarget )
     // Create effect
 
     IEffectRef fx = mFactory->CreateEffect( mDevice, "draw.fxc" );
-    ConstITechniqueRef techDrawRed = fx->GetTechnique( "DrawRed" );
+    ConstITechniqueRef techDrawRed = fx->GetTechnique( "DrawRedQuad" );
     ConstITechniqueRef techDrawTexturedQuad = fx->GetTechnique( "DrawTexturedQuad" );
 
     // Create geometry
