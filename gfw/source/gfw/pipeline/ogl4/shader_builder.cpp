@@ -26,6 +26,15 @@ CMN_WARNING_POP
 
 namespace GFW {
 
+    static std::string CreateTextureSamplerName(
+        const std::string & textureName,
+        const std::string & samplerName )
+    {
+        return std::string( "_sampler" )
+            + std::string( "_" ) + textureName
+            + std::string( "_" ) + samplerName;
+    }
+
     class ConstructSourceVisitor
     {
     public:
@@ -70,11 +79,11 @@ namespace GFW {
                     {
                         if ( textureSampler.first->tree == &tree )
                         {
-                            mSource << "uniform sampler2D _sampler_"
-                                    << std::string( textureSampler.first->name )
-                                    << "_"
-                                    << std::string( textureSampler.second->name )
-                                    << ";";
+                            mSource << "uniform sampler2D "
+                                << CreateTextureSamplerName(
+                                    textureSampler.first->name,
+                                    textureSampler.second->name )
+                                << ";";
                         }
                     }
                     AdvancePosition( tree );
@@ -87,10 +96,7 @@ namespace GFW {
                     const std::string & textureName = tree.GetFirstChildWithType( TOKEN_TEXTURE_OBJECT_ID )->GetChild().GetText();
                     const std::string & samplerName = tree.GetFirstChildWithType( TOKEN_SAMPLER_OBJECT_ID )->GetChild().GetText();
                     mSource << "texture( "
-                            << "_sampler_"
-                            << textureName
-                            << "_"
-                            << samplerName;
+                        << CreateTextureSamplerName( textureName, samplerName );
                     AdvancePosition( tree );
                 }
                 return false;
