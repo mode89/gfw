@@ -3,6 +3,8 @@ gfw
         % tracking assigned registers at Symbol
         % implement SymbolTable as unordered_multiset
         preprocess effect file
+        replace stl containers in effect's binary
+            they use size_t, that is different for 32 and 64 bits
     ogl4
         % assign registers to variables
             % textures & samplers
