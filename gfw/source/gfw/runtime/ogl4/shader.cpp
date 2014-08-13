@@ -99,7 +99,7 @@ namespace GFW {
         std::hash< std::string > hasher;
         mHash = hasher( source );
 
-        mReflection = std::make_shared<ShaderReflection>( mHandle, device );
+        mReflection = std::make_shared< ShaderReflection >( shaderBinaryOgl4, mHandle, device );
 
 #if CMN_DEBUG
 CMN_WARNING_PUSH

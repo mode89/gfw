@@ -89,7 +89,10 @@ namespace GFW {
         return SHADER_RES_DIM_UNKNOWN;
     }
 
-    ShaderReflection::ShaderReflection( uint32_t program, DeviceIn device )
+    ShaderReflection::ShaderReflection(
+        const ShaderBinaryOgl4 & shaderBinaryOgl4,
+        uint32_t program,
+        DeviceIn device )
         : AShaderReflection( device )
     {
         DeviceRef deviceImpl = device;
@@ -208,6 +211,20 @@ namespace GFW {
                 CMN_FAIL_MSG( "Undefined type of the uniform" );
             }
         }
+
+        // Reflect texture-samplers
+
+            mTextureSamplers.reserve( shaderBinaryOgl4.mTextureSamplers.size() );
+            for ( auto & binary : shaderBinaryOgl4.mTextureSamplers )
+            {
+                TextureSamplerLocation textureSampler;
+                textureSampler.texture = binary.texture;
+                textureSampler.sampler = binary.sampler;
+                textureSampler.location = VGL( glGetProgramResourceLocation,
+                    program, GL_UNIFORM, binary.name.c_str() );
+                CMN_ASSERT( textureSampler.location != -1 );
+                mTextureSamplers.push_back( textureSampler );
+            }
 
         AShaderReflection::Initialize();
     }
