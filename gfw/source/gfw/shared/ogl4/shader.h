@@ -6,19 +6,39 @@
 
 namespace GFW {
 
+    struct TextureSamplerBinary
+    {
+        uint32_t    texture;    // texture register index
+        uint32_t    sampler;    // sampler register index
+        std::string name;       // glsl sampler name
+
+        TextureSamplerBinary()
+            : texture( 0 )
+            , sampler( 0 )
+            , name()
+        {}
+
+        template < class Archive >
+        void serialize( Archive & ar, unsigned )
+        {
+            ar & texture;
+            ar & sampler;
+            ar & name;
+        }
+    };
+
     struct ShaderBinaryOgl4
     {
-        typedef std::pair< std::string, std::string > TextureSamplerPair;
-        typedef std::vector< TextureSamplerPair > TextureSamplerPairVec;
+        typedef std::vector< TextureSamplerBinary > TextureSamplerBinaryVec;
 
         std::string             mSource;
-        TextureSamplerPairVec   mTextureSamplerPairs;
+        TextureSamplerBinaryVec mTextureSamplers;
 
         template < class Archive >
         void serialize( Archive & ar, unsigned )
         {
             ar & mSource;
-            ar & mTextureSamplerPairs;
+            ar & mTextureSamplers;
         }
     };
 

@@ -786,11 +786,20 @@ namespace GFW {
         ShaderBinaryOgl4 shaderBinaryOgl4;
         shaderBinaryOgl4.mSource = std::move( source.str() );
 
+        // Save texture-samplers
         for ( auto & textureSampler : mFunctionTextureSamplerMap[ entryPoint ] )
         {
-            shaderBinaryOgl4.mTextureSamplerPairs.emplace_back(
-                textureSampler.first->name,
-                textureSampler.second->name );
+            TextureSamplerBinary binary;
+
+            const char * textureName = textureSampler.first->name;
+            binary.texture = textureNameRegisterMap[ textureName ];
+
+            const char * samplerName = textureSampler.second->name; 
+            binary.sampler = samplerNameRegisterMap[ samplerName ];
+
+            binary.name = CreateTextureSamplerName( textureName, samplerName );
+
+            shaderBinaryOgl4.mTextureSamplers.push_back( binary );
         }
 
         std::ostringstream archiveStream;
