@@ -30,10 +30,8 @@ namespace GFW {
         , mEnabledVertexAttributesMask( 0 )
         , mVertexBuffers()
         , mIndexBuffer()
-        // mTextureUnits()
-        , mActiveTextures()
-        , mActiveTexturesDirtyMask( 0 )
-        , mNextActiveTextureUnit( 0 )
+        // , mTextures()
+        , mResidentTextureHandles()
         , mRenderTargets()
         , mRenderTargetsCount( 0 )
         , mDrawFramebuffer( 0 )
@@ -196,28 +194,19 @@ namespace GFW {
 
         // Detach textures
 
-        for (uint32_t stage = 0; stage < SHADER_STAGE_COUNT; ++ stage)
-        {
-            for (uint32_t slot = 0; slot < MAX_BIND_TEXTURES; ++ slot)
+            for ( uint32_t stage = 0; stage < SHADER_STAGE_COUNT; ++ stage )
             {
-                mTextureUnits[ stage ][ slot ] = -1;
+                for ( uint32_t slot = 0; slot < MAX_BIND_TEXTURES; ++ slot )
+                {
+                    mTextures[ stage ][ slot ].reset();
+                }
             }
-        }
 
-        for (uint32_t texUnit = 0; texUnit < MAX_BIND_TEXTURES; ++ texUnit)
-        {
-            if (mActiveTextures[ texUnit ])
+            for ( auto it : mResidentTextureHandles )
             {
-                VGL( glActiveTexture, GL_TEXTURE0 + texUnit );
-                VGL( glBindTexture, GL_TEXTURE_2D, 0 );
-                mActiveTextures[ texUnit ].reset();
+                VGL( glMakeTextureHandleNonResidentARB, it.second );
             }
-        }
-
-        mActiveTexturesDirtyMask = 0;
-        mNextActiveTextureUnit   = 0;
-
-        VGL( glActiveTexture, GL_TEXTURE0 + MAX_BIND_TEXTURES ); // Is used as a temp texture
+            mResidentTextureHandles.clear();
 
         // Detach render targets
 
@@ -287,17 +276,30 @@ namespace GFW {
 
         // Bind textures
 
-        for ( uint32_t unit = 0, mask = mActiveTexturesDirtyMask; mask; mask >>= 1, ++ unit )
-        {
-            if ( mask & 1 )
+            for ( uint32_t stage = 0; stage < SHADER_STAGE_COUNT; ++ stage )
             {
-                VGL( glActiveTexture, GL_TEXTURE0 + unit );
-                VGL( glBindTexture, GL_TEXTURE_2D, mActiveTextures[ unit ]->GetHandle() );
-            }
-        }
-        mActiveTexturesDirtyMask = 0;
+                if ( mShaders[ stage ] )
+                {
+                    ConstShaderReflectionRef reflection =
+                        std::static_pointer_cast< const ShaderReflection >(
+                            mShaders[ stage ]->GetReflection() );
+                    for ( auto & textureSampler : reflection->GetTextureSamplers() )
+                    {
+                        uint32_t textureSlot = textureSampler.texture;
+                        if ( mTextures[ stage ][ textureSlot ] )
+                        {
+                            ConstTextureRef texture = mTextures[ stage ][ textureSlot ];
+                            uint32_t program = mShaders[ stage ]->GetHandle();
+                            uint64_t handle = VGL( glGetTextureHandleARB, texture->GetHandle() );
 
-        VGL( glActiveTexture, GL_TEXTURE0 + MAX_BIND_TEXTURES ); // Is used as a temp texture
+                            VGL( glMakeTextureHandleResidentARB, handle );
+                            mResidentTextureHandles[ texture.get() ] = handle;
+
+                            VGL( glProgramUniformHandleui64ARB, program, textureSampler.location, handle );
+                        }
+                    }
+                }
+            }
 
         // Bind render targets
 
@@ -353,41 +355,24 @@ namespace GFW {
         CMN_ASSERT( slot < MAX_BIND_TEXTURES );
         CMN_ASSERT( texture );
 
-        int32_t & textureUnit = mTextureUnits[ stage ][ slot ];
-
-        if (textureUnit == -1)
+        if ( mTextures[ stage ][ slot ] )
         {
-            CMN_ASSERT( !mActiveTextures[ mNextActiveTextureUnit ] );
-
-            textureUnit = mNextActiveTextureUnit;
-            mActiveTextures[mNextActiveTextureUnit] = std::static_pointer_cast< const Texture >( texture );
-            mActiveTexturesDirtyMask |= (1 << mNextActiveTextureUnit);
-
-            // Find a free texture unit
-
-            uint32_t unit = ( mNextActiveTextureUnit + 1 ) % MAX_BIND_TEXTURES;
-            while ( mActiveTextures[ unit ] && unit != mNextActiveTextureUnit )
+            ConstTextureRef texture = mTextures[ stage ][ slot ];
+            for ( auto it = mResidentTextureHandles.begin(); it != mResidentTextureHandles.end(); )
             {
-                unit = ( ++ unit ) % MAX_BIND_TEXTURES;
-            }
-            mNextActiveTextureUnit = unit;
-        }
-        else
-        {
-            if (mActiveTextures[ textureUnit ] != texture)
-            {
-                // Unbind a previous texture
-                if ( ( mActiveTexturesDirtyMask & ( 1 << textureUnit ) ) == 0)
+                if ( it->first == texture.get() )
                 {
-                    VGL( glActiveTexture, GL_TEXTURE0 + textureUnit );
-                    VGL( glBindTexture, GL_TEXTURE_2D, 0 );
-                    VGL( glActiveTexture, GL_TEXTURE0 + MAX_BIND_TEXTURES );
+                    VGL( glMakeTextureHandleNonResidentARB, it->second );
+                    mResidentTextureHandles.erase( it ++ );
                 }
-
-                mActiveTextures[ textureUnit ] = std::static_pointer_cast< const Texture >( texture );
-                mActiveTexturesDirtyMask |= ( 1 << textureUnit );
+                else
+                {
+                    ++ it;
+                }
             }
         }
+
+        mTextures[ stage ][ slot ] = std::static_pointer_cast< const Texture >( texture );
     }
 
     void Context::SetRenderTargets( uint32_t count, ConstIRenderTargetRef rt[] )

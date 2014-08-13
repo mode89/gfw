@@ -8,7 +8,7 @@ gfw
             % textures & samplers
         % serialize shader's source into ShaderBinary::mData
         % serialize texture-sampler pairs into ShaderBinary::mData
-        using bindless textures
+        % using bindless textures
     tests
         fix all tests
         add windowless tests

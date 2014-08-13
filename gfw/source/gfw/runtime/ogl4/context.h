@@ -11,6 +11,7 @@
 #include "gfw/runtime/ogl4/limits.h"
 #include "gfw/runtime/ogl4/types_fwd.h"
 
+#include <functional>
 #include <map>
 
 namespace GFW {
@@ -114,10 +115,10 @@ namespace GFW {
 
         // Textures
 
-            int32_t                     mTextureUnits[ SHADER_STAGE_COUNT ][ MAX_BIND_TEXTURES ];
-            ConstTextureRef             mActiveTextures[ MAX_BIND_TEXTURES ];
-            uint32_t                    mActiveTexturesDirtyMask;
-            uint32_t                    mNextActiveTextureUnit;
+            typedef std::map< const Texture *, uint64_t > TextureHandleMap;
+
+            ConstTextureRef             mTextures[ SHADER_STAGE_COUNT ][ MAX_BIND_TEXTURES ];
+            TextureHandleMap            mResidentTextureHandles;
 
         // Render targets
 
