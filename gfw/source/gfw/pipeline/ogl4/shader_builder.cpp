@@ -2,7 +2,7 @@
 #include "cmn/trace.h"
 
 CMN_WARNING_PUSH
-CMN_WARNING_DISABLE_MSVC( 4242 4265 4310 4619 4625 4626 )
+CMN_WARNING_DISABLE_MSVC( 4242 4265 4310 4371 4619 4625 4626 )
 CMN_WARNING_DISABLE_GCC( unused-local-typedefs )
 #include "boost/archive/binary_oarchive.hpp"
 #include "boost/serialization/utility.hpp"
@@ -124,8 +124,8 @@ namespace GFW {
     private:
         void PutLeadingWhitespaces( const ParseTree & tree )
         {
-            uint32_t line = tree.GetLine();
-            uint32_t row  = tree.GetRow();
+            size_t line = tree.GetLine();
+            size_t row  = tree.GetRow();
 
             for ( ; mLine < line; ++ mLine )
             {
@@ -149,8 +149,8 @@ namespace GFW {
 
     private:
         std::stringstream &             mSource;
-        uint32_t                        mLine;
-        uint32_t                        mRow;
+        size_t                          mLine;
+        size_t                          mRow;
 
         const TextureSamplerPairSet &   mTextureSamplerPairSet;
         ParseTreeSymbolMap              mSkipSymbols;
@@ -465,7 +465,7 @@ namespace GFW {
         std::ostream &      mStream;
         bool                mIsVoid;
         const char *        mEntryName;
-        uint32_t            mInputsOutputsNumber;
+        size_t              mInputsOutputsNumber;
         mutable uint32_t    mInputsOutputsCounter;
     };
 
@@ -780,7 +780,7 @@ namespace GFW {
 
         // Construct binary
 
-        shaderBinary.mDesc.inputsCount = entryPoint->args.size();
+        shaderBinary.mDesc.inputsCount = static_cast< uint32_t >( entryPoint->args.size() );
         shaderBinary.mStage = stage;
 
         ShaderBinaryOgl4 shaderBinaryOgl4;

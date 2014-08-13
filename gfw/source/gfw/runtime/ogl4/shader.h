@@ -21,7 +21,7 @@ namespace GFW {
         bool
         Compile(const char * source);
 
-        uint32_t
+        size_t
         GetHash() const { return mHash; }
 
         uint32_t
@@ -34,7 +34,7 @@ namespace GFW {
     private:
         ShaderStage             mStage;
         uint32_t                mHandle;
-        uint32_t                mHash;
+        size_t                  mHash;
         ShaderReflectionRef     mReflection;
 
 #if CMN_DEBUG

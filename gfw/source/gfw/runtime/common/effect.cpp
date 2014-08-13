@@ -13,7 +13,7 @@ namespace GFW {
     {
         ShaderTable shaderTable;
 
-        mDesc.techniqueCount = effectBinary.mTechniques.size();
+        mDesc.techniqueCount = static_cast< uint32_t >( effectBinary.mTechniques.size() );
         mTechniques.reserve( mDesc.techniqueCount );
         for ( auto techniqueBinary : effectBinary.mTechniques )
         {

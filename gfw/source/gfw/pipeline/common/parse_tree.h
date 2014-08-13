@@ -125,16 +125,16 @@ namespace GFW {
         TokenType
         GetTokenType() const { return mTokenType; }
 
-        uint32_t
+        size_t
         GetLine() const { return mLine; }
 
-        uint32_t
+        size_t
         GetRow() const { return mRow; }
 
-        uint32_t
+        size_t
         GetEndLine() const { return mEndLine; }
 
-        uint32_t
+        size_t
         GetEndRow() const { return mEndRow; }
 
         const ParseTree &
@@ -157,10 +157,10 @@ namespace GFW {
 
         std::string     mString;
         TokenType       mTokenType;
-        uint32_t        mLine;
-        uint32_t        mRow;
-        uint32_t        mEndLine;
-        uint32_t        mEndRow;
+        size_t          mLine;
+        size_t          mRow;
+        size_t          mEndLine;
+        size_t          mEndRow;
 
         ParseTreeVec    mChildren;
         uint32_t        mChildCount;

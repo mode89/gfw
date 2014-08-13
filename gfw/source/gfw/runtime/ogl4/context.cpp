@@ -153,7 +153,7 @@ namespace GFW {
 
         uint32_t mode     = GetOGLDrawMode(dp.primTop);
         uint32_t type     = GetOGLType(dp.indexType);
-        uint32_t typeSize = GetTypeSize(dp.indexType);
+        size_t   typeSize = GetTypeSize(dp.indexType);
 
         VGL( glDrawElements, mode, dp.indexCount, type, reinterpret_cast< void* >( typeSize * dp.indexStart ) );
     }
@@ -251,7 +251,8 @@ namespace GFW {
 
                     int32_t size = GetFormatElementNumber( attr.format );
                     Type type    = GetFormatElementType( attr.format );
-                    VGL( glVertexAttribPointer, attrIndex, size, GetOGLType( type ), GL_FALSE, attr.stride, reinterpret_cast< void* >( attr.offset ) );
+                    VGL( glVertexAttribPointer, attrIndex, size, GetOGLType( type ), GL_FALSE, attr.stride,
+                        reinterpret_cast< void* >( static_cast< uint64_t >( attr.offset ) ) );
                     VGL( glEnableVertexAttribArray, attrIndex );
 
                     VGL( glBindBuffer, GL_ARRAY_BUFFER, 0 );

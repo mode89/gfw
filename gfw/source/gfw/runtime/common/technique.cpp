@@ -7,7 +7,7 @@ namespace GFW {
 
     Technique::Technique( const TechniqueBinary & binary, ShaderTable & shaderTable, IDeviceIn device )
     {
-        mDesc.passCount = binary.mPasses.size();
+        mDesc.passCount = static_cast< uint32_t >( binary.mPasses.size() );
         mPasses.reserve( mDesc.passCount );
         for ( auto passBinary : binary.mPasses )
         {

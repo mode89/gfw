@@ -2,7 +2,7 @@
 
 #include "cmn/platform.h"
 
-CMN_WARNING_DISABLE_MSVC( 4365 )
+CMN_WARNING_DISABLE_MSVC( 4244 4365 )
 CMN_WARNING_DEFAULT_MSVC( 4505 )
 CMN_WARNING_DISABLE_GCC( unused-but-set-variable )
 CMN_WARNING_DISABLE_GCC( unused-function )

@@ -29,8 +29,10 @@ if ( BOOST_FOUND )
                 /wd4263     # Member function doesn't override any base class virtual member function
                 /wd4264     # No override available for virtual member function from base; function is hidden
                 /wd4265     # Class has virtual functions, but destructor is not virtual
+                /wd4267     # Conversion from 'type1' to 'type2': possible loss of data
                 /wd4310     # Cast truncates constant value
                 /wd4365     # Signed/unsigned mismatch during conversion
+                /wd4371     # Layout of class may have changed from a previous version of the compiler due to better packing of member
                 /wd4512     # Assignment operator could not be generated
                 /wd4548     # Expression before comma has no effect; expected expression with side-effect
                 /wd4571     # catch(...) semantics has changed since VC++ 7.1; structured exceptions are no longer caught

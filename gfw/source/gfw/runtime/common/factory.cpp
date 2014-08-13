@@ -1,7 +1,7 @@
 #include "cmn/platform.h"
 
 CMN_WARNING_PUSH
-CMN_WARNING_DISABLE_MSVC( 4242 4244 4265 4365 4619 4625 4626 4640 )
+CMN_WARNING_DISABLE_MSVC( 4242 4244 4265 4365 4371 4619 4625 4626 4640 )
 CMN_WARNING_DISABLE_GCC( unused-local-typedefs )
 #include "boost/archive/binary_iarchive.hpp"
 #include "boost/serialization/list.hpp"
