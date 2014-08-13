@@ -41,7 +41,7 @@ namespace GFW {
         VGL( glBindProgramPipeline, mProgramPipeline );
 
         VGL( glGenFramebuffers, 1, &mDrawFramebuffer );
-        CMN_ASSERT( mDrawFramebuffer != -1 );
+        CMN_ASSERT( mDrawFramebuffer != 0 );
         VGL( glBindFramebuffer, GL_DRAW_FRAMEBUFFER, mDrawFramebuffer );
 
         InitScreenQuad();
