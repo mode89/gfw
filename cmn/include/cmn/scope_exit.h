@@ -17,7 +17,7 @@ namespace Cmn {
         }
 
     private:
-        const F & mF;
+        const F mF;
 
         const ScopeExit &
         operator= ( const ScopeExit & );
