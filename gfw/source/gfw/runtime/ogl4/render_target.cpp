@@ -9,28 +9,18 @@ namespace GFW {
         : ADeviceChild( device )
         , mDesc( desc )
         , mTexture( texture )
-        , mIsSwapChain( false )
-        , mTextureDesc( &texture->GetDesc() )
-    {
-
-    }
-
-    RenderTarget::RenderTarget( const TextureDesc & textureDesc, const RenderTargetDesc & desc )
-        : ADeviceChild( nullptr )
-        , mDesc( desc )
-        , mTexture()
-        , mIsSwapChain( true )
-        , mTextureDesc( new TextureDesc( textureDesc ) )
     {
 
     }
 
     RenderTarget::~RenderTarget()
     {
-        if ( mIsSwapChain )
-        {
-            delete mTextureDesc;
-        }
+
+    }
+
+    const TextureDesc & RenderTarget::GetTextureDesc() const
+    {
+        return mTexture->GetDesc();
     }
 
     ConstITextureRef RenderTarget::GetTexture() const

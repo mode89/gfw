@@ -15,26 +15,18 @@ namespace GFW {
         GetDesc() const { return mDesc; }
 
         virtual const TextureDesc &
-        GetTextureDesc() const { return *mTextureDesc; }
+        GetTextureDesc() const;
 
         virtual ConstITextureRef
         GetTexture() const;
 
     public:
-        bool
-        IsSwapChain() const { return mIsSwapChain; }
-
-    public:
         RenderTarget( ConstTextureIn, const RenderTargetDesc &, DeviceIn );
-        RenderTarget( const TextureDesc &, const RenderTargetDesc & ); // Swap-chain's buffer
         ~RenderTarget();
 
     private:
         RenderTargetDesc    mDesc;
         ConstTextureRef     mTexture;
-
-        bool                mIsSwapChain;
-        const TextureDesc * mTextureDesc;
 
     private:
         RenderTarget( const RenderTarget & );

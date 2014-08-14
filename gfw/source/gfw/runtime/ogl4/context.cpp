@@ -308,32 +308,22 @@ namespace GFW {
         {
             if ( mRenderTargetsCount > 0 )
             {
-                if ( mRenderTargets[ 0 ]->IsSwapChain() )
+                VGL( glBindFramebuffer, GL_DRAW_FRAMEBUFFER, mDrawFramebuffer );
+
+                uint32_t drawBuffers[ MAX_RENDER_TARGETS ];
+                for (uint32_t i = 0; i < mRenderTargetsCount; ++ i)
                 {
-                    CMN_ASSERT( mRenderTargetsCount == 1 ); // Swap-chain cannot be mixed with custom render targets
-                    VGL( glBindFramebuffer, GL_DRAW_FRAMEBUFFER, 0 );
+                    ConstRenderTargetRef rt = mRenderTargets[ i ];
+                    ConstTextureRef rtTex   = std::static_pointer_cast< const Texture >( rt->GetTexture() );
+                    VGL( glFramebufferTexture, GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, rtTex->GetHandle(), rt->GetDesc().resourceIndex );
+                    drawBuffers[ i ] = GL_COLOR_ATTACHMENT0 + i;
                 }
-                else
-                {
-                    VGL( glBindFramebuffer, GL_DRAW_FRAMEBUFFER, mDrawFramebuffer );
-
-                    uint32_t drawBuffers[ MAX_RENDER_TARGETS ];
-                    for (uint32_t i = 0; i < mRenderTargetsCount; ++ i)
-                    {
-                        ConstRenderTargetRef rt = mRenderTargets[ i ];
-                        CMN_ASSERT( rt->IsSwapChain() == false ); // Swap-chain cannot be mixed with custom render targets
-
-                        ConstTextureRef rtTex   = std::static_pointer_cast< const Texture >( rt->GetTexture() );
-                        VGL( glFramebufferTexture, GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, rtTex->GetHandle(), rt->GetDesc().resourceIndex );
-                        drawBuffers[ i ] = GL_COLOR_ATTACHMENT0 + i;
-                    }
-                    VGL( glDrawBuffers, mRenderTargetsCount, drawBuffers );
+                VGL( glDrawBuffers, mRenderTargetsCount, drawBuffers );
 
 #ifdef CMN_DEBUG
-                    int32_t status  = VGL( glCheckFramebufferStatus, GL_DRAW_FRAMEBUFFER );
-                    CMN_ASSERT( status == GL_FRAMEBUFFER_COMPLETE );
+                int32_t status  = VGL( glCheckFramebufferStatus, GL_DRAW_FRAMEBUFFER );
+                CMN_ASSERT( status == GL_FRAMEBUFFER_COMPLETE );
 #endif
-                }
             }
             else
             {
