@@ -1,5 +1,6 @@
 #include "cmn/trace.h"
 #include "gfw/texture.h"
+#include "gfw/runtime/ogl4/texture.h"
 #include "gfw/runtime/ogl4/render_target.h"
 #include "gfw/runtime/ogl4/swap_chain.h"
 #include "gfw/runtime/ogl4/functions.h"
@@ -11,7 +12,12 @@ namespace GFW {
     SwapChain::SwapChain( const SwapChainDesc & desc, WindowHandleIn window )
         : mDesc( desc )
         , mWindow( window )
+        , mWindowWidth( 0 )
+        , mWindowHeight( 0 )
+        , mDC()
+        , mResolveFramebuffer( 0 )
         , mNativeContext()
+        , mRenderTarget()
     {
         // Initialize drawing context
 
@@ -56,25 +62,54 @@ namespace GFW {
                 &pfd );
             CMN_THROW_IF( res == FALSE, "Failed to set pixel format" );
 
+            RECT windowRect;
+            res = GetClientRect( static_cast< HWND >( window.get() ), &windowRect );
+            CMN_ASSERT( res == TRUE );
+            mWindowWidth  = windowRect.right - windowRect.left;
+            mWindowHeight = windowRect.bottom - windowRect.top;
+
         // Create render target
 
-        RECT windowRect;
-        res = GetClientRect( static_cast< HWND >( window.get() ), &windowRect );
-        CMN_ASSERT( res == TRUE );
+            mNativeContext = CreateContext();
+            MakeCurrent( mNativeContext.get() );
+            {
+                TextureDesc renderTargetTextureDesc;
+                renderTargetTextureDesc.format      = desc.format;
+                renderTargetTextureDesc.width       = desc.width;
+                renderTargetTextureDesc.height      = desc.height;
+                renderTargetTextureDesc.usage       = USAGE_DEFAULT;
+                renderTargetTextureDesc.mipLevels   = 1;
+                TextureRef renderTargetTexture( new Texture( renderTargetTextureDesc, nullptr, nullptr ),
+                    [ this ] ( Texture * t ) {
+                        MakeCurrent( mNativeContext.get() );
+                            delete t;
+                        MakeCurrent( nullptr );
+                    } );
 
-        TextureDesc textureDesc;
-        textureDesc.width  = windowRect.right - windowRect.left;
-        textureDesc.height = windowRect.bottom - windowRect.top;
-        textureDesc.format = FORMAT_RGBA8_UNORM;
+                RenderTargetDesc renderTargetDesc;
+                renderTargetDesc.format = desc.format;
+                mRenderTarget = RenderTargetRef( new RenderTarget( renderTargetTexture, renderTargetDesc, nullptr ),
+                    [ this ] ( RenderTarget * rt ) {
+                        MakeCurrent( mNativeContext.get() );
+                            delete rt;
+                        MakeCurrent( nullptr );
+                    } );
 
-        RenderTargetDesc renderTargetDesc;
+                VGL( glGenFramebuffers, 1, &mResolveFramebuffer );
+                VGL( glBindFramebuffer, GL_READ_FRAMEBUFFER, mResolveFramebuffer );
+                VGL( glFramebufferTexture, GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+                    renderTargetTexture->GetHandle(), 0 );
+                VGL( glReadBuffer, GL_COLOR_ATTACHMENT0 );
 
-        mNativeContext = CreateContext();
+                VGL( glBindFramebuffer, GL_DRAW_FRAMEBUFFER, 0 );
+                VGL( glDrawBuffer, GL_LEFT );
+            }
+            MakeCurrent( nullptr );
     }
 
     SwapChain::~SwapChain()
     {
-
+        VGL( glDeleteFramebuffers, 1, &mResolveFramebuffer );
     }
 
     NativeContextRef SwapChain::CreateContext()
@@ -110,6 +145,11 @@ namespace GFW {
 
     void SwapChain::Present()
     {
+        MakeCurrent( mNativeContext.get() );
+            VGL( glBlitFramebuffer, 0, 0, mDesc.width, mDesc.height,
+                0, 0, mWindowWidth, mWindowHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR );
+        MakeCurrent( nullptr );
+
         BOOL res = ::SwapBuffers( static_cast< HDC >( mDC.get() ) );
         CMN_ASSERT( res == TRUE ); CMN_UNUSED( res );
     }

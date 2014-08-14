@@ -13,7 +13,7 @@ gfw
         % using bindless textures
         constant buffers
         invert y-axis before writing gl_Position
-            implement default render target as texture
+            % implement default render target as texture
             flip default render target while Present()
         refactor state-objects
     tests

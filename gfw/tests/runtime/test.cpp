@@ -32,6 +32,9 @@ void Test::SetUp()
     // Create a swap chain
 
     SwapChainDesc swapChainDesc;
+    swapChainDesc.width = kWindowWidth;
+    swapChainDesc.height = kWindowHeight;
+    swapChainDesc.format = FORMAT_RGBA8_UNORM;
     mSwapChain = mFactory->CreateSwapChain( swapChainDesc, mWindow );
 
     // Create a graphical mDevice

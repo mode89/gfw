@@ -43,7 +43,10 @@ namespace GFW {
     private:
         SwapChainDesc               mDesc;
         WindowHandleRef             mWindow;
+        uint32_t                    mWindowWidth;
+        uint32_t                    mWindowHeight;
         std::shared_ptr< void >     mDC;
+        uint32_t                    mResolveFramebuffer;
         NativeContextRef            mNativeContext;
         RenderTargetRef             mRenderTarget;
     };
