@@ -18,14 +18,11 @@ void Test::SetUp()
 
     WindowDesc windowDesc;
     windowDesc.width  = kWindowWidth;
-    windowDesc.height = kwindowHeight;
+    windowDesc.height = kWindowHeight;
 
     mWindow = WindowHandleRef( CreateDefaultWindow( windowTitle, windowDesc ),
         [] ( WindowHandle * handle ) {
-            if ( handle )
-            {
-                DestroyDefaultWindow( handle );
-            }
+            if ( handle ) { DestroyDefaultWindow( handle ); }
         } );
 
     // Create GFW factory

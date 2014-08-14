@@ -14,7 +14,7 @@ class Test : public testing::Test
 {
 private:
     static const uint32_t kWindowWidth  = 800;
-    static const uint32_t kwindowHeight = 600;
+    static const uint32_t kWindowHeight = 600;
 
 public:
     Test() {}

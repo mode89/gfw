@@ -51,9 +51,6 @@ namespace GFW {
         InitializeChildren();
 
         void
-        InitializeSwapChain();
-
-        void
         LockContext( IContextIn );
 
         void

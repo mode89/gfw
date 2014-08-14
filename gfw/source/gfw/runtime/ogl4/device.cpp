@@ -30,10 +30,8 @@
 #define DEVICE_CHILD_DELETER( typeName ) \
     [ this ] ( typeName * child ) { \
         mSwapChain->MakeCurrent( mNativeContext.get() ); \
-        auto scopeExit = Cmn::MakeScopeExit( [ this ] () { \
-                mSwapChain->MakeCurrent( nullptr ); \
-            } ); \
-        delete child; \
+            delete child; \
+        mSwapChain->MakeCurrent( nullptr ); \
     }
 
 namespace GFW {
@@ -47,8 +45,6 @@ namespace GFW {
     {
         AUTO_LOCK_CONTEXT;
 
-        InitializeSwapChain();
-
 #if defined( CMN_DEBUG )
         const uint8_t * extensions = glGetString(GL_EXTENSIONS);
         CMN_UNUSED( extensions );
@@ -57,47 +53,12 @@ namespace GFW {
 
     Device::~Device()
     {
-        /*
-        if (mResolveFramebuffer != 0)
-        {
-            VGL( glDeleteFramebuffers, 1, &mResolveFramebuffer );
-        }
-        */
+
     }
 
     void Device::InitializeChildren()
     {
         mDefaultContext = CreateContext();
-    }
-
-    void Device::InitializeSwapChain()
-    {
-        // TODO not sure that we need an additional buffer, since we have SwapChain object
-
-        /*
-        TextureDesc defaultRenderTargetTextureDesc;
-        defaultRenderTargetTextureDesc.format       = mParams.backBufferFormat;
-        defaultRenderTargetTextureDesc.width        = mParams.backBufferWidth;
-        defaultRenderTargetTextureDesc.height       = mParams.backBufferHeight;
-        defaultRenderTargetTextureDesc.usage        = USAGE_DEFAULT;
-        defaultRenderTargetTextureDesc.mipLevels    = 1;
-        TextureRef defaultRenderTargetTexture = std::make_shared<Texture>(
-            defaultRenderTargetTextureDesc, nullptr, shared_from_this() );
-
-        RenderTargetDesc defaultRenderTargetDesc;
-        defaultRenderTargetDesc.format = mParams.backBufferFormat;
-        mDefaultRenderTarget = std::make_shared<RenderTarget>( defaultRenderTargetTexture,
-            defaultRenderTargetDesc, shared_from_this() );
-
-        VGL( glGenFramebuffers, 1, &mResolveFramebuffer );
-        VGL( glBindFramebuffer, GL_READ_FRAMEBUFFER, mResolveFramebuffer );
-        VGL( glFramebufferTexture, GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-            defaultRenderTargetTexture->GetHandle(), 0 );
-        VGL( glReadBuffer, GL_COLOR_ATTACHMENT0 );
-
-        VGL( glBindFramebuffer, GL_DRAW_FRAMEBUFFER, 0 );
-        VGL( glDrawBuffer, GL_LEFT );
-        */
     }
 
     IContextRef Device::CreateContext()
@@ -118,11 +79,8 @@ namespace GFW {
             // Make sure that the context will be deleted in its own native context
             [ this, nativeContext ] ( Context * ctx ) {
                 mSwapChain->MakeCurrent( nativeContext.get() );
-                auto scopeExit = Cmn::MakeScopeExit(
-                    [ this ] () {
-                        mSwapChain->MakeCurrent( nullptr );
-                    } );
-                delete ctx;
+                    delete ctx;
+                mSwapChain->MakeCurrent( nullptr );
             } );
     }
 
