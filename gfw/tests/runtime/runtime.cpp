@@ -3,7 +3,7 @@
 
 using namespace GFW;
 
-TEST_F( Test, Clear )
+TEST_F( GraphicsTest, Clear )
 {
     // Main loop
 
@@ -23,7 +23,7 @@ TEST_F( Test, Clear )
     }
 }
 
-TEST_F( Test, DrawColored )
+TEST_F( GraphicsTest, DrawColored )
 {
     // Create effect
 
@@ -88,7 +88,7 @@ TEST_F( Test, DrawColored )
     }
 }
 
-TEST_F( Test, DrawIndexed )
+TEST_F( GraphicsTest, DrawIndexed )
 {
     // Create effect
 
@@ -166,7 +166,7 @@ TEST_F( Test, DrawIndexed )
     }
 }
 
-TEST_F( Test, DrawScreenQuad )
+TEST_F( GraphicsTest, DrawScreenQuad )
 {
     IEffectRef effect = mFactory->CreateEffect( mDevice, "draw.fxc" );
     ConstITechniqueRef tech = effect->GetTechnique( "DrawRedQuad" );
@@ -202,7 +202,7 @@ struct Vertex
     float z;
 };
 
-TEST_F( Test, CreateMesh )
+TEST_F( GraphicsTest, CreateMesh )
 {
     IEffectRef effect = mFactory->CreateEffect( mDevice, "draw.fxc" );
 
@@ -400,7 +400,7 @@ TEST_F( Test, UpdateBuffer )
     }
 }
 
-TEST_F( Test, RenderTarget )
+TEST_F( GraphicsTest, RenderTarget )
 {
     // Create effect
 

@@ -7,35 +7,13 @@ using namespace GFW;
 
 void Test::SetUp()
 {
-    // Create a window
-
-    const ::testing::TestInfo * testInfo =
-        ::testing::UnitTest::GetInstance()->current_test_info();
-    std::string windowTitle =
-        std::string( testInfo->test_case_name() ) +
-        std::string( "::" ) +
-        std::string( testInfo->name() );
-
-    WindowDesc windowDesc;
-    windowDesc.width  = kWindowWidth;
-    windowDesc.height = kWindowHeight;
-
-    mWindow = WindowHandleRef( CreateDefaultWindow( windowTitle, windowDesc ),
-        [] ( WindowHandle * handle ) {
-            if ( handle ) { DestroyDefaultWindow( handle ); }
-        } );
-
     // Create GFW factory
 
     mFactory = CreateFactory();
 
     // Create a swap chain
 
-    SwapChainDesc swapChainDesc;
-    swapChainDesc.width = kWindowWidth;
-    swapChainDesc.height = kWindowHeight;
-    swapChainDesc.format = FORMAT_RGBA8_UNORM;
-    mSwapChain = mFactory->CreateSwapChain( swapChainDesc, mWindow );
+    InitSwapChain();
 
     // Create a graphical mDevice
 
@@ -62,15 +40,54 @@ void Test::TearDown()
     mDevice.reset();
     mSwapChain.reset();
     mFactory.reset();
+}
+
+void Test::InitSwapChain()
+{
+    SwapChainDesc swapChainDesc;
+    swapChainDesc.width = kBackBufferWidth;
+    swapChainDesc.height = kBackBufferHeight;
+    swapChainDesc.format = kBackBufferFormat;
+    mSwapChain = mFactory->CreateSwapChain( swapChainDesc, nullptr );
+}
+
+void GraphicsTest::TearDown()
+{
+    Test::TearDown();
     mWindow.reset();
 }
 
-void Test::Tick()
+void GraphicsTest::InitSwapChain()
+{
+    const ::testing::TestInfo * testInfo =
+        ::testing::UnitTest::GetInstance()->current_test_info();
+    std::string windowTitle =
+        std::string( testInfo->test_case_name() ) +
+        std::string( "::" ) +
+        std::string( testInfo->name() );
+
+    WindowDesc windowDesc;
+    windowDesc.width  = kBackBufferWidth;
+    windowDesc.height = kBackBufferHeight;
+
+    mWindow = WindowHandleRef( CreateDefaultWindow( windowTitle, windowDesc ),
+        [] ( WindowHandle * handle ) {
+            if ( handle ) { DestroyDefaultWindow( handle ); }
+        } );
+
+    SwapChainDesc swapChainDesc;
+    swapChainDesc.width = kBackBufferWidth;
+    swapChainDesc.height = kBackBufferHeight;
+    swapChainDesc.format = kBackBufferFormat;
+    mSwapChain = mFactory->CreateSwapChain( swapChainDesc, mWindow );
+}
+
+void GraphicsTest::Tick()
 {
     ProcessDefaultWindow( mWindow.get() );
 }
 
-void Test::Present()
+void GraphicsTest::Present()
 {
     mSwapChain->Present();
 

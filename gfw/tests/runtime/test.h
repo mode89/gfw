@@ -12,29 +12,51 @@ CMN_WARNING_POP
 
 class Test : public testing::Test
 {
-private:
-    static const uint32_t kWindowWidth  = 800;
-    static const uint32_t kWindowHeight = 600;
+protected:
+    static const uint32_t       kBackBufferWidth  = 800;
+    static const uint32_t       kBackBufferHeight = 600;
+    static const GFW::Format    kBackBufferFormat = GFW::FORMAT_RGBA8_UNORM;
 
 public:
     Test() {}
     Test( const Test & );
     Test & operator= ( const Test & );
 
-    void SetUp();
-    void TearDown();
+    virtual void
+    SetUp();
 
-    void Tick();
-    void Present();
+    virtual void
+    TearDown();
+
+    virtual void
+    InitSwapChain();
 
 protected:
-    GFW::WindowHandleRef        mWindow;
     GFW::ISwapChainRef          mSwapChain;
     GFW::IDeviceRef             mDevice;
     GFW::ConstIRenderTargetRef  mDefaultRenderTarget;
     GFW::IContextRef            mContext;
     GFW::IFactoryRef            mFactory;
     GFW::ClearParams            mClearParams;
+};
+
+class GraphicsTest : public Test
+{
+public:
+    virtual void
+    TearDown();
+
+    virtual void
+    InitSwapChain();
+
+    void
+    Tick();
+
+    void
+    Present();
+
+protected:
+    GFW::WindowHandleRef    mWindow;
 };
 
 #endif // __GFW_TESTS_GFW_TESTS_H__
