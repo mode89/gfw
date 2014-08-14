@@ -20,5 +20,5 @@ cmake_minimum_required(VERSION 2.8)
 
 # Target
 
-    add_library(gtest source/gtest-main.cc source/gtest-all.cc)
+    add_library( gtest source/gtest-all.cc )
     include_directories(include)

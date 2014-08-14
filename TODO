@@ -27,4 +27,6 @@ gfw
     samples
         convert .x files to another format
         port shadow map
+gtest
+    % each test has its own main.cpp
 using git submodules
