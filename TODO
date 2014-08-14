@@ -23,7 +23,7 @@ gfw
             % Test
             % GraphicsTest
         enable auto-testing
-            add libpng package
+            % add libpng package
     samples
         convert .x files to another format
         port shadow map

@@ -35,6 +35,51 @@ include( cmn/scripts/config.cmake )
         set( ZLIB_INCLUDE_DIRS ${CMAKE_CURRENT_LIST_DIR}/zlib )
         set( ZLIB_LIBS zlib )
 
+    # png
+
+        add_library( png
+            png/png.h
+            png/pngconf.h
+            ${CMAKE_CURRENT_BINARY_DIR}/pnglibconf.h
+            png/pngdebug.h
+            png/pnginfo.h
+            png/pngpriv.h
+            png/pngstruct.h
+            png/png.c
+            png/pngerror.c
+            png/pngget.c
+            png/pngmem.c
+            png/pngpread.c
+            png/pngread.c
+            png/pngrio.c
+            png/pngrtran.c
+            png/pngrutil.c
+            png/pngset.c
+            png/pngtrans.c
+            png/pngwio.c
+            png/pngwrite.c
+            png/pngwtran.c
+            png/pngwutil.c
+        )
+        target_link_libraries( png zlib )
+
+        if( MSVC )
+            set_property( TARGET png APPEND PROPERTY COMPILE_OPTIONS
+                /wd4255 /wd4574 /wd4996 )
+        endif()
+
+        set_property( TARGET png APPEND PROPERTY INCLUDE_DIRECTORIES
+            ${CMAKE_CURRENT_SOURCE_DIR}/png
+            ${CMAKE_CURRENT_BINARY_DIR}
+            ${ZLIB_INCLUDE_DIRS}
+        )
+
+        configure_file( png/scripts/pnglibconf.h.prebuilt
+            ${CMAKE_CURRENT_BINARY_DIR}/pnglibconf.h )
+
+        set( PNG_INCLUDE_DIRS ${CMAKE_CURRENT_LIST_DIR}/png )
+        set( PNG_LIBS png )
+
 add_subdirectory( ann )
 add_subdirectory( antlr )
 add_subdirectory( boost )
