@@ -33,6 +33,9 @@ namespace GFW {
         void
         ShareLists( NativeContext *, NativeContext * );
 
+        NativeContextRef
+        GetDefaultNativeContext() const { return mNativeContext; }
+
     public:
         SwapChain( const SwapChainDesc &, WindowHandleIn );
         ~SwapChain();
@@ -41,6 +44,7 @@ namespace GFW {
         SwapChainDesc               mDesc;
         WindowHandleRef             mWindow;
         std::shared_ptr< void >     mDC;
+        NativeContextRef            mNativeContext;
         RenderTargetRef             mRenderTarget;
     };
     SHARED_PTR_TYPEDEFS( SwapChain );

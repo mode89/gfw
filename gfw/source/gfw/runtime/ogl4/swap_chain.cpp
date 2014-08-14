@@ -11,6 +11,7 @@ namespace GFW {
     SwapChain::SwapChain( const SwapChainDesc & desc, WindowHandleIn window )
         : mDesc( desc )
         , mWindow( window )
+        , mNativeContext()
     {
         // Initialize drawing context
 
@@ -68,7 +69,7 @@ namespace GFW {
 
         RenderTargetDesc renderTargetDesc;
 
-        mRenderTarget = std::make_shared< RenderTarget >( textureDesc, renderTargetDesc );
+        mNativeContext = CreateContext();
     }
 
     SwapChain::~SwapChain()

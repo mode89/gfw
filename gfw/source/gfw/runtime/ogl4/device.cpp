@@ -41,7 +41,7 @@ namespace GFW {
     Device::Device( const DeviceParams & params, ISwapChainIn swapChain )
         : mParams( params )
         , mSwapChain( std::static_pointer_cast< SwapChain >( swapChain ) )
-        , mNativeContext( mSwapChain->CreateContext() )
+        , mNativeContext( mSwapChain->GetDefaultNativeContext() )
     {
         AUTO_LOCK_CONTEXT;
 
