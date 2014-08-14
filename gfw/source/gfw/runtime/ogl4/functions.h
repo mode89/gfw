@@ -134,6 +134,10 @@
 
     #define OPENGL_FUNCTIONS_PLAT \
         F( PFNWGLCHOOSEPIXELFORMATARBPROC,                  wglChoosePixelFormatARB ) \
+        F( PFNWGLCREATEPBUFFERARBPROC,                      wglCreatePbufferARB ) \
+        F( PFNWGLGETPBUFFERDCARBPROC,                       wglGetPbufferDCARB ) \
+        F( PFNWGLRELEASEPBUFFERDCARBPROC,                   wglReleasePbufferDCARB ) \
+        F( PFNWGLDESTROYPBUFFERARBPROC,                     wglDestroyPbufferARB ) \
 
 #endif // PLATFORM_WIN32
 

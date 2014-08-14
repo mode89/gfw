@@ -19,54 +19,93 @@ namespace GFW {
         , mNativeContext()
         , mRenderTarget()
     {
-        // Initialize drawing context
+        // Initialize device context
 
-            mDC = std::shared_ptr< void >( GetDC( static_cast< HWND >( mWindow.get() ) ),
-                [ this ] ( void * dc ) {
-                    BOOL res = ReleaseDC(
-                        static_cast< HWND >( mWindow.get() ),
-                        static_cast< HDC >( dc ) );
-                    CMN_ASSERT( res == TRUE ); CMN_UNUSED( res );
-                } );
-            CMN_THROW_IF( !mDC, "Failed to acquire drawing context of the window" );
-
-            const int attribList[] =
-            {
-                WGL_DRAW_TO_WINDOW_ARB, GL_TRUE,
-                WGL_SUPPORT_OPENGL_ARB, GL_TRUE,
-                WGL_DOUBLE_BUFFER_ARB,  GL_TRUE,
-                WGL_ACCELERATION_ARB,   WGL_FULL_ACCELERATION_ARB,
-                WGL_PIXEL_TYPE_ARB,     WGL_TYPE_RGBA_ARB,
-                WGL_COLOR_BITS_ARB,     32,
-                WGL_DEPTH_BITS_ARB,     24,
-                WGL_STENCIL_BITS_ARB,   8,
+            const int kAttribList[] = {
+                WGL_DRAW_TO_PBUFFER_ARB,    GL_TRUE,
+                WGL_SUPPORT_OPENGL_ARB,     GL_TRUE,
+                WGL_DOUBLE_BUFFER_ARB,      GL_FALSE,
+                WGL_ACCELERATION_ARB,       WGL_FULL_ACCELERATION_ARB,
+                WGL_PIXEL_TYPE_ARB,         WGL_TYPE_RGBA_ARB,
+                WGL_COLOR_BITS_ARB,         24,
+                WGL_DEPTH_BITS_ARB,         0,
+                WGL_STENCIL_BITS_ARB,       0,
                 0,
             };
 
-            int pixelFormat;
-            UINT numFormats;
+            if ( window )
+            {
+                mDC = std::shared_ptr< void >( GetDC( static_cast< HWND >( mWindow.get() ) ),
+                    [ this ] ( void * dc ) {
+                        BOOL res = ReleaseDC(
+                            static_cast< HWND >( mWindow.get() ),
+                            static_cast< HDC >( dc ) );
+                        CMN_ASSERT( res == TRUE ); CMN_UNUSED( res );
+                    } );
+                CMN_THROW_IF( !mDC, "Failed to acquire device context of the window" );
 
-            int res = wglChoosePixelFormatARB(
-                static_cast< HDC >( mDC.get() ),
-                attribList,
-                nullptr,
-                1,
-                &pixelFormat,
-                &numFormats );
-            CMN_THROW_IF( res == FALSE, "Failed to choose pixel format" );
+                int pixelFormat;
+                UINT numFormats;
 
-            PIXELFORMATDESCRIPTOR pfd;
-            res = SetPixelFormat(
-                static_cast< HDC >( mDC.get() ),
-                pixelFormat,
-                &pfd );
-            CMN_THROW_IF( res == FALSE, "Failed to set pixel format" );
+                int res = wglChoosePixelFormatARB(
+                    static_cast< HDC >( mDC.get() ),
+                    kAttribList,
+                    nullptr,
+                    1,
+                    &pixelFormat,
+                    &numFormats );
+                CMN_THROW_IF( res == FALSE || numFormats == 0, "Failed to choose pixel format" );
 
-            RECT windowRect;
-            res = GetClientRect( static_cast< HWND >( window.get() ), &windowRect );
-            CMN_ASSERT( res == TRUE );
-            mWindowWidth  = windowRect.right - windowRect.left;
-            mWindowHeight = windowRect.bottom - windowRect.top;
+                PIXELFORMATDESCRIPTOR pfd;
+                res = SetPixelFormat(
+                    static_cast< HDC >( mDC.get() ),
+                    pixelFormat,
+                    &pfd );
+                CMN_THROW_IF( res == FALSE, "Failed to set pixel format" );
+
+                // Keep window's dimensions
+                RECT windowRect;
+                res = GetClientRect( static_cast< HWND >( window.get() ), &windowRect );
+                CMN_ASSERT( res == TRUE );
+                mWindowWidth  = windowRect.right - windowRect.left;
+                mWindowHeight = windowRect.bottom - windowRect.top;
+            }
+            else // if no window available, create an offscreen pixel pbuffer
+            {
+                std::shared_ptr< void > displayDC( CreateDC( "DISPLAY", NULL, NULL, NULL ),
+                    [] ( void * dc ) {
+                        BOOL res = DeleteDC( static_cast< HDC >( dc ) );
+                        CMN_ASSERT( res == TRUE ); CMN_UNUSED( res );
+                    } );
+                CMN_THROW_IF( !displayDC, "Failed to create display device context" );
+
+                int pixelFormat = 0;
+                UINT numFormats = 0;
+                BOOL res = wglChoosePixelFormatARB(
+                    static_cast< HDC >( displayDC.get() ),
+                    kAttribList,
+                    nullptr,
+                    1,
+                    &pixelFormat,
+                    &numFormats );
+                CMN_THROW_IF( res == FALSE || numFormats == 0, "Failed to choose pixel format" );
+
+                mWindow = WindowHandleRef( wglCreatePbufferARB( static_cast< HDC >( displayDC.get() ),
+                    pixelFormat, mDesc.width, mDesc.height, nullptr ),
+                    [] ( void * pb ) {
+                        BOOL res = wglDestroyPbufferARB( static_cast< HPBUFFERARB >( pb ) );
+                        CMN_ASSERT( res != FALSE ); CMN_UNUSED( res );
+                    } );
+                CMN_THROW_IF( !mWindow, "Failed to create a pixel buffer" );
+
+                mDC = std::shared_ptr< void >( wglGetPbufferDCARB( static_cast< HPBUFFERARB >( mWindow.get() ) ),
+                    [ this ] ( void * dc ) {
+                        int res = wglReleasePbufferDCARB(
+                            static_cast< HPBUFFERARB >( mWindow.get() ),
+                            static_cast< HDC >( dc ) );
+                        CMN_ASSERT( res != FALSE ); CMN_UNUSED( res );
+                    } );
+            }
 
         // Create render target
 

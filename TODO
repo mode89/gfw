@@ -11,6 +11,7 @@ gfw
         % serialize shader's source into ShaderBinary::mData
         % serialize texture-sampler pairs into ShaderBinary::mData
         % using bindless textures
+        % offscreen swap-chain
         constant buffers
         invert y-axis before writing gl_Position
             % implement default render target as texture
