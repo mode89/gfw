@@ -46,7 +46,7 @@ namespace GFW {
             int pixelFormat;
             UINT numFormats;
 
-            int res = wglChoosePixelFormat(
+            int res = wglChoosePixelFormatARB(
                 static_cast< HDC >( mDC.get() ),
                 attribList,
                 nullptr,

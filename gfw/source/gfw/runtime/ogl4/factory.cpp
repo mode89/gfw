@@ -42,26 +42,6 @@ CMN_WARNING_DISABLE_MSVC( 4191 ) // Unsafe cast from PROC
 
         if ( loadApi )
         {
-            // Load Windows specific functions
-
-            wglGetProcAddress = reinterpret_cast< PFNWGLGETPROCADDRESS >( GetProcAddress( sLibrary, "wglGetProcAddress" ) );
-            CMN_ASSERT( wglGetProcAddress != nullptr );
-
-            wglCreateContext = reinterpret_cast< PFNWGLCREATECONTEXT >( GetProcAddress( sLibrary, "wglCreateContext" ) );
-            CMN_ASSERT( wglCreateContext != nullptr );
-
-            wglMakeCurrent = reinterpret_cast< PFNWGLMAKECURRENT >( GetProcAddress( sLibrary, "wglMakeCurrent" ) );
-            CMN_ASSERT( wglMakeCurrent != nullptr );
-
-            wglDeleteContext = reinterpret_cast< PFNWGLDELETECONTEXT >( GetProcAddress( sLibrary, "wglDeleteContext" ) );
-            CMN_ASSERT( wglDeleteContext != nullptr );
-
-            wglGetCurrentContext = reinterpret_cast< PFNWGLGETCURRENTCONTEXT >( GetProcAddress ( sLibrary, "wglGetCurrentContext" ) );
-            CMN_ASSERT( wglGetCurrentContext != nullptr );
-
-            wglShareLists = reinterpret_cast< PFNWGLSHARELISTS >( GetProcAddress( sLibrary, "wglShareLists" ) );
-            CMN_ASSERT( wglShareLists != nullptr );
-
             // Create empty window
 
             HWND hWnd = CreateWindow( "STATIC", "Window",
@@ -89,11 +69,6 @@ CMN_WARNING_DISABLE_MSVC( 4191 ) // Unsafe cast from PROC
             res = wglMakeCurrent( hDC, hRC );
             CMN_ASSERT( res != FALSE );
 
-            // Load Windows specific extensions
-
-            wglChoosePixelFormat = reinterpret_cast< PFNWGLCHOOSEPIXELFORMAT >( wglGetProcAddress( "wglChoosePixelFormatARB" ) );
-            CMN_ASSERT( wglChoosePixelFormat != nullptr );
-
             // Load core functions
 
 #define F( type, func )     func = reinterpret_cast< type >( GetProcAddress( sLibrary, #func ) );
@@ -104,6 +79,7 @@ CMN_WARNING_DISABLE_MSVC( 4191 ) // Unsafe cast from PROC
 
 #define F( type, func )     func = reinterpret_cast< type >( wglGetProcAddress( #func ) );
             OPENGL_FUNCTIONS_EXT
+            OPENGL_FUNCTIONS_PLAT
 #undef F
 
             // Release resources

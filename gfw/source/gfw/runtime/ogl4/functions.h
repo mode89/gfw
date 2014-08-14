@@ -130,22 +130,10 @@
 
 #ifdef CMN_WIN32
 
-    typedef PROC  (WINAPI *  PFNWGLGETPROCADDRESS)(LPCSTR);
-    typedef HGLRC (WINAPI *  PFNWGLCREATECONTEXT)(HDC);
-    typedef BOOL  (WINAPI *  PFNWGLDELETECONTEXT)(HGLRC);
-    typedef BOOL  (WINAPI *  PFNWGLMAKECURRENT)(HDC, HGLRC);
-    typedef HGLRC (WINAPI *  PFNWGLGETCURRENTCONTEXT)();
-    typedef BOOL  (WINAPI *  PFNWGLSHARELISTS)(HGLRC, HGLRC);
-    typedef BOOL  (WINAPI *  PFNWGLCHOOSEPIXELFORMAT) (HDC, const int *, const FLOAT *, UINT, int *, UINT *);
+    #include "opengl/wglext.h"
 
     #define OPENGL_FUNCTIONS_PLAT \
-        F(PFNWGLGETPROCADDRESS,                 wglGetProcAddress) \
-        F(PFNWGLCREATECONTEXT,                  wglCreateContext) \
-        F(PFNWGLDELETECONTEXT,                  wglDeleteContext) \
-        F(PFNWGLMAKECURRENT,                    wglMakeCurrent) \
-        F(PFNWGLGETCURRENTCONTEXT,              wglGetCurrentContext) \
-        F(PFNWGLSHARELISTS,                     wglShareLists) \
-        F(PFNWGLCHOOSEPIXELFORMAT,              wglChoosePixelFormat)
+        F( PFNWGLCHOOSEPIXELFORMATARBPROC,                  wglChoosePixelFormatARB ) \
 
 #endif // PLATFORM_WIN32
 
