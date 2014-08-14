@@ -18,9 +18,6 @@ namespace GFW {
         GetReflection() const { return std::static_pointer_cast<IShaderReflection>( mReflection ); }
 
     public:
-        bool
-        Compile(const char * source);
-
         size_t
         GetHash() const { return mHash; }
 

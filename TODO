@@ -17,6 +17,7 @@ gfw
             % implement default render target as texture
             flip default render target while Present()
         refactor state-objects
+        use exceptions at shader_utils.cpp
     tests
         % fix all tests
         % add windowless tests
