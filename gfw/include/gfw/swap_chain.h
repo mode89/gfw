@@ -12,6 +12,9 @@ namespace GFW {
     class ISwapChain
     {
     public:
+        virtual const SwapChainDesc &
+        GetDesc() const = 0;
+
         virtual void
         Present() = 0;
 

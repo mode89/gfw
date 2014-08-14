@@ -9,7 +9,8 @@
 namespace GFW {
 
     SwapChain::SwapChain( const SwapChainDesc & desc, WindowHandleIn window )
-        : mWindow( window )
+        : mDesc( desc )
+        , mWindow( window )
     {
         mDC = std::shared_ptr< void >( GetDC( static_cast< HWND >( mWindow.get() ) ),
             [ this ] ( void * dc ) {

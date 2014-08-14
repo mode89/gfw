@@ -11,6 +11,9 @@ namespace GFW {
     class SwapChain : public ISwapChain
     {
     public:
+        virtual const SwapChainDesc &
+        GetDesc() const { return mDesc; }
+
         virtual void
         Present();
 
@@ -35,6 +38,7 @@ namespace GFW {
         ~SwapChain();
 
     private:
+        SwapChainDesc               mDesc;
         WindowHandleRef             mWindow;
         std::shared_ptr< void >     mDC;
         RenderTargetRef             mRenderTarget;
