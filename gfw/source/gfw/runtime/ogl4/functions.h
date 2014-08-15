@@ -80,6 +80,7 @@
     F( PFNGLMAPBUFFERPROC,                                  glMapBuffer ) \
     F( PFNGLMAPBUFFERRANGEPROC,                             glMapBufferRange ) \
     F( PFNGLUNMAPBUFFERPROC,                                glUnmapBuffer ) \
+    F( PFNGLCOPYBUFFERSUBDATAPROC,                          glCopyBufferSubData ) \
     \
     F( PFNGLVERTEXATTRIBPOINTERPROC,                        glVertexAttribPointer ) \
     F( PFNGLENABLEVERTEXATTRIBARRAYPROC,                    glEnableVertexAttribArray ) \

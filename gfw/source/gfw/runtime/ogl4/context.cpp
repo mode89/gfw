@@ -455,6 +455,23 @@ namespace GFW {
 
         switch ( dst->GetType() )
         {
+        case RESOURCE_TYPE_BUFFER:
+            {
+                BufferRef srcBuffer = std::static_pointer_cast< Buffer >( src );
+                BufferRef dstBuffer = std::static_pointer_cast< Buffer >( dst );
+
+                CMN_ASSERT( srcBuffer->GetDesc().size == dstBuffer->GetDesc().size );
+
+                VGL( glBindBuffer, GL_COPY_READ_BUFFER, srcBuffer->GetHandle() );
+                VGL( glBindBuffer, GL_COPY_WRITE_BUFFER, dstBuffer->GetHandle() );
+
+                VGL( glCopyBufferSubData, GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER,
+                    0, 0, srcBuffer->GetDesc().size );
+
+                VGL( glBindBuffer, GL_COPY_READ_BUFFER, 0 );
+                VGL( glBindBuffer, GL_COPY_WRITE_BUFFER, 0 );
+            }
+            return;
         default:
             CMN_FAIL(); // TODO not yet implemented
         };
