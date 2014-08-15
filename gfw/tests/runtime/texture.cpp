@@ -20,12 +20,18 @@ TEST_F( GraphicsTest, Texture )
         }
     }
 
-    TextureDesc desc;
-    desc.format = FORMAT_RGBA8_UNORM;
-    desc.width  = width;
-    desc.height = width;
+    SubResourceData initialData;
+    initialData.mem         = pixels;
+    initialData.slicePitch  = sizeof( pixels );
+    initialData.rowPitch    = sizeof( uint32_t ) * width;
 
-    ITextureRef texture = mDevice->CreateTexture(desc, pixels);
+    TextureDesc desc;
+    desc.format     = FORMAT_RGBA8_UNORM;
+    desc.width      = width;
+    desc.height     = width;
+    desc.mipLevels  = 1;
+
+    ITextureRef texture = mDevice->CreateTexture( desc, &initialData );
 
     for (int i = 0; i < 60; ++ i)
     {

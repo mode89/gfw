@@ -38,11 +38,15 @@ TEST_F( GraphicsTest, DrawColored )
          1.0f,  1.0f, 0.0f, 0.0f, 1.0f
     };
 
+    SubResourceData initialData;
+    initialData.mem = vertices;
+    initialData.slicePitch = sizeof( vertices );
+
     BufferDesc vertexBufferDesc;
     vertexBufferDesc.type = BUFFER_VERTEX;
     vertexBufferDesc.size = sizeof( vertices );
     vertexBufferDesc.usage = USAGE_STATIC;
-    IBufferRef vertexBuffer = mDevice->CreateBuffer(vertexBufferDesc, vertices);
+    IBufferRef vertexBuffer = mDevice->CreateBuffer( vertexBufferDesc, &initialData );
 
     // Define vertex attributes
 
@@ -104,21 +108,29 @@ TEST_F( GraphicsTest, DrawIndexed )
         -1.0f, -1.0f, 1.0f, 1.0f, 0.0f
     };
 
+    SubResourceData vertexData;
+    vertexData.mem = vertices;
+    vertexData.slicePitch = sizeof( vertices );
+
     BufferDesc vertexBufferDesc;
     vertexBufferDesc.type  = BUFFER_VERTEX;
-    vertexBufferDesc.size  = sizeof(vertices);
+    vertexBufferDesc.size  = sizeof( vertices );
     vertexBufferDesc.usage = USAGE_STATIC;
-    IBufferRef vertexBuffer = mDevice->CreateBuffer(vertexBufferDesc, vertices);
+    IBufferRef vertexBuffer = mDevice->CreateBuffer( vertexBufferDesc, &vertexData );
 
     uint16_t indices[] = {
         3, 0, 2, 1
     };
 
+    SubResourceData indexData;
+    indexData.mem = indices;
+    indexData.slicePitch = sizeof( indices );
+
     BufferDesc indexBufferDesc;
     indexBufferDesc.type  = BUFFER_INDEX;
-    indexBufferDesc.size  = sizeof(indices);
+    indexBufferDesc.size  = sizeof( indices );
     indexBufferDesc.usage = USAGE_STATIC;
-    IBufferRef indexBuffer = mDevice->CreateBuffer(indexBufferDesc, indices);
+    IBufferRef indexBuffer = mDevice->CreateBuffer( indexBufferDesc, &indexData );
 
     // Define vertex attributes
 
@@ -235,11 +247,15 @@ TEST_F( GraphicsTest, CreateMesh )
         }
     }
 
+    SubResourceData vertexData;
+    vertexData.mem = vertices.data();
+    vertexData.slicePitch = vertices.size() * sizeof( Vertex );
+
     BufferDesc vertexBufferDesc;
-    vertexBufferDesc.size  = sizeof(Vertex) * vertCnt;
+    vertexBufferDesc.size  = sizeof( Vertex ) * vertCnt;
     vertexBufferDesc.type  = BUFFER_VERTEX;
     vertexBufferDesc.usage = USAGE_STATIC;
-    IBufferRef vertexBuffer = mDevice->CreateBuffer( vertexBufferDesc, vertices.data() );
+    IBufferRef vertexBuffer = mDevice->CreateBuffer( vertexBufferDesc, &vertexData );
 
     // Create index buffer
 
@@ -266,11 +282,15 @@ TEST_F( GraphicsTest, CreateMesh )
         }
     }
 
+    SubResourceData indexData;
+    indexData.mem = indices.data();
+    indexData.slicePitch = indices.size() * sizeof( decltype( indices )::value_type );
+
     BufferDesc indexBufferDesc;
-    indexBufferDesc.size  = sizeof(uint32_t) * xSegments * ySegments * 2 * 3;
+    indexBufferDesc.size  = sizeof( uint32_t ) * xSegments * ySegments * 2 * 3;
     indexBufferDesc.type  = BUFFER_INDEX;
     indexBufferDesc.usage = USAGE_STATIC;
-    IBufferRef indexBuffer = mDevice->CreateBuffer( indexBufferDesc, indices.data() );
+    IBufferRef indexBuffer = mDevice->CreateBuffer( indexBufferDesc, &indexData );
 
     // Create input layout
 
@@ -326,6 +346,7 @@ TEST_F( Test, MapBuffer )
     BufferDesc bufferDesc;
     bufferDesc.size  = bufferSize;
     bufferDesc.usage = USAGE_DYNAMIC;
+    bufferDesc.cpuAccessFlags = CPU_ACCESS_FLAG_READ | CPU_ACCESS_FLAG_WRITE;
     bufferDesc.type  = BUFFER_VERTEX;
     IBufferRef buffer = mDevice->CreateBuffer(bufferDesc);
 
@@ -344,6 +365,7 @@ TEST_F( Test, MapBuffer )
         {
             SubResourceData mappedData;
             mContext->Map( buffer, SubResourceIndex(), MAP_TYPE_WRITE, mappedData );
+            ASSERT_TRUE( mappedData.mem != nullptr );
             memcpy( mappedData.mem, data.data(), bufferSize );
             mContext->Unmap( buffer, SubResourceIndex() );
         }
@@ -355,6 +377,7 @@ TEST_F( Test, MapBuffer )
         {
             SubResourceData mappedData;
             mContext->Map( buffer, SubResourceIndex(), MAP_TYPE_READ, mappedData );
+            ASSERT_TRUE( mappedData.mem != nullptr );
             ASSERT_TRUE( memcmp( mappedData.mem, data.data(), bufferSize ) == 0 );
             mContext->Unmap( buffer, SubResourceIndex() );
         }
@@ -401,6 +424,7 @@ TEST_F( Test, UpdateBuffer )
         mContext->BeginScene();
         SubResourceData mappedData;
         mContext->Map( buffer, SubResourceIndex(), MAP_TYPE_READ, mappedData );
+        ASSERT_TRUE( mappedData.mem != nullptr );
         ASSERT_TRUE( memcmp( mappedData.mem, data.data(), bufferSize ) == 0 );
         mContext->Unmap( buffer, SubResourceIndex() );
         mContext->EndScene();
@@ -417,17 +441,21 @@ TEST_F( GraphicsTest, RenderTarget )
 
     // Create geometry
 
-    float vertPosData[] = {
+    float vertices[] = {
         -1.0f, -1.0f,
         -1.0f,  1.0f,
          1.0f,  1.0f
     };
 
+    SubResourceData vertexData;
+    vertexData.mem = vertices;
+    vertexData.slicePitch = sizeof( vertices );
+
     BufferDesc vertPosBufDesc;
     vertPosBufDesc.type   = BUFFER_VERTEX;
-    vertPosBufDesc.size   = sizeof(vertPosData);
+    vertPosBufDesc.size   = sizeof( vertices );
     vertPosBufDesc.usage  = USAGE_STATIC;
-    IBufferRef vertPosBuf = mDevice->CreateBuffer(vertPosBufDesc, vertPosData);
+    IBufferRef vertPosBuf = mDevice->CreateBuffer( vertPosBufDesc, &vertexData );
 
     // Define vertex attributes
 
@@ -499,17 +527,21 @@ TEST_F( GraphicsTest, Resolve )
 
     // create geometry
 
-    float vertPosData[] = {
+    float vertices[] = {
         -1.0f,  1.0f,
          1.0f,  1.0f,
          1.0f, -1.0f,
     };
 
+    SubResourceData vertexData;
+    vertexData.mem = vertices;
+    vertexData.slicePitch = sizeof( vertices );
+
     BufferDesc vertPosBufDesc;
     vertPosBufDesc.type   = BUFFER_VERTEX;
-    vertPosBufDesc.size   = sizeof( vertPosData );
+    vertPosBufDesc.size   = sizeof( vertices );
     vertPosBufDesc.usage  = USAGE_STATIC;
-    IBufferRef vertPosBuf = mDevice->CreateBuffer(vertPosBufDesc, vertPosData );
+    IBufferRef vertPosBuf = mDevice->CreateBuffer( vertPosBufDesc, &vertexData );
 
     // define vertex attributes
 

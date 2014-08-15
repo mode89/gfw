@@ -30,7 +30,7 @@ namespace GFW {
         GetHandle() const { return mHandle; }
 
     public:
-        Texture( const TextureDesc &, const void * initialData, DeviceIn );
+        Texture( const TextureDesc &, const SubResourceData * initialData, DeviceIn );
         ~Texture();
 
     private:

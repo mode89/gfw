@@ -28,10 +28,10 @@ namespace GFW {
         CreateInputLayout( uint32_t attrCnt, VertexAttribute[], ConstIShaderIn vertexShader );
 
         virtual IBufferRef
-        CreateBuffer( const BufferDesc &, const void * initialData );
+        CreateBuffer( const BufferDesc &, const SubResourceData * initialData = nullptr );
 
         virtual ITextureRef
-        CreateTexture( const TextureDesc &, const void * initialData = 0 );
+        CreateTexture( const TextureDesc &, const SubResourceData * initialData = nullptr );
 
         virtual IRenderTargetRef
         CreateRenderTarget( ConstITextureIn, const RenderTargetDesc & );

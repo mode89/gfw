@@ -21,20 +21,46 @@ namespace GFW {
         return 0;
     }
 
-    Buffer::Buffer( const BufferDesc & desc, const void * initialData, DeviceIn device )
+    Buffer::Buffer(
+        const BufferDesc & desc,
+        const SubResourceData * initialData,
+        DeviceIn device )
         : ADeviceChild( device )
         , mDesc( desc )
         , mHandle( 0 )
         , mTarget( 0 )
     {
+        if ( initialData )
+        {
+            CMN_ASSERT( initialData->slicePitch == mDesc.size );
+            CMN_ASSERT( initialData->rowPitch == 0
+                || initialData->rowPitch == mDesc.size );
+        }
+
         VGL( glGenBuffers, 1, &mHandle );
         CMN_ASSERT( mHandle != 0 );
 
         mTarget = GetBufferTarget( mDesc.type );
-        uint32_t usage  = GetOGLUsage( mDesc.usage );
 
+        // usage flags
+        uint32_t flags = 0;
+        if ( mDesc.usage == USAGE_DEFAULT )
+        {
+            flags |= GL_DYNAMIC_STORAGE_BIT;
+        }
+        if ( mDesc.cpuAccessFlags & CPU_ACCESS_FLAG_READ )
+        {
+            flags |= GL_MAP_READ_BIT;
+        }
+        if ( mDesc.cpuAccessFlags & CPU_ACCESS_FLAG_WRITE )
+        {
+            flags |= GL_MAP_WRITE_BIT;
+        }
+
+        // allocate buffer storage
         VGL( glBindBuffer, mTarget, mHandle );
-        VGL( glBufferData, mTarget, mDesc.size, initialData, usage );
+        VGL( glBufferStorage, mTarget, mDesc.size,
+            initialData ? initialData->mem : nullptr, flags );
         VGL( glBindBuffer, mTarget, 0 );
     }
 

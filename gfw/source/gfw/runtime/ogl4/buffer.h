@@ -33,7 +33,7 @@ namespace GFW {
         GetTarget() const       { return mTarget; }
 
     public:
-        Buffer( const BufferDesc &, const void * initialData, DeviceIn );
+        Buffer( const BufferDesc &, const SubResourceData * initialData, DeviceIn );
         ~Buffer();
 
     private:

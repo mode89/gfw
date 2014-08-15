@@ -148,14 +148,14 @@ namespace GFW {
             DEVICE_CHILD_DELETER( InputLayout ) );
     }
 
-    IBufferRef Device::CreateBuffer( const BufferDesc & desc, const void * initialData )
+    IBufferRef Device::CreateBuffer( const BufferDesc & desc, const SubResourceData * initialData /* = nullptr */ )
     {
         AUTO_LOCK_CONTEXT;
         return BufferRef( new Buffer( desc, initialData, shared_from_this() ),
             DEVICE_CHILD_DELETER( Buffer ) );
     }
 
-    ITextureRef Device::CreateTexture( const TextureDesc & desc, const void * initialData /*= 0*/ )
+    ITextureRef Device::CreateTexture( const TextureDesc & desc, const SubResourceData * initialData /* = nullptr */ )
     {
         AUTO_LOCK_CONTEXT;
         return TextureRef( new Texture( desc, initialData, shared_from_this() ),
