@@ -481,3 +481,107 @@ TEST_F( GraphicsTest, RenderTarget )
         Present();
     }
 }
+
+TEST_F( GraphicsTest, Resolve )
+{
+    // create effect
+
+    IEffectRef fx = mFactory->CreateEffect( mDevice, "draw.fxc" );
+    ConstITechniqueRef techDrawRed = fx->GetTechnique( "DrawRedQuad" );
+    ConstITechniqueRef techDrawTexturedQuad = fx->GetTechnique( "DrawTexturedQuad" );
+
+    // create geometry
+
+    float vertPosData[] = {
+        -1.0f,  1.0f,
+         1.0f,  1.0f,
+         1.0f, -1.0f,
+    };
+
+    BufferDesc vertPosBufDesc;
+    vertPosBufDesc.type   = BUFFER_VERTEX;
+    vertPosBufDesc.size   = sizeof( vertPosData );
+    vertPosBufDesc.usage  = USAGE_STATIC;
+    IBufferRef vertPosBuf = mDevice->CreateBuffer(vertPosBufDesc, vertPosData );
+
+    // define vertex attributes
+
+    VertexAttribute vertexAttribs;
+    vertexAttribs.semantic = SEMANTIC_POSITION0;
+    vertexAttribs.format   = FORMAT_RG32_FLOAT;
+    vertexAttribs.stride   = 8;
+    IInputLayoutRef inputLayout = mDevice->CreateInputLayout( 1,
+        &vertexAttribs, techDrawRed->GetShader( SHADER_STAGE_VERTEX ) );
+
+    // define draw params
+
+    DrawParams drawParams;
+    drawParams.primTop     = PRIM_TRIANGLES;
+    drawParams.vertexStart = 0;
+    drawParams.vertexCount = 3;
+
+    // create offscreen render target
+
+    const TextureDesc & rtTexDesc = mDefaultRenderTarget->GetTextureDesc();
+    ITextureRef rtTex = mDevice->CreateTexture( rtTexDesc );
+
+    RenderTargetDesc rtDesc;
+    rtDesc.format = rtTexDesc.format;
+    IRenderTargetRef renderTarget = mDevice->CreateRenderTarget( rtTex, rtDesc );
+
+    // create resolve texture
+
+    TextureDesc resolveTextureDesc = mDefaultRenderTarget->GetTextureDesc();
+    ITextureRef resolveTexture = mDevice->CreateTexture( resolveTextureDesc );
+
+    // clear parameters
+
+    ClearParams cpBlue;
+    cpBlue.color[ 2 ] = 0.3f;
+    cpBlue.color[ 3 ] = 1.0f;
+    cpBlue.mask = CLEAR_COLOR;
+
+    ClearParams cpPurple;
+    cpPurple.color[ 0 ] = 1.0f;
+    cpPurple.color[ 2 ] = 1.0f;
+    cpPurple.color[ 3 ] = 1.0f;
+    cpPurple.mask = CLEAR_COLOR;
+
+    // main loop
+
+    for (int i = 0; i < 60; ++ i)
+    {
+        Tick();
+
+        mContext->BeginScene();
+        {
+            // Draw to texture
+
+            mContext->SetRenderTargets( 1, &mDefaultRenderTarget );
+            mContext->Clear( cpBlue );
+
+            mContext->SetInputLayout( inputLayout );
+            mContext->SetVertexBuffer( 0, vertPosBuf );
+
+            techDrawRed->Dispatch();
+            mContext->Draw( drawParams );
+
+            // Resolve
+
+            mContext->Resolve( resolveTexture, SubResourceIndex() );
+
+            // Draw resolved texture
+
+            mContext->SetRenderTargets( 1, &mDefaultRenderTarget );
+            mContext->Clear( cpPurple );
+
+            mContext->SetTexture( SHADER_STAGE_PIXEL, 0, resolveTexture );
+
+            techDrawTexturedQuad->Dispatch();
+            mContext->DrawScreenQuad();
+        }
+        mContext->EndScene();
+
+        Present();
+    }
+}
