@@ -65,7 +65,7 @@ namespace GFW {
         Unmap( IResourceIn, const SubResourceIndex & );
 
         virtual void
-        UpdateSubresource( IResourceIn, const SubResourceIndex &, const void * data );
+        UpdateSubresource( IResourceIn, const SubResourceIndex &, const SubResourceData & );
 
         virtual void
         Resolve( ITextureIn, const SubResourceIndex & );

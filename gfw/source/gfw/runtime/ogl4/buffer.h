@@ -23,7 +23,7 @@ namespace GFW {
         Unmap( const SubResourceIndex & );
 
         virtual void
-        UpdateSubresource( const SubResourceIndex &, const void * data );
+        UpdateSubresource( const SubResourceIndex &, const SubResourceData & );
 
     public:
         uint32_t

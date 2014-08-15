@@ -429,7 +429,7 @@ namespace GFW {
         }
     }
 
-    void Context::UpdateSubresource( IResourceIn resource, const SubResourceIndex & index, const void * data )
+    void Context::UpdateSubresource( IResourceIn resource, const SubResourceIndex & index, const SubResourceData & data )
     {
         CMN_ASSERT( resource->GetDesc().usage == USAGE_DEFAULT
             || resource->GetDesc().usage == USAGE_STAGING );

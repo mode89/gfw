@@ -84,16 +84,15 @@ namespace GFW {
         VGL( glBindBuffer, mTarget, 0 );
     }
 
-    void Buffer::UpdateSubresource( const SubResourceIndex & index, const void * data )
+    void Buffer::UpdateSubresource( const SubResourceIndex & index, const SubResourceData & data )
     {
         CMN_ASSERT( index.mipSlice == 0 ); // Buffer doesn't have mip slices
         CMN_ASSERT( index.arraySlice == 0 ); // Buffer doesn't have array slices
-
-        uint32_t usage = GetOGLUsage(mDesc.usage);
+        CMN_ASSERT( data.slicePitch <= mDesc.size );
+        CMN_ASSERT( data.rowPitch == 0 || data.rowPitch == data.slicePitch );
 
         VGL( glBindBuffer, mTarget, mHandle );
-        VGL( glBufferData, mTarget, 0, NULL, usage );
-        VGL( glBufferData, mTarget, mDesc.size, data, usage );
+        VGL( glBufferSubData, mTarget, 0, data.slicePitch, data.mem );
         VGL( glBindBuffer, mTarget, 0 );
     }
 

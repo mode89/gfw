@@ -372,8 +372,9 @@ TEST_F( Test, UpdateBuffer )
     uint32_t bufferSize = sizeof(uint32_t) * kDataCount;
 
     BufferDesc bufferDesc;
-    bufferDesc.size  = bufferSize;
-    bufferDesc.type  = BUFFER_VERTEX;
+    bufferDesc.size           = bufferSize;
+    bufferDesc.type           = BUFFER_VERTEX;
+    bufferDesc.cpuAccessFlags = CPU_ACCESS_FLAG_READ;
     IBufferRef buffer = mDevice->CreateBuffer(bufferDesc);
 
     for (int i = 0; i < 60; ++ i)
@@ -385,10 +386,14 @@ TEST_F( Test, UpdateBuffer )
             data[i] = rand();
         }
 
+        SubResourceData srd;
+        srd.mem = data.data();
+        srd.slicePitch = data.size() * sizeof( decltype( data )::value_type );
+
         // Write the buffer
 
         mContext->BeginScene();
-        mContext->UpdateSubresource( buffer, SubResourceIndex(), data.data() );
+        mContext->UpdateSubresource( buffer, SubResourceIndex(), srd );
         mContext->EndScene();
 
         // Compare buffer with the data
