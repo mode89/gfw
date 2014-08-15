@@ -373,7 +373,6 @@ TEST_F( Test, UpdateBuffer )
 
     BufferDesc bufferDesc;
     bufferDesc.size  = bufferSize;
-    bufferDesc.usage = USAGE_DYNAMIC;
     bufferDesc.type  = BUFFER_VERTEX;
     IBufferRef buffer = mDevice->CreateBuffer(bufferDesc);
 

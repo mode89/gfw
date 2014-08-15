@@ -431,6 +431,9 @@ namespace GFW {
 
     void Context::UpdateSubresource( IResourceIn resource, const SubResourceIndex & index, const void * data )
     {
+        CMN_ASSERT( resource->GetDesc().usage == USAGE_DEFAULT
+            || resource->GetDesc().usage == USAGE_STAGING );
+
         switch ( resource->GetType() )
         {
         case RESOURCE_TYPE_BUFFER:
