@@ -51,8 +51,7 @@ namespace GFW {
 
     enum MapType : uint32_t
     {
-        MAP_TYPE_UNKNOWN = 0,
-        MAP_TYPE_READ,
+        MAP_TYPE_READ = 1,
         MAP_TYPE_WRITE,
         MAP_TYPE_READ_WRITE,
     };
