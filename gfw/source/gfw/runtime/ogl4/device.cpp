@@ -10,6 +10,7 @@
 #include "gfw/runtime/ogl4/render_target.h"
 #include "gfw/runtime/ogl4/shader.h"
 #include "gfw/runtime/ogl4/shader_reflect.h"
+#include "gfw/runtime/ogl4/shader_utils.h"
 #include "gfw/runtime/ogl4/swap_chain.h"
 #include "gfw/runtime/ogl4/texture.h"
 
@@ -36,14 +37,59 @@
 
 namespace GFW {
 
+    static const char sResolveVertexShader[] = {
+        R"code(
+
+            #version 440 core
+
+            in vec2 position;
+            out vec2 texcoord;
+
+            void main()
+            {
+                gl_Position = vec4( position, 0.0f, 1.0f );
+                texcoord = position * vec2( 0.5f, -0.5f )
+                    + vec2( 0.5f, 0.5f );
+            }
+
+        )code"
+    };
+
+    static const char sResolveFragmentShader[] = {
+        R"code(
+
+            #version 440 core
+
+            in vec2 texcoord;
+            out vec4 color;
+
+            layout( location = 0 ) uniform sampler2D textureSampler;
+
+            void main()
+            {
+                color = texture( textureSampler, texcoord );
+            }
+
+        )code"
+    };
+
     CMN_THREAD_LOCAL IContext * Device::mCurrentContext = nullptr;
 
     Device::Device( const DeviceParams & params, ISwapChainIn swapChain )
         : mParams( params )
         , mSwapChain( std::static_pointer_cast< SwapChain >( swapChain ) )
         , mNativeContext( mSwapChain->GetDefaultNativeContext() )
+        , mResolveShaderProgram( 0 )
     {
         AUTO_LOCK_CONTEXT;
+
+        uint32_t vertexShader = CompileShader( SHADER_STAGE_VERTEX, sResolveVertexShader );
+        uint32_t fragmentShader = CompileShader( SHADER_STAGE_PIXEL, sResolveFragmentShader );
+
+        mResolveShaderProgram = VGL( glCreateProgram );
+        VGL( glAttachShader, mResolveShaderProgram, vertexShader );
+        VGL( glAttachShader, mResolveShaderProgram, fragmentShader );
+        LinkProgram( mResolveShaderProgram );
 
 #if defined( CMN_DEBUG )
         const uint8_t * extensions = glGetString(GL_EXTENSIONS);
@@ -53,7 +99,10 @@ namespace GFW {
 
     Device::~Device()
     {
-
+        if ( mResolveShaderProgram )
+        {
+            VGL( glDeleteProgram, mResolveShaderProgram );
+        }
     }
 
     void Device::InitializeChildren()

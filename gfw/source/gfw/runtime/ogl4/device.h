@@ -56,6 +56,9 @@ namespace GFW {
         void
         UnlockContext( IContextIn );
 
+        uint32_t
+        GetResolveShaderProgram() const { return mResolveShaderProgram; }
+
         Device( const Device & );
         Device & operator= ( const Device & );
 
@@ -73,7 +76,8 @@ namespace GFW {
         IContextRef                 mDefaultContext;
 
         IRenderTargetRef            mDefaultRenderTarget;
-        //uint32_t                    mResolveFramebuffer;
+
+        uint32_t                    mResolveShaderProgram;
     };
     SHARED_PTR_TYPEDEFS( Device );
 
