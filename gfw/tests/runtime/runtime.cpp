@@ -336,50 +336,47 @@ TEST_F( GraphicsTest, CreateMesh )
 
 TEST_F( Test, MapBuffer )
 {
-    static const uint32_t kDataCount = 100;
+    static const uint32_t kBufferSize = 1024;
 
-    // Allocate system copy of the buffer data
-    std::vector< uint32_t > data( kDataCount );
+    BufferDesc srcBufferDesc;
+    srcBufferDesc.size              = kBufferSize;
+    srcBufferDesc.usage             = USAGE_DYNAMIC;
+    srcBufferDesc.type              = BUFFER_VERTEX;
+    srcBufferDesc.cpuAccessFlags    = CPU_ACCESS_FLAG_WRITE;
+    IBufferRef srcBuffer = mDevice->CreateBuffer( srcBufferDesc );
 
-    uint32_t bufferSize = sizeof(uint32_t) * kDataCount;
+    BufferDesc dstBufferDesc = srcBufferDesc;
+    dstBufferDesc.usage             = USAGE_STAGING;
+    dstBufferDesc.cpuAccessFlags    = CPU_ACCESS_FLAG_READ;
+    IBufferRef dstBuffer = mDevice->CreateBuffer( dstBufferDesc );
 
-    BufferDesc bufferDesc;
-    bufferDesc.size  = bufferSize;
-    bufferDesc.usage = USAGE_DYNAMIC;
-    bufferDesc.cpuAccessFlags = CPU_ACCESS_FLAG_READ | CPU_ACCESS_FLAG_WRITE;
-    bufferDesc.type  = BUFFER_VERTEX;
-    IBufferRef buffer = mDevice->CreateBuffer(bufferDesc);
-
-    for (int i = 0; i < 60; ++ i)
+    for ( int i = 0; i < 60; ++ i )
     {
-        // Prepare a random data
-
-        for (uint32_t i = 0; i < kDataCount; ++ i)
-        {
-            data[i] = rand();
-        }
-
-        // Write the buffer
-
         mContext->BeginScene();
         {
-            SubResourceData mappedData;
-            mContext->Map( buffer, SubResourceIndex(), MAP_TYPE_WRITE, mappedData );
-            ASSERT_TRUE( mappedData.mem != nullptr );
-            memcpy( mappedData.mem, data.data(), bufferSize );
-            mContext->Unmap( buffer, SubResourceIndex() );
-        }
-        mContext->EndScene();
+            // prepare data
+            uint8_t data[ kBufferSize ];
+            for ( uint32_t i = 0; i < kBufferSize; ++ i )
+            {
+                data[ i ] = static_cast< uint8_t >( std::rand() );
+            }
 
-        // Compare buffer with the data
+            // write source buffer
+            SubResourceData srcMappedData;
+            mContext->Map( srcBuffer, SubResourceIndex(), MAP_TYPE_WRITE, srcMappedData );
+                ASSERT_TRUE( srcMappedData.mem != nullptr );
+                memcpy( srcMappedData.mem, data, kBufferSize );
+            mContext->Unmap( srcBuffer, SubResourceIndex() );
 
-        mContext->BeginScene();
-        {
-            SubResourceData mappedData;
-            mContext->Map( buffer, SubResourceIndex(), MAP_TYPE_READ, mappedData );
-            ASSERT_TRUE( mappedData.mem != nullptr );
-            ASSERT_TRUE( memcmp( mappedData.mem, data.data(), bufferSize ) == 0 );
-            mContext->Unmap( buffer, SubResourceIndex() );
+            // copy source buffer to destination buffer
+            mContext->CopyResource( dstBuffer, srcBuffer );
+
+            // read destination buffer
+            SubResourceData dstMappedData;
+            mContext->Map( dstBuffer, SubResourceIndex(), MAP_TYPE_READ, dstMappedData );
+                ASSERT_TRUE( dstMappedData.mem != nullptr );
+                ASSERT_TRUE( memcmp( dstMappedData.mem, data, kBufferSize ) == 0 );
+            mContext->Unmap( dstBuffer, SubResourceIndex() );
         }
         mContext->EndScene();
     }
