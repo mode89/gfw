@@ -57,6 +57,9 @@ namespace GFW {
         UpdateSubresource( IResourceIn, const SubResourceIndex &, const SubResourceData & ) = 0;
 
         virtual void
+        CopyResource( IResourceIn dst, IResourceIn src ) = 0;
+
+        virtual void
         Resolve( ITextureIn, const SubResourceIndex & ) = 0;
 
     public:

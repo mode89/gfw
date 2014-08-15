@@ -447,6 +447,19 @@ namespace GFW {
         }
     }
 
+    void Context::CopyResource( IResourceIn dst, IResourceIn src )
+    {
+        CMN_ASSERT( dst );
+        CMN_ASSERT( src );
+        CMN_ASSERT( dst->GetType() == src->GetType() );
+
+        switch ( dst->GetType() )
+        {
+        default:
+            CMN_FAIL(); // TODO not yet implemented
+        };
+    }
+
     void Context::Resolve( ITextureIn texture, const SubResourceIndex & index )
     {
         if ( texture )
