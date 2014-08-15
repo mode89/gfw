@@ -76,6 +76,7 @@
     F( PFNGLBINDBUFFERPROC,                                 glBindBuffer ) \
     F( PFNGLBUFFERDATAPROC,                                 glBufferData ) \
     F( PFNGLBUFFERSUBDATAPROC,                              glBufferSubData ) \
+    F( PFNGLBUFFERSTORAGEPROC,                              glBufferStorage ) \
     F( PFNGLMAPBUFFERPROC,                                  glMapBuffer ) \
     F( PFNGLMAPBUFFERRANGEPROC,                             glMapBufferRange ) \
     F( PFNGLUNMAPBUFFERPROC,                                glUnmapBuffer ) \
