@@ -67,6 +67,9 @@ namespace GFW {
         virtual void
         UpdateSubresource( IResourceIn, const SubResourceIndex &, const void * data );
 
+        virtual void
+        Resolve( ITextureIn, const SubResourceIndex & );
+
     public:
         void
         FlushState();

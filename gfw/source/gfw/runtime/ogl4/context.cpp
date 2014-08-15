@@ -226,6 +226,7 @@ namespace GFW {
     {
         // Setup shaders
 
+        VGL( glBindProgramPipeline, mProgramPipeline );
         for ( int stage = 0; stage < SHADER_STAGE_COUNT; ++ stage )
         {
             ConstShaderRef shader = mShaders[ stage ];
@@ -437,6 +438,61 @@ namespace GFW {
             break;
         default:
             CMN_FAIL();
+        }
+    }
+
+    void Context::Resolve( ITextureIn texture, const SubResourceIndex & index )
+    {
+        if ( texture )
+        {
+            CMN_ASSERT( mRenderTargets[ 0 ] );
+
+            // setup shaders
+
+                uint32_t shaderProgram = mDevice.lock()->GetResolveShaderProgram();
+                VGL( glUseProgram, shaderProgram );
+
+            // setup buffers
+
+                VGL( glBindBuffer, GL_ARRAY_BUFFER, mScreenQuadBuffer );
+                VGL( glVertexAttribPointer, 0, 2, GL_FLOAT, GL_TRUE,
+                    2 * sizeof( float ), nullptr );
+                VGL( glEnableVertexAttribArray, 0 );
+                VGL( glBindBuffer, GL_ARRAY_BUFFER, 0 );
+
+            // setup textures
+
+                ConstTextureRef rtTex = std::static_pointer_cast< const Texture >(
+                    mRenderTargets[ 0 ]->GetTexture() );
+                uint64_t rtTexHandle = VGL( glGetTextureHandleARB, rtTex->GetHandle() );
+                VGL( glMakeTextureHandleResidentARB, rtTexHandle );
+                VGL( glUniformHandleui64ARB, 0, rtTexHandle );
+
+            // setup framebuffer
+
+                TextureRef texturePlat = std::static_pointer_cast< Texture >( texture );
+                VGL( glBindFramebuffer, GL_DRAW_FRAMEBUFFER, mDrawFramebuffer );
+                VGL( glFramebufferTexture, GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+                    texturePlat->GetHandle(), index.mipSlice );
+                VGL( glDrawBuffer, GL_COLOR_ATTACHMENT0 );
+
+#ifdef CMN_DEBUG
+                int32_t status  = VGL( glCheckFramebufferStatus, GL_DRAW_FRAMEBUFFER );
+                CMN_ASSERT( status == GL_FRAMEBUFFER_COMPLETE );
+#endif
+
+            // draw
+
+                VGL( glDrawArrays, GL_TRIANGLE_STRIP, 0, 4 );
+
+            // release resources
+
+                VGL( glMakeTextureHandleNonResidentARB, rtTexHandle );
+                VGL( glUseProgram, 0 );
+
+            // set dirty flags
+
+                mDirtyFlags.renderTargets = true;
         }
     }
 

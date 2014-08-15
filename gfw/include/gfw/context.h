@@ -56,6 +56,9 @@ namespace GFW {
         virtual void
         UpdateSubresource( IResourceIn, const SubResourceIndex &, const void * data ) = 0;
 
+        virtual void
+        Resolve( ITextureIn, const SubResourceIndex & ) = 0;
+
     public:
         virtual
         ~IContext() { }

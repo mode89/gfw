@@ -12,6 +12,7 @@ gfw
         % serialize texture-sampler pairs into ShaderBinary::mData
         % using bindless textures
         % offscreen swap-chain
+        % resolve texture
         copy device's resolve shader program to context (at ctor)
             utility function for copying shader program
         constant buffers
