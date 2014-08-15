@@ -157,6 +157,8 @@ namespace GFW {
 
     ITextureRef Device::CreateTexture( const TextureDesc & desc, const SubResourceData * initialData /* = nullptr */ )
     {
+        CMN_ASSERT( desc.format != FORMAT_UNKNOWN );
+
         AUTO_LOCK_CONTEXT;
         return TextureRef( new Texture( desc, initialData, shared_from_this() ),
             DEVICE_CHILD_DELETER( Texture ) );
