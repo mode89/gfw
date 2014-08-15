@@ -150,6 +150,11 @@ namespace GFW {
 
     IBufferRef Device::CreateBuffer( const BufferDesc & desc, const SubResourceData * initialData /* = nullptr */ )
     {
+        CMN_ASSERT( ( desc.cpuAccessFlags & CPU_ACCESS_FLAG_READ ) ? // only staging resource can be read
+            ( desc.usage == USAGE_STAGING ) : 1 );
+        CMN_ASSERT( ( desc.cpuAccessFlags & CPU_ACCESS_FLAG_WRITE ) ? // only dynamice or staging resource can be written
+            ( desc.usage == USAGE_STAGING || desc.usage == USAGE_DYNAMIC ) : 1 );
+
         AUTO_LOCK_CONTEXT;
         return BufferRef( new Buffer( desc, initialData, shared_from_this() ),
             DEVICE_CHILD_DELETER( Buffer ) );
@@ -158,6 +163,10 @@ namespace GFW {
     ITextureRef Device::CreateTexture( const TextureDesc & desc, const SubResourceData * initialData /* = nullptr */ )
     {
         CMN_ASSERT( desc.format != FORMAT_UNKNOWN );
+        CMN_ASSERT( ( desc.cpuAccessFlags & CPU_ACCESS_FLAG_READ ) ? // only staging resource can be read
+            ( desc.usage == USAGE_STAGING ) : 1 );
+        CMN_ASSERT( ( desc.cpuAccessFlags & CPU_ACCESS_FLAG_WRITE ) ? // only dynamice or staging resource can be written
+            ( desc.usage == USAGE_STAGING || desc.usage == USAGE_DYNAMIC ) : 1 );
 
         AUTO_LOCK_CONTEXT;
         return TextureRef( new Texture( desc, initialData, shared_from_this() ),
