@@ -7,6 +7,9 @@
 namespace GFW {
 
     uint32_t
+    GetTextureMipCount( Format, uint32_t width, uint32_t height );
+
+    uint32_t
     GetTextureMipWidth( Format, uint32_t width, uint32_t mipLevel );
 
     uint32_t
