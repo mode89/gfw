@@ -16,8 +16,9 @@ namespace GFW {
 
     enum CpuAccessFlag
     {
-        CPU_ACCESS_FLAG_READ    = ( 1 << 0 ),   // only staging resources
-        CPU_ACCESS_FLAG_WRITE   = ( 1 << 1 ),   // only staging or dynamic resources
+        CPU_ACCESS_FLAG_READ        = ( 1 << 0 ),   // only staging resources
+        CPU_ACCESS_FLAG_WRITE       = ( 1 << 1 ),   // only staging or dynamic resources
+        CPU_ACCESS_FLAG_READ_WRITE  = ( CPU_ACCESS_FLAG_READ | CPU_ACCESS_FLAG_WRITE ),
     };
 
     struct SubResourceIndex
