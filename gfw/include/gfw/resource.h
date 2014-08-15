@@ -67,11 +67,11 @@ namespace GFW {
     struct ResourceDesc
     {
         Usage       usage;
-        uint32_t    access;
+        uint32_t    cpuAccessFlags;
 
         ResourceDesc()
             : usage(USAGE_DEFAULT)
-            , access(0)
+            , cpuAccessFlags( 0 )
         {}
     };
 
