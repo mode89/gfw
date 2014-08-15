@@ -16,8 +16,8 @@ namespace GFW {
         virtual ResourceType
         GetType() const { return RESOURCE_TYPE_BUFFER; }
 
-        virtual void *
-        Map( const SubResourceIndex &, MapType );
+        virtual void
+        Map( const SubResourceIndex &, MapType, SubResourceData & );
 
         virtual void
         Unmap( const SubResourceIndex & );

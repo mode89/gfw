@@ -36,6 +36,19 @@ namespace GFW {
         {}
     };
 
+    struct SubResourceData
+    {
+        void *      mem;
+        uint32_t    rowPitch;
+        uint32_t    slicePitch;
+
+        SubResourceData()
+            : mem( nullptr )
+            , rowPitch( 0 )
+            , slicePitch( 0 )
+        {}
+    };
+
     enum MapType : uint32_t
     {
         MAP_TYPE_UNKNOWN = 0,

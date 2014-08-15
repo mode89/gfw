@@ -395,20 +395,23 @@ namespace GFW {
         mDevice.lock()->UnlockContext( shared_from_this() );
     }
 
-    void * Context::Map( IResourceIn resource, const SubResourceIndex & index, MapType mapType )
+    void Context::Map(
+        IResourceIn resource,
+        const SubResourceIndex & index,
+        MapType mapType,
+        SubResourceData & mappedData )
     {
         switch ( resource->GetType() )
         {
         case RESOURCE_TYPE_BUFFER:
             {
                 BufferRef buffer = std::static_pointer_cast< Buffer >( resource );
-                return buffer->Map( index, mapType ); 
+                buffer->Map( index, mapType, mappedData );
+                return;
             }
         default:
             CMN_FAIL();
         }
-
-        return nullptr;
     }
 
     void Context::Unmap( IResourceIn resource, const SubResourceIndex & index )

@@ -342,8 +342,9 @@ TEST_F( Test, MapBuffer )
 
         mContext->BeginScene();
         {
-            uint32_t * mappedData = static_cast< uint32_t * >( mContext->Map( buffer, SubResourceIndex(), MAP_TYPE_WRITE ) );
-            memcpy( mappedData, data.data(), bufferSize );
+            SubResourceData mappedData;
+            mContext->Map( buffer, SubResourceIndex(), MAP_TYPE_WRITE, mappedData );
+            memcpy( mappedData.mem, data.data(), bufferSize );
             mContext->Unmap( buffer, SubResourceIndex() );
         }
         mContext->EndScene();
@@ -352,8 +353,9 @@ TEST_F( Test, MapBuffer )
 
         mContext->BeginScene();
         {
-            uint32_t * mappedData = static_cast< uint32_t * >( mContext->Map( buffer, SubResourceIndex(), MAP_TYPE_READ ) );
-            ASSERT_TRUE( memcmp( mappedData, data.data(), bufferSize ) == 0 );
+            SubResourceData mappedData;
+            mContext->Map( buffer, SubResourceIndex(), MAP_TYPE_READ, mappedData );
+            ASSERT_TRUE( memcmp( mappedData.mem, data.data(), bufferSize ) == 0 );
             mContext->Unmap( buffer, SubResourceIndex() );
         }
         mContext->EndScene();
@@ -393,8 +395,9 @@ TEST_F( Test, UpdateBuffer )
         // Compare buffer with the data
 
         mContext->BeginScene();
-        void * mappedData = mContext->Map( buffer, SubResourceIndex(), MAP_TYPE_READ );
-        ASSERT_TRUE( memcmp( mappedData, data.data(), bufferSize ) == 0 );
+        SubResourceData mappedData;
+        mContext->Map( buffer, SubResourceIndex(), MAP_TYPE_READ, mappedData );
+        ASSERT_TRUE( memcmp( mappedData.mem, data.data(), bufferSize ) == 0 );
         mContext->Unmap( buffer, SubResourceIndex() );
         mContext->EndScene();
     }

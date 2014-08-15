@@ -46,7 +46,7 @@ namespace GFW {
         }
     }
 
-    void * Buffer::Map( const SubResourceIndex & index, MapType mapType )
+    void Buffer::Map( const SubResourceIndex & index, MapType mapType, SubResourceData & mappedData )
     {
         CMN_ASSERT( index.mipSlice == 0 ); // Buffer doesn't have mip slices
         CMN_ASSERT( index.arraySlice == 0 ); // Buffer doesn't have array slices
@@ -68,10 +68,10 @@ namespace GFW {
         }
 
         VGL( glBindBuffer, mTarget, mHandle );
-        void * retVal = VGL( glMapBuffer, mTarget, access );
+        mappedData.mem        = VGL( glMapBuffer, mTarget, access );
+        mappedData.rowPitch   = mDesc.size;
+        mappedData.slicePitch = mDesc.size;
         VGL( glBindBuffer, mTarget, 0 );
-
-        return retVal;
     }
 
     void Buffer::Unmap( const SubResourceIndex & index )
