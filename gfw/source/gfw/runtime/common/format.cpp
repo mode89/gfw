@@ -1,13 +1,12 @@
 #include "cmn/trace.h"
-
-#include "gfw/runtime/common/format.h"
+#include "gfw/format.h"
 
 namespace GFW {
 
-#define FORMATS             /*  Elem type    Elem num  */ \
-    F(FORMAT_RG32_FLOAT,        TYPE_FLOAT,     2       ) \
-    F(FORMAT_RGB32_FLOAT,       TYPE_FLOAT,     3       ) \
-    F(FORMAT_RGBA8_UNORM,       TYPE_UBYTE,     4       ) \
+#define FORMATS             /*  Elem type    Elem num   Bits    */ \
+    F(FORMAT_RG32_FLOAT,        TYPE_FLOAT,     2,      64      ) \
+    F(FORMAT_RGB32_FLOAT,       TYPE_FLOAT,     3,      96      ) \
+    F(FORMAT_RGBA8_UNORM,       TYPE_UBYTE,     4,      32      ) \
 
 #define TYPES               /* Size   */ \
     T(TYPE_FLOAT,               4       ) \
@@ -15,11 +14,11 @@ namespace GFW {
     T(TYPE_UINT,                4       ) \
     T(TYPE_UBYTE,               1       ) \
 
-    uint32_t GetFormatElementNumber( Format format )
+    unsigned GetFormatElementNumber( Format format )
     {
         switch (format)
         {
-        #define F(fmt, type, elNum) case fmt : return elNum;
+        #define F( fmt, type, elNum, bits ) case fmt : return elNum;
             FORMATS
         #undef F
 
@@ -34,7 +33,7 @@ namespace GFW {
     {
         switch (format)
         {
-        #define F(fmt, type, elNum) case fmt : return type;
+        #define F( fmt, type, elNum, bits ) case fmt : return type;
             FORMATS
         #undef F
 
@@ -45,7 +44,7 @@ namespace GFW {
         return TYPE_UNKNOWN;
     }
 
-    uint32_t GetTypeSize( Type type )
+    unsigned GetTypeSize( Type type )
     {
         switch (type)
         {
@@ -57,6 +56,19 @@ namespace GFW {
             CMN_FAIL();
         }
 
+        return 0;
+    }
+
+    unsigned GetFormatBitsPerPixel( Format format )
+    {
+        switch ( format )
+        {
+        #define F( fmt, type, elNum, bits ) case fmt : return bits;
+            FORMATS
+        #undef F
+        default:
+            CMN_FAIL();
+        }
         return 0;
     }
 

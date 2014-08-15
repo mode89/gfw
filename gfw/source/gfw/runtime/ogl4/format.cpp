@@ -1,7 +1,4 @@
 #include "cmn/trace.h"
-
-#include "gfw/runtime/common/format.h"
-
 #include "gfw/runtime/ogl4/format.h"
 #include "gfw/runtime/ogl4/functions.h"
 

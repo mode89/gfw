@@ -20,6 +20,18 @@ namespace GFW {
         FORMAT_RGBA8_UNORM,
     };
 
+    unsigned
+    GetFormatElementNumber( Format );
+
+    Type
+    GetFormatElementType( Format );
+
+    unsigned
+    GetFormatBitsPerPixel( Format );
+
+    unsigned
+    GetTypeSize( Type );
+
 } // namespace GFW
 
 #endif // __GFW_BASE_FORMAT_H__
