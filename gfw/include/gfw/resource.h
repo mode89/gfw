@@ -14,10 +14,10 @@ namespace GFW {
         USAGE_STAGING           // Can be read/written by GPU (copy to/from) and CPU (update, map read/write)
     };
 
-    enum CpuAccessFlags
+    enum CpuAccessFlag
     {
-        CPU_ACCESS_READ  = (1 << 0),    // Only dynamic or staging resources
-        CPU_ACCESS_WRITE = (1 << 1)     // Only staging resources
+        CPU_ACCESS_FLAG_READ    = ( 1 << 0 ),   // only staging resources
+        CPU_ACCESS_FLAG_WRITE   = ( 1 << 1 ),   // only staging or dynamic resources
     };
 
     struct SubResourceIndex
