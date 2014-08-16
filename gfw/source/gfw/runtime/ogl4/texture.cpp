@@ -57,16 +57,6 @@ namespace GFW {
             VGL( glGenBuffers, 1, &mBufferHandle );
             CMN_ASSERT( mBufferHandle != 0 );
 
-            uint32_t flags = GL_CLIENT_STORAGE_BIT;
-            if ( mDesc.cpuAccessFlags & CPU_ACCESS_FLAG_READ )
-            {
-                flags |= GL_MAP_READ_BIT;
-            }
-            if ( mDesc.cpuAccessFlags & CPU_ACCESS_FLAG_WRITE )
-            {
-                flags |= GL_MAP_WRITE_BIT;
-            }
-
             VGL( glBindBuffer, GL_PIXEL_PACK_BUFFER, mBufferHandle );
             {
                 uint32_t size = GetTextureSize( mDesc.format, mDesc.width, mDesc.height, mDesc.mipLevels );
@@ -83,6 +73,16 @@ namespace GFW {
                         std::memcpy( tempData.get() + offset, initialData[ mipSlice ].mem, mipSize );
                         offset += mipSize;
                     }
+                }
+
+                uint32_t flags = GL_CLIENT_STORAGE_BIT;
+                if ( mDesc.cpuAccessFlags & CPU_ACCESS_FLAG_READ )
+                {
+                    flags |= GL_MAP_READ_BIT;
+                }
+                if ( mDesc.cpuAccessFlags & CPU_ACCESS_FLAG_WRITE )
+                {
+                    flags |= GL_MAP_WRITE_BIT;
                 }
 
                 VGL( glBufferStorage, GL_PIXEL_PACK_BUFFER, size, tempData.get(), flags );
