@@ -2,25 +2,25 @@
 
 namespace GFW {
 
-    static inline uint32_t TextureUtils_GetMipDim( uint32_t dim, uint32_t mipSlice )
+    static inline unsigned TextureUtils_GetMipDim( unsigned dim, unsigned mipSlice )
     {
         dim >>= mipSlice;
         return dim ? dim : 1;
     }
 
-    static inline uint32_t TextureUtils_GetPitch( uint32_t width, uint32_t bpp )
+    static inline unsigned TextureUtils_GetPitch( unsigned width, unsigned bpp )
     {
         return ( ( width * bpp + 7 ) / 8 + 3 ) & ~0x03; // 4 bytes alignment
     }
 
-    static inline uint32_t TextureUtils_GetSlicePitch( uint32_t height, uint32_t pitch )
+    static inline unsigned TextureUtils_GetSlicePitch( unsigned height, unsigned pitch )
     {
         return ( height * pitch + 15 ) & ~0x0F; // 16 bytes alignment
     }
 
-    uint32_t GetTextureMipCount( Format format, uint32_t width, uint32_t height )
+    unsigned GetTextureMipCount( Format format, unsigned width, unsigned height )
     {
-        uint32_t retval = 1;
+        unsigned retval = 1;
         width = ( width > height ) ? width : height;
         while ( width > 1 )
         {
@@ -30,39 +30,44 @@ namespace GFW {
         return retval;
     }
 
-    uint32_t GetTextureMipWidth( Format format, uint32_t width, uint32_t mipSlice )
+    unsigned GetTextureMipWidth( Format format, unsigned width, unsigned mipSlice )
     {
         return TextureUtils_GetMipDim( width, mipSlice );
     }
 
-    uint32_t GetTextureMipHeight( Format format, uint32_t height, uint32_t mipSlice )
+    unsigned GetTextureMipHeight( Format format, unsigned height, unsigned mipSlice )
     {
         return TextureUtils_GetMipDim( height, mipSlice );
     }
 
-    uint32_t GetTextureMipSize( Format format, uint32_t width, uint32_t height, uint32_t mipSlice )
+    unsigned GetTextureMipSize( Format format, unsigned width, unsigned height, unsigned mipSlice )
     {
-        uint32_t bpp        = GetFormatBitsPerPixel( format );
-        uint32_t mipWidth   = TextureUtils_GetMipDim( width, mipSlice );
-        uint32_t mipHeight  = TextureUtils_GetMipDim( height, mipSlice );
-        uint32_t pitch      = TextureUtils_GetPitch( mipWidth, bpp );
+        unsigned bpp        = GetFormatBitsPerPixel( format );
+        unsigned mipWidth   = TextureUtils_GetMipDim( width, mipSlice );
+        unsigned mipHeight  = TextureUtils_GetMipDim( height, mipSlice );
+        unsigned pitch      = TextureUtils_GetPitch( mipWidth, bpp );
         return TextureUtils_GetSlicePitch( mipHeight, pitch );
     }
 
-    uint32_t GetTextureSize( Format format, uint32_t width, uint32_t height, uint32_t mipCount )
+    unsigned GetTextureMipOffset( Format format, unsigned width, unsigned height, unsigned mipSlice )
     {
-        uint32_t retval = 0;
-        uint32_t bpp = GetFormatBitsPerPixel( format );
-        while ( ( width > 1 || height > 1 ) && mipCount )
+        unsigned retval = 0;
+        unsigned bpp = GetFormatBitsPerPixel( format );
+        while ( ( width > 1 || height > 1 ) && mipSlice )
         {
-            uint32_t pitch = TextureUtils_GetPitch( width, bpp );
-            uint32_t mipSize = TextureUtils_GetSlicePitch( height, pitch );
+            unsigned pitch = TextureUtils_GetPitch( width, bpp );
+            unsigned mipSize = TextureUtils_GetSlicePitch( height, pitch );
             retval += mipSize;
-            mipCount --;
+            mipSlice --;
             if ( width > 1 ) width >>= 1;
             if ( height > 1 ) height >>= 1;
         }
         return retval;
+    }
+
+    unsigned GetTextureSize( Format format, unsigned width, unsigned height, unsigned mipCount )
+    {
+        return GetTextureMipOffset( format, width, height, mipCount );
     }
 
 } // namespace GFW

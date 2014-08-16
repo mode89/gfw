@@ -2,24 +2,26 @@
 #define __GFW_RUNTIME_COMMON_TEXTURE_UTILS_H__
 
 #include "gfw/format.h"
-#include <cstdint>
 
 namespace GFW {
 
-    uint32_t
-    GetTextureMipCount( Format, uint32_t width, uint32_t height );
+    unsigned
+    GetTextureMipCount( Format, unsigned width, unsigned height );
 
-    uint32_t
-    GetTextureMipWidth( Format, uint32_t width, uint32_t mipSlice );
+    unsigned
+    GetTextureMipWidth( Format, unsigned width, unsigned mipSlice );
 
-    uint32_t
-    GetTextureMipHeight( Format, uint32_t height, uint32_t mipSlice );
+    unsigned
+    GetTextureMipHeight( Format, unsigned height, unsigned mipSlice );
 
-    uint32_t
-    GetTextureMipSize( Format, uint32_t height, uint32_t width, uint32_t mipSlice );
+    unsigned
+    GetTextureMipSize( Format, unsigned height, unsigned width, unsigned mipSlice );
 
-    uint32_t
-    GetTextureSize( Format, uint32_t width, uint32_t height, uint32_t mipCount );
+    unsigned
+    GetTextureMipOffset( Format, unsigned height, unsigned width, unsigned mipSlice );
+
+    unsigned
+    GetTextureSize( Format, unsigned width, unsigned height, unsigned mipCount );
 
 } // namespace GFW
 
