@@ -36,6 +36,7 @@
     \
     F( PFNGLTEXSUBIMAGE2DPROC,                              glTexSubImage2D ) \
     F( PFNGLTEXIMAGE2DPROC,                                 glTexImage2D ) \
+    F( PFNGLGETTEXIMAGEPROC,                                glGetTexImage ) \
     F( PFNGLTEXPARAMETERIPROC,                              glTexParameteri ) \
     \
     F( PFNGLDRAWBUFFERPROC,                                 glDrawBuffer ) \
@@ -120,6 +121,7 @@
     F( PFNGLACTIVETEXTUREPROC,                              glActiveTexture ) \
     F( PFNGLBINDTEXTUREPROC,                                glBindTexture ) \
     F( PFNGLTEXSTORAGE2DPROC,                               glTexStorage2D ) \
+    F( PFNGLCOPYIMAGESUBDATAPROC,                           glCopyImageSubData ) \
     F( PFNGLGETTEXTUREHANDLEARBPROC,                        glGetTextureHandleARB ) \
     F( PFNGLGETTEXTURESAMPLERHANDLEARBPROC,                 glGetTextureSamplerHandlerARB ) \
     F( PFNGLMAKETEXTUREHANDLERESIDENTARBPROC,               glMakeTextureHandleResidentARB ) \

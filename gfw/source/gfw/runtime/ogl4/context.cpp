@@ -518,7 +518,8 @@ namespace GFW {
     {
         CMN_ASSERT( dst );
         CMN_ASSERT( src );
-        CMN_ASSERT( dst->GetType() == src->GetType() );
+        CMN_ASSERT( dst != src );   // cannot be the same resource
+        CMN_ASSERT( dst->GetType() == src->GetType() ); // must be the same type
 
         switch ( dst->GetType() )
         {
@@ -539,8 +540,82 @@ namespace GFW {
                 VGL( glBindBuffer, GL_COPY_WRITE_BUFFER, 0 );
             }
             return;
+        case RESOURCE_TYPE_TEXTURE:
+            {
+                TextureRef srcTexture = std::static_pointer_cast< Texture >( src );
+                TextureRef dstTexture = std::static_pointer_cast< Texture >( dst );
+
+                const TextureDesc & srcDesc = srcTexture->GetDesc();
+                const TextureDesc & dstDesc = dstTexture->GetDesc();
+
+                CMN_ASSERT( srcDesc.width == dstDesc.width );
+                CMN_ASSERT( srcDesc.height == dstDesc.height );
+                CMN_ASSERT( srcDesc.mipLevels == dstDesc.mipLevels );
+
+                // none of the textures is staging
+                if ( srcDesc.usage != USAGE_STAGING &&
+                     dstDesc.usage != USAGE_STAGING )
+                {
+                    for ( uint32_t mipSlice = 0; mipSlice < srcDesc.mipLevels; ++ mipSlice )
+                    {
+                        VGL( glCopyImageSubData,
+                            srcTexture->GetHandle(), GL_TEXTURE_2D, mipSlice, 0, 0, 0,
+                            dstTexture->GetHandle(), GL_TEXTURE_2D, mipSlice, 0, 0, 0,
+                            srcDesc.width, srcDesc.height, 1 );
+                    }
+                }
+                // destination texture is staging
+                else if ( srcDesc.usage != USAGE_STAGING &&
+                    dstDesc.usage == USAGE_STAGING )
+                {
+                    VGL( glBindTexture, GL_TEXTURE_2D, srcTexture->GetHandle() );
+                    VGL( glBindBuffer, GL_PIXEL_PACK_BUFFER, dstTexture->GetBufferHandle() );
+                    for ( uint32_t mipSlice = 0; mipSlice < srcDesc.mipLevels; ++ mipSlice )
+                    {
+                        size_t mipOffset = GetTextureMipOffset( dstDesc.format,
+                            dstDesc.width, dstDesc.height, mipSlice );
+                        VGL( glGetTexImage, GL_TEXTURE_2D, mipSlice, GetOGLFormat( dstDesc.format ),
+                            GetOGLType( dstDesc.format ), reinterpret_cast< void * >( mipOffset ) );
+                    }
+                    VGL( glBindTexture, GL_TEXTURE_2D, 0 );
+                    VGL( glBindBuffer, GL_PIXEL_PACK_BUFFER, 0 );
+                }
+                // source texture is staging
+                else if ( srcDesc.usage == USAGE_STAGING &&
+                    dstDesc.usage != USAGE_STAGING )
+                {
+                    VGL( glBindBuffer, GL_PIXEL_UNPACK_BUFFER, srcTexture->GetBufferHandle() );
+                    VGL( glBindTexture, GL_TEXTURE_2D, dstTexture->GetHandle() );
+                    for ( uint32_t mipSlice = 0; mipSlice < srcDesc.mipLevels; ++ mipSlice )
+                    {
+                        size_t mipOffset = GetTextureMipOffset( srcDesc.format,
+                            srcDesc.width, srcDesc.height, mipSlice );
+                        VGL( glTexSubImage2D, GL_TEXTURE_2D, mipSlice, 0, 0, dstDesc.width, dstDesc.height,
+                            GetOGLFormat( srcDesc.format ), GetOGLType( srcDesc.format ),
+                            reinterpret_cast< void * >( mipOffset ) );
+                    }
+                    VGL( glBindBuffer, GL_PIXEL_UNPACK_BUFFER, 0 );
+                    VGL( glBindTexture, GL_TEXTURE_2D, 0 );
+                }
+                // both textures are staging
+                else if ( srcDesc.usage == USAGE_STAGING &&
+                    dstDesc.usage == USAGE_STAGING )
+                {
+                    VGL( glBindBuffer, GL_COPY_READ_BUFFER, srcTexture->GetBufferHandle() );
+                    VGL( glBindBuffer, GL_COPY_WRITE_BUFFER, dstTexture->GetBufferHandle() );
+
+                    uint32_t size = GetTextureSize( srcDesc.format, srcDesc.width,
+                        srcDesc.height, srcDesc.mipLevels );
+                    VGL( glCopyBufferSubData, GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER,
+                        0, 0, size );
+
+                    VGL( glBindBuffer, GL_COPY_READ_BUFFER, 0 );
+                    VGL( glBindBuffer, GL_COPY_WRITE_BUFFER, 0 );
+                }
+            }
+            return;
         default:
-            CMN_FAIL(); // TODO not yet implemented
+            CMN_FAIL();
         };
     }
 
