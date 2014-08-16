@@ -1,5 +1,6 @@
 #include "cmn/trace.h"
 #include "cmn/crc32.h"
+#include "gfw/texture_utils.h"
 #include "gfw/runtime/common/device_child.inl"
 #include "gfw/runtime/common/semantic.h"
 #include "gfw/runtime/ogl4/buffer.h"
@@ -415,8 +416,39 @@ namespace GFW {
             {
                 BufferRef buffer = std::static_pointer_cast< Buffer >( resource );
                 buffer->Map( index, mapType, mappedData );
-                return;
             }
+            return;
+        case RESOURCE_TYPE_TEXTURE:
+            {
+                TextureRef texture = std::static_pointer_cast< Texture >( resource );
+                const TextureDesc & desc = texture->GetDesc();
+
+                VGL( glBindBuffer, GL_PIXEL_UNPACK_BUFFER, texture->GetBufferHandle() );
+                {
+                    uint32_t offset = GetTextureMipOffset( desc.format, desc.width, desc.height, index.mipSlice );
+                    uint32_t size = GetTextureMipSize( desc.format, desc.width, desc.height, index.mipSlice );
+                    uint32_t access = 0;
+                    switch ( mapType )
+                    {
+                    case MAP_TYPE_READ:
+                        access = GL_MAP_READ_BIT;
+                        break;
+                    case MAP_TYPE_WRITE:
+                        access = GL_MAP_WRITE_BIT;
+                        break;
+                    case MAP_TYPE_READ_WRITE:
+                        access = GL_MAP_READ_BIT | GL_MAP_WRITE_BIT;
+                        break;
+                    default:
+                        CMN_FAIL();
+                    }
+                    mappedData.mem = VGL( glMapBufferRange, GL_PIXEL_UNPACK_BUFFER, offset, size, access );
+                    mappedData.slicePitch = size;
+                    mappedData.rowPitch = GetTextureMipPitch( desc.format, desc.width, index.mipSlice );
+                }
+                VGL( glBindBuffer, GL_PIXEL_UNPACK_BUFFER, 0 );
+            }
+            return;
         default:
             CMN_FAIL();
         }
@@ -431,7 +463,33 @@ namespace GFW {
                 BufferRef buffer = std::static_pointer_cast< Buffer >( resource );
                 buffer->Unmap( index );
             }
-            break;
+            return;
+        case RESOURCE_TYPE_TEXTURE:
+            {
+                TextureRef texture = std::static_pointer_cast< Texture >( resource );
+                const TextureDesc & desc = texture->GetDesc();
+
+                VGL( glBindBuffer, GL_PIXEL_UNPACK_BUFFER, texture->GetBufferHandle() );
+                {
+                    VGL( glUnmapBuffer, GL_PIXEL_UNPACK_BUFFER );
+
+                    // update texture
+                    if ( desc.usage == USAGE_DYNAMIC )
+                    {
+                        uint32_t mipWidth  = GetTextureMipWidth( desc.format, desc.width, index.mipSlice );
+                        uint32_t mipHeight = GetTextureMipHeight( desc.format, desc.height, index.mipSlice );
+                        size_t   mipOffset = GetTextureMipOffset( desc.format, desc.width, desc.height, index.mipSlice );
+
+                        VGL( glBindTexture, GL_TEXTURE_2D, texture->GetHandle() );
+                        VGL( glTexSubImage2D, GL_TEXTURE_2D, index.mipSlice, 0, 0,
+                            mipWidth, mipHeight, GetOGLFormat( desc.format ),
+                            GetOGLType( desc.format ), reinterpret_cast< void * >( mipOffset ) );
+                        VGL( glBindTexture, GL_TEXTURE_2D, 0 );
+                    }
+                }
+                VGL( glBindBuffer, GL_PIXEL_UNPACK_BUFFER, 0 );
+            }
+            return;
         default:
             CMN_FAIL();
         }
@@ -451,7 +509,7 @@ namespace GFW {
             }
             break;
         default:
-            CMN_FAIL();
+            CMN_FAIL(); // TODO not yet implemented
         }
     }
 
