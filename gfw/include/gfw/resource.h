@@ -39,9 +39,9 @@ namespace GFW {
 
     struct SubResourceData
     {
-        void *      mem;
-        uint32_t    slicePitch;
-        uint32_t    rowPitch;
+        void *  mem;
+        size_t  slicePitch;
+        size_t  rowPitch;
 
         SubResourceData()
             : mem( nullptr )
