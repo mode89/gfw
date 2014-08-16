@@ -401,12 +401,12 @@ namespace GFW {
         MapType mapType,
         SubResourceData & mappedData )
     {
-        CMN_ASSERT( resource->GetDesc().cpuAccessFlags != 0 );
-        CMN_ASSERT( ( mapType == MAP_TYPE_READ ) ?
+        CMN_ASSERT( resource->GetDesc().cpuAccessFlags != 0 );  // resource cannot be mapped
+        CMN_ASSERT( ( mapType == MAP_TYPE_READ ) ?              // resource cannot be read
             ( resource->GetDesc().cpuAccessFlags & CPU_ACCESS_FLAG_READ ) : 1 );
-        CMN_ASSERT( ( mapType == MAP_TYPE_WRITE ) ?
+        CMN_ASSERT( ( mapType == MAP_TYPE_WRITE ) ?             // resource cannot be written
             ( resource->GetDesc().cpuAccessFlags & CPU_ACCESS_FLAG_WRITE ) : 1 );
-        CMN_ASSERT( ( mapType == MAP_TYPE_READ_WRITE ) ?
+        CMN_ASSERT( ( mapType == MAP_TYPE_READ_WRITE ) ?        // resource cannot be read and written
             ( resource->GetDesc().cpuAccessFlags & CPU_ACCESS_FLAG_READ ) &&
             ( resource->GetDesc().cpuAccessFlags & CPU_ACCESS_FLAG_WRITE ) : 1 );
 
