@@ -15,6 +15,9 @@ namespace GFW {
     GetTextureMipHeight( Format, unsigned height, unsigned mipSlice );
 
     unsigned
+    GetTextureMipPitch( Format, unsigned width, unsigned mipSlice );
+
+    unsigned
     GetTextureMipSize( Format, unsigned height, unsigned width, unsigned mipSlice );
 
     unsigned

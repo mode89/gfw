@@ -40,6 +40,13 @@ namespace GFW {
         return TextureUtils_GetMipDim( height, mipSlice );
     }
 
+    unsigned GetTextureMipPitch( Format format, unsigned width, unsigned mipSlice )
+    {
+        unsigned bpp        = GetFormatBitsPerPixel( format );
+        unsigned mipWidth   = TextureUtils_GetMipDim( width, mipSlice );
+        return TextureUtils_GetPitch( mipWidth, bpp );
+    }
+
     unsigned GetTextureMipSize( Format format, unsigned width, unsigned height, unsigned mipSlice )
     {
         unsigned bpp        = GetFormatBitsPerPixel( format );
