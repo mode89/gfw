@@ -1,5 +1,6 @@
 #include "test.h"
 #include "window.h"
+#include <cstring>
 
 using namespace GFW;
 
@@ -105,5 +106,55 @@ TEST_F( GraphicsTest, MapWriteDynamicTexture )
         mContext->EndScene();
 
         Present();
+    }
+}
+
+TEST_F( Test, MapTexture )
+{
+    static const uint32_t   kTextureWidth   = 64;
+    static const Format     kTextureFormat  = FORMAT_RGBA8_UNORM;
+
+    TextureDesc srcTextureDesc;
+    srcTextureDesc.format           = kTextureFormat;
+    srcTextureDesc.width            = kTextureWidth;
+    srcTextureDesc.height           = kTextureWidth;
+    srcTextureDesc.mipLevels        = 1;
+    srcTextureDesc.usage            = USAGE_DYNAMIC;
+    srcTextureDesc.cpuAccessFlags   = CPU_ACCESS_FLAG_WRITE;
+    ITextureRef srcTexture = mDevice->CreateTexture( srcTextureDesc );
+
+    TextureDesc dstTextureDesc = srcTextureDesc;
+    dstTextureDesc.usage            = USAGE_STAGING;
+    dstTextureDesc.cpuAccessFlags   = CPU_ACCESS_FLAG_READ;
+    ITextureRef dstTexture = mDevice->CreateTexture( dstTextureDesc );
+
+    for ( int i = 0; i < 60; ++ i )
+    {
+        mContext->BeginScene();
+        {
+            uint32_t sampleData[ kTextureWidth * kTextureWidth ];
+            for ( int i = 0, n = kTextureWidth * kTextureWidth; i < n; ++ i )
+            {
+                sampleData[ i ] = static_cast< uint32_t >( std::rand() );
+            }
+
+            // write source texture
+            SubResourceData srcMappedData;
+            mContext->Map( srcTexture, SubResourceIndex(), MAP_TYPE_WRITE, srcMappedData );
+                ASSERT_TRUE( srcMappedData.mem != nullptr );
+                std::memcpy( srcMappedData.mem, sampleData, sizeof( sampleData ) );
+            mContext->Unmap( srcTexture, SubResourceIndex() );
+
+            // copy source texture to destination texture
+            mContext->CopyResource( dstTexture, srcTexture );
+
+            // read destination texture
+            SubResourceData dstMappedData;
+            mContext->Map( dstTexture, SubResourceIndex(), MAP_TYPE_READ, dstMappedData );
+                ASSERT_TRUE( dstMappedData.mem != nullptr );
+                ASSERT_TRUE( std::memcmp( dstMappedData.mem, sampleData, dstMappedData.slicePitch ) == 0 );
+            mContext->Unmap( dstTexture, SubResourceIndex() );
+        }
+        mContext->EndScene();
     }
 }
