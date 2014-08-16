@@ -26,8 +26,11 @@ namespace GFW {
         UpdateSubresource(const void * data, uint32_t subResourceIndex /* = 0 */);
 
     public:
-        inline uint32_t
+        uint32_t
         GetHandle() const { return mHandle; }
+
+        uint32_t
+        GetBufferHandle() const { return mBufferHandle; }
 
     public:
         Texture( const TextureDesc &, const SubResourceData * initialData, DeviceIn );
@@ -36,6 +39,7 @@ namespace GFW {
     private:
         TextureDesc     mDesc;
         uint32_t        mHandle;
+        uint32_t        mBufferHandle;  // used as pixel buffer object
     };
     SHARED_PTR_TYPEDEFS(Texture);
 

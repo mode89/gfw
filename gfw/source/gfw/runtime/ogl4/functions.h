@@ -34,6 +34,7 @@
     F( PFNGLENABLEPROC,                                     glEnable ) \
     F( PFNGLDISABLEPROC,                                    glDisable ) \
     \
+    F( PFNGLTEXSUBIMAGE2DPROC,                              glTexSubImage2D ) \
     F( PFNGLTEXIMAGE2DPROC,                                 glTexImage2D ) \
     F( PFNGLTEXPARAMETERIPROC,                              glTexParameteri ) \
     \
@@ -118,6 +119,7 @@
     F( PFNGLDELETETEXTURESPROC,                             glDeleteTextures ) \
     F( PFNGLACTIVETEXTUREPROC,                              glActiveTexture ) \
     F( PFNGLBINDTEXTUREPROC,                                glBindTexture ) \
+    F( PFNGLTEXSTORAGE2DPROC,                               glTexStorage2D ) \
     F( PFNGLGETTEXTUREHANDLEARBPROC,                        glGetTextureHandleARB ) \
     F( PFNGLGETTEXTURESAMPLERHANDLEARBPROC,                 glGetTextureSamplerHandlerARB ) \
     F( PFNGLMAKETEXTUREHANDLERESIDENTARBPROC,               glMakeTextureHandleResidentARB ) \
