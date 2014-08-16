@@ -471,7 +471,8 @@ namespace GFW {
 
                 VGL( glBindBuffer, GL_PIXEL_UNPACK_BUFFER, texture->GetBufferHandle() );
                 {
-                    VGL( glUnmapBuffer, GL_PIXEL_UNPACK_BUFFER );
+                    GLboolean res = VGL( glUnmapBuffer, GL_PIXEL_UNPACK_BUFFER );
+                    CMN_ASSERT( res != GL_FALSE ); CMN_UNUSED( res );
 
                     // update texture
                     if ( desc.usage == USAGE_DYNAMIC )
