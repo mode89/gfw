@@ -15,6 +15,9 @@ namespace GFW {
     uint32_t
     GetTextureMipHeight( Format, uint32_t height, uint32_t mipLevel );
 
+    uint32_t
+    GetTextureSize( Format, uint32_t width, uint32_t height, uint32_t mipCount );
+
 } // namespace GFW
 
 #endif // __GFW_RUNTIME_COMMON_TEXTURE_UTILS_H__

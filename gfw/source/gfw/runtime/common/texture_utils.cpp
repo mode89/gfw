@@ -30,4 +30,20 @@ namespace GFW {
         return height;
     }
 
+    uint32_t GetTextureSize( Format format, uint32_t width, uint32_t height, uint32_t mipCount )
+    {
+        uint32_t retval = 0;
+        uint32_t bpp = GetFormatBitsPerPixel( format );
+        while ( ( width > 1 || height > 1 ) && mipCount )
+        {
+            uint32_t pitch = ( ( width * bpp + 7 ) / 8 + 3 ) & ~0x03;
+            uint32_t mipSize = ( height * pitch + 15 ) & ~0x0F;
+            retval += mipSize;
+            mipCount --;
+            if ( width > 1 ) width >>= 1;
+            if ( height > 1 ) height >>= 1;
+        }
+        return retval;
+    }
+
 } // namespace GFW
