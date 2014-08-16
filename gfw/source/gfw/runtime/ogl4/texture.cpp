@@ -5,7 +5,7 @@
 #include "gfw/runtime/ogl4/functions.h"
 #include "gfw/runtime/ogl4/texture.h"
 #include "gfw/runtime/common/device_child.inl"
-#include <cstdlib>
+#include <cstring>
 
 namespace GFW {
 
