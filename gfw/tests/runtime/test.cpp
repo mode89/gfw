@@ -7,6 +7,8 @@
 using namespace Cmn;
 using namespace GFW;
 
+unsigned Test::mFrameCount = 60;
+
 void Test::SetUp()
 {
     // Create GFW factory

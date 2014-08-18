@@ -17,6 +17,8 @@ protected:
     static const uint32_t       kBackBufferHeight = 600;
     static const GFW::Format    kBackBufferFormat = GFW::FORMAT_RGBA8_UNORM;
 
+    static unsigned             mFrameCount;
+
 public:
     Test() {}
     Test( const Test & );
@@ -30,6 +32,9 @@ public:
 
     virtual void
     InitSwapChain();
+
+    static void
+    SetFrameCount( int val ) { mFrameCount = ( val > 0 ) ? val : 1; }
 
 protected:
     GFW::ISwapChainRef          mSwapChain;

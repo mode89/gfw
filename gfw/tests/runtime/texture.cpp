@@ -34,7 +34,7 @@ TEST_F( GraphicsTest, Texture )
 
     ITextureRef texture = mDevice->CreateTexture( desc, &initialData );
 
-    for (int i = 0; i < 60; ++ i)
+    for ( unsigned i = 0; i < mFrameCount; ++ i )
     {
         Tick();
 
@@ -89,7 +89,7 @@ TEST_F( GraphicsTest, MapWriteDynamicTexture )
     IEffectRef effect = mFactory->CreateEffect( mDevice, "draw.fxc" );
     ConstITechniqueRef technique = effect->GetTechnique( "DrawTexturedQuad" );
 
-    for ( int i = 0; i < 60; ++ i )
+    for ( unsigned i = 0; i < mFrameCount; ++ i )
     {
         Tick();
 
@@ -128,7 +128,7 @@ TEST_F( Test, MapTexture )
     dstTextureDesc.cpuAccessFlags   = CPU_ACCESS_FLAG_READ;
     ITextureRef dstTexture = mDevice->CreateTexture( dstTextureDesc );
 
-    for ( int i = 0; i < 60; ++ i )
+    for ( unsigned i = 0; i < mFrameCount; ++ i )
     {
         mContext->BeginScene();
         {

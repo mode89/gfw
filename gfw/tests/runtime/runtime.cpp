@@ -7,7 +7,7 @@ TEST_F( GraphicsTest, Clear )
 {
     // Main loop
 
-    for (int i = 0; i < 60; ++ i)
+    for ( unsigned i = 0; i < mFrameCount; ++ i )
     {
         Tick();
 
@@ -69,7 +69,7 @@ TEST_F( GraphicsTest, DrawColored )
 
     // Main loop
 
-    for (int i = 0; i < 60; ++ i)
+    for ( unsigned i = 0; i < mFrameCount; ++ i )
     {
         Tick();
 
@@ -154,7 +154,7 @@ TEST_F( GraphicsTest, DrawIndexed )
 
     // Main loop
 
-    for (int i = 0; i < 60; ++ i)
+    for ( unsigned i = 0; i < mFrameCount; ++ i )
     {
         Tick();
 
@@ -183,7 +183,7 @@ TEST_F( GraphicsTest, DrawScreenQuad )
     IEffectRef effect = mFactory->CreateEffect( mDevice, "draw.fxc" );
     ConstITechniqueRef tech = effect->GetTechnique( "DrawRedQuad" );
 
-    for (int i = 0; i < 60; ++ i)
+    for ( unsigned i = 0; i < mFrameCount; ++ i )
     {
         Tick();
 
@@ -315,7 +315,7 @@ TEST_F( GraphicsTest, CreateMesh )
     meshBuilder->SetDrawParams(drawParams);
     IMeshRef mesh = meshBuilder->Build(mDevice);
 
-    for (int i = 0; i < 60; ++ i)
+    for ( unsigned i = 0; i < mFrameCount; ++ i )
     {
         Tick();
 
@@ -350,7 +350,7 @@ TEST_F( Test, MapBuffer )
     dstBufferDesc.cpuAccessFlags    = CPU_ACCESS_FLAG_READ;
     IBufferRef dstBuffer = mDevice->CreateBuffer( dstBufferDesc );
 
-    for ( int i = 0; i < 60; ++ i )
+    for ( uint32_t i = 0; i < mFrameCount; ++ i )
     {
         mContext->BeginScene();
         {
@@ -397,7 +397,7 @@ TEST_F( Test, UpdateBuffer )
     dstBufferDesc.cpuAccessFlags    = CPU_ACCESS_FLAG_READ;
     IBufferRef dstBuffer = mDevice->CreateBuffer( dstBufferDesc );
 
-    for ( int i = 0; i < 60; ++ i )
+    for ( uint32_t i = 0; i < mFrameCount; ++ i )
     {
         mContext->BeginScene();
         {
@@ -480,7 +480,7 @@ TEST_F( GraphicsTest, RenderTarget )
 
     // Main loop
 
-    for (int i = 0; i < 60; ++ i)
+    for ( unsigned i = 0; i < mFrameCount; ++ i )
     {
         Tick();
 
@@ -585,7 +585,7 @@ TEST_F( GraphicsTest, Resolve )
 
     // main loop
 
-    for (int i = 0; i < 60; ++ i)
+    for ( unsigned i = 0; i < mFrameCount; ++ i )
     {
         Tick();
 
