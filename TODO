@@ -26,9 +26,10 @@ gfw
         % add windowless tests
             % Test
             % GraphicsTest
+        set frame count through command-line
         enable auto-testing
             % add libpng package
-            capture reference image
+            % capture reference image
             compare with reference image
             add_test() at build scripts
     samples

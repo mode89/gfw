@@ -15,6 +15,10 @@ cmake_minimum_required( VERSION 2.8 )
         ${GFW_ROOT}/include
     )
 
+# Defines
+
+    add_definitions( -DGFW_TESTS_RUNTIME_REFS_DIR="${CMAKE_CURRENT_LIST_DIR}/refs" )
+
 # Target
 
     add_executable( gfw_runtime-tests ${GFW_RUNTIME_TESTS_SOURCE_FILES} ${GFW_TESTS_FX_FILES} )
@@ -29,6 +33,9 @@ cmake_minimum_required( VERSION 2.8 )
     find_package( gtest CONFIG )
     target_link_libraries( gfw_runtime-tests ${GTEST_LIBS} )
     include_directories( ${GTEST_INCLUDE_DIRS} )
+
+    target_link_libraries( gfw_runtime-tests ${PNG_LIBS} )
+    include_directories( ${PNG_INCLUDE_DIRS} )
 
 # Post build
 

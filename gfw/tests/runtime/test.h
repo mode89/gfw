@@ -55,8 +55,20 @@ public:
     void
     Present();
 
+public:
+    enum TestMode
+    {
+        TEST_MODE_NORMAL = 0,
+        TEST_MODE_CAPTURE,
+    };
+
+    static void
+    SetTestMode( TestMode mode ) { mTestMode = mode; }
+
 protected:
     GFW::WindowHandleRef    mWindow;
+
+    static TestMode         mTestMode;
 };
 
 #endif // __GFW_TESTS_GFW_TESTS_H__
