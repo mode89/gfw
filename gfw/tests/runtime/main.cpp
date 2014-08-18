@@ -22,6 +22,10 @@ int main( int argc, char ** argv )
         {
             GraphicsTest::SetTestMode( GraphicsTest::TEST_MODE_CAPTURE );
         }
+        else if ( std::strcmp( arg, "--compare" ) == 0 )
+        {
+            GraphicsTest::SetTestMode( GraphicsTest::TEST_MODE_COMPARE );
+        }
         else if ( std::strcmp( arg, "--framecount" ) == 0 )
         {
             if ( ++i < argc )

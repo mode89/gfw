@@ -30,7 +30,7 @@ gfw
         enable auto-testing
             % add libpng package
             % capture reference image
-            compare with reference image
+            % compare with reference image
             add_test() at build scripts
     samples
         convert .x files to another format

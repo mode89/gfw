@@ -146,6 +146,59 @@ void GraphicsTest::Present()
             context->EndScene();
         }
         break;
+    case TEST_MODE_COMPARE:
+        {
+            TextureDesc resolveTextureDesc = mDefaultRenderTarget->GetTextureDesc();
+            resolveTextureDesc.format = FORMAT_RGBA8_UNORM;
+            ITextureRef resolveTexture = mDevice->CreateTexture( resolveTextureDesc );
+
+            TextureDesc stagingTextureDesc = resolveTextureDesc;
+            stagingTextureDesc.usage = USAGE_STAGING;
+            stagingTextureDesc.cpuAccessFlags = CPU_ACCESS_FLAG_READ;
+            ITextureRef stagingTexture = mDevice->CreateTexture( stagingTextureDesc );
+
+            IContextRef context = mDevice->GetDefaultContext();
+            context->BeginScene();
+            {
+                context->SetRenderTargets( 1, &mDefaultRenderTarget );
+                context->Resolve( resolveTexture, SubResourceIndex() );
+                context->CopyResource( stagingTexture, resolveTexture );
+                SubResourceData mappedData;
+                context->Map( stagingTexture, SubResourceIndex(), MAP_TYPE_READ, mappedData );
+                ASSERT_TRUE( mappedData.mem != nullptr ) << "Failed to map captured image";
+                {
+                    png_image pngImage;
+                    std::memset( &pngImage, 0, sizeof( pngImage ) );
+                    pngImage.version = PNG_IMAGE_VERSION;
+
+                    const ::testing::TestInfo * testInfo =
+                        ::testing::UnitTest::GetInstance()->current_test_info();
+                    std::string pngFileName =
+                        std::string( GFW_TESTS_RUNTIME_REFS_DIR ) +
+                        std::string( "/" ) +
+                        std::string( testInfo->test_case_name() ) +
+                        std::string( "_" ) +
+                        std::string( testInfo->name() ) +
+                        std::string( ".png" );
+
+                    int res = png_image_begin_read_from_file( &pngImage, pngFileName.c_str() );
+                    ASSERT_TRUE( res != 0 ) << "Failed to open reference image";
+
+                    std::shared_ptr< uint8_t > pngBuffer( new uint8_t [ mappedData.slicePitch ],
+                        [] ( uint8_t * ptr ) { if ( ptr ) delete[] ptr; } );
+
+                    res = png_image_finish_read( &pngImage, nullptr, pngBuffer.get(),
+                        mappedData.rowPitch, nullptr );
+                    ASSERT_TRUE( res != 0 ) << "Failed to read reference image";
+
+                    ASSERT_TRUE( std::memcmp( mappedData.mem, pngBuffer.get(), mappedData.slicePitch ) == 0 )
+                        << "Rendered image doesn't correspond with the reference image";
+                }
+                context->Unmap( stagingTexture, SubResourceIndex() );
+            }
+            context->EndScene();
+        }
+        break;
     }
 
     // Wait certain time

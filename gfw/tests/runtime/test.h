@@ -65,6 +65,7 @@ public:
     {
         TEST_MODE_NORMAL = 0,
         TEST_MODE_CAPTURE,
+        TEST_MODE_COMPARE,
     };
 
     static void
