@@ -27,11 +27,11 @@ gfw
             % Test
             % GraphicsTest
         % set frame count through command-line
-        enable auto-testing
+        % enable auto-testing
             % add libpng package
             % capture reference image
             % compare with reference image
-            add_test() at build scripts
+            % add_test() at build scripts
     samples
         convert .x files to another format
         port shadow map

@@ -11,6 +11,8 @@ set( CMN_MULTITHREADED_BUILD true )
 set( CMN_MORE_WARNINGS true )
 set( CMN_MSVC_DEFINE_VARIADIC_MAX 10 ) # MSVC doesn't support tuples
 
+enable_testing()
+
 include( cmn/scripts/config.cmake )
 
 # Add necessary projects to the build tree

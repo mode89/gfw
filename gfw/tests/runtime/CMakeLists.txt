@@ -24,6 +24,10 @@ cmake_minimum_required( VERSION 2.8 )
     add_executable( gfw_runtime-tests ${GFW_RUNTIME_TESTS_SOURCE_FILES} ${GFW_TESTS_FX_FILES} )
     target_link_libraries( gfw_runtime-tests gfw_runtime )
 
+    add_test(
+        NAME GfwRuntimeTests
+        COMMAND gfw_runtime-tests --framecount 1 --compare --nowindow )
+
 # Dependencies
 
     find_package( cmn CONFIG )
