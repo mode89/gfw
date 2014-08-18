@@ -2,6 +2,7 @@
 #include "png.h"
 #include "test.h"
 #include "window.h"
+#include <cstring>
 
 using namespace Cmn;
 using namespace GFW;
