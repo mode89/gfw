@@ -77,7 +77,9 @@ include( cmn/scripts/config.cmake )
         configure_file( png/scripts/pnglibconf.h.prebuilt
             ${CMAKE_CURRENT_BINARY_DIR}/pnglibconf.h )
 
-        set( PNG_INCLUDE_DIRS ${CMAKE_CURRENT_LIST_DIR}/png )
+        set( PNG_INCLUDE_DIRS
+            ${CMAKE_CURRENT_LIST_DIR}/png
+            ${CMAKE_CURRENT_BINARY_DIR} )
         set( PNG_LIBS png )
 
 add_subdirectory( ann )
