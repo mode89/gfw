@@ -55,7 +55,8 @@ void Test::InitSwapChain()
     mSwapChain = mFactory->CreateSwapChain( swapChainDesc, nullptr );
 }
 
-GraphicsTest::TestMode GraphicsTest::mTestMode = TEST_MODE_NORMAL;
+GraphicsTest::TestMode  GraphicsTest::mTestMode     = TEST_MODE_NORMAL;
+bool                    GraphicsTest::mShowWindow   = true;
 
 void GraphicsTest::TearDown()
 {
@@ -65,21 +66,24 @@ void GraphicsTest::TearDown()
 
 void GraphicsTest::InitSwapChain()
 {
-    const ::testing::TestInfo * testInfo =
-        ::testing::UnitTest::GetInstance()->current_test_info();
-    std::string windowTitle =
-        std::string( testInfo->test_case_name() ) +
-        std::string( "::" ) +
-        std::string( testInfo->name() );
+    if ( mShowWindow )
+    {
+        const ::testing::TestInfo * testInfo =
+            ::testing::UnitTest::GetInstance()->current_test_info();
+        std::string windowTitle =
+            std::string( testInfo->test_case_name() ) +
+            std::string( "::" ) +
+            std::string( testInfo->name() );
 
-    WindowDesc windowDesc;
-    windowDesc.width  = kBackBufferWidth;
-    windowDesc.height = kBackBufferHeight;
+        WindowDesc windowDesc;
+        windowDesc.width  = kBackBufferWidth;
+        windowDesc.height = kBackBufferHeight;
 
-    mWindow = WindowHandleRef( CreateDefaultWindow( windowTitle, windowDesc ),
-        [] ( WindowHandle * handle ) {
-            if ( handle ) { DestroyDefaultWindow( handle ); }
-        } );
+        mWindow = WindowHandleRef( CreateDefaultWindow( windowTitle, windowDesc ),
+            [] ( WindowHandle * handle ) {
+                if ( handle ) { DestroyDefaultWindow( handle ); }
+            } );
+    }
 
     SwapChainDesc swapChainDesc;
     swapChainDesc.width = kBackBufferWidth;
@@ -90,12 +94,18 @@ void GraphicsTest::InitSwapChain()
 
 void GraphicsTest::Tick()
 {
-    ProcessDefaultWindow( mWindow.get() );
+    if ( mShowWindow )
+    {
+        ProcessDefaultWindow( mWindow.get() );
+    }
 }
 
 void GraphicsTest::Present()
 {
-    mSwapChain->Present();
+    if ( mShowWindow )
+    {
+        mSwapChain->Present();
+    }
 
     switch ( mTestMode )
     {

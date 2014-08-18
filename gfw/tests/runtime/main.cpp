@@ -26,6 +26,10 @@ int main( int argc, char ** argv )
         {
             GraphicsTest::SetTestMode( GraphicsTest::TEST_MODE_COMPARE );
         }
+        else if ( std::strcmp( arg, "--nowindow" ) == 0 )
+        {
+            GraphicsTest::ShowWindow( false );
+        }
         else if ( std::strcmp( arg, "--framecount" ) == 0 )
         {
             if ( ++i < argc )

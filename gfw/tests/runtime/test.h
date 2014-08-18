@@ -71,10 +71,14 @@ public:
     static void
     SetTestMode( TestMode mode ) { mTestMode = mode; }
 
+    static void
+    ShowWindow( bool val ) { mShowWindow = val; }
+
 protected:
     GFW::WindowHandleRef    mWindow;
 
     static TestMode         mTestMode;
+    static bool             mShowWindow;
 };
 
 #endif // __GFW_TESTS_GFW_TESTS_H__
