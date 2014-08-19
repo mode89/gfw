@@ -148,7 +148,7 @@ void GraphicsTest::Present()
                         std::string( ".png" );
 
                     int res = png_image_write_to_file( &pngImage, pngFileName.c_str(), 0,
-                        mappedData.mem, mappedData.rowPitch, nullptr );
+                        mappedData.mem, static_cast< uint32_t >( mappedData.rowPitch ), nullptr );
                     ASSERT_TRUE( res != 0 ) << "Failed to write captured image";
                 }
                 context->Unmap( stagingTexture, SubResourceIndex() );
@@ -198,7 +198,7 @@ void GraphicsTest::Present()
                         [] ( uint8_t * ptr ) { if ( ptr ) delete[] ptr; } );
 
                     res = png_image_finish_read( &pngImage, nullptr, pngBuffer.get(),
-                        mappedData.rowPitch, nullptr );
+                        static_cast< uint32_t >( mappedData.rowPitch ), nullptr );
                     ASSERT_TRUE( res != 0 ) << "Failed to read reference image";
 
                     ASSERT_TRUE( std::memcmp( mappedData.mem, pngBuffer.get(), mappedData.slicePitch ) == 0 )
