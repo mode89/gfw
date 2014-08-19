@@ -284,7 +284,7 @@ TEST_F( GraphicsTest, CreateMesh )
 
     SubResourceData indexData;
     indexData.mem = indices.data();
-    indexData.slicePitch = indices.size() * sizeof( decltype( indices )::value_type );
+    indexData.slicePitch = indices.size() * sizeof( uint32_t );
 
     BufferDesc indexBufferDesc;
     indexBufferDesc.size  = sizeof( uint32_t ) * xSegments * ySegments * 2 * 3;

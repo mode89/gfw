@@ -1,5 +1,6 @@
 #include "cmn/trace.h"
 #include "gfw/texture.h"
+#include "gfw/runtime/ogl4/device.h"
 #include "gfw/runtime/ogl4/texture.h"
 #include "gfw/runtime/ogl4/render_target.h"
 #include "gfw/runtime/ogl4/swap_chain.h"
