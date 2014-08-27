@@ -2,9 +2,9 @@
 #include "cmn/trace.h"
 
 CMN_WARNING_PUSH
-CMN_WARNING_DISABLE_MSVC( 4242 4265 4310 4371 4619 4625 4626 )
+CMN_WARNING_DISABLE_MSVC( 4242 4265 4308 4310 4371 4619 4625 4626 )
 CMN_WARNING_DISABLE_GCC( unused-local-typedefs )
-#include "boost/archive/binary_oarchive.hpp"
+#include "boost/archive/text_oarchive.hpp"
 #include "boost/serialization/utility.hpp"
 #include "boost/serialization/vector.hpp"
 CMN_WARNING_POP
@@ -803,7 +803,7 @@ namespace GFW {
         }
 
         std::ostringstream archiveStream;
-        boost::archive::binary_oarchive archive( archiveStream );
+        boost::archive::text_oarchive archive( archiveStream );
         archive << shaderBinaryOgl4;
 
         shaderBinary.mData = std::move( archiveStream.str() );

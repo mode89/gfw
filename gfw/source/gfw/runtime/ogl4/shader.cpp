@@ -4,7 +4,8 @@
 CMN_WARNING_PUSH
 CMN_WARNING_DISABLE_MSVC( 4242 4244 4265 4310 4371 4619 4625 4626 )
 CMN_WARNING_DISABLE_GCC( unused-local-typedefs )
-#include "boost/archive/binary_iarchive.hpp"
+#include "boost/archive/text_iarchive.hpp"
+#include "boost/serialization/string.hpp"
 #include "boost/serialization/utility.hpp"
 #include "boost/serialization/vector.hpp"
 CMN_WARNING_POP
@@ -33,7 +34,7 @@ namespace GFW {
     {
         const ShaderBinary * shaderBinary = static_cast< const ShaderBinary * >( binary );
         std::istringstream archiveStream( shaderBinary->mData );
-        boost::archive::binary_iarchive archive( archiveStream );
+        boost::archive::text_iarchive archive( archiveStream );
         ShaderBinaryOgl4 shaderBinaryOgl4;
         archive >> shaderBinaryOgl4;
 

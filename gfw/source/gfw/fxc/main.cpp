@@ -1,9 +1,9 @@
 #include "cmn/platform.h"
 
 CMN_WARNING_PUSH
-CMN_WARNING_DISABLE_MSVC( 4242 4265 4310 4365 4371 4619 4625 4626 4640 )
+CMN_WARNING_DISABLE_MSVC( 4127 4242 4265 4308 4310 4365 4371 4619 4625 4626 4640 )
 CMN_WARNING_DISABLE_GCC( unused-local-typedefs )
-#include "boost/archive/binary_oarchive.hpp"
+#include "boost/archive/text_oarchive.hpp"
 #include "boost/serialization/list.hpp"
 #include "boost/serialization/vector.hpp"
 CMN_WARNING_POP
@@ -100,7 +100,7 @@ int main( int argc, const char * argv[] )
         {
             CMN_MSG( "\tSerialization" );
 
-            boost::archive::binary_oarchive archive( fileStream );
+            boost::archive::text_oarchive archive( fileStream );
             archive << effectBinary;
 
             CMN_MSG( "\tSerialization completed" );
