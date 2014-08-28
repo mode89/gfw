@@ -12,6 +12,7 @@ tokens {
     T_ARGUMENTS_LIST;
     T_ARGUMENT_EXPRESSION_LIST;
     T_ASSIGNMENT_EXPRESSION;
+    T_CBUFFER_DEFINITION;
     T_COMPOUND_STATEMENT;
     T_EXTERNAL_DECLARATION;
     T_FUNCTION_DEFINITION;
@@ -45,7 +46,7 @@ external_declaration
     : function_definition
     | technique_definition
     | struct_definition
-    | cbuffer_definition
+    | ( cbuffer_definition -> ^( T_CBUFFER_DEFINITION cbuffer_definition ) )
     | variable_definition
     | state_object_definition
     ;
@@ -72,7 +73,7 @@ variable_definition
     ;
 
 cbuffer_definition
-    : T_CBUFFER T_ID register_binding? T_LCURLY cbuffer_member_list T_RCURLY T_SEMI
+    : T_CBUFFER symbol_name register_binding? T_LCURLY cbuffer_member_list T_RCURLY T_SEMI
     ;
 
 cbuffer_member_list
