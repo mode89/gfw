@@ -1,4 +1,5 @@
 #include "cmn/trace.h"
+#include "gfw/pipeline/common/effect_builder_exception.h"
 #include "gfw/pipeline/common/parse_tree.h"
 #include "gfw/pipeline/common/symbol.h"
 #include <algorithm>
@@ -119,7 +120,7 @@ namespace GFW {
                         break;
                     default:
                         symbol.registerType = Symbol::REGISTER_TYPE_UNKNOWN;
-                        CMN_FAIL();
+                        CMN_THROW( EffectBuilderException::WrongRegister( symbol.name ) );
                         return true;
                     }
                     symbol.registerIndex = std::atoi( ++ registerName );
