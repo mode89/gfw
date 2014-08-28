@@ -13,6 +13,7 @@ tokens {
     T_ARGUMENT_EXPRESSION_LIST;
     T_ASSIGNMENT_EXPRESSION;
     T_CBUFFER_DEFINITION;
+    T_CBUFFER_MEMBER_LIST;
     T_COMPOUND_STATEMENT;
     T_EXTERNAL_DECLARATION;
     T_FUNCTION_DEFINITION;
@@ -73,7 +74,10 @@ variable_definition
     ;
 
 cbuffer_definition
-    : T_CBUFFER symbol_name register_binding? T_LCURLY cbuffer_member_list T_RCURLY T_SEMI
+    : T_CBUFFER symbol_name register_binding?
+        T_LCURLY
+            ( cbuffer_member_list -> ^( T_CBUFFER_MEMBER_LIST cbuffer_member_list ) )
+        T_RCURLY T_SEMI
     ;
 
 cbuffer_member_list
