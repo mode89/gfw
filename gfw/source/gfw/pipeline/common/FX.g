@@ -13,6 +13,7 @@ tokens {
     T_ARGUMENT_EXPRESSION_LIST;
     T_ASSIGNMENT_EXPRESSION;
     T_CBUFFER_DEFINITION;
+    T_CBUFFER_MEMBER;
     T_CBUFFER_MEMBER_LIST;
     T_COMPOUND_STATEMENT;
     T_EXTERNAL_DECLARATION;
@@ -81,10 +82,12 @@ cbuffer_definition
     ;
 
 cbuffer_member_list
-    : (
-        ( scalar_type_specifier | vector_type_specifier | matrix_type_specifier )
+    : ( cbuffer_member -> ^( T_CBUFFER_MEMBER cbuffer_member ) )+
+    ;
+
+cbuffer_member
+    : ( scalar_type_specifier | vector_type_specifier | matrix_type_specifier )
         T_ID ( T_LBRACKET constant T_RBRACKET )? T_SEMI
-      )+
     ;
 
 register_binding
