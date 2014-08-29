@@ -31,14 +31,17 @@ namespace GFW {
 
         const char *        name;
         const ParseTree *   tree;
-        NameSymbolMap       references;    // All symbols referenced by this symbol (directly and indirectly)
-        const ParseTree *   type;          // Object type or function return type
-        ParseTreeVec        args;          // Function arguments
-        ParseTreeVec        members;       // Members of a struct
+        NameSymbolMap       references;     // All symbols referenced by this symbol (directly and indirectly)
+        const ParseTree *   type;           // Object type or function return type
+        ParseTreeVec        args;           // Function arguments
+        ParseTreeVec        members;        // Members of a struct
+        const Symbol *      parent;         // Parent of cbuffer's member
         const char *        semantic;
         RegisterType        registerType;
         int                 registerIndex;
 
+        bool                isCbuffer : 1;
+        bool                isCbufferMember : 1;
         bool                isFunction : 1;
         bool                isSamplerState : 1;
         bool                isStateObject : 1;
@@ -53,9 +56,12 @@ namespace GFW {
             , type( nullptr )
             , args()
             , members()
+            , parent( nullptr )
             , semantic( nullptr )
             , registerType( REGISTER_TYPE_UNKNOWN )
             , registerIndex( -1 )
+            , isCbuffer( false )
+            , isCbufferMember( false )
             , isFunction( false )
             , isSamplerState( false )
             , isStateObject( false )

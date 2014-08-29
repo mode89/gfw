@@ -109,9 +109,6 @@ namespace GFW {
                     const char * registerName = registerId->GetText().c_str();
                     switch ( registerName[0] )
                     {
-                    case 'b':
-                        symbol.registerType = Symbol::REGISTER_TYPE_CBUFFER;
-                        break;
                     case 't':
                         symbol.registerType = Symbol::REGISTER_TYPE_TEXTURE;
                         break;
@@ -176,6 +173,62 @@ namespace GFW {
                 symbol.semantic = semantic ? semantic->GetChild().GetText().c_str() : nullptr;
 
                 symbolTable.push_back( symbol );
+            }
+            return false;
+        case TOKEN_CBUFFER_DEFINITION:
+            {
+                Symbol symbol;
+
+                symbol.tree = &tree;
+                const ParseTree * symbolName = tree.GetFirstChildWithType( TOKEN_SYMBOL_NAME );
+                symbol.name = symbolName ? symbolName->GetChild().GetText().c_str() : nullptr;
+
+                symbol.isCbuffer = true;
+
+                // if register is assigned explicitly
+                const ParseTree * registerBinding = tree.GetFirstChildWithType( TOKEN_REGISTER_BINDING );
+                if ( registerBinding )
+                {
+                    const ParseTree * registerId = registerBinding->GetFirstChildWithType( TOKEN_REGISTER_ID );
+                    CMN_ASSERT( registerId != nullptr );
+
+                    const char * registerName = registerId->GetText().c_str();
+                    if ( registerName[ 0 ] == 'b' )
+                    {
+                        symbol.registerType = Symbol::REGISTER_TYPE_CBUFFER;
+                        symbol.registerIndex = std::atoi( ++ registerName );
+                    }
+                    else
+                    {
+                        CMN_THROW( EffectBuilderException::WrongRegister( symbol.name ) );
+                        return true;
+                    }
+                }
+
+                symbolTable.push_back( symbol );
+                const Symbol * cbufferSymbol = &symbolTable.back();
+
+                // Collect members
+                const ParseTree * memberList = tree.GetFirstChildWithType( TOKEN_CBUFFER_MEMBER_LIST );
+                CMN_THROW_IF( memberList == nullptr, EffectBuilderException::EmptyCbuffer( symbol.name ) );
+                for ( uint32_t i = 0; i < memberList->GetChildCount(); ++ i )
+                {
+                    Symbol memberSymbol;
+
+                    const ParseTree & member = memberList->GetChild( i );
+                    memberSymbol.tree = &member;
+
+                    const ParseTree * memberName = member.GetFirstChildWithType( TOKEN_SYMBOL_NAME );
+                    memberSymbol.name = memberName->GetChild().GetText().c_str();
+
+                    const ParseTree * semantic = member.GetFirstChildWithType( TOKEN_SEMANTIC );
+                    memberSymbol.semantic = semantic ? semantic->GetChild().GetText().c_str() : nullptr;
+
+                    memberSymbol.isCbufferMember = true;
+                    memberSymbol.parent = cbufferSymbol;
+
+                    symbolTable.push_back( memberSymbol );
+                }
             }
             return false;
         case TOKEN_STATE_OBJECT_DEFINITION:
