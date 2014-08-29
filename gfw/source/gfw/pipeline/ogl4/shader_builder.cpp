@@ -53,7 +53,19 @@ namespace GFW {
                 const Symbol & symbol = *it.second;
                 if ( entryPoint->references.count( symbol.name ) == 0 )
                 {
-                    mSkipSymbols.insert( std::make_pair( symbol.tree, &symbol ) );
+                    if ( symbol.isCbufferMember )
+                    {
+                        // Members or referenced cbuffer cannot be skiped
+                        const Symbol * cbufferSymbol = symbol.parent;
+                        if ( entryPoint->references.count( cbufferSymbol->name ) == 0 )
+                        {
+                            mSkipSymbols.insert( std::make_pair( symbol.tree, &symbol ) );
+                        }
+                    }
+                    else
+                    {
+                        mSkipSymbols.insert( std::make_pair( symbol.tree, &symbol ) );
+                    }
                 }
             }
         }
@@ -681,6 +693,8 @@ namespace GFW {
         std::stringstream source;
 
         source  << "#version 430 core" << std::endl
+                << std::endl
+                << "#define cbuffer     uniform" << std::endl
                 << std::endl
                 << "#define int2        ivec2" << std::endl
                 << "#define int3        ivec3" << std::endl
