@@ -51,7 +51,8 @@ namespace GFW {
         SHADER_RES_TYPE_UNKNOWN = 0,
         SHADER_RES_TYPE_CBUFFER,
         SHADER_RES_TYPE_TEXTURE,
-        SHADER_RES_TYPE_BUFFER
+        SHADER_RES_TYPE_SAMPLER,
+        SHADER_RES_TYPE_BUFFER,
     };
 
     enum ShaderResourceDim

@@ -829,6 +829,42 @@ namespace GFW {
         ShaderBinaryOgl4 shaderBinaryOgl4;
         shaderBinaryOgl4.mSource = std::move( source.str() );
 
+        // Reflect resources
+
+            for ( auto & it : entryPoint->references )
+            {
+                const Symbol & symbol = *it.second;
+                if ( symbol.isCbuffer )
+                {
+                    ShaderResourceBinary resBin;
+                    resBin.name         = symbol.name;
+                    resBin.bindSlot     = cbufferNameRegisterMap[ symbol.name ];
+                    resBin.bindCount    = 1;
+                    resBin.type         = SHADER_RES_TYPE_CBUFFER;
+                    resBin.dim          = SHADER_RES_DIM_BUFFER;
+                    shaderBinary.mResources.push_back( resBin );
+                }
+                else if ( symbol.isTexture )
+                {
+                    ShaderResourceBinary resBin;
+                    resBin.name         = symbol.name;
+                    resBin.bindSlot     = textureNameRegisterMap[ symbol.name ];
+                    resBin.bindCount    = 1;
+                    resBin.type         = SHADER_RES_TYPE_TEXTURE;
+                    resBin.dim          = SHADER_RES_DIM_TEX_2D;
+                    shaderBinary.mResources.push_back( resBin );
+                }
+                else if ( symbol.isSamplerState )
+                {
+                    ShaderResourceBinary resBin;
+                    resBin.name         = symbol.name;
+                    resBin.bindSlot     = samplerNameRegisterMap[ symbol.name ];
+                    resBin.bindCount    = 1;
+                    resBin.type         = SHADER_RES_TYPE_SAMPLER;
+                    shaderBinary.mResources.push_back( resBin );
+                }
+            }
+
         // Save texture-samplers
         for ( auto & textureSampler : mFunctionTextureSamplerMap[ entryPoint ] )
         {
