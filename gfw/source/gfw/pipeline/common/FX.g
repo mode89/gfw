@@ -78,17 +78,17 @@ variable_definition
 cbuffer_definition
     : T_CBUFFER symbol_name register_binding?
         T_LCURLY
-            ( cbuffer_member_list -> ^( T_CBUFFER_MEMBER_LIST cbuffer_member_list ) )
+            cbuffer_member_list
         T_RCURLY T_SEMI
     ;
 
 cbuffer_member_list
-    : ( cbuffer_member -> ^( T_CBUFFER_MEMBER cbuffer_member ) )+
+    : cbuffer_member+ -> ^( T_CBUFFER_MEMBER_LIST ^( T_CBUFFER_MEMBER cbuffer_member )+ )
     ;
 
 cbuffer_member
     : ( scalar_type_specifier | vector_type_specifier | matrix_type_specifier )
-        T_ID ( T_LBRACKET constant T_RBRACKET )? T_SEMI
+        symbol_name ( T_LBRACKET constant T_RBRACKET )? semantic? T_SEMI
     ;
 
 register_binding
