@@ -7,6 +7,87 @@
 
 namespace GFW {
 
+    enum ShaderVariableType
+    {
+        SHADER_VAR_TYPE_UNKNOWN = 0,
+        SHADER_VAR_TYPE_FLOAT,
+        SHADER_VAR_TYPE_FLOAT2,
+        SHADER_VAR_TYPE_FLOAT3,
+        SHADER_VAR_TYPE_FLOAT4,
+        SHADER_VAR_TYPE_FLOAT44,
+        SHADER_VAR_TYPE_INT,
+        SHADER_VAR_TYPE_INT2,
+        SHADER_VAR_TYPE_INT3,
+        SHADER_VAR_TYPE_INT4,
+        SHADER_VAR_TYPE_BOOL,
+    };
+
+    struct ShaderVariableDesc
+    {
+        ShaderVariableType  type;
+        uint32_t            location;
+        uint32_t            size;
+        int32_t             bufferIndex;
+
+        ShaderVariableDesc()
+            : type( SHADER_VAR_TYPE_UNKNOWN )
+            , location( 0 )
+            , size( 0 )
+            , bufferIndex( -1 )
+        {}
+    };
+
+    struct ShaderBufferDesc
+    {
+        uint32_t    size;
+
+        ShaderBufferDesc()
+            : size( 0 )
+        {}
+    };
+
+    enum ShaderResourceType
+    {
+        SHADER_RES_TYPE_UNKNOWN = 0,
+        SHADER_RES_TYPE_CBUFFER,
+        SHADER_RES_TYPE_TEXTURE,
+        SHADER_RES_TYPE_BUFFER
+    };
+
+    enum ShaderResourceDim
+    {
+        SHADER_RES_DIM_UNKNOWN = 0,
+        SHADER_RES_DIM_BUFFER,
+        SHADER_RES_DIM_TEX_2D,
+        SHADER_RES_DIM_TEX_2D_MSAA,
+    };
+
+    struct ShaderResourceDesc
+    {
+        ShaderResourceType  type;
+        ShaderResourceDim   dim;
+        uint32_t            bindPoint;
+        uint32_t            bindCount;
+
+        ShaderResourceDesc()
+            : type( SHADER_RES_TYPE_UNKNOWN )
+            , dim( SHADER_RES_DIM_UNKNOWN )
+            , bindPoint( 0 )
+            , bindCount( 0 )
+        {}
+    };
+
+    struct ShaderParameterDesc
+    {
+        Semantic    semantic;
+        uint32_t    location;
+
+        ShaderParameterDesc()
+            : semantic( SEMANTIC_UNKNOWN )
+            , location( 0 )
+        {}
+    };
+
     class IShaderReflection : public IDeviceChild
     {
     public:
@@ -14,33 +95,33 @@ namespace GFW {
         GetDesc() const = 0;
 
         virtual ConstIShaderVariableRef
-        GetVariable(uint32_t index) const = 0;
+        GetVariable( unsigned index ) const = 0;
 
         virtual ConstIShaderVariableRef
-        GetVariable(const char * name) const = 0;
+        GetVariable( const char * name ) const = 0;
 
         virtual ConstIShaderBufferRef
-        GetBuffer(uint32_t index) const = 0;
+        GetBuffer( unsigned index ) const = 0;
 
         virtual ConstIShaderBufferRef
-        GetBuffer(const char * name) const = 0;
+        GetBuffer( const char * name ) const = 0;
 
         virtual ConstIShaderResourceRef
-        GetResource(uint32_t index) const = 0;
+        GetResource( unsigned index ) const = 0;
 
         virtual ConstIShaderResourceRef
-        GetResource(const char * name) const = 0;
+        GetResource( const char * name ) const = 0;
 
         virtual ConstIShaderParameterRef
-        GetInputParameter(uint32_t index) const = 0;
+        GetInputParameter( unsigned index ) const = 0;
 
         virtual ConstIShaderParameterRef
-        GetInputParameter(Semantic) const = 0;
+        GetInputParameter( Semantic ) const = 0;
 
         virtual
         ~IShaderReflection() {}
     };
-    SHARED_PTR_TYPEDEFS(IShaderReflection);
+    SHARED_PTR_TYPEDEFS( IShaderReflection );
 
     class IShaderVariable
     {
@@ -54,7 +135,7 @@ namespace GFW {
         virtual
         ~IShaderVariable() {}
     };
-    SHARED_PTR_TYPEDEFS(IShaderVariable);
+    SHARED_PTR_TYPEDEFS( IShaderVariable );
 
     class IShaderBuffer
     {
@@ -68,7 +149,7 @@ namespace GFW {
         virtual
         ~IShaderBuffer() {}
     };
-    SHARED_PTR_TYPEDEFS(IShaderBuffer);
+    SHARED_PTR_TYPEDEFS( IShaderBuffer );
 
     class IShaderResource
     {
@@ -82,7 +163,7 @@ namespace GFW {
         virtual
         ~IShaderResource() {}
     };
-    SHARED_PTR_TYPEDEFS(IShaderResource);
+    SHARED_PTR_TYPEDEFS( IShaderResource );
 
     class IShaderParameter
     {
@@ -93,7 +174,7 @@ namespace GFW {
         virtual
         ~IShaderParameter() {}
     };
-    SHARED_PTR_TYPEDEFS(IShaderParameter);
+    SHARED_PTR_TYPEDEFS( IShaderParameter );
 
 } // namespace GFW
 

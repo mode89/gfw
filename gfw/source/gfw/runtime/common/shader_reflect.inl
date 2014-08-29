@@ -7,102 +7,102 @@
 namespace GFW {
 
     template < class Base >
-    AShaderReflection<Base>::AShaderReflection( DeviceIn device )
-        : ADeviceChild<Base>(device)
+    AShaderReflection< Base >::AShaderReflection( DeviceIn device )
+        : ADeviceChild< Base >( device )
     {
 
     }
 
     template < class Base >
-    AShaderReflection<Base>::~AShaderReflection()
+    AShaderReflection< Base >::~AShaderReflection()
     {
 
     }
 
     template < class Base >
-    void AShaderReflection<Base>::Initialize()
+    void AShaderReflection< Base >::Initialize()
     {
-        for (uint32_t i = 0; i < mDesc.inputsCount; ++ i)
+        for ( unsigned i = 0; i < mDesc.inputsCount; ++ i )
         {
-            const ShaderParameterDesc & paramDesc = mInputs[i]->GetDesc();
-            mInputsMap[paramDesc.semantic] = mInputs[i];
+            const ShaderParameterDesc & paramDesc = mInputs[ i ]->GetDesc();
+            mInputsMap[ paramDesc.semantic ] = mInputs[ i ];
         }
 
-        for (uint32_t i = 0; i < mDesc.variableCount; ++ i)
+        for ( unsigned i = 0; i < mDesc.variableCount; ++ i )
         {
             ShaderVariableRef var = mVariables[i];
-            mVariablesMap[var->GetName()] = var;
+            mVariablesMap[ var->GetName() ] = var;
         }
 
-        for (uint32_t i = 0; i < mDesc.bufferCount; ++ i)
+        for ( unsigned i = 0; i < mDesc.bufferCount; ++ i )
         {
             ShaderBufferRef buf = mBuffers[i];
-            mBuffersMap[buf->GetName()] = buf;
+            mBuffersMap[ buf->GetName() ] = buf;
         }
 
-        for (uint32_t i = 0; i < mDesc.resourceCount; ++ i)
+        for ( unsigned i = 0; i < mDesc.resourceCount; ++ i )
         {
             ShaderResourceRef res = mResources[i];
-            mResourcesMap[res->GetName()] = res;
+            mResourcesMap[ res->GetName() ] = res;
         }
     }
 
     template < class Base >
-    ConstIShaderVariableRef AShaderReflection<Base>::GetVariable(uint32_t index) const
+    ConstIShaderVariableRef AShaderReflection<Base>::GetVariable( unsigned index ) const
     {
         CMN_ASSERT( index < mDesc.variableCount );
-        return mVariables[index];
+        return mVariables[ index ];
     }
 
     template < class Base >
-    ConstIShaderVariableRef AShaderReflection<Base>::GetVariable(const char * name) const
+    ConstIShaderVariableRef AShaderReflection<Base>::GetVariable( const char * name ) const
     {
-        ShaderVariableMap::const_iterator it = mVariablesMap.find(name);
+        ShaderVariableMap::const_iterator it = mVariablesMap.find( name );
         CMN_ASSERT( it != mVariablesMap.end() );
         return it->second;
     }
 
     template < class Base >
-    ConstIShaderBufferRef AShaderReflection<Base>::GetBuffer(uint32_t index) const
+    ConstIShaderBufferRef AShaderReflection<Base>::GetBuffer( unsigned index ) const
     {
         CMN_ASSERT( index < mDesc.bufferCount );
-        return mBuffers[index];
+        return mBuffers[ index ];
     }
 
     template < class Base >
-    ConstIShaderBufferRef AShaderReflection<Base>::GetBuffer(const char * name) const
+    ConstIShaderBufferRef AShaderReflection<Base>::GetBuffer( const char * name ) const
     {
-        ShaderBufferMap::const_iterator it = mBuffersMap.find(name);
+        ShaderBufferMap::const_iterator it = mBuffersMap.find( name );
         CMN_ASSERT( it != mBuffersMap.end() );
         return it->second;
     }
 
     template < class Base >
-    ConstIShaderResourceRef AShaderReflection<Base>::GetResource(uint32_t index) const
+    ConstIShaderResourceRef AShaderReflection<Base>::GetResource( unsigned index ) const
     {
         CMN_ASSERT( index < mDesc.resourceCount );
-        return mResources[index];
+        return mResources[ index ];
     }
 
     template < class Base >
-    ConstIShaderResourceRef AShaderReflection<Base>::GetResource(const char * name) const
+    ConstIShaderResourceRef AShaderReflection<Base>::GetResource( const char * name ) const
     {
-        ShaderResourceMap::const_iterator it = mResourcesMap.find(name);
+        ShaderResourceMap::const_iterator it = mResourcesMap.find( name );
         CMN_ASSERT( it != mResourcesMap.end() );
         return it->second;
     }
 
     template < class Base >
-    ConstIShaderParameterRef AShaderReflection<Base>::GetInputParameter(uint32_t index) const
+    ConstIShaderParameterRef AShaderReflection<Base>::GetInputParameter( unsigned index ) const
     {
         CMN_ASSERT( index < mDesc.inputsCount );
-        return mInputs[index];
+        return mInputs[ index ];
     }
 
     template < class Base >
-    ConstIShaderParameterRef AShaderReflection<Base>::GetInputParameter(Semantic semantic) const
+    ConstIShaderParameterRef AShaderReflection<Base>::GetInputParameter( Semantic semantic ) const
     {
-        ShaderParameterMap::const_iterator it = mInputsMap.find(semantic);
+        ShaderParameterMap::const_iterator it = mInputsMap.find( semantic );
         CMN_ASSERT( it != mInputsMap.end() );
         return it->second;
     }
