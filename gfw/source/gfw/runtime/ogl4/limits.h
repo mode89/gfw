@@ -3,7 +3,7 @@
 
 namespace GFW {
 
-    static const uint32_t   MAX_BIND_CBUFFERS       = 16;
+    static const uint32_t   MAX_BIND_CBUFFERS       = 8;
     static const uint32_t   MAX_BIND_VERTEX_BUFFERS = 8;
     static const uint32_t   MAX_BIND_TEXTURES       = 16;
     static const uint32_t   MAX_INPUT_ATTRIBUTES    = 16;
