@@ -1,6 +1,7 @@
 #include "gfw/runtime/common/semantic.h"
 #include "gfw/runtime/ogl4/device.h"
 #include "gfw/runtime/ogl4/functions.h"
+#include "gfw/runtime/ogl4/limits.h"
 #include "gfw/runtime/ogl4/shader_reflect.h"
 #include "gfw/runtime/common/shader_reflect.inl"
 
@@ -90,6 +91,7 @@ namespace GFW {
     }
 
     ShaderReflection::ShaderReflection(
+        const ShaderBinary & shaderBinary,
         const ShaderBinaryOgl4 & shaderBinaryOgl4,
         uint32_t program,
         DeviceIn device )
@@ -127,37 +129,24 @@ namespace GFW {
 
         // Reflect uniform blocks
 
-        int32_t uniformBlocksCount = -1;
-        VGL( glGetProgramInterfaceiv, program, GL_UNIFORM_BLOCK, GL_ACTIVE_RESOURCES, &uniformBlocksCount );
-        CMN_ASSERT( uniformBlocksCount != -1 );
+            for ( auto & res : shaderBinary.mResources )
+            {
+                if ( res.type == SHADER_RES_TYPE_CBUFFER )
+                {
+                    int index = VGL( glGetProgramResourceIndex, program, GL_UNIFORM_BLOCK, res.name.c_str() );
+                    CMN_ASSERT( index != GL_INVALID_INDEX );
 
-        for (int32_t i = 0; i < uniformBlocksCount; ++ i)
-        {
-            VGL( glGetProgramResourceName, program, GL_UNIFORM_BLOCK, i, sizeof(name), NULL, name );
+                    VGL( glUniformBlockBinding, program, index,
+                        shaderBinary.mStage * MAX_BIND_CBUFFERS + res.bindSlot );
 
-            uint32_t props[] = {
-                GL_BUFFER_DATA_SIZE,
-                GL_BUFFER_BINDING,
-            };
-            const uint32_t propsCount = sizeof(props) / sizeof(props[0]);
-            int32_t params[propsCount];
-            VGL( glGetProgramResourceiv, program, GL_UNIFORM_BLOCK, i, propsCount, props, sizeof(params), NULL, params );
-
-            ShaderBufferDesc bufDesc;
-            bufDesc.size = params[0];
-
-            mBuffers.push_back( std::make_shared<ShaderBuffer>( name, bufDesc ) );
-            mDesc.bufferCount ++;
-
-            ShaderResourceDesc resDesc;
-            resDesc.bindPoint = params[1];
-            resDesc.bindCount = 1;
-            resDesc.type      = SHADER_RES_TYPE_CBUFFER;
-            resDesc.dim       = SHADER_RES_DIM_BUFFER;
-
-            mResources.push_back( std::make_shared<ShaderResource>( name, resDesc ) );
-            mDesc.resourceCount ++;
-        }
+                    ShaderResourceDesc resDesc;
+                    resDesc.bindPoint   = res.bindSlot;
+                    resDesc.bindCount   = res.bindCount;
+                    resDesc.type        = static_cast< ShaderResourceType >( res.type );
+                    resDesc.dim         = static_cast< ShaderResourceDim >( res.dim );
+                    mResources.push_back( std::make_shared< ShaderResource >( res.name, resDesc ) );
+                }
+            }
 
         // Reflect uniforms
 

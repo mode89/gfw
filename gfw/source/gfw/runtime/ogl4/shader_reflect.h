@@ -22,20 +22,20 @@ namespace GFW {
 
     typedef std::vector< TextureSamplerLocation > TextureSamplerLocationVec;
 
-    class ShaderReflection : public AShaderReflection<IShaderReflection>
+    class ShaderReflection : public AShaderReflection< IShaderReflection >
     {
     public:
         const TextureSamplerLocationVec &
         GetTextureSamplers() const { return mTextureSamplers; }
 
     public:
-        ShaderReflection( const ShaderBinaryOgl4 &, uint32_t program, DeviceIn );
+        ShaderReflection( const ShaderBinary &, const ShaderBinaryOgl4 &, uint32_t program, DeviceIn );
         ~ShaderReflection();
 
     private:
         TextureSamplerLocationVec   mTextureSamplers;
     };
-    SHARED_PTR_TYPEDEFS(ShaderReflection);
+    SHARED_PTR_TYPEDEFS( ShaderReflection );
 
 } // namespace GFW
 

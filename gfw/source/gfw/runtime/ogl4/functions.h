@@ -63,6 +63,8 @@
     F( PFNGLGETPROGRAMRESOURCENAMEPROC,                     glGetProgramResourceName ) \
     F( PFNGLGETPROGRAMRESOURCELOCATIONPROC,                 glGetProgramResourceLocation ) \
     F( PFNGLGETPROGRAMRESOURCEIVPROC,                       glGetProgramResourceiv ) \
+    F( PFNGLGETPROGRAMRESOURCEINDEXPROC,                    glGetProgramResourceIndex ) \
+    F( PFNGLUNIFORMBLOCKBINDINGPROC,                        glUniformBlockBinding ) \
     F( PFNGLUNIFORMHANDLEUI64ARBPROC,                       glUniformHandleui64ARB ) \
     F( PFNGLPROGRAMUNIFORMHANDLEUI64ARBPROC,                glProgramUniformHandleui64ARB ) \
     \
