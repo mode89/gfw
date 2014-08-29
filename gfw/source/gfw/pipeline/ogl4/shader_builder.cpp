@@ -103,6 +103,7 @@ namespace GFW {
             case TOKEN_TECHNIQUE_DEFINITION:
             case TOKEN_SEMANTIC:
             case TOKEN_STATE_OBJECT_DEFINITION:
+            case TOKEN_REGISTER_BINDING:
                 AdvancePosition( tree );
                 return false;
             default:

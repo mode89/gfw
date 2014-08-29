@@ -100,9 +100,12 @@ namespace GFW {
                 symbol.isVariable = true;
 
                 // if register is assigned explicitly
-                const ParseTree * registerId = tree.GetFirstChildWithType( TOKEN_REGISTER_ID );
-                if ( registerId )
+                const ParseTree * registerBinding = tree.GetFirstChildWithType( TOKEN_REGISTER_BINDING );
+                if ( registerBinding )
                 {
+                    const ParseTree * registerId = registerBinding->GetFirstChildWithType( TOKEN_REGISTER_ID );
+                    CMN_ASSERT( registerId != nullptr );
+
                     const char * registerName = registerId->GetText().c_str();
                     switch ( registerName[0] )
                     {
