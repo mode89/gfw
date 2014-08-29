@@ -16,9 +16,8 @@ namespace GFW {
             return GL_ELEMENT_ARRAY_BUFFER;
         else if ( bindFlags & BIND_FLAG_CONSTANT_BUFFER )
             return GL_UNIFORM_BUFFER;
-        else
-            CMN_FAIL();
 
+        CMN_FAIL();
         return 0;
     }
 
