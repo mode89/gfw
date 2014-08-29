@@ -83,6 +83,26 @@ namespace GFW {
                 symbol.references.insert( nextNewReferences.begin(), nextNewReferences.end() );
             }
         }
+
+        // Collect indirect references to cbuffers
+        for ( auto & symbol : symbolTable )
+        {
+            if ( symbol.isFunction )
+            {
+                NameSymbolMap & references = symbol.references;
+                for ( auto & referredSymbol : references )
+                {
+                    if ( referredSymbol.second->isCbufferMember )
+                    {
+                        const Symbol * cbufferSymbol = referredSymbol.second->parent;
+                        if ( references.count( cbufferSymbol->name ) == 0 )
+                        {
+                            references.insert( std::make_pair( cbufferSymbol->name, cbufferSymbol ) );
+                        }
+                    }
+                }
+            }
+        }
     }
 
     bool CollectSymbol( const ParseTree & tree, SymbolTable & symbolTable )
