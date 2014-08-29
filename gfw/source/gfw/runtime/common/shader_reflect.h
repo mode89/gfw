@@ -4,7 +4,6 @@
 #include "gfw/shader_reflect.h"
 #include "gfw/types_fwd.h"
 #include "gfw/runtime/common/device_child.h"
-#include "gfw/shared/shader_reflect.h"
 #include "gfw/shared/shader.h"
 
 #include <unordered_map>
@@ -22,13 +21,13 @@ namespace GFW {
         GetDesc() const { return mDesc; }
 
     public:
-        ShaderVariable(const char * name, const ShaderVariableDesc & desc) { mName = name; mDesc = desc; }
+        ShaderVariable( const char * name, const ShaderVariableDesc & desc ) { mName = name; mDesc = desc; }
 
     private:
         const char *        mName;
         ShaderVariableDesc  mDesc;
     };
-    SHARED_PTR_TYPEDEFS(ShaderVariable);
+    SHARED_PTR_TYPEDEFS( ShaderVariable );
 
     class ShaderBuffer : public IShaderBuffer
     {
@@ -40,13 +39,13 @@ namespace GFW {
         GetDesc() const { return mDesc; }
 
     public:
-        ShaderBuffer(const char * name, const ShaderBufferDesc & desc) { mName = name; mDesc = desc; }
+        ShaderBuffer( const char * name, const ShaderBufferDesc & desc ) { mName = name; mDesc = desc; }
 
     private:
         const char *        mName;
         ShaderBufferDesc    mDesc;
     };
-    SHARED_PTR_TYPEDEFS(ShaderBuffer);
+    SHARED_PTR_TYPEDEFS( ShaderBuffer );
 
     class ShaderResource : public IShaderResource
     {
@@ -58,13 +57,13 @@ namespace GFW {
         GetDesc() const { return mDesc; }
 
     public:
-        ShaderResource(const char * name, const ShaderResourceDesc & desc) { mName = name; mDesc = desc; }
+        ShaderResource( const char * name, const ShaderResourceDesc & desc ) { mName = name; mDesc = desc; }
 
     private:
         const char *        mName;
         ShaderResourceDesc  mDesc;
     };
-    SHARED_PTR_TYPEDEFS(ShaderResource);
+    SHARED_PTR_TYPEDEFS( ShaderResource );
 
     class ShaderParameter : public IShaderParameter
     {
@@ -73,12 +72,12 @@ namespace GFW {
         GetDesc() const { return mDesc; }
 
     public:
-        ShaderParameter(const ShaderParameterDesc & desc) { mDesc = desc; }
+        ShaderParameter( const ShaderParameterDesc & desc ) { mDesc = desc; }
 
     private:
         ShaderParameterDesc mDesc;
     };
-    SHARED_PTR_TYPEDEFS(ShaderParameter);
+    SHARED_PTR_TYPEDEFS( ShaderParameter );
 
     template < class Base >
     class AShaderReflection : public ADeviceChild<Base>
@@ -88,34 +87,34 @@ namespace GFW {
         GetDesc() const { return mDesc; }
 
         virtual ConstIShaderVariableRef
-        GetVariable(uint32_t index) const;
+        GetVariable( uint32_t index ) const;
 
         virtual ConstIShaderVariableRef
-        GetVariable(const char * name) const;
+        GetVariable( const char * name ) const;
 
         virtual ConstIShaderBufferRef
-        GetBuffer(uint32_t index) const;
+        GetBuffer( uint32_t index ) const;
 
         virtual ConstIShaderBufferRef
-        GetBuffer(const char * name) const;
+        GetBuffer( const char * name ) const;
 
         virtual ConstIShaderResourceRef
-        GetResource(uint32_t index) const;
+        GetResource( uint32_t index ) const;
 
         virtual ConstIShaderResourceRef
-        GetResource(const char * name) const;
+        GetResource( const char * name ) const;
 
         virtual ConstIShaderParameterRef
-        GetInputParameter(uint32_t index) const;
+        GetInputParameter( uint32_t index ) const;
 
         virtual ConstIShaderParameterRef
-        GetInputParameter(Semantic) const;
+        GetInputParameter( Semantic ) const;
 
     public:
         void Initialize();
 
     public:
-        AShaderReflection( DeviceIn );
+        AShaderReflection( DeviceIn  );
         ~AShaderReflection();
 
     protected:
