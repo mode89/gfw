@@ -620,6 +620,10 @@ namespace GFW {
             std::memset( samplerRegisterSymbolMap, 0, sizeof( samplerRegisterSymbolMap ) );
             SymbolNameRegisterIndexMap samplerNameRegisterMap;
 
+            const Symbol * cbufferRegisterSymbolMap[ MAX_BIND_CBUFFERS ];
+            std::memset( cbufferRegisterSymbolMap, 0, sizeof( cbufferRegisterSymbolMap ) );
+            SymbolNameRegisterIndexMap cbufferNameRegisterMap;
+
             // Map explicitly assigned variables
             for ( auto it : entryPoint->references )
             {
@@ -646,6 +650,16 @@ namespace GFW {
                                 samplerRegisterSymbolMap[ index ]->name ) );
                         samplerRegisterSymbolMap[ index ] = &symbol;
                         samplerNameRegisterMap[ symbol.name ] = index;
+                    }
+                    else if ( symbol.isCbuffer )
+                    {
+                        CMN_THROW_IF( index >= MAX_BIND_CBUFFERS,
+                            ShaderBuilderException::ExceededCbufferRegistersLimit() );
+                        CMN_THROW_IF( cbufferRegisterSymbolMap[ index ],
+                            ShaderBuilderException::AssignedSameRegister( symbol.name,
+                                cbufferRegisterSymbolMap[ index ]->name ) );
+                        cbufferRegisterSymbolMap[ index ] = &symbol;
+                        cbufferNameRegisterMap[ symbol.name ] = index;
                     }
                 }
             }
@@ -684,6 +698,20 @@ namespace GFW {
                         CMN_THROW_IF( index == -1, ShaderBuilderException::ExceededSamplerRegistersLimit() );
                         samplerRegisterSymbolMap[ index ] = &symbol;
                         samplerNameRegisterMap[ symbol.name ] = index;
+                    }
+                    else if ( symbol.isCbuffer )
+                    {
+                        for ( uint32_t i = 0; i < MAX_BIND_CBUFFERS; ++ i )
+                        {
+                            if ( cbufferRegisterSymbolMap[ i ] == nullptr )
+                            {
+                                index = i;
+                                break;
+                            }
+                        }
+                        CMN_THROW_IF( index == -1, ShaderBuilderException::ExceededCbufferRegistersLimit() );
+                        cbufferRegisterSymbolMap[ index ] = &symbol;
+                        cbufferNameRegisterMap[ symbol.name ] = index;
                     }
                 }
             }

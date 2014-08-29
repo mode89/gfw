@@ -7,6 +7,7 @@ namespace GFW {
 
     #define EXCEPTION_CODES \
         C( AssignedSameRegister, "The same register cannot be assigned to multiple variables: '%s', '%s'." ) \
+        C( ExceededCbufferRegistersLimit, "Exceeded cbuffer registers limit." ) \
         C( ExceededSamplerRegistersLimit, "Exceeded smapler registers limit." ) \
         C( ExceededTextureRegistersLimit, "Exceeded texture registers limit." ) \
         C( ParameterWithoutSemantic, "Input/output parameter wihtout semantic is not allowed." ) \
