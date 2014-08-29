@@ -192,6 +192,20 @@ namespace GFW {
 
         mInputLayout.reset();
 
+        // Detach constant shaders
+
+            for ( unsigned stage = 0; stage < SHADER_STAGE_COUNT; ++ stage )
+            {
+                for ( unsigned slot = 0; slot < MAX_BIND_CBUFFERS; ++ slot )
+                {
+                    if ( mCBuffers[ stage ][ slot ] ||
+                         mDirtyFlags.cbuffers[ stage ] & ( 1 << slot ) )
+                    {
+                        VGL( glBindBufferBase, GL_UNIFORM_BUFFER, stage * MAX_BIND_CBUFFERS + slot, 0 );
+                    }
+                }
+            }
+
         // Detach textures
 
             for ( uint32_t stage = 0; stage < SHADER_STAGE_COUNT; ++ stage )
@@ -276,6 +290,20 @@ namespace GFW {
             }
         }
 
+        // Bind constant buffers
+
+            for ( unsigned stage = 0; stage < SHADER_STAGE_COUNT; ++ stage )
+            {
+                for ( unsigned slot = 0, mask = mDirtyFlags.cbuffers[ stage ]; mask; ++ slot, mask >>= 1 )
+                {
+                    ConstBufferRef buffer = mCBuffers[ stage ][ slot ];
+                    uint32_t handle = buffer ? buffer->GetHandle() : 0;
+                    VGL( glBindBufferBase, GL_UNIFORM_BUFFER,
+                        stage * MAX_BIND_CBUFFERS + slot, handle );
+                }
+                mDirtyFlags.cbuffers[ stage ] = 0;
+            }
+
         // Bind textures
 
             for ( uint32_t stage = 0; stage < SHADER_STAGE_COUNT; ++ stage )
@@ -338,6 +366,16 @@ namespace GFW {
     void Context::SetIndexBuffer( ConstIBufferIn buffer )
     {
         mIndexBuffer = std::static_pointer_cast< const Buffer >( buffer );
+    }
+
+    void Context::SetConstantBuffer( ShaderStage stage, uint32_t slot, ConstIBufferIn buffer )
+    {
+        CMN_ASSERT( stage >= 0 );
+        CMN_ASSERT( stage < SHADER_STAGE_COUNT );
+        CMN_ASSERT( slot < MAX_BIND_CBUFFERS );
+
+        mCBuffers[ stage ][ slot ] = std::static_pointer_cast< const Buffer >( buffer );
+        mDirtyFlags.cbuffers[ stage ] |= ( 1 << slot );
     }
 
     void Context::SetTexture( ShaderStage stage, uint32_t slot, ConstITextureIn texture )

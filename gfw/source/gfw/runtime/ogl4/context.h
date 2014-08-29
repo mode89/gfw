@@ -32,6 +32,9 @@ namespace GFW {
         SetIndexBuffer( ConstIBufferIn );
 
         virtual void
+        SetConstantBuffer( ShaderStage, uint32_t slot, ConstIBufferIn );
+
+        virtual void
         SetTexture( ShaderStage stage, uint32_t slot, ConstITextureIn );
 
         virtual void
@@ -98,11 +101,15 @@ namespace GFW {
 
             struct DirtyFlags
             {
-                bool renderTargets : 1;
+                bool        renderTargets : 1;
+                unsigned    cbuffers[ SHADER_STAGE_COUNT ];
 
                 DirtyFlags()
                     : renderTargets( false )
-                {}
+                {
+                    for ( unsigned stage = 0; stage < SHADER_STAGE_COUNT; ++ stage )
+                        cbuffers[ stage ] = 0;
+                }
             }                           mDirtyFlags;
 
         // Shaders
@@ -118,6 +125,10 @@ namespace GFW {
             ConstBufferRef              mVertexBuffers[ MAX_BIND_VERTEX_BUFFERS ];
 
             ConstBufferRef              mIndexBuffer;
+
+        // Constant buffers
+
+            ConstBufferRef              mCBuffers[ SHADER_STAGE_COUNT ][ MAX_BIND_CBUFFERS ];
 
         // Textures
 

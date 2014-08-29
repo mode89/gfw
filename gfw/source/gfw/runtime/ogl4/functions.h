@@ -78,6 +78,7 @@
     F( PFNGLGENBUFFERSPROC,                                 glGenBuffers ) \
     F( PFNGLDELETEBUFFERSPROC,                              glDeleteBuffers ) \
     F( PFNGLBINDBUFFERPROC,                                 glBindBuffer ) \
+    F( PFNGLBINDBUFFERBASEPROC,                             glBindBufferBase ) \
     F( PFNGLBUFFERDATAPROC,                                 glBufferData ) \
     F( PFNGLBUFFERSUBDATAPROC,                              glBufferSubData ) \
     F( PFNGLBUFFERSTORAGEPROC,                              glBufferStorage ) \

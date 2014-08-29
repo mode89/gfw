@@ -21,6 +21,9 @@ namespace GFW {
         SetIndexBuffer( ConstIBufferIn ) = 0;
 
         virtual void
+        SetConstantBuffer( ShaderStage stage, uint32_t slot, ConstIBufferIn ) = 0;
+
+        virtual void
         SetTexture( ShaderStage stage, uint32_t slot, ConstITextureIn ) = 0;
 
         virtual void
