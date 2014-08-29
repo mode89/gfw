@@ -53,6 +53,7 @@ namespace GFW {
     struct SwapChainDesc;
     struct VertexAttribute;
 
+    enum BindFlags : unsigned;
     enum MapType : uint32_t;
     enum ResourceType : uint32_t;
     enum ShaderStage : int32_t;

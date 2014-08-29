@@ -8,15 +8,16 @@
 
 namespace GFW {
 
-    static uint32_t GetBufferTarget(BufferType type)
+    static uint32_t GetBufferTarget( unsigned bindFlags )
     {
-        switch (type)
-        {
-        case BUFFER_VERTEX:     return GL_ARRAY_BUFFER;
-        case BUFFER_INDEX:      return GL_ELEMENT_ARRAY_BUFFER;
-        case BUFFER_PIXEL:      return GL_PIXEL_UNPACK_BUFFER;
-        default:                CMN_FAIL();
-        }
+        if ( bindFlags & BIND_FLAG_VERTEX_BUFFER )
+            return GL_ARRAY_BUFFER;
+        else if ( bindFlags & BIND_FLAG_INDEX_BUFFER )
+            return GL_ELEMENT_ARRAY_BUFFER;
+        else if ( bindFlags & BIND_FLAG_CONSTANT_BUFFER )
+            return GL_UNIFORM_BUFFER;
+        else
+            CMN_FAIL();
 
         return 0;
     }
@@ -40,7 +41,7 @@ namespace GFW {
         VGL( glGenBuffers, 1, &mHandle );
         CMN_ASSERT( mHandle != 0 );
 
-        mTarget = GetBufferTarget( mDesc.type );
+        mTarget = GetBufferTarget( mDesc.bindFlags );
 
         // usage flags
         uint32_t flags = 0;

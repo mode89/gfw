@@ -64,14 +64,23 @@ namespace GFW {
         RESOURCE_TYPE_TEXTURE,
     };
 
+    enum BindFlags : unsigned
+    {
+        BIND_FLAG_VERTEX_BUFFER     = ( 1 << 0 ),
+        BIND_FLAG_INDEX_BUFFER      = ( 1 << 1 ),
+        BIND_FLAG_CONSTANT_BUFFER   = ( 1 << 2 ),
+    };
+
     struct ResourceDesc
     {
         Usage       usage;
         uint32_t    cpuAccessFlags;
+        unsigned    bindFlags;
 
         ResourceDesc()
             : usage(USAGE_DEFAULT)
             , cpuAccessFlags( 0 )
+            , bindFlags( 0 )
         {}
     };
 

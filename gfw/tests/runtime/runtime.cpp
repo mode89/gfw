@@ -43,9 +43,9 @@ TEST_F( GraphicsTest, DrawColored )
     initialData.slicePitch = sizeof( vertices );
 
     BufferDesc vertexBufferDesc;
-    vertexBufferDesc.type = BUFFER_VERTEX;
-    vertexBufferDesc.size = sizeof( vertices );
-    vertexBufferDesc.usage = USAGE_STATIC;
+    vertexBufferDesc.bindFlags  = BIND_FLAG_VERTEX_BUFFER;
+    vertexBufferDesc.size       = sizeof( vertices );
+    vertexBufferDesc.usage      = USAGE_STATIC;
     IBufferRef vertexBuffer = mDevice->CreateBuffer( vertexBufferDesc, &initialData );
 
     // Define vertex attributes
@@ -113,9 +113,9 @@ TEST_F( GraphicsTest, DrawIndexed )
     vertexData.slicePitch = sizeof( vertices );
 
     BufferDesc vertexBufferDesc;
-    vertexBufferDesc.type  = BUFFER_VERTEX;
-    vertexBufferDesc.size  = sizeof( vertices );
-    vertexBufferDesc.usage = USAGE_STATIC;
+    vertexBufferDesc.bindFlags  = BIND_FLAG_VERTEX_BUFFER;
+    vertexBufferDesc.size       = sizeof( vertices );
+    vertexBufferDesc.usage      = USAGE_STATIC;
     IBufferRef vertexBuffer = mDevice->CreateBuffer( vertexBufferDesc, &vertexData );
 
     uint16_t indices[] = {
@@ -127,9 +127,9 @@ TEST_F( GraphicsTest, DrawIndexed )
     indexData.slicePitch = sizeof( indices );
 
     BufferDesc indexBufferDesc;
-    indexBufferDesc.type  = BUFFER_INDEX;
-    indexBufferDesc.size  = sizeof( indices );
-    indexBufferDesc.usage = USAGE_STATIC;
+    indexBufferDesc.bindFlags   = BIND_FLAG_INDEX_BUFFER;
+    indexBufferDesc.size        = sizeof( indices );
+    indexBufferDesc.usage       = USAGE_STATIC;
     IBufferRef indexBuffer = mDevice->CreateBuffer( indexBufferDesc, &indexData );
 
     // Define vertex attributes
@@ -252,9 +252,9 @@ TEST_F( GraphicsTest, CreateMesh )
     vertexData.slicePitch = vertices.size() * sizeof( Vertex );
 
     BufferDesc vertexBufferDesc;
-    vertexBufferDesc.size  = sizeof( Vertex ) * vertCnt;
-    vertexBufferDesc.type  = BUFFER_VERTEX;
-    vertexBufferDesc.usage = USAGE_STATIC;
+    vertexBufferDesc.size       = sizeof( Vertex ) * vertCnt;
+    vertexBufferDesc.bindFlags  = BIND_FLAG_VERTEX_BUFFER;
+    vertexBufferDesc.usage      = USAGE_STATIC;
     IBufferRef vertexBuffer = mDevice->CreateBuffer( vertexBufferDesc, &vertexData );
 
     // Create index buffer
@@ -287,9 +287,9 @@ TEST_F( GraphicsTest, CreateMesh )
     indexData.slicePitch = indices.size() * sizeof( uint32_t );
 
     BufferDesc indexBufferDesc;
-    indexBufferDesc.size  = sizeof( uint32_t ) * xSegments * ySegments * 2 * 3;
-    indexBufferDesc.type  = BUFFER_INDEX;
-    indexBufferDesc.usage = USAGE_STATIC;
+    indexBufferDesc.size        = sizeof( uint32_t ) * xSegments * ySegments * 2 * 3;
+    indexBufferDesc.bindFlags   = BIND_FLAG_INDEX_BUFFER;
+    indexBufferDesc.usage       = USAGE_STATIC;
     IBufferRef indexBuffer = mDevice->CreateBuffer( indexBufferDesc, &indexData );
 
     // Create input layout
@@ -341,7 +341,7 @@ TEST_F( Test, MapBuffer )
     BufferDesc srcBufferDesc;
     srcBufferDesc.size              = kBufferSize;
     srcBufferDesc.usage             = USAGE_DYNAMIC;
-    srcBufferDesc.type              = BUFFER_VERTEX;
+    srcBufferDesc.bindFlags         = BIND_FLAG_VERTEX_BUFFER;
     srcBufferDesc.cpuAccessFlags    = CPU_ACCESS_FLAG_WRITE;
     IBufferRef srcBuffer = mDevice->CreateBuffer( srcBufferDesc );
 
@@ -389,7 +389,7 @@ TEST_F( Test, UpdateBuffer )
     BufferDesc srcBufferDesc;
     srcBufferDesc.size              = kBufferSize;
     srcBufferDesc.usage             = USAGE_DEFAULT;
-    srcBufferDesc.type              = BUFFER_VERTEX;
+    srcBufferDesc.bindFlags         = BIND_FLAG_VERTEX_BUFFER;
     IBufferRef srcBuffer = mDevice->CreateBuffer( srcBufferDesc );
 
     BufferDesc dstBufferDesc = srcBufferDesc;
@@ -449,9 +449,9 @@ TEST_F( GraphicsTest, RenderTarget )
     vertexData.slicePitch = sizeof( vertices );
 
     BufferDesc vertPosBufDesc;
-    vertPosBufDesc.type   = BUFFER_VERTEX;
-    vertPosBufDesc.size   = sizeof( vertices );
-    vertPosBufDesc.usage  = USAGE_STATIC;
+    vertPosBufDesc.bindFlags    = BIND_FLAG_VERTEX_BUFFER;
+    vertPosBufDesc.size         = sizeof( vertices );
+    vertPosBufDesc.usage        = USAGE_STATIC;
     IBufferRef vertPosBuf = mDevice->CreateBuffer( vertPosBufDesc, &vertexData );
 
     // Define vertex attributes
@@ -535,9 +535,9 @@ TEST_F( GraphicsTest, Resolve )
     vertexData.slicePitch = sizeof( vertices );
 
     BufferDesc vertPosBufDesc;
-    vertPosBufDesc.type   = BUFFER_VERTEX;
-    vertPosBufDesc.size   = sizeof( vertices );
-    vertPosBufDesc.usage  = USAGE_STATIC;
+    vertPosBufDesc.bindFlags    = BIND_FLAG_VERTEX_BUFFER;
+    vertPosBufDesc.size         = sizeof( vertices );
+    vertPosBufDesc.usage        = USAGE_STATIC;
     IBufferRef vertPosBuf = mDevice->CreateBuffer( vertPosBufDesc, &vertexData );
 
     // define vertex attributes
