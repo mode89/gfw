@@ -202,8 +202,10 @@ namespace GFW {
                          mDirtyFlags.cbuffers[ stage ] & ( 1 << slot ) )
                     {
                         VGL( glBindBufferBase, GL_UNIFORM_BUFFER, stage * MAX_BIND_CBUFFERS + slot, 0 );
+                        mCBuffers[ stage ][ slot ].reset();
                     }
                 }
+                mDirtyFlags.cbuffers[ stage ] = 0;
             }
 
         // Detach textures
@@ -300,10 +302,13 @@ namespace GFW {
             {
                 for ( unsigned slot = 0, mask = mDirtyFlags.cbuffers[ stage ]; mask; ++ slot, mask >>= 1 )
                 {
-                    ConstBufferRef buffer = mCBuffers[ stage ][ slot ];
-                    uint32_t handle = buffer ? buffer->GetHandle() : 0;
-                    VGL( glBindBufferBase, GL_UNIFORM_BUFFER,
-                        stage * MAX_BIND_CBUFFERS + slot, handle );
+                    if ( mask & 1u )
+                    {
+                        ConstBufferRef buffer = mCBuffers[ stage ][ slot ];
+                        uint32_t handle = buffer ? buffer->GetHandle() : 0;
+                        VGL( glBindBufferBase, GL_UNIFORM_BUFFER,
+                            stage * MAX_BIND_CBUFFERS + slot, handle );
+                    }
                 }
                 mDirtyFlags.cbuffers[ stage ] = 0;
             }
