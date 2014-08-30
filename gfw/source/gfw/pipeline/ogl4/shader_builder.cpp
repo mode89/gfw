@@ -586,27 +586,27 @@ namespace GFW {
     {
         // Query entry point's symbol
 
-        auto entryPointIt = mNameSymbolMap.find( shaderName );
-        CMN_THROW_IF( entryPointIt == mNameSymbolMap.end(),
-            ShaderBuilderException::UndefinedEntry( shaderName.c_str() ) );
+            auto entryPointIt = mNameSymbolMap.find( shaderName );
+            CMN_THROW_IF( entryPointIt == mNameSymbolMap.end(),
+                ShaderBuilderException::UndefinedEntry( shaderName.c_str() ) );
 
-        const Symbol * entryPoint = entryPointIt->second;
+            const Symbol * entryPoint = entryPointIt->second;
 
         // Translate the profile
 
-        ShaderStage stage;
-        if ( profile == "vs_4_0" )
-        {
-            stage = SHADER_STAGE_VERTEX;
-        }
-        else if ( profile == "ps_4_0" )
-        {
-            stage = SHADER_STAGE_PIXEL;
-        }
-        else
-        {
-            stage = SHADER_STAGE_UNKNOWN;
-        }
+            ShaderStage stage;
+            if ( profile == "vs_4_0" )
+            {
+                stage = SHADER_STAGE_VERTEX;
+            }
+            else if ( profile == "ps_4_0" )
+            {
+                stage = SHADER_STAGE_PIXEL;
+            }
+            else
+            {
+                stage = SHADER_STAGE_UNKNOWN;
+            }
 
         // Assign registers
 
@@ -718,116 +718,112 @@ namespace GFW {
 
         // Construct the shader's code
 
-        std::stringstream source;
+            std::stringstream source;
 
-        source  << "#version 430 core" << std::endl
-                << std::endl
-                << "#define cbuffer     uniform" << std::endl
-                << std::endl
-                << "#define int2        ivec2" << std::endl
-                << "#define int3        ivec3" << std::endl
-                << "#define int4        ivec4" << std::endl
-                << "#define uint2       uvec2" << std::endl
-                << "#define uint3       uvec3" << std::endl
-                << "#define uint4       uvec4" << std::endl
-                << "#define half2       hvec2" << std::endl
-                << "#define half3       hvec3" << std::endl
-                << "#define half4       hvec4" << std::endl
-                << "#define float2      vec2" << std::endl
-                << "#define float3      vec3" << std::endl
-                << "#define float4      vec4" << std::endl
-                << "#define float2x2    mat2" << std::endl
-                << "#define float3x3    mat3" << std::endl
-                << "#define float4x4    mat4" << std::endl
-                << std::endl
-                << "#define mul(a, b) ((a) * (b))" << std::endl
-                << std::endl;
+            source  << "#version 430 core" << std::endl
+                    << std::endl
+                    << "#define cbuffer     uniform" << std::endl
+                    << std::endl
+                    << "#define int2        ivec2" << std::endl
+                    << "#define int3        ivec3" << std::endl
+                    << "#define int4        ivec4" << std::endl
+                    << "#define uint2       uvec2" << std::endl
+                    << "#define uint3       uvec3" << std::endl
+                    << "#define uint4       uvec4" << std::endl
+                    << "#define half2       hvec2" << std::endl
+                    << "#define half3       hvec3" << std::endl
+                    << "#define half4       hvec4" << std::endl
+                    << "#define float2      vec2" << std::endl
+                    << "#define float3      vec3" << std::endl
+                    << "#define float4      vec4" << std::endl
+                    << "#define float2x2    mat2" << std::endl
+                    << "#define float3x3    mat3" << std::endl
+                    << "#define float4x4    mat4" << std::endl
+                    << std::endl
+                    << "#define mul(a, b) ((a) * (b))" << std::endl
+                    << std::endl;
 
-        const TextureSamplerPairSet & textureSamplerPairSet = mFunctionTextureSamplerMap[entryPoint];
-        ConstructSourceVisitor constructSource( source, textureSamplerPairSet, mNameSymbolMap, entryPoint );
-        mParseTree.TraverseDFS( constructSource );
-        source << std::endl << std::endl;
+            const TextureSamplerPairSet & textureSamplerPairSet = mFunctionTextureSamplerMap[entryPoint];
+            ConstructSourceVisitor constructSource( source, textureSamplerPairSet, mNameSymbolMap, entryPoint );
+            mParseTree.TraverseDFS( constructSource );
+            source << std::endl << std::endl;
 
         // Declare built-in variables
 
-        EnumInputsOutputs( entryPoint, ExpandInputOutputAsBuiltinDeclaration( source, mNameSymbolMap, stage ) );
-        source << std::endl;
+            EnumInputsOutputs( entryPoint, ExpandInputOutputAsBuiltinDeclaration( source, mNameSymbolMap, stage ) );
+            source << std::endl;
 
         // Declare inputs
 
-        std::stringstream inputDecls;
-        EnumInputsOutputs( entryPoint, ExpandInputAsGlobalDeclaration( inputDecls, mNameSymbolMap, stage ) );
+            std::stringstream inputDecls;
+            EnumInputsOutputs( entryPoint, ExpandInputAsGlobalDeclaration( inputDecls, mNameSymbolMap, stage ) );
 
-        if ( stage == SHADER_STAGE_VERTEX )
-        {
-            // OpenGL doesn't allow input blocks in vertex shader
-            source << inputDecls.str();
-            source << std::endl;
-        }
-        else
-        {
-            if ( !inputDecls.str().empty() )
+            if ( stage == SHADER_STAGE_VERTEX )
             {
-                source << "in _INOUTS {" << std::endl;
+                // OpenGL doesn't allow input blocks in vertex shader
                 source << inputDecls.str();
-                source << "} _inputs;" << std::endl;
                 source << std::endl;
             }
-        }
+            else
+            {
+                if ( !inputDecls.str().empty() )
+                {
+                    source << "in _INOUTS {" << std::endl;
+                    source << inputDecls.str();
+                    source << "} _inputs;" << std::endl;
+                    source << std::endl;
+                }
+            }
 
         // Declare outputs
 
-        std::stringstream outputDecls;
-        EnumInputsOutputs( entryPoint, ExpandOutputAsGlobalDeclaration( outputDecls, mNameSymbolMap, stage ) );
+            std::stringstream outputDecls;
+            EnumInputsOutputs( entryPoint, ExpandOutputAsGlobalDeclaration( outputDecls, mNameSymbolMap, stage ) );
 
-        if ( stage == SHADER_STAGE_PIXEL )
-        {
-            // OpenGL doesn't allow output blocks in fragment shader
-            source << outputDecls.str();
-            source << std::endl;
-        }
-        else
-        {
-            if ( !outputDecls.str().empty() )
+            if ( stage == SHADER_STAGE_PIXEL )
             {
-                source << "out _INOUTS {" << std::endl;
+                // OpenGL doesn't allow output blocks in fragment shader
                 source << outputDecls.str();
-                source << "} _outputs;" << std::endl;
                 source << std::endl;
             }
-        }
+            else
+            {
+                if ( !outputDecls.str().empty() )
+                {
+                    source << "out _INOUTS {" << std::endl;
+                    source << outputDecls.str();
+                    source << "} _outputs;" << std::endl;
+                    source << std::endl;
+                }
+            }
 
         // main()
 
-        source << "void main()\n{\n";
-        {
-            // Declare local copies of inputs and outputs
+            source << "void main()\n{\n";
+            {
+                // Declare local copies of inputs and outputs
 
-            EnumInputsOutputs( entryPoint, ExpandInputOutputAsLocalDeclaration( source ) );
+                EnumInputsOutputs( entryPoint, ExpandInputOutputAsLocalDeclaration( source ) );
 
-            // Assign the inputs
+                // Assign the inputs
 
-            EnumInputsOutputs( entryPoint, AssignInput( source, mNameSymbolMap, stage ) );
+                EnumInputsOutputs( entryPoint, AssignInput( source, mNameSymbolMap, stage ) );
 
-            // Call the entry point
+                // Call the entry point
 
-            EnumInputsOutputs( entryPoint, ExpandInputOutputAsEntryPointArgument( source, entryPoint ) );
+                EnumInputsOutputs( entryPoint, ExpandInputOutputAsEntryPointArgument( source, entryPoint ) );
 
-            // Assign outputs
+                // Assign outputs
 
-            EnumInputsOutputs( entryPoint, AssignOutput( source, mNameSymbolMap, stage ) );
-        }
-        source << "}\n";
+                EnumInputsOutputs( entryPoint, AssignOutput( source, mNameSymbolMap, stage ) );
+            }
+            source << "}\n";
 
-        Validate( stage, source.str().c_str() );
+            Validate( stage, source.str().c_str() );
 
         // Construct binary
 
-        shaderBinary.mDesc.inputsCount = static_cast< uint32_t >( entryPoint->args.size() );
-        shaderBinary.mStage = stage;
-
-        ShaderBinaryOgl4 shaderBinaryOgl4;
-        shaderBinaryOgl4.mSource = std::move( source.str() );
+            shaderBinary.mStage = stage;
 
         // Reflect resources
 
@@ -865,27 +861,32 @@ namespace GFW {
                 }
             }
 
-        // Save texture-samplers
-        for ( auto & textureSampler : mFunctionTextureSamplerMap[ entryPoint ] )
-        {
-            TextureSamplerBinary binary;
+        // Construct ogl4 binary
 
-            const char * textureName = textureSampler.first->name;
-            binary.texture = textureNameRegisterMap[ textureName ];
+            ShaderBinaryOgl4 shaderBinaryOgl4;
+            shaderBinaryOgl4.mSource = std::move( source.str() );
 
-            const char * samplerName = textureSampler.second->name; 
-            binary.sampler = samplerNameRegisterMap[ samplerName ];
+            // Save texture-samplers
+            for ( auto & textureSampler : mFunctionTextureSamplerMap[ entryPoint ] )
+            {
+                TextureSamplerBinary binary;
 
-            binary.name = CreateTextureSamplerName( textureName, samplerName );
+                const char * textureName = textureSampler.first->name;
+                binary.texture = textureNameRegisterMap[ textureName ];
 
-            shaderBinaryOgl4.mTextureSamplers.push_back( binary );
-        }
+                const char * samplerName = textureSampler.second->name; 
+                binary.sampler = samplerNameRegisterMap[ samplerName ];
 
-        std::ostringstream archiveStream;
-        boost::archive::text_oarchive archive( archiveStream );
-        archive << shaderBinaryOgl4;
+                binary.name = CreateTextureSamplerName( textureName, samplerName );
 
-        shaderBinary.mData = std::move( archiveStream.str() );
+                shaderBinaryOgl4.mTextureSamplers.push_back( binary );
+            }
+
+            std::ostringstream archiveStream;
+            boost::archive::text_oarchive archive( archiveStream );
+            archive << shaderBinaryOgl4;
+
+            shaderBinary.mData = std::move( archiveStream.str() );
     }
 
     bool ShaderBuilder::CollectVariables( const ParseTree & tree )

@@ -7,30 +7,6 @@
 
 namespace GFW {
 
-    struct ShaderDesc
-    {
-        uint32_t    variableCount;
-        uint32_t    bufferCount;
-        uint32_t    resourceCount;
-        uint32_t    inputsCount;
-
-        ShaderDesc()
-            : variableCount(0)
-            , bufferCount(0)
-            , resourceCount(0)
-            , inputsCount(0)
-        {}
-
-        template < class Archive > void
-        serialize( Archive & ar, unsigned version )
-        {
-            ar & variableCount;
-            ar & bufferCount;
-            ar & resourceCount;
-            ar & inputsCount;
-        }
-    };
-
     struct ShaderResourceBinary
     {
         std::string     name;
@@ -64,7 +40,6 @@ namespace GFW {
         typedef std::list< ShaderResourceBinary > ShaderResourceBinaryVec;
 
     public:
-        ShaderDesc                  mDesc;
         uint32_t                    mStage;
         BinaryData                  mData;
         ShaderResourceBinaryVec     mResources;
@@ -72,7 +47,6 @@ namespace GFW {
         template < class Archive > void
         serialize( Archive & ar, unsigned version )
         {
-            ar & mDesc;
             ar & mStage;
             ar & mData;
             ar & mResources;

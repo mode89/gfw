@@ -103,29 +103,29 @@ namespace GFW {
 
         // Reflect input parameters
 
-        int32_t inputsCount = -1;
-        VGL( glGetProgramInterfaceiv, program, GL_PROGRAM_INPUT, GL_ACTIVE_RESOURCES, &inputsCount );
-        CMN_ASSERT( inputsCount != -1 );
+            int32_t inputsCount = -1;
+            VGL( glGetProgramInterfaceiv, program, GL_PROGRAM_INPUT, GL_ACTIVE_RESOURCES, &inputsCount );
+            CMN_ASSERT( inputsCount != -1 );
 
-        for (int32_t i = 0; i < inputsCount; ++ i)
-        {
-            VGL( glGetProgramResourceName, program, GL_PROGRAM_INPUT, i, sizeof(name), NULL, name );
+            for (int32_t i = 0; i < inputsCount; ++ i)
+            {
+                VGL( glGetProgramResourceName, program, GL_PROGRAM_INPUT, i, sizeof(name), NULL, name );
 
-            uint32_t props[] = {
-                GL_TYPE,
-                GL_LOCATION,
-            };
-            const uint32_t propsCount = sizeof(props) / sizeof(props[0]);
-            int32_t params[propsCount];
-            VGL( glGetProgramResourceiv, program, GL_PROGRAM_INPUT, i, propsCount, props, sizeof(params), NULL, params );
+                uint32_t props[] = {
+                    GL_TYPE,
+                    GL_LOCATION,
+                };
+                const uint32_t propsCount = sizeof(props) / sizeof(props[0]);
+                int32_t params[propsCount];
+                VGL( glGetProgramResourceiv, program, GL_PROGRAM_INPUT, i, propsCount, props, sizeof(params), NULL, params );
 
-            ShaderParameterDesc paramDesc;
-            paramDesc.location = params[1];
-            paramDesc.semantic = GetSemantic(name);
+                ShaderParameterDesc paramDesc;
+                paramDesc.location = params[1];
+                paramDesc.semantic = GetSemantic(name);
 
-            mInputs.push_back( std::make_shared<ShaderParameter>( paramDesc ) );
-            mDesc.inputsCount ++;
-        }
+                mInputs.push_back( std::make_shared<ShaderParameter>( paramDesc ) );
+                mDesc.inputsCount ++;
+            }
 
         // Reflect uniform blocks
 
@@ -150,56 +150,56 @@ namespace GFW {
 
         // Reflect uniforms
 
-        int32_t uniformsCount = -1;
-        VGL( glGetProgramInterfaceiv, program, GL_UNIFORM, GL_ACTIVE_RESOURCES, &uniformsCount );
-        CMN_ASSERT( uniformsCount != -1 );
+            int32_t uniformsCount = -1;
+            VGL( glGetProgramInterfaceiv, program, GL_UNIFORM, GL_ACTIVE_RESOURCES, &uniformsCount );
+            CMN_ASSERT( uniformsCount != -1 );
 
-        for (int32_t i = 0; i < uniformsCount; ++ i)
-        {
-            VGL( glGetProgramResourceName, program, GL_UNIFORM, i, sizeof(name), NULL, name );
-
-            uint32_t props[] = {
-                GL_TYPE,
-                GL_BLOCK_INDEX,
-                GL_LOCATION,
-                GL_OFFSET,
-                GL_ARRAY_SIZE,
-                GL_ARRAY_STRIDE
-            };
-            const uint32_t propsCount = sizeof(props) / sizeof(props[0]);
-            int32_t params[propsCount];
-            VGL( glGetProgramResourceiv, program, GL_UNIFORM, i, propsCount, props, sizeof(params), NULL, params );
-
-            if (IsVariableType(params[0]))
+            for (int32_t i = 0; i < uniformsCount; ++ i)
             {
-                ShaderVariableDesc varDesc;
-                varDesc.type        = GetVariableType(params[0]);
-                varDesc.bufferIndex = params[1];
-                varDesc.location    = (params[1] != -1) ? params[3] : params[2];
+                VGL( glGetProgramResourceName, program, GL_UNIFORM, i, sizeof(name), NULL, name );
 
-                uint32_t typeSize   = GetVariableTypeSize(params[0]);
-                uint32_t stride     = (params[1] != -1) ? params[5] : typeSize;
-                varDesc.size        = (params[4] == 0) ? typeSize : params[4] * stride;
+                uint32_t props[] = {
+                    GL_TYPE,
+                    GL_BLOCK_INDEX,
+                    GL_LOCATION,
+                    GL_OFFSET,
+                    GL_ARRAY_SIZE,
+                    GL_ARRAY_STRIDE
+                };
+                const uint32_t propsCount = sizeof(props) / sizeof(props[0]);
+                int32_t params[propsCount];
+                VGL( glGetProgramResourceiv, program, GL_UNIFORM, i, propsCount, props, sizeof(params), NULL, params );
 
-                mVariables.push_back( std::make_shared<ShaderVariable>( name, varDesc ) );
-                mDesc.variableCount ++;
-            }
-            else if (IsSamplerType(params[0]))
-            {
-                ShaderResourceDesc resDesc;
-                resDesc.type = SHADER_RES_TYPE_TEXTURE;
-                resDesc.dim  = GetSamplerDim(params[0]);
-                resDesc.bindPoint = params[2];
-                resDesc.bindCount = (params[4] == 0) ? 1 : params[4];
+                if (IsVariableType(params[0]))
+                {
+                    ShaderVariableDesc varDesc;
+                    varDesc.type        = GetVariableType(params[0]);
+                    varDesc.bufferIndex = params[1];
+                    varDesc.location    = (params[1] != -1) ? params[3] : params[2];
 
-                mResources.push_back( std::make_shared<ShaderResource>( name, resDesc ) );
-                mDesc.resourceCount ++;
+                    uint32_t typeSize   = GetVariableTypeSize(params[0]);
+                    uint32_t stride     = (params[1] != -1) ? params[5] : typeSize;
+                    varDesc.size        = (params[4] == 0) ? typeSize : params[4] * stride;
+
+                    mVariables.push_back( std::make_shared<ShaderVariable>( name, varDesc ) );
+                    mDesc.variableCount ++;
+                }
+                else if (IsSamplerType(params[0]))
+                {
+                    ShaderResourceDesc resDesc;
+                    resDesc.type = SHADER_RES_TYPE_TEXTURE;
+                    resDesc.dim  = GetSamplerDim(params[0]);
+                    resDesc.bindPoint = params[2];
+                    resDesc.bindCount = (params[4] == 0) ? 1 : params[4];
+
+                    mResources.push_back( std::make_shared<ShaderResource>( name, resDesc ) );
+                    mDesc.resourceCount ++;
+                }
+                else
+                {
+                    CMN_FAIL_MSG( "Undefined type of the uniform" );
+                }
             }
-            else
-            {
-                CMN_FAIL_MSG( "Undefined type of the uniform" );
-            }
-        }
 
         // Reflect texture-samplers
 
