@@ -6,6 +6,17 @@ gfw
         % replace stl containers in effect's binary
             % they use size_t, that is different for 32 and 64 bits
                 %  using text_oarchive
+    scene
+        pipeline
+            separate libraries gfw-pipeline-fx and gfw-pipeline-scene
+            scene binary
+            collada scene builder
+            compiler gfw-sc
+            test scene builder
+        runtime
+            create scene from binary
+            render scene
+            test scene rendering
     ogl4
         % assign registers to variables
             % textures & samplers
