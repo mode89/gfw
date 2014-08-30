@@ -4,6 +4,7 @@
 #include "gfw/runtime/ogl4/limits.h"
 #include "gfw/runtime/ogl4/shader_reflect.h"
 #include "gfw/runtime/common/shader_reflect.inl"
+#include "algorithm"
 
 namespace GFW {
 
@@ -96,6 +97,7 @@ namespace GFW {
         uint32_t program,
         DeviceIn device )
         : AShaderReflection( device )
+        , mInputSignature( 0 )
     {
         DeviceRef deviceImpl = device;
 
@@ -125,6 +127,21 @@ namespace GFW {
 
                 mInputs.push_back( std::make_shared<ShaderParameter>( paramDesc ) );
                 mDesc.inputsCount ++;
+            }
+
+        // Calculate input signature
+
+            mInputSignature = 0;
+            ShaderParameterVec sortedInputs = mInputs;
+            std::sort( sortedInputs.begin(), sortedInputs.end(),
+                [] ( const ShaderParameterRef & p1, const ShaderParameterRef & p2 ) -> bool {
+                    return p1->GetDesc().semantic < p2->GetDesc().semantic;
+                } );
+            for ( auto & par : sortedInputs )
+            {
+                std::string parString( reinterpret_cast< const char * >( &par->GetDesc() ),
+                    sizeof( ShaderParameterDesc ) );
+                mInputSignature ^= std::hash< std::string >()( parString );
             }
 
         // Reflect uniform blocks

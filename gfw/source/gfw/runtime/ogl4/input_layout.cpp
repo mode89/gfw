@@ -15,11 +15,15 @@ namespace GFW {
     InputLayout::InputLayout( uint32_t attrCnt, VertexAttribute attrs[], ConstIShaderIn shader, DeviceIn device )
         : ADeviceChild( device )
         , mAttributesMask( 0 )
+        , mInputSignature( 0 )
     {
         CMN_ASSERT( attrCnt <= MAX_INPUT_ATTRIBUTES );
         CMN_ASSERT( shader );
 
-        ConstIShaderReflectionRef reflection = shader->GetReflection();
+        ConstShaderReflectionRef reflection =
+            std::static_pointer_cast< const ShaderReflection >( shader->GetReflection() );
+        CMN_ASSERT( reflection->GetDesc().inputsCount == attrCnt );
+        mInputSignature = reflection->GetInputSignature();
 
         for (uint32_t i = 0; i < attrCnt; ++ i)
         {

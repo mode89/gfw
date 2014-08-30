@@ -18,13 +18,17 @@ namespace GFW {
         const VertexAttribute &
         GetAttribute(uint32_t index) const { return mAttributes[index]; }
 
+        size_t
+        GetInputSignature() const { return mInputSignature; }
+
     public:
         InputLayout(uint32_t attrCnt, VertexAttribute[], ConstIShaderIn vertexShader, DeviceIn);
         ~InputLayout();
 
     private:
         VertexAttribute     mAttributes[MAX_INPUT_ATTRIBUTES];
-        uint32_t            mAttributesMask;
+        unsigned            mAttributesMask;
+        size_t              mInputSignature;
     };
     SHARED_PTR_TYPEDEFS(InputLayout);
 

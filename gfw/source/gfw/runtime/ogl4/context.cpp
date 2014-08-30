@@ -252,6 +252,10 @@ namespace GFW {
 
         if ( mInputLayout )
         {
+            CMN_ASSERT( std::static_pointer_cast< const ShaderReflection >(
+                mShaders[ SHADER_STAGE_VERTEX ]->GetReflection() )->GetInputSignature()
+                    == mInputLayout->GetInputSignature() );
+
             for ( uint32_t attrIndex = 0, mask = mInputLayout->GetEnabledAttributesMask(); mask; ++ attrIndex, mask >>= 1 )
             {
                 if ( mask & 1 )
