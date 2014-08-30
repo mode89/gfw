@@ -181,7 +181,17 @@ TEST_F( GraphicsTest, DrawIndexed )
 TEST_F( GraphicsTest, DrawScreenQuad )
 {
     IEffectRef effect = mFactory->CreateEffect( mDevice, "draw.fxc" );
-    ConstITechniqueRef tech = effect->GetTechnique( "DrawRedQuad" );
+    ConstITechniqueRef tech = effect->GetTechnique( "DrawColoredQuad" );
+
+    float color[] = { 1.0f, 0.0f, 0.0f, 1.0f };
+    SubResourceData bufferData;
+    bufferData.mem = color;
+    bufferData.slicePitch = sizeof( color );
+
+    BufferDesc bufferDesc;
+    bufferDesc.size         = sizeof( color );
+    bufferDesc.bindFlags    = BIND_FLAG_CONSTANT_BUFFER;
+    IBufferRef buffer = mDevice->CreateBuffer( bufferDesc, &bufferData );
 
     for ( unsigned i = 0; i < mFrameCount; ++ i )
     {
@@ -193,7 +203,9 @@ TEST_F( GraphicsTest, DrawScreenQuad )
             mContext->SetRenderTargets( 1, rt );
             mContext->Clear( mClearParams );
 
-            effect->Dispatch();
+            mContext->SetConstantBuffer( SHADER_STAGE_PIXEL, 0, buffer );
+
+            tech->Dispatch();
             mContext->DrawScreenQuad();
         }
         mContext->EndScene();
@@ -217,6 +229,7 @@ struct Vertex
 TEST_F( GraphicsTest, CreateMesh )
 {
     IEffectRef effect = mFactory->CreateEffect( mDevice, "draw.fxc" );
+    ConstITechniqueRef tech = effect->GetTechnique( "DrawColored" );
 
     float    xLeft     = -1.0f;
     float    yBottom   = -1.0f;
@@ -298,7 +311,37 @@ TEST_F( GraphicsTest, CreateMesh )
     vertexAttribute.semantic = SEMANTIC_POSITION0;
     vertexAttribute.format   = FORMAT_RGB32_FLOAT;
     vertexAttribute.stride   = sizeof(Vertex);
-    IInputLayoutRef inputLayout = mDevice->CreateInputLayout(1, &vertexAttribute, effect->GetShader(SHADER_STAGE_VERTEX));
+    IInputLayoutRef inputLayout = mDevice->CreateInputLayout( 1, &vertexAttribute,
+        tech->GetShader( SHADER_STAGE_VERTEX ) );
+
+    // xform cbuffer
+
+    float xform[] = {
+        1.0f, 0.0f, 0.0f, 0.0f,
+        0.0f, 1.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 1.0f, 0.0f,
+        0.0f, 0.0f, 0.0f, 1.0f
+    };
+    SubResourceData xformData;
+    xformData.mem           = xform;
+    xformData.slicePitch    = sizeof( xform );
+
+    BufferDesc xformBufferDesc;
+    xformBufferDesc.size        = sizeof( xform );
+    xformBufferDesc.bindFlags   = BIND_FLAG_CONSTANT_BUFFER;
+    IBufferRef xformBuffer = mDevice->CreateBuffer( xformBufferDesc, &xformData );
+
+    // color cbuffer
+
+    float color[] = { 1.0f, 1.0f, 0.0f, 1.0f };
+    SubResourceData colorData;
+    colorData.mem           = color;
+    colorData.slicePitch    = sizeof( color );
+
+    BufferDesc colorBufferDesc;
+    colorBufferDesc.size        = sizeof( color );
+    colorBufferDesc.bindFlags   = BIND_FLAG_CONSTANT_BUFFER;
+    IBufferRef colorBuffer = mDevice->CreateBuffer( colorBufferDesc, &colorData );
 
     // Drawing parameters
 
@@ -325,7 +368,10 @@ TEST_F( GraphicsTest, CreateMesh )
             mContext->SetRenderTargets( 1, rt );
             mContext->Clear( mClearParams );
 
-            effect->Dispatch();
+            mContext->SetConstantBuffer( SHADER_STAGE_VERTEX, 0, xformBuffer );
+            mContext->SetConstantBuffer( SHADER_STAGE_PIXEL, 0, colorBuffer );
+
+            tech->Dispatch();
             mesh->Draw();
         }
         mContext->EndScene();
@@ -433,7 +479,7 @@ TEST_F( GraphicsTest, RenderTarget )
     // Create effect
 
     IEffectRef fx = mFactory->CreateEffect( mDevice, "draw.fxc" );
-    ConstITechniqueRef techDrawRed = fx->GetTechnique( "DrawRedQuad" );
+    ConstITechniqueRef techDrawColoredQuad = fx->GetTechnique( "DrawColoredQuad" );
     ConstITechniqueRef techDrawTexturedQuad = fx->GetTechnique( "DrawTexturedQuad" );
 
     // Create geometry
@@ -460,7 +506,19 @@ TEST_F( GraphicsTest, RenderTarget )
     vertexAttribs.semantic = SEMANTIC_POSITION0;
     vertexAttribs.format   = FORMAT_RG32_FLOAT;
     vertexAttribs.stride   = 8;
-    IInputLayoutRef inputLayout = mDevice->CreateInputLayout( 1, &vertexAttribs, techDrawRed->GetShader( SHADER_STAGE_VERTEX ) );
+    IInputLayoutRef inputLayout = mDevice->CreateInputLayout( 1, &vertexAttribs, techDrawColoredQuad->GetShader( SHADER_STAGE_VERTEX ) );
+
+    // Color cbuffer
+
+    float color[] = { 1.0f, 0.0f, 0.0f, 1.0f };
+    SubResourceData colorData;
+    colorData.mem           = color;
+    colorData.slicePitch    = sizeof( color );
+
+    BufferDesc colorBufferDesc;
+    colorBufferDesc.size        = sizeof( color );
+    colorBufferDesc.bindFlags   = BIND_FLAG_CONSTANT_BUFFER;
+    IBufferRef colorBuffer = mDevice->CreateBuffer( colorBufferDesc, &colorData );
 
     // Define draw params
 
@@ -495,7 +553,9 @@ TEST_F( GraphicsTest, RenderTarget )
             mContext->SetInputLayout( inputLayout );
             mContext->SetVertexBuffer( 0, vertPosBuf );
 
-            techDrawRed->Dispatch();
+            mContext->SetConstantBuffer( SHADER_STAGE_PIXEL, 0, colorBuffer );
+
+            techDrawColoredQuad->Dispatch();
             mContext->Draw(drawParams);
 
             // Draw screen quad with texture
@@ -519,7 +579,7 @@ TEST_F( GraphicsTest, Resolve )
     // create effect
 
     IEffectRef fx = mFactory->CreateEffect( mDevice, "draw.fxc" );
-    ConstITechniqueRef techDrawRed = fx->GetTechnique( "DrawRedQuad" );
+    ConstITechniqueRef techDrawColoredQuad = fx->GetTechnique( "DrawColoredQuad" );
     ConstITechniqueRef techDrawTexturedQuad = fx->GetTechnique( "DrawTexturedQuad" );
 
     // create geometry
@@ -547,7 +607,19 @@ TEST_F( GraphicsTest, Resolve )
     vertexAttribs.format   = FORMAT_RG32_FLOAT;
     vertexAttribs.stride   = 8;
     IInputLayoutRef inputLayout = mDevice->CreateInputLayout( 1,
-        &vertexAttribs, techDrawRed->GetShader( SHADER_STAGE_VERTEX ) );
+        &vertexAttribs, techDrawColoredQuad->GetShader( SHADER_STAGE_VERTEX ) );
+
+    // color cbuffer
+
+    float color[] = { 1.0f, 0.0f, 0.0f, 1.0f };
+    SubResourceData colorData;
+    colorData.mem           = color;
+    colorData.slicePitch    = sizeof( color );
+
+    BufferDesc colorBufferDesc;
+    colorBufferDesc.size        = sizeof( color );
+    colorBufferDesc.bindFlags   = BIND_FLAG_CONSTANT_BUFFER;
+    IBufferRef colorBuffer = mDevice->CreateBuffer( colorBufferDesc, &colorData );
 
     // define draw params
 
@@ -599,7 +671,9 @@ TEST_F( GraphicsTest, Resolve )
             mContext->SetInputLayout( inputLayout );
             mContext->SetVertexBuffer( 0, vertPosBuf );
 
-            techDrawRed->Dispatch();
+            mContext->SetConstantBuffer( SHADER_STAGE_PIXEL, 0, colorBuffer );
+
+            techDrawColoredQuad->Dispatch();
             mContext->Draw( drawParams );
 
             // Resolve
