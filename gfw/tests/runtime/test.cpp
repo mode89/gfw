@@ -128,7 +128,7 @@ void GraphicsTest::Present()
                 context->CopyResource( stagingTexture, resolveTexture );
                 SubResourceData mappedData;
                 context->Map( stagingTexture, SubResourceIndex(), MAP_TYPE_READ, mappedData );
-                ASSERT_TRUE( mappedData.mem != nullptr ) << "Failed to map captured image";
+                EXPECT_TRUE( mappedData.mem != nullptr ) << "Failed to map captured image";
                 {
                     png_image pngImage;
                     std::memset( &pngImage, 0, sizeof( pngImage ) );
@@ -149,7 +149,7 @@ void GraphicsTest::Present()
 
                     int res = png_image_write_to_file( &pngImage, pngFileName.c_str(), 0,
                         mappedData.mem, static_cast< uint32_t >( mappedData.rowPitch ), nullptr );
-                    ASSERT_TRUE( res != 0 ) << "Failed to write captured image";
+                    EXPECT_TRUE( res != 0 ) << "Failed to write captured image";
                 }
                 context->Unmap( stagingTexture, SubResourceIndex() );
             }
@@ -175,7 +175,7 @@ void GraphicsTest::Present()
                 context->CopyResource( stagingTexture, resolveTexture );
                 SubResourceData mappedData;
                 context->Map( stagingTexture, SubResourceIndex(), MAP_TYPE_READ, mappedData );
-                ASSERT_TRUE( mappedData.mem != nullptr ) << "Failed to map captured image";
+                EXPECT_TRUE( mappedData.mem != nullptr ) << "Failed to map captured image";
                 {
                     png_image pngImage;
                     std::memset( &pngImage, 0, sizeof( pngImage ) );
@@ -192,16 +192,16 @@ void GraphicsTest::Present()
                         std::string( ".png" );
 
                     int res = png_image_begin_read_from_file( &pngImage, pngFileName.c_str() );
-                    ASSERT_TRUE( res != 0 ) << "Failed to open reference image";
+                    EXPECT_TRUE( res != 0 ) << "Failed to open reference image";
 
                     std::shared_ptr< uint8_t > pngBuffer( new uint8_t [ mappedData.slicePitch ],
                         [] ( uint8_t * ptr ) { if ( ptr ) delete[] ptr; } );
 
                     res = png_image_finish_read( &pngImage, nullptr, pngBuffer.get(),
                         static_cast< uint32_t >( mappedData.rowPitch ), nullptr );
-                    ASSERT_TRUE( res != 0 ) << "Failed to read reference image";
+                    EXPECT_TRUE( res != 0 ) << "Failed to read reference image";
 
-                    ASSERT_TRUE( std::memcmp( mappedData.mem, pngBuffer.get(), mappedData.slicePitch ) == 0 )
+                    EXPECT_TRUE( std::memcmp( mappedData.mem, pngBuffer.get(), mappedData.slicePitch ) == 0 )
                         << "Rendered image doesn't correspond with the reference image";
                 }
                 context->Unmap( stagingTexture, SubResourceIndex() );
