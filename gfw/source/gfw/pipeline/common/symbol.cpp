@@ -141,7 +141,6 @@ namespace GFW {
                     default:
                         symbol.registerType = Symbol::REGISTER_TYPE_UNKNOWN;
                         CMN_THROW( EffectBuilderException::WrongRegister( symbol.name ) );
-                        return true;
                     }
                     symbol.registerIndex = std::atoi( ++ registerName );
                 }
@@ -221,7 +220,6 @@ namespace GFW {
                     else
                     {
                         CMN_THROW( EffectBuilderException::WrongRegister( symbol.name ) );
-                        return true;
                     }
                 }
 
