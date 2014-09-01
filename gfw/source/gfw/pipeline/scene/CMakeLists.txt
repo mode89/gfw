@@ -12,10 +12,6 @@ cmake_minimum_required( VERSION 2.8 )
     list( APPEND GFW_PIPELINE_SCENE_SOURCE_FILES ${TEMP_LIST} )
     source_group( "collada" FILES ${TEMP_LIST} )
 
-    file( GLOB TEMP_LIST ${GFW_ROOT}/source/gfw/shared/*.h )
-    list( APPEND GFW_PIPELINE_SCENE_SOURCE_FILES ${TEMP_LIST} )
-    source_group( "shared" FILES ${TEMP_LIST} )
-
 # Include
 
     include_directories(
@@ -30,14 +26,11 @@ cmake_minimum_required( VERSION 2.8 )
 
 # Dependencies
 
-    find_package( antlr CONFIG )
-    target_link_libraries( gfw-pipeline-scene ${ANTLR_LIBS} )
-    include_directories( ${ANTLR_INCLUDE_DIRS} )
-
     find_package( cmn CONFIG )
     target_link_libraries( gfw-pipeline-scene ${CMN_LIBS} )
     include_directories( ${CMN_INCLUDE_DIRS} )
 
-    find_package( boost CONFIG )
-    include_directories( ${BOOST_INCLUDE_DIRS} )
-    add_definitions( ${BOOST_DEFINITIONS} )
+    # Collada
+
+        target_link_libraries( gfw-pipeline-scene ${TINYXML2_LIBS} )
+        include_directories( ${TINYXML2_INCLUDE_DIRS} )
