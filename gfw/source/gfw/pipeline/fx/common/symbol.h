@@ -1,7 +1,7 @@
-#ifndef __GFW_PIPELINE_COMMON_SYMBOL_H__
-#define __GFW_PIPELINE_COMMON_SYMBOL_H__
+#ifndef __GFW_PIPELINE_FX_COMMON_SYMBOL_H__
+#define __GFW_PIPELINE_FX_COMMON_SYMBOL_H__
 
-#include "gfw/pipeline/common/parse_tree.h"
+#include "gfw/pipeline/fx/common/parse_tree.h"
 
 #include <string>
 #include <vector>
@@ -73,4 +73,4 @@ namespace GFW {
 
 } // namespace GFW
 
-#endif // __GFW_PIPELINE_COMMON_SYMBOL_H__
+#endif // __GFW_PIPELINE_FX_COMMON_SYMBOL_H__

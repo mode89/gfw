@@ -1,7 +1,7 @@
-#ifndef __GFW_PIPELINE_OGL4_SHADER_BUILDER_H__
-#define __GFW_PIPELINE_OGL4_SHADER_BUILDER_H__
+#ifndef __GFW_PIPELINE_FX_OGL4_SHADER_BUILDER_H__
+#define __GFW_PIPELINE_FX_OGL4_SHADER_BUILDER_H__
 
-#include "gfw/pipeline/common/shader_builder.h"
+#include "gfw/pipeline/fx/common/shader_builder.h"
 
 #include <set>
 #include <string>
@@ -45,4 +45,4 @@ namespace GFW {
 
 } // namespace GFW
 
-#endif // __GFW_PIPELINE_OGL4_SHADER_BUILDER_H__
+#endif // __GFW_PIPELINE_FX_OGL4_SHADER_BUILDER_H__

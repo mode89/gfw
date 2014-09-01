@@ -1,7 +1,7 @@
-#ifndef __GFW_PIPELINE_COMMON_SHADER_BUILDER_H__
-#define __GFW_PIPELINE_COMMON_SHADER_BUILDER_H__
+#ifndef __GFW_PIPELINE_FX_COMMON_SHADER_BUILDER_H__
+#define __GFW_PIPELINE_FX_COMMON_SHADER_BUILDER_H__
 
-#include "gfw/pipeline/common/symbol.h"
+#include "gfw/pipeline/fx/common/symbol.h"
 #include <memory>
 #include <string>
 
@@ -25,4 +25,4 @@ namespace GFW {
 
 } // namespace GFW
 
-#endif // __GFW_PIPELINE_COMMON_SHADER_BUILDER_H__
+#endif // __GFW_PIPELINE_FX_COMMON_SHADER_BUILDER_H__

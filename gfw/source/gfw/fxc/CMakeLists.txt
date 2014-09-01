@@ -16,7 +16,7 @@ project( GFW_FXC )
 # Target
 
     add_executable( gfw_fxc ${GFW_FXC_SOURCE_FILES} )
-    target_link_libraries( gfw_fxc gfw_pipeline )
+    target_link_libraries( gfw_fxc gfw-pipeline-fx )
 
 # Dependencies
 

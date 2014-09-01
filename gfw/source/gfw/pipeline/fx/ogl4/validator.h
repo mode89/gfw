@@ -1,5 +1,5 @@
-#ifndef __GFW_PIPELINE_OGL4_VALIDATOR_H__
-#define __GFW_PIPELINE_OGL4_VALIDATOR_H__
+#ifndef __GFW_PIPELINE_FX_OGL4_VALIDATOR_H__
+#define __GFW_PIPELINE_FX_OGL4_VALIDATOR_H__
 
 #include "gfw/shared/types_fwd.h"
 #include <string>
@@ -17,4 +17,4 @@ namespace GFW {
 
 } // namespace GFW
 
-#endif // __GFW_PIPELINE_OGL4_VALIDATOR_H__
+#endif // __GFW_PIPELINE_FX_OGL4_VALIDATOR_H__

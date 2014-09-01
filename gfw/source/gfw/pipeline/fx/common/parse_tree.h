@@ -1,5 +1,5 @@
-#ifndef __GFW_PIPELINE_COMMON_PARSE_TREE_H__
-#define __GFW_PIPELINE_COMMON_PARSE_TREE_H__
+#ifndef __GFW_PIPELINE_FX_COMMON_PARSE_TREE_H__
+#define __GFW_PIPELINE_FX_COMMON_PARSE_TREE_H__
 
 #include "cmn/platform.h"
 
@@ -175,4 +175,4 @@ namespace GFW {
 
 } // namespace GFW
 
-#endif // __GFW_PIPELINE_COMMON_PARSE_TREE_H__
+#endif // __GFW_PIPELINE_FX_COMMON_PARSE_TREE_H__

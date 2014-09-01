@@ -18,7 +18,7 @@ cmake_minimum_required( VERSION 2.8 )
 # Target
 
     add_executable( gfw_pipeline-tests ${GFW_PIPELINE_TESTS_SOURCE_FILES} ${GFW_TESTS_FX_FILES} )
-    target_link_libraries( gfw_pipeline-tests gfw_pipeline )
+    target_link_libraries( gfw_pipeline-tests gfw-pipeline-fx )
 
     add_test(
         NAME GfwPipelineTests

@@ -1,7 +1,7 @@
 #include "cmn/trace.h"
 #include "gfw/shader_stage.h"
-#include "gfw/pipeline/ogl4/shader_builder_exception.h"
-#include "gfw/pipeline/ogl4/validator.h"
+#include "gfw/pipeline/fx/ogl4/shader_builder_exception.h"
+#include "gfw/pipeline/fx/ogl4/validator.h"
 #include "opengl/glcorearb.h"
 
 #include "opengl/wglext.h"

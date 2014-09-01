@@ -10,11 +10,11 @@ CMN_WARNING_DISABLE_GCC( unused-local-typedefs )
 CMN_WARNING_POP
 
 #include "gfw/shader_stage.h"
-#include "gfw/pipeline/common/parse_tree.h"
-#include "gfw/pipeline/common/symbol.h"
-#include "gfw/pipeline/ogl4/shader_builder.h"
-#include "gfw/pipeline/ogl4/shader_builder_exception.h"
-#include "gfw/pipeline/ogl4/validator.h"
+#include "gfw/pipeline/fx/common/parse_tree.h"
+#include "gfw/pipeline/fx/common/symbol.h"
+#include "gfw/pipeline/fx/ogl4/shader_builder.h"
+#include "gfw/pipeline/fx/ogl4/shader_builder_exception.h"
+#include "gfw/pipeline/fx/ogl4/validator.h"
 #include "gfw/runtime/ogl4/limits.h"
 #include "gfw/shared/shader.h"
 #include "gfw/shared/ogl4/shader.h"

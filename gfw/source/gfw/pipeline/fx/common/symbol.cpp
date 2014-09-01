@@ -1,7 +1,7 @@
 #include "cmn/trace.h"
-#include "gfw/pipeline/common/effect_builder_exception.h"
-#include "gfw/pipeline/common/parse_tree.h"
-#include "gfw/pipeline/common/symbol.h"
+#include "gfw/pipeline/fx/common/effect_builder_exception.h"
+#include "gfw/pipeline/fx/common/parse_tree.h"
+#include "gfw/pipeline/fx/common/symbol.h"
 #include <algorithm>
 #include <cstring>
 

@@ -9,7 +9,7 @@ CMN_WARNING_DISABLE_GCC( unused-local-typedefs )
 CMN_WARNING_POP
 
 #include "cmn/trace.h"
-#include "gfw/pipeline/common/effect_builder.h"
+#include "gfw/pipeline/fx/common/effect_builder.h"
 #include "gfw/shared/effect.h"
 #include "gfw/shared/pass.h"
 #include "gfw/shared/shader.h"

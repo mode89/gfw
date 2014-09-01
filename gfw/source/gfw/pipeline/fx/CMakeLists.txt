@@ -25,16 +25,16 @@ cmake_minimum_required( VERSION 2.8 )
 
 # Target
 
-    add_library( gfw_pipeline ${GFW_PIPELINE_SOURCE_FILES} )
+    add_library( gfw-pipeline-fx ${GFW_PIPELINE_SOURCE_FILES} )
 
 # Dependencies
 
     find_package( antlr CONFIG )
-    target_link_libraries( gfw_pipeline ${ANTLR_LIBS} )
+    target_link_libraries( gfw-pipeline-fx ${ANTLR_LIBS} )
     include_directories( ${ANTLR_INCLUDE_DIRS} )
 
     find_package( cmn CONFIG )
-    target_link_libraries( gfw_pipeline ${CMN_LIBS} )
+    target_link_libraries( gfw-pipeline-fx ${CMN_LIBS} )
     include_directories( ${CMN_INCLUDE_DIRS} )
 
     find_package( boost CONFIG )
@@ -51,7 +51,7 @@ cmake_minimum_required( VERSION 2.8 )
     add_custom_target( gfw_pipeline_parser ALL
         DEPENDS FXLexer.c FXParser.c
         SOURCES ${GFW_PIPELINE_FX_GRAMMAR_FILE} )
-    add_dependencies( gfw_pipeline gfw_pipeline_parser )
+    add_dependencies( gfw-pipeline-fx gfw_pipeline_parser )
 
 # Platform-specific build script
 
