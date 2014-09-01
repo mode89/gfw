@@ -30,6 +30,10 @@ cmake_minimum_required( VERSION 2.8 )
     target_link_libraries( gfw-pipeline-scene ${CMN_LIBS} )
     include_directories( ${CMN_INCLUDE_DIRS} )
 
+    find_package( boost CONFIG )
+    include_directories( ${BOOST_INCLUDE_DIRS} )
+    add_definitions( ${BOOST_DEFINITIONS} )
+
     # Collada
 
         target_link_libraries( gfw-pipeline-scene ${TINYXML2_LIBS} )

@@ -8,6 +8,10 @@ namespace GFW {
     class SceneBuilderCollada : public ISceneBuilder
     {
     public:
+        virtual void
+        Build( SceneBinary &, const boost::filesystem::path & );
+
+    public:
         SceneBuilderCollada();
         ~SceneBuilderCollada();
     };
