@@ -84,6 +84,16 @@ include( cmn/scripts/config.cmake )
             ${CMAKE_CURRENT_BINARY_DIR} )
         set( PNG_LIBS png )
 
+    # tinyxml2
+
+        add_library( tinyxml2
+            tinyxml2/tinyxml2.cpp
+            tinyxml2/tinyxml2.h
+        )
+
+        set( TINYXML2_INCLUDE_DIRS ${CMAKE_CURRENT_LIST_DIR}/tinyxml2 )
+        set( TINYXML2_LIBS tinyxml2 )
+
 add_subdirectory( ann )
 add_subdirectory( antlr )
 add_subdirectory( boost )
