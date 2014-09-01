@@ -1,6 +1,7 @@
 #ifndef __GFW_SHARED_SCENE_BINARY_H__
 #define __GFW_SHARED_SCENE_BINARY_H__
 
+#include "gfw/semantic.h"
 #include <list>
 #include <vector>
 
@@ -16,7 +17,7 @@ namespace GFW {
             uint32_t    offset;
 
             VertexAttribute()
-                : semantic( SEMANTIC_UNKNOWN )
+                : semantic( 0 )
                 , slot( 0 )
                 , stride( 0 )
                 , offset( 0 )
@@ -26,7 +27,7 @@ namespace GFW {
         typedef std::vector< float > FloatBuffer;
         typedef std::vector< int > IntBuffer;
         typedef std::vector< FloatBuffer > FloatBufferVec;
-        typedef std::vector< VectorAttribute > AttributeVec;
+        typedef std::vector< VertexAttribute > AttributeVec;
 
         AttributeVec    attributes;
         FloatBufferVec  vertexBuffers;
@@ -40,8 +41,8 @@ namespace GFW {
 
     struct NodeBinary
     {
-        std::list< const GeometryBinary * > GeometryList;
-        std::list< NodeBinary > NodeList;
+        typedef std::list< const GeometryBinary * > GeometryList;
+        typedef std::list< NodeBinary > NodeList;
 
         float           matrix[ 16 ];
         GeometryList    geometries;
@@ -50,10 +51,10 @@ namespace GFW {
 
     struct SceneBinary
     {
-        std::list< GeometryBinary > GeometryTable;
-        std::list< NodeBinary > NodeList;
+        typedef std::list< GeometryBinary > GeometryTable;
+        typedef std::list< NodeBinary > NodeList;
 
-        GeometryList    geometryTable;
+        GeometryTable   geometryTable;
         NodeList        nodes;
     };
 
