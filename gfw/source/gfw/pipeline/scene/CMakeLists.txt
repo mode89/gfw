@@ -1,18 +1,19 @@
-project( GFW_PIPELINE )
+project( GFW_PIPELINE_SCENE )
 cmake_minimum_required( VERSION 2.8 )
 
 # Source files
 
     file( GLOB TEMP_LIST common/*.cpp common/*.h )
-    list( APPEND GFW_PIPELINE_SOURCE_FILES ${TEMP_LIST} )
+    list( APPEND GFW_PIPELINE_SCENE_SOURCE_FILES ${TEMP_LIST} )
     source_group( "common" FILES ${TEMP_LIST} )
 
-    file( GLOB TEMP_LIST ${GFW_PLATFORM}/*.cpp ${GFW_PLATFORM}/*.h )
-    list( APPEND GFW_PIPELINE_SOURCE_FILES ${TEMP_LIST} )
-    source_group( "${GFW_PLATFORM}" FILES ${TEMP_LIST} )
+    # Collada
+    file( GLOB TEMP_LIST collada/*.cpp collada/*.h )
+    list( APPEND GFW_PIPELINE_SCENE_SOURCE_FILES ${TEMP_LIST} )
+    source_group( "collada" FILES ${TEMP_LIST} )
 
     file( GLOB TEMP_LIST ${GFW_ROOT}/source/gfw/shared/*.h )
-    list( APPEND GFW_PIPELINE_SOURCE_FILES ${TEMP_LIST} )
+    list( APPEND GFW_PIPELINE_SCENE_SOURCE_FILES ${TEMP_LIST} )
     source_group( "shared" FILES ${TEMP_LIST} )
 
 # Include
@@ -25,34 +26,18 @@ cmake_minimum_required( VERSION 2.8 )
 
 # Target
 
-    add_library( gfw_pipeline ${GFW_PIPELINE_SOURCE_FILES} )
+    add_library( gfw-pipeline-scene ${GFW_PIPELINE_SCENE_SOURCE_FILES} )
 
 # Dependencies
 
     find_package( antlr CONFIG )
-    target_link_libraries( gfw_pipeline ${ANTLR_LIBS} )
+    target_link_libraries( gfw-pipeline-scene ${ANTLR_LIBS} )
     include_directories( ${ANTLR_INCLUDE_DIRS} )
 
     find_package( cmn CONFIG )
-    target_link_libraries( gfw_pipeline ${CMN_LIBS} )
+    target_link_libraries( gfw-pipeline-scene ${CMN_LIBS} )
     include_directories( ${CMN_INCLUDE_DIRS} )
 
     find_package( boost CONFIG )
     include_directories( ${BOOST_INCLUDE_DIRS} )
     add_definitions( ${BOOST_DEFINITIONS} )
-
-# Pre-build
-
-    set( GFW_PIPELINE_FX_GRAMMAR_FILE ${CMAKE_CURRENT_SOURCE_DIR}/common/FX.g )
-    add_custom_command(
-        OUTPUT FXLexer.c FXParser.c
-        COMMAND java -jar ${ANTLR_TOOL} -make -language C ${GFW_PIPELINE_FX_GRAMMAR_FILE}
-        DEPENDS ${GFW_PIPELINE_FX_GRAMMAR_FILE} )
-    add_custom_target( gfw_pipeline_parser ALL
-        DEPENDS FXLexer.c FXParser.c
-        SOURCES ${GFW_PIPELINE_FX_GRAMMAR_FILE} )
-    add_dependencies( gfw_pipeline gfw_pipeline_parser )
-
-# Platform-specific build script
-
-    include( ${GFW_PLATFORM}/build.cmake )

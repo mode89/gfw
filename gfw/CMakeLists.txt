@@ -10,5 +10,6 @@ add_definitions( -DGFW_PLATFORM_LIMITS_H="gfw/runtime/${GFW_PLATFORM}/limits.h" 
 
 add_subdirectory( source/gfw/fxc )
 add_subdirectory( source/gfw/pipeline/fx )
+add_subdirectory( source/gfw/pipeline/scene )
 add_subdirectory( source/gfw/runtime )
 add_subdirectory( tests )
