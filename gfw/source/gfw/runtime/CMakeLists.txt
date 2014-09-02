@@ -14,14 +14,6 @@ project( GFW_RUNTIME )
     list( APPEND GFW_RUNTIME_SOURCE_FILES ${TEMP_LIST} )
     source_group( "${GFW_PLATFORM}" FILES ${TEMP_LIST} )
 
-    file( GLOB TEMP_LIST win/*.* )
-    list( APPEND GFW_RUNTIME_SOURCE_FILES ${TEMP_LIST} )
-    source_group( "win" FILES ${TEMP_LIST} )
-
-    file( GLOB TEMP_LIST ../shared/*.* )
-    list( APPEND GFW_RUNTIME_SOURCE_FILES ${TEMP_LIST} )
-    source_group( "shared" FILES ${TEMP_LIST} )
-
 # Includes
 
     include_directories(
@@ -34,6 +26,8 @@ project( GFW_RUNTIME )
     add_library( gfw_runtime ${GFW_RUNTIME_SOURCE_FILES} )
 
 # Dependencies
+
+    target_link_libraries( gfw_runtime gfw-shared )
 
     find_package( cmn CONFIG )
     target_link_libraries( gfw_runtime ${CMN_LIBS} )

@@ -1,7 +1,5 @@
 #include "cmn/trace.h"
-
-#include "gfw/runtime/common/semantic.h"
-
+#include "gfw/semantic.h"
 #include <cstring>
 
 namespace GFW {

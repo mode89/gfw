@@ -1,7 +1,6 @@
 #include "cmn/trace.h"
 
 #include "gfw/device.h"
-#include "gfw/runtime/common/semantic.h"
 #include "gfw/runtime/ogl4/device.h"
 #include "gfw/runtime/ogl4/functions.h"
 #include "gfw/runtime/ogl4/input_layout.h"

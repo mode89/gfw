@@ -11,10 +11,6 @@ cmake_minimum_required( VERSION 2.8 )
     list( APPEND GFW_PIPELINE_SOURCE_FILES ${TEMP_LIST} )
     source_group( "${GFW_PLATFORM}" FILES ${TEMP_LIST} )
 
-    file( GLOB TEMP_LIST ${GFW_ROOT}/source/gfw/shared/*.h )
-    list( APPEND GFW_PIPELINE_SOURCE_FILES ${TEMP_LIST} )
-    source_group( "shared" FILES ${TEMP_LIST} )
-
 # Include
 
     include_directories(
@@ -28,6 +24,8 @@ cmake_minimum_required( VERSION 2.8 )
     add_library( gfw-pipeline-fx ${GFW_PIPELINE_SOURCE_FILES} )
 
 # Dependencies
+
+    target_link_libraries( gfw-pipeline-fx gfw-shared )
 
     find_package( antlr CONFIG )
     target_link_libraries( gfw-pipeline-fx ${ANTLR_LIBS} )

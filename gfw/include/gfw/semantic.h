@@ -34,6 +34,12 @@ namespace GFW {
 #undef S
     };
 
+    const char *
+    GetSemanticString( Semantic );
+
+    Semantic
+    GetSemantic( const char * );
+
 } // namespace GFW
 
 #endif // __GFW_BASE_SEMANTIC_H__

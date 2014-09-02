@@ -26,6 +26,8 @@ cmake_minimum_required( VERSION 2.8 )
 
 # Dependencies
 
+    target_link_libraries( gfw-pipeline-scene gfw-shared )
+
     find_package( cmn CONFIG )
     target_link_libraries( gfw-pipeline-scene ${CMN_LIBS} )
     include_directories( ${CMN_INCLUDE_DIRS} )

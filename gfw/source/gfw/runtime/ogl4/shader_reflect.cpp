@@ -1,4 +1,3 @@
-#include "gfw/runtime/common/semantic.h"
 #include "gfw/runtime/ogl4/device.h"
 #include "gfw/runtime/ogl4/functions.h"
 #include "gfw/runtime/ogl4/limits.h"
