@@ -34,4 +34,17 @@ namespace GFW {
         return SEMANTIC_UNKNOWN;
     }
 
+    Semantic GetSemantic( const char * str, unsigned index )
+    {
+#define SI( name, idx ) if ( index == idx ) return BUILD_SEMANTIC( name, idx );
+#define S( name ) \
+    if ( std::strcmp( str, # name ) == 0 ) { \
+        BUILD_SEMANTIC_INDICES( name ); \
+    }
+        SEMANTICS
+#undef S
+#undef SI
+        return SEMANTIC_UNKNOWN;
+    }
+
 } // namespace GFW
