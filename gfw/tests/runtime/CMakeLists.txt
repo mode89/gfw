@@ -66,10 +66,33 @@ cmake_minimum_required( VERSION 2.8 )
             COMMENT "Post-build gfw-runtime-tests"
         )
     else()
+        # Generate build commands for effect files
+
+            file( GLOB FX_FILES ${GFW_TESTS_DATA_DIR}/*.fx )
+            foreach( file ${FX_FILES} )
+                get_filename_component( fileName ${file} NAME )
+                set( outputFileName "${GFW_RUNTIME_TESTS_OUTPUT_DIR}/${fileName}c" )
+                add_custom_command(
+                    OUTPUT ${outputFileName}
+                    COMMAND gfw_fxc -fx "${file}" -o ${outputFileName}
+                    DEPENDS "${file}" )
+                list( APPEND DEPS ${outputFileName} )
+            endforeach()
+
+        # Generate build commands for scene files
+
+            file( GLOB DAE_FILES ${GFW_TESTS_DATA_DIR}/*.dae )
+            foreach( file ${DAE_FILES} )
+                get_filename_component( fileName ${file} NAME_WE )
+                set( outputFileName "${GFW_RUNTIME_TESTS_OUTPUT_DIR}/${fileName}.sb" )
+                add_custom_command(
+                    OUTPUT ${outputFileName}
+                    COMMAND gfw-sb -s "${file}" -o ${outputFileName}
+                    DEPENDS "${file}" )
+                list( APPEND DEPS ${outputFileName} )
+            endforeach()
+
         # Post-build target
-        add_custom_target( gfw-runtime-tests-postbuild
-            gfw_fxc
-            -fx "${GFW_TESTS_DATA_DIR}/draw.fx"
-            -o "${GFW_RUNTIME_TESTS_OUTPUT_DIR}/draw.fxc"
-        )
+
+            add_custom_target( gfw-runtime-tests-postbuild DEPENDS ${DEPS} )
     endif()
