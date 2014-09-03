@@ -22,6 +22,15 @@ namespace GFW {
                 , stride( 0 )
                 , offset( 0 )
             {}
+
+            template < class Archive > void
+            serialize( Archive & ar, unsigned version )
+            {
+                ar & semantic;
+                ar & slot;
+                ar & stride;
+                ar & offset;
+            }
         };
 
         typedef std::vector< float > FloatBuffer;
@@ -32,11 +41,25 @@ namespace GFW {
         AttributeVec    attributes;
         FloatBufferVec  vertexBuffers;
         IntBuffer       indexBuffer;
+
+        template < class Archive > void
+        serialize( Archive & ar, unsigned version )
+        {
+            ar & attributes;
+            ar & vertexBuffers;
+            ar & indexBuffer;
+        }
     };
 
     struct GeometryBinary
     {
         MeshBinary  mesh;
+
+        template < class Archive > void
+        serialize( Archive & ar, unsigned version )
+        {
+            ar & mesh;
+        }
     };
 
     struct NodeBinary
@@ -47,6 +70,14 @@ namespace GFW {
         float           matrix[ 16 ];
         GeometryList    geometries;
         NodeList        nodes;
+
+        template < class Archive > void
+        serialize( Archive & ar, unsigned version )
+        {
+            ar & matrix;
+            ar & geometries;
+            ar & nodes;
+        }
     };
 
     struct SceneBinary
@@ -56,6 +87,13 @@ namespace GFW {
 
         GeometryTable   geometryTable;
         NodeList        nodes;
+
+        template < class Archive > void
+        serialize( Archive & ar, unsigned version )
+        {
+            ar & geometryTable;
+            ar & nodes;
+        }
     };
 
 } // namespace GFW
