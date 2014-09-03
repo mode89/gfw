@@ -41,6 +41,13 @@ TEST_F( GfwPipelineTests, Draw )
     effectBuilder.Build( effectBinary, TESTS_DATA_DIR "draw.fx" );
 }
 
+TEST_F( GfwPipelineTests, ColladaQuad )
+{
+    SceneBinary sceneBinary;
+    ISceneBuilderRef sceneBuilder = CreateSceneBuilderCollada();
+    sceneBuilder->Build( sceneBinary, TESTS_DATA_DIR "quad.dae" );
+}
+
 TEST_F( GfwPipelineTests, ColladaSphere )
 {
     SceneBinary sceneBinary;
