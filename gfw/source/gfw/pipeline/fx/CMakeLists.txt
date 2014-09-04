@@ -1,14 +1,14 @@
-project( GFW_PIPELINE )
+project( GFW_PIPELINE_FX )
 cmake_minimum_required( VERSION 2.8 )
 
 # Source files
 
     file( GLOB TEMP_LIST common/*.cpp common/*.h )
-    list( APPEND GFW_PIPELINE_SOURCE_FILES ${TEMP_LIST} )
+    list( APPEND GFW_PIPELINE_FX_SOURCE_FILES ${TEMP_LIST} )
     source_group( "common" FILES ${TEMP_LIST} )
 
     file( GLOB TEMP_LIST ${GFW_PLATFORM}/*.cpp ${GFW_PLATFORM}/*.h )
-    list( APPEND GFW_PIPELINE_SOURCE_FILES ${TEMP_LIST} )
+    list( APPEND GFW_PIPELINE_FX_SOURCE_FILES ${TEMP_LIST} )
     source_group( "${GFW_PLATFORM}" FILES ${TEMP_LIST} )
 
 # Include
@@ -21,7 +21,7 @@ cmake_minimum_required( VERSION 2.8 )
 
 # Target
 
-    add_library( gfw-pipeline-fx ${GFW_PIPELINE_SOURCE_FILES} )
+    add_library( gfw-pipeline-fx ${GFW_PIPELINE_FX_SOURCE_FILES} )
 
 # Dependencies
 
