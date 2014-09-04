@@ -23,18 +23,18 @@ project( GFW_RUNTIME )
 
 # Target
 
-    add_library( gfw_runtime ${GFW_RUNTIME_SOURCE_FILES} )
+    add_library( gfw-runtime ${GFW_RUNTIME_SOURCE_FILES} )
 
 # Dependencies
 
-    target_link_libraries( gfw_runtime gfw-shared )
+    target_link_libraries( gfw-runtime gfw-shared )
 
     find_package( cmn CONFIG )
-    target_link_libraries( gfw_runtime ${CMN_LIBS} )
+    target_link_libraries( gfw-runtime ${CMN_LIBS} )
     include_directories( ${CMN_INCLUDE_DIRS} )
 
     find_package( boost CONFIG )
-    target_link_libraries( gfw_runtime boost-serialization )
+    target_link_libraries( gfw-runtime boost-serialization )
     include_directories( ${BOOST_INCLUDE_DIRS} )
     add_definitions( ${BOOST_DEFINITIONS} )
 

@@ -46,10 +46,10 @@ cmake_minimum_required( VERSION 2.8 )
         OUTPUT FXLexer.c FXParser.c
         COMMAND java -jar ${ANTLR_TOOL} -make -language C ${GFW_PIPELINE_FX_GRAMMAR_FILE}
         DEPENDS ${GFW_PIPELINE_FX_GRAMMAR_FILE} )
-    add_custom_target( gfw_pipeline_parser ALL
+    add_custom_target( gfw-pipeline-fx-parser ALL
         DEPENDS FXLexer.c FXParser.c
         SOURCES ${GFW_PIPELINE_FX_GRAMMAR_FILE} )
-    add_dependencies( gfw-pipeline-fx gfw_pipeline_parser )
+    add_dependencies( gfw-pipeline-fx gfw-pipeline-fx-parser )
 
 # Platform-specific build script
 

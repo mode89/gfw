@@ -17,27 +17,27 @@ cmake_minimum_required( VERSION 2.8 )
 
 # Target
 
-    add_executable( gfw_pipeline-tests ${GFW_PIPELINE_TESTS_SOURCE_FILES} ${GFW_TESTS_FX_FILES} )
-    target_link_libraries( gfw_pipeline-tests
+    add_executable( gfw-pipeline-tests ${GFW_PIPELINE_TESTS_SOURCE_FILES} ${GFW_TESTS_FX_FILES} )
+    target_link_libraries( gfw-pipeline-tests
         gfw-pipeline-fx
         gfw-pipeline-scene )
 
     add_test(
         NAME GfwPipelineTests
-        COMMAND gfw_pipeline-tests )
+        COMMAND gfw-pipeline-tests )
 
 # Dependencies
 
     find_package( cmn CONFIG )
-    target_link_libraries( gfw_pipeline-tests ${CMN_LIBS} )
+    target_link_libraries( gfw-pipeline-tests ${CMN_LIBS} )
     include_directories( ${CMN_INCLUDE_DIRS} )
 
     find_package( gtest CONFIG )
-    target_link_libraries( gfw_pipeline-tests ${GTEST_LIBS} )
+    target_link_libraries( gfw-pipeline-tests ${GTEST_LIBS} )
     include_directories( ${GTEST_INCLUDE_DIRS} )
 
     find_package( boost CONFIG )
-    target_link_libraries( gfw_pipeline-tests
+    target_link_libraries( gfw-pipeline-tests
         boost-filesystem
         boost-system
         )

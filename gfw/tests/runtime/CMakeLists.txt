@@ -21,24 +21,24 @@ cmake_minimum_required( VERSION 2.8 )
 
 # Target
 
-    add_executable( gfw_runtime-tests ${GFW_RUNTIME_TESTS_SOURCE_FILES} ${GFW_TESTS_FX_FILES} )
-    target_link_libraries( gfw_runtime-tests gfw_runtime )
+    add_executable( gfw-runtime-tests ${GFW_RUNTIME_TESTS_SOURCE_FILES} ${GFW_TESTS_FX_FILES} )
+    target_link_libraries( gfw-runtime-tests gfw-runtime )
 
     add_test(
         NAME GfwRuntimeTests
-        COMMAND gfw_runtime-tests --framecount 1 --compare --nowindow )
+        COMMAND gfw-runtime-tests --framecount 1 --compare --nowindow )
 
 # Dependencies
 
     find_package( cmn CONFIG )
-    target_link_libraries( gfw_runtime-tests ${CMN_LIBS} )
+    target_link_libraries( gfw-runtime-tests ${CMN_LIBS} )
     include_directories( ${CMN_INCLUDE_DIRS} )
 
     find_package( gtest CONFIG )
-    target_link_libraries( gfw_runtime-tests ${GTEST_LIBS} )
+    target_link_libraries( gfw-runtime-tests ${GTEST_LIBS} )
     include_directories( ${GTEST_INCLUDE_DIRS} )
 
-    target_link_libraries( gfw_runtime-tests ${PNG_LIBS} )
+    target_link_libraries( gfw-runtime-tests ${PNG_LIBS} )
     include_directories( ${PNG_INCLUDE_DIRS} )
 
 # Post build
@@ -50,7 +50,7 @@ cmake_minimum_required( VERSION 2.8 )
 
         # Invoke post-build step
         add_custom_command(
-            TARGET gfw_runtime-tests POST_BUILD
+            TARGET gfw-runtime-tests POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E make_directory post-build
             COMMAND ${CMAKE_COMMAND} -E chdir post-build ${CMAKE_COMMAND}
                 -DGFW_RUNTIME_TESTS_POST_BUILD=1
