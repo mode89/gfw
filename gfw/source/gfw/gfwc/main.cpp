@@ -10,8 +10,10 @@ CMN_WARNING_POP
 
 #include "cmn/trace.h"
 #include "gfw/pipeline/fx/common/effect_builder.h"
+#include "gfw/pipeline/scene/common/scene_builder.h"
 #include "gfw/shared/effect.h"
 #include "gfw/shared/pass.h"
+#include "gfw/shared/scene_binary.h"
 #include "gfw/shared/shader.h"
 #include "gfw/shared/technique.h"
 
@@ -28,12 +30,13 @@ void PrintHelp()
         << std::endl
         << "  Usage:" << std::endl
         << std::endl
-        << "    gfw_fxc [options]" << std::endl
+        << "    gfwc [options]" << std::endl
         << std::endl
         << "  Options:" << std::endl
         << std::endl
         << "    -fx <filename>      Path to the FX file" << std::endl
-        << "    -o <filename>       Path to the compiled effect" << std::endl
+        << "    -s <filename>       Path to the scene file" << std::endl
+        << "    -o <filename>       Path to the output file" << std::endl
         << std::endl;
 }
 
@@ -46,6 +49,7 @@ int main( int argc, const char * argv[] )
     }
 
     std::string fxFile;
+    std::string sceneFile;
     std::string outputFile;
 
     for ( int i = 1; i < argc; ++ i )
@@ -55,6 +59,11 @@ int main( int argc, const char * argv[] )
         {
             if ( ++i < argc )
             {
+                if ( !fxFile.empty() || !sceneFile.empty() )
+                {
+                    CMN_ERR( "Multiple input files are not allowed" );
+                    return -1;
+                }
                 fxFile = argv[i];
             }
             else
@@ -63,10 +72,32 @@ int main( int argc, const char * argv[] )
                 return -1;
             }
         }
+        else if ( std::strcmp( "-s", arg ) == 0 )
+        {
+            if ( ++i < argc )
+            {
+                if ( !fxFile.empty() || !sceneFile.empty() )
+                {
+                    CMN_ERR( "Multiple input files are not allowed" );
+                    return -1;
+                }
+                sceneFile = argv[i];
+            }
+            else
+            {
+                CMN_ERR( "Missed fileanem after -s option" );
+                return -1;
+            }
+        }
         else if ( std::strcmp( "-o", arg ) == 0 )
         {
             if ( ++i < argc )
             {
+                if ( !outputFile.empty() )
+                {
+                    CMN_ERR( "Multiple output files are not allowed" );
+                    return -1;
+                }
                 outputFile = argv[i];
             }
             else
@@ -83,29 +114,26 @@ int main( int argc, const char * argv[] )
     }
 
     try {
-        CMN_MSG( "GFW Effect Compiler" );
-        CMN_MSG( "\tEffect file: %s", fxFile.c_str() );
-        CMN_MSG( "\tOutput file: %s", outputFile.c_str() );
-
-        EffectBinary effectBinary;
-
-        CMN_MSG( "\tBuild started" );
-
-        EffectBuilder effectBuilder;
-        effectBuilder.Build( effectBinary, fxFile );
-
-        CMN_MSG( "\tBuild completed" );
-
-        std::ofstream fileStream( outputFile, std::ios_base::out | std::ios_base::binary );
+        if ( !fxFile.empty() )
         {
-            CMN_MSG( "\tSerialization" );
+            EffectBinary effectBinary;
+            EffectBuilder effectBuilder;
+            effectBuilder.Build( effectBinary, fxFile );
 
+            std::ofstream fileStream( outputFile, std::ios_base::out | std::ios_base::binary );
             boost::archive::text_oarchive archive( fileStream );
             archive << effectBinary;
-
-            CMN_MSG( "\tSerialization completed" );
         }
-        fileStream.close();
+        else if ( !sceneFile.empty() )
+        {
+            SceneBinary sceneBinary;
+            ISceneBuilderRef sceneBuilder = CreateSceneBuilderCollada();
+            sceneBuilder->Build( sceneBinary, sceneFile );
+
+            std::ofstream fileStream( outputFile, std::ios_base::out );
+            boost::archive::text_oarchive archive( fileStream );
+            archive << sceneBinary;
+        }
     }
     catch ( std::exception & e ) {
         CMN_ERR( e.what() );

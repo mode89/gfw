@@ -74,7 +74,7 @@ cmake_minimum_required( VERSION 2.8 )
                 set( outputFileName "${GFW_RUNTIME_TESTS_OUTPUT_DIR}/${fileName}c" )
                 add_custom_command(
                     OUTPUT ${outputFileName}
-                    COMMAND gfw_fxc -fx "${file}" -o ${outputFileName}
+                    COMMAND gfwc -fx "${file}" -o ${outputFileName}
                     DEPENDS "${file}" )
                 list( APPEND DEPS ${outputFileName} )
             endforeach()
@@ -87,7 +87,7 @@ cmake_minimum_required( VERSION 2.8 )
                 set( outputFileName "${GFW_RUNTIME_TESTS_OUTPUT_DIR}/${fileName}.sb" )
                 add_custom_command(
                     OUTPUT ${outputFileName}
-                    COMMAND gfw-sb -s "${file}" -o ${outputFileName}
+                    COMMAND gfwc -s "${file}" -o ${outputFileName}
                     DEPENDS "${file}" )
                 list( APPEND DEPS ${outputFileName} )
             endforeach()
